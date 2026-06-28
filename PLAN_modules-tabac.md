@@ -218,7 +218,7 @@ dans `docs/contenu-modules.md` (autorité du contenu).
 - **Validation :** auto `npm run build` ; visuel : sélecteur de formes OK ; ajout/retrait de quarts + jour/nuit cohérents avec la méthode.
 - **Si bloqué :** —
 - **Commit :** `feat(module): substituts et titration du patch`
-- **Statut :** [ ] à faire · exécuté par : — · le : — · commit : —
+- **Statut :** [x] fait · exécuté par : Sonnet · le : 2026-06-28 · commit : 7c3c581
 
 ### T10 — Module 4 : la nicotine n'est pas le toxique · Modèle : Haiku
 - **But :** comparatif « ce qui rend malade » vs « ce qui crée la dépendance », avec bascule de mise en évidence.

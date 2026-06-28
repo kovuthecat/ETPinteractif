@@ -16,8 +16,9 @@ Objectif : construire le socle technique (T1-T4) avant les modules de contenu (T
 - Navigation par état carte ↔ module (T2) : liste cliquable des 6 modules, retour à l'accueil. Liste non stylée (stylage prévu en T4).
 
 ### Composants / modules
-- 3 stubs de modules restants (« À venir ») reliés au registre : `substituts`, `nicotine-toxique`, `craving` (T2).
+- 2 stubs de modules restants (« À venir ») reliés au registre : `nicotine-toxique`, `craving` (T2).
 - Module 1 — composantes de l'addiction (`src/features/addiction/AddictionModule.tsx`, T8) : 3 piliers cliquables (Physique, Psychologique, Comportementale). Chaque pilier affiche 2 onglets : « De quoi parle-t-on ? » (liste d'exemples) et « Outils & stratégies » (conseils courts + boutons de renvoi vers Modules 2, 3, 6 selon le pilier). Renvois fonctionnels via `onNavigate`.
+- Module 3 — substituts & titration (`src/features/substituts/SubstitutsModule.tsx`, T9) : Partie A, sélecteur des 7 formes (patch 24h/16h, gomme, pastille, comprimé sublingual, inhaleur, spray buccal, vapoteuse) → panneaux « Bonnes pratiques » / « Erreurs fréquentes » (placeholders « à compléter », contenu détaillé à fournir par Thibault). Partie B, patch en 4 quarts manipulable : toggles « envie persiste » / « signes de surdosage », bouton « + ¼ (à J+2-3) » (actif si envie et pas de surdosage), bouton « surdosage → revenir en arrière », toggle Jour/Nuit affichant un second patch dont la dose est clampée ≤ dose de jour. Aucun dosage chiffré (que des quarts de patch). Message permanent « Expérimentez, fiez-vous à votre ressenti ».
 - Module 2 — nicotine (`src/features/nicotine/NicotineModule.tsx`, T6) : bac à sable fonctionnel. Boutons cigarette/substitut ponctuel/vapoteuse (ajoutent un event à un créneau régulier), toggle patch, réinitialiser. Graphique SVG via `sampleCurve`/`toSvgPath` (T5) : 2 seuils pointillés (manque/tolérance), bande « zone confortable », mention « schéma illustratif », légende des messages clés.
 - Module 5 — le piège du soulagement (`src/features/soulagement/SoulagementModule.tsx`, T7) : bascule Non-fumeur/Fumeur. Non-fumeur = ligne plate constante au milieu de la zone confortable ; Fumeur = `sampleCurve` avec 5 cigarettes (t=0.1…0.9, yo-yo sous le seuil de manque). Même rendu SVG (seuils, zone confortable, mention illustrative) que le Module 2. Légende dynamique (ton non culpabilisant) : le « plaisir » = soulagement du manque créé par la cigarette précédente.
 - Registre `src/features/registry.ts` (titre/résumé/icône/Component par module) et types `src/features/types.ts` (`ModuleId`, `ModuleProps`, `ModuleDef`).
@@ -38,7 +39,8 @@ Objectif : construire le socle technique (T1-T4) avant les modules de contenu (T
 - (rien)
 
 ## Ce qui ne fonctionne pas / n'est pas testé
-- Modules 3, 4, 6 pas encore implémentés (stubs « À venir »). Reste à faire : T9-T11.
+- Modules 4, 6 pas encore implémentés (stubs « À venir »). Reste à faire : T10-T11.
+- Module 3 : contenu détaillé « bonnes pratiques / erreurs fréquentes » par forme = placeholders « à compléter » (non bloquant, cf. `docs/contenu-modules.md`).
 
 ## Validation manuelle effectuée
 - [ ] Desktop navigateur principal
@@ -57,7 +59,7 @@ Objectif : construire le socle technique (T1-T4) avant les modules de contenu (T
 - Zones à documenter davantage : **contenu des modules** (`docs/contenu-modules.md`)
 
 ## Prochaines étapes immédiates
-1. T1–T8 faits (scaffolding, types/registre/navigation, coquille/sources/carte, carte centrale, utilitaire de courbe, Module 2, Module 5, Module 1). Poursuivre `PLAN_modules-tabac.md` à partir de T9 (Module 3 — substituts & titration du patch).
+1. T1–T9 faits (scaffolding, types/registre/navigation, coquille/sources/carte, carte centrale, utilitaire de courbe, Module 2, Module 5, Module 1, Module 3). Poursuivre `PLAN_modules-tabac.md` à partir de T10 (Module 4 — la nicotine n'est pas le toxique).
 2. Compléter le contenu non bloquant : références de sources par module, « bonnes pratiques / erreurs » par forme de substitut (Module 3-A).
 
 ## Notes / décisions en attente
