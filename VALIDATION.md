@@ -130,3 +130,10 @@
 - [ ] Composantes → Substituts → {autre module} : clic retour chaîne correctement au travers de la pile.
 - [ ] Retour depuis le dernier module ramène à l'accueil (pile à hauteur 1).
 - [ ] Rechargement de la page remet à l'accueil (historique éphémère, pas de persistance).
+
+## C9 — Accueil plus pédagogique
+
+- [ ] Grille 3×2 centrée (non qui occupait moins de la moitié de la hauteur disponible).
+- [ ] Accroche « Que voulez-vous explorer ? » présente sous le titre.
+- [ ] Les 6 cartes sont lisibles à ~1 m (résumés en taille 16–18 px, icônes claires).
+- [ ] Responsive (2×3 sur mobile 768 px, puis 1 colonne sur mobile étroit).

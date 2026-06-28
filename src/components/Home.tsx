@@ -10,7 +10,10 @@ interface HomeProps {
 export default function Home({ onNavigate }: HomeProps) {
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Sevrage tabagique</h1>
+      <div className={styles.header}>
+        <h1 className={styles.title}>Sevrage tabagique</h1>
+        <p className={styles.accroche}>Que voulez-vous explorer ?</p>
+      </div>
       <div className={styles.grid}>
         {MODULES.map((m) => (
           <ModuleCard
