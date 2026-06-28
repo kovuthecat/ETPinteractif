@@ -202,7 +202,7 @@ dans `docs/contenu-modules.md` (autorité du contenu).
 - **Validation :** auto `npm run build` ; visuel : navigation piliers/onglets + renvois fonctionnent.
 - **Si bloqué :** —
 - **Commit :** `feat(module): composantes de l'addiction`
-- **Statut :** [ ] à faire · exécuté par : — · le : — · commit : —
+- **Statut :** [x] fait · exécuté par : Haiku · le : 2026-06-28 · commit : a0ed3b7
 
 ### T9 — Module 3 : substituts & titration · Modèle : Sonnet
 - **But :** A) sélecteur de formes (bonnes pratiques / erreurs, avec placeholders à remplir) ; B) illustration interactive de la **méthode** de titration (pas de calcul).
