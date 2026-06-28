@@ -123,3 +123,10 @@
 - [ ] Les deux renvois ouvrent les bons modules.
 - [ ] **Validation médicale :** confirmer les regroupements « Goudrons et particules », « Monoxyde de carbone », « environ 70 cancérogènes connus » et « environ 7 000 substances chimiques ».
 - [ ] **Validation médicale :** confirmer la formulation nicotine : elle crée la dépendance, n'est pas anodine, mais ne provoque pas les cancers et maladies liés à la fumée.
+
+## C8 — Historique de navigation éphémère
+
+- [ ] Accueil → Composantes → Substituts : clic retour revient à Composantes (pas à l'accueil).
+- [ ] Composantes → Substituts → {autre module} : clic retour chaîne correctement au travers de la pile.
+- [ ] Retour depuis le dernier module ramène à l'accueil (pile à hauteur 1).
+- [ ] Rechargement de la page remet à l'accueil (historique éphémère, pas de persistance).
