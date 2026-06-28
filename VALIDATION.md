@@ -84,6 +84,17 @@
   - amplitude de manque = 0,35 → plafond de tension du fumeur sans cigarette récente ≈ 0,65.
   La chute de stress est synchronisée exactement avec le pic de nicotine (même cinétique que `cigaretteKernel`). **À valider/ajuster par Thibault** : ces amplitudes relatives correspondent-elles au message pédagogique voulu, ou faut-il un creux plus marqué / un plafond plus bas ?
 
+## C5 — Craving : les 4D agissant sur la vague
+- [ ] Sous « Les 4 D », les 4 boutons (Différer / Distraire / Décontracter / De l'eau) sont des **bascules** (`aria-pressed`) : cliquer en active plusieurs **simultanément**, sans ouvrir de texte en dessous.
+- [ ] Dès qu'au moins un outil est actif, une ou plusieurs **carte(s) superposée(s)** apparaissent **sur le graphe**, ancrées autour de la zone du pic (≈30 % de la largeur), tandis que la vague (courbe + repère) continue de se dessiner/avancer derrière.
+- [ ] « Distraire » actif : la courbe sous-jacente s'**atténue visuellement** (opacité réduite) pendant que la carte reste lisible au-dessus.
+- [ ] « Différer » actif : la carte affiche un **compte à rebours en secondes** qui décroît au fil de la vague (lancer « Une envie arrive » et observer la valeur descendre, jusqu'à « C'est passé »).
+- [ ] « Décontracter » actif : le cercle de respiration (inspire/expire) apparaît **dans la carte superposée** (plus dans une liste sous le graphe) ; bouton Démarrer/Arrêter fonctionne comme avant.
+- [ ] « De l'eau » actif : mini-séquence cliquable « Une gorgée » (1/3 → 2/3 → 3/3 → « C'est fait, bien joué » → « Recommencer »).
+- [ ] Nouveau bouton **« Passer 30 s »** (icône avance rapide) : clique → la vague saute directement à l'état final (« C'est passé »), sans attendre l'animation ; désactivé une fois déjà à la fin.
+- [ ] Tous les boutons (4D, Passer 30 s, Une envie arrive/Rejouer) restent confortables au doigt (cible ≥ 44 px).
+- [ ] Avec « Réduire les animations » activé au niveau OS/navigateur : l'icône « Distraire » et le cercle « Décontracter » ne pulsent plus (figés), le reste du comportement (compte à rebours, gorgées, passer 30 s) est inchangé.
+
 ## C3 — Nicotine : timeline animée + coloration par zone
 - [ ] Cliquer sur « Fumer une cigarette » / « Substitut ponctuel » / « Vapoteuse » / « Poser un patch » ajoute un pictogramme sur l'axe du temps, à la position du curseur « maintenant » (pas à un créneau fixe).
 - [ ] « Lecture » fait avancer le curseur de gauche à droite ; la courbe déjà parcourue se colore en **vert** dans la zone confortable et en **rouge** sous le seuil de manque ou au-dessus du seuil de tolérance ; le reste de la courbe (futur) reste fin et discret.

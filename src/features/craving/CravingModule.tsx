@@ -1,4 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
+import type { CSSProperties } from 'react';
+import type { LucideIcon } from 'lucide-react';
+import { FastForward, GlassWater, Hourglass, Sparkles, Wind } from 'lucide-react';
 import type { ModuleProps } from '../types';
 import styles from './CravingModule.module.css';
 
@@ -9,6 +12,7 @@ const PEAK = 0.3;
 const RISE_WIDTH = 0.12;
 const FALL_WIDTH = 0.32;
 const DURATION_MS = 30000;
+const GORGEES_TOTAL = 3;
 
 type Phase = 'idle' | 'monte' | 'pic' | 'redescend' | 'passe';
 
@@ -47,34 +51,41 @@ const PHASE_LABEL: Record<Phase, string> = {
 
 type DKey = 'differer' | 'distraire' | 'decontracter' | 'eau';
 
-const D_CARDS: { key: DKey; titre: string; conseil: string }[] = [
+const D_CARDS: { key: DKey; titre: string; conseil: string; Icon: LucideIcon }[] = [
   {
     key: 'differer',
     titre: 'Différer',
     conseil: "Attendez que la vague passe : ça ne dure que quelques minutes.",
+    Icon: Hourglass,
   },
   {
     key: 'distraire',
     titre: 'Distraire',
     conseil: 'Faites autre chose, occupez vos mains et votre esprit.',
+    Icon: Sparkles,
   },
   {
     key: 'decontracter',
     titre: 'Décontracter',
     conseil: 'Respiration lente : inspirez 4 secondes, expirez 6 secondes.',
+    Icon: Wind,
   },
   {
     key: 'eau',
     titre: "De l'eau",
     conseil: "Buvez un grand verre d'eau, lentement.",
+    Icon: GlassWater,
   },
 ];
+
+const ACTIVE_STYLE = { '--active-color': 'var(--color-confort)' } as CSSProperties;
 
 export default function CravingModule(_: ModuleProps) {
   const [progress, setProgress] = useState(0);
   const [running, setRunning] = useState(false);
-  const [openCards, setOpenCards] = useState<Set<DKey>>(new Set());
+  const [activeTools, setActiveTools] = useState<Set<DKey>>(new Set());
   const [respirationActive, setRespirationActive] = useState(false);
+  const [gorgees, setGorgees] = useState(0);
   const rafRef = useRef<number | null>(null);
   const startRef = useRef<number | null>(null);
 
@@ -105,11 +116,24 @@ export default function CravingModule(_: ModuleProps) {
     rafRef.current = requestAnimationFrame(step);
   }
 
-  function toggleCard(key: DKey) {
-    setOpenCards((prev) => {
+  function passerVague() {
+    if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+    rafRef.current = null;
+    startRef.current = null;
+    setRunning(false);
+    setProgress(1);
+  }
+
+  function toggleTool(key: DKey) {
+    setActiveTools((prev) => {
       const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
+      if (next.has(key)) {
+        next.delete(key);
+        if (key === 'decontracter') setRespirationActive(false);
+        if (key === 'eau') setGorgees(0);
+      } else {
+        next.add(key);
+      }
       return next;
     });
   }
@@ -118,21 +142,92 @@ export default function CravingModule(_: ModuleProps) {
   const dejaLancee = running || progress > 0;
   const markerX = progress * WIDTH;
   const markerY = (1 - bellValue(progress)) * HEIGHT;
+  const remainingS = Math.max(0, Math.ceil(((1 - progress) * DURATION_MS) / 1000));
+  const courbeClass = activeTools.has('distraire')
+    ? `${styles.courbe} ${styles.courbeAttenuee}`
+    : styles.courbe;
 
   return (
     <div className={styles.module}>
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>La vague de l'envie</h2>
 
-        <svg
-          className={styles.graph}
-          viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
-          role="img"
-          aria-label="Schéma illustratif de la vague d'envie dans le temps"
-        >
-          <path d={BELL_PATH} className={styles.courbe} />
-          {dejaLancee && <circle cx={markerX} cy={markerY} r={8} className={styles.marqueur} />}
-        </svg>
+        <div className={styles.graphWrap}>
+          <svg
+            className={styles.graph}
+            viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
+            role="img"
+            aria-label="Schéma illustratif de la vague d'envie dans le temps"
+          >
+            <path d={BELL_PATH} className={courbeClass} />
+            {dejaLancee && <circle cx={markerX} cy={markerY} r={8} className={styles.marqueur} />}
+          </svg>
+
+          {activeTools.size > 0 && (
+            <div className={styles.overlayZone}>
+              {D_CARDS.filter((card) => activeTools.has(card.key)).map((card) => (
+                <div key={card.key} className={styles.overlayCard}>
+                  <p className={styles.overlayTitre}>
+                    <card.Icon size={18} aria-hidden="true" />
+                    {card.titre}
+                  </p>
+                  <p className={styles.overlayConseil}>{card.conseil}</p>
+
+                  {card.key === 'differer' && (
+                    <p className={styles.overlayDetail} aria-live="polite">
+                      {remainingS > 0 ? `Encore ${remainingS} s…` : "C'est passé."}
+                    </p>
+                  )}
+
+                  {card.key === 'distraire' && (
+                    <Sparkles size={26} className={styles.distraireIcon} aria-hidden="true" />
+                  )}
+
+                  {card.key === 'decontracter' && (
+                    <div className={styles.respiration}>
+                      <div
+                        className={
+                          respirationActive
+                            ? `${styles.cercle} ${styles.cercleActif}`
+                            : styles.cercle
+                        }
+                      />
+                      <button
+                        type="button"
+                        className={styles.btnSmall}
+                        onClick={() => setRespirationActive((a) => !a)}
+                      >
+                        {respirationActive ? 'Arrêter' : 'Démarrer'}
+                      </button>
+                    </div>
+                  )}
+
+                  {card.key === 'eau' && (
+                    <div className={styles.eauWidget}>
+                      <p className={styles.overlayDetail} aria-live="polite">
+                        {gorgees === 0
+                          ? 'Prenez le verre.'
+                          : gorgees >= GORGEES_TOTAL
+                            ? "C'est fait, bien joué."
+                            : `Gorgée ${gorgees}/${GORGEES_TOTAL}…`}
+                      </p>
+                      <button
+                        type="button"
+                        className={styles.btnSmall}
+                        onClick={() =>
+                          setGorgees((g) => (g >= GORGEES_TOTAL ? 0 : g + 1))
+                        }
+                      >
+                        {gorgees >= GORGEES_TOTAL ? 'Recommencer' : 'Une gorgée'}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
         <p className={styles.mention}>
           Schéma illustratif — les ~30 secondes ici représentent quelques minutes réelles.
         </p>
@@ -145,48 +240,39 @@ export default function CravingModule(_: ModuleProps) {
           <button type="button" className={styles.btn} onClick={lancerVague} disabled={running}>
             {dejaLancee ? 'Rejouer' : 'Une envie arrive'}
           </button>
+          <button
+            type="button"
+            className={styles.btnSecondary}
+            onClick={passerVague}
+            disabled={progress >= 1}
+          >
+            <FastForward size={18} aria-hidden="true" />
+            Passer 30 s
+          </button>
         </div>
       </section>
 
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>Les 4 D</h2>
-        <div className={styles.cards}>
+        <p className={styles.sousTitre}>
+          Activez un ou plusieurs outils : ils viennent occuper le pic de la vague, qui continue
+          de redescendre derrière.
+        </p>
+        <div className={styles.toolsRow}>
           {D_CARDS.map((card) => {
-            const isOpen = openCards.has(card.key);
+            const isActive = activeTools.has(card.key);
             return (
-              <div key={card.key} className={styles.card}>
-                <button
-                  type="button"
-                  className={styles.cardHeader}
-                  onClick={() => toggleCard(card.key)}
-                  aria-expanded={isOpen}
-                >
-                  {card.titre}
-                </button>
-                {isOpen && (
-                  <div className={styles.cardBody}>
-                    <p>{card.conseil}</p>
-                    {card.key === 'decontracter' && (
-                      <div className={styles.respiration}>
-                        <div
-                          className={
-                            respirationActive
-                              ? `${styles.cercle} ${styles.cercleActif}`
-                              : styles.cercle
-                          }
-                        />
-                        <button
-                          type="button"
-                          className={styles.btnSmall}
-                          onClick={() => setRespirationActive((a) => !a)}
-                        >
-                          {respirationActive ? 'Arrêter' : 'Démarrer'} la respiration
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
+              <button
+                key={card.key}
+                type="button"
+                className={isActive ? `${styles.toolBtn} activeDoubled` : styles.toolBtn}
+                style={isActive ? ACTIVE_STYLE : undefined}
+                onClick={() => toggleTool(card.key)}
+                aria-pressed={isActive}
+              >
+                <card.Icon size={20} aria-hidden="true" />
+                {card.titre}
+              </button>
             );
           })}
         </div>
