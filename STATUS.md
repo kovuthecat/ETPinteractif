@@ -16,7 +16,8 @@ Objectif : construire le socle technique (T1-T4) avant les modules de contenu (T
 - Navigation par état carte ↔ module (T2) : liste cliquable des 6 modules, retour à l'accueil. Liste non stylée (stylage prévu en T4).
 
 ### Composants / modules
-- 6 stubs de modules (« À venir ») reliés au registre : `addiction`, `nicotine`, `substituts`, `nicotine-toxique`, `soulagement`, `craving` (T2).
+- 5 stubs de modules restants (« À venir ») reliés au registre : `addiction`, `substituts`, `nicotine-toxique`, `soulagement`, `craving` (T2).
+- Module 2 — nicotine (`src/features/nicotine/NicotineModule.tsx`, T6) : bac à sable fonctionnel. Boutons cigarette/substitut ponctuel/vapoteuse (ajoutent un event à un créneau régulier), toggle patch, réinitialiser. Graphique SVG via `sampleCurve`/`toSvgPath` (T5) : 2 seuils pointillés (manque/tolérance), bande « zone confortable », mention « schéma illustratif », légende des messages clés.
 - Registre `src/features/registry.ts` (titre/résumé/icône/Component par module) et types `src/features/types.ts` (`ModuleId`, `ModuleProps`, `ModuleDef`).
 - Coquille partagée (T3) : `src/components/ModuleShell.tsx` (en-tête + retour + sources), `src/components/Sources.tsx` (pop-over discret, placeholder « à compléter » si vide), `src/components/ModuleCard.tsx` (carte cliquable icône/titre/résumé). Pas encore consommés par `App.tsx` (intégration prévue en T4).
 

@@ -174,7 +174,7 @@ dans `docs/contenu-modules.md` (autorité du contenu).
   - visuel : chaque bouton modifie la courbe en direct ; seuils visibles ; reset fonctionne.
 - **Si bloqué :** si la composition d'events dépasse 1 et sature visuellement, c'est attendu (clamp) — ne pas redessiner le modèle.
 - **Commit :** `feat(module): nicotine cinetique et seuils`
-- **Statut :** [ ] à faire · exécuté par : — · le : — · commit : —
+- **Statut :** [x] fait · exécuté par : Sonnet · le : 2026-06-28 · commit : bd5d649
 
 ### T7 — Module 5 : le piège du soulagement · Modèle : Sonnet
 - **But :** bascule non-fumeur (ligne stable) vs fumeur (yo-yo) réutilisant la courbe.
