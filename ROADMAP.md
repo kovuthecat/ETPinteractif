@@ -17,11 +17,13 @@ illustre ses explications module par module. Multi-thèmes à terme ; premier th
 - [ ] Scaffolding Vite + React + TS, organisation feature-first par module
 - [ ] **Carte/menu central** des modules (non-linéaire, libre)
 - [ ] **Moteur de module générique** (coquille réutilisable : titre, contenu interactif, retour à la carte)
-- [ ] 3–4 modules cœur du sevrage tabagique, dont au moins un interactif avec saisie éphémère :
-  - [ ] Les composantes de l'addiction (triple dépendance)
-  - [ ] Le fonctionnement de la nicotine (récepteurs / dopamine / craving)
-  - [ ] Les substituts nicotiniques (TNS)
-  - [ ] Outils et stratégies validées d'aide au sevrage
+- [ ] Modules cadrés (détail dans `docs/contenu-modules.md`), interactifs à manipulation libre :
+  - [ ] Les composantes de l'addiction (carte d'orientation)
+  - [ ] La nicotine : cinétique & seuils (bac à sable — preuve de concept)
+  - [ ] Utilisation des substituts & titration du patch (toutes formes + vapoteuse)
+  - [ ] La nicotine n'est pas le toxique
+  - [ ] Le piège du soulagement
+  - [ ] Gérer le craving (4D)
 - [ ] Build statique + test hors-ligne sur tablette
 
 ## Version 1

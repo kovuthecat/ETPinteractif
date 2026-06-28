@@ -46,10 +46,12 @@ Objectif : figer les décisions structurantes et le contenu des modules avant to
 - Zones à documenter davantage : **contenu des modules** (`docs/contenu-modules.md`)
 
 ## Prochaines étapes immédiates
-1. Préciser ensemble le contenu et l'interactivité de chaque module (`docs/contenu-modules.md`).
-2. Décider de l'identité visuelle / ton.
-3. Scaffolder l'app Vite + React + TS et la carte centrale des modules (Phase 1).
+1. Obtenir de Thibault les **données cliniques en attente** (titration patch, vapoteuse, liste 4D, affichage sources) — cf. `docs/contenu-modules.md`.
+2. Décider de l'identité visuelle / ton (ton non injonctif déjà acté).
+3. Scaffolder l'app Vite + React + TS, la carte centrale et le **Module 2 (nicotine)** comme preuve de concept de la manipulation libre.
 
 ## Notes / décisions en attente
-- Quel module développer en premier comme preuve de concept de l'interactivité ?
-- Faut-il une fiche imprimable éphémère en v1 ou la repousser en v1+ ?
+- Données cliniques bloquantes pour le Module 3-B (titration) — voir `docs/contenu-modules.md` §"Données cliniques à fournir".
+- Affichage des sources médicales : visible ou discret ? (non tranché)
+- Module pressenti pour la preuve de concept : **Module 2 (nicotine)** (socle des modules 5 et 3).
+- Frise des bénéfices de l'arrêt : repoussée hors du cadrage initial.

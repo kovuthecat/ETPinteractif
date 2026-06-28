@@ -1,68 +1,151 @@
 # Contenu des modules — thème : sevrage tabagique
 
-> **Statut : BROUILLON DE TRAVAIL** — base de discussion pour le cadrage du contenu.
-> Rien n'est figé. À valider/réordonner ensemble. Chaque module devra être **sourcé** (HAS, Tabac Info Service)
-> avant implémentation.
-
-## Principe
-
-Chaque module = une idée clé du sevrage, illustrée **visuellement et interactivement** (le soignant commente,
-l'écran montre). Navigation libre depuis la carte centrale. Pas de parcours imposé.
+> **Statut : cadrage validé le 2026-06-28** (décisions de conception arrêtées).
+> ⚠️ **Données cliniques à compléter par Thibault** avant implémentation des modules 3 (titration) — voir §"Données cliniques à fournir".
+> Tout contenu médical devra être **sourcé** (HAS, Tabac Info Service).
 
 ---
 
-## Modules cœur (candidats MVP)
+## Décisions de conception transverses
 
-### 1. Les composantes de l'addiction
-- **Message clé** : l'addiction au tabac est triple — dépendance **physique (nicotinique)**, **psychologique**, **comportementale/environnementale**.
-- **Interactivité possible** : schéma à 3 piliers cliquables ; en cliquant chaque pilier on déplie exemples concrets et leviers d'action correspondants.
+- **Style d'interaction : manipulation libre.** Les modules sont des « bacs à sable » : curseurs/boutons manipulés par le soignant ou le patient, résultat affiché en direct (≠ scénarios cliqués pas-à-pas).
+- **Graphiques : qualitatif / relatif.** Pas d'unités ni de valeurs chiffrées ; afficher la mention « schéma illustratif ».
+- **Module 1 = carte d'orientation.** Conseils ultra-courts + renvois vers les modules dédiés, pas de duplication.
+- **Public : les deux selon le moment** (ambivalents et engagés). Ton **non injonctif** ; les leviers motivationnels restent disponibles mais ne sont pas imposés.
+- **Substituts : toutes les formes + la vapoteuse.**
+- **Zéro persistance** : toute saisie/manipulation est éphémère (invariant projet).
 
-### 2. Le fonctionnement de la nicotine
-- **Message clé** : nicotine → récepteurs nicotiniques → libération de dopamine → renforcement ; cinétique rapide (pic en quelques secondes), demi-vie courte → cycle manque/craving.
-- **Interactivité possible** : courbe animée du taux de nicotine au fil de la journée (pics à chaque cigarette / chutes = craving) ; visualisation du cerveau / récepteurs.
-
-### 3. Les substituts nicotiniques (TNS)
-- **Message clé** : les TNS soulagent le manque physique sans les toxiques de la fumée ; associer une **forme lente** (patch, dépendance de fond) et une **forme rapide** (gomme, pastille, inhaleur, spray, pour le craving) ; bon dosage = clé ; lever les idées reçues.
-- **Interactivité possible** : sélecteur de formes (patch/gomme/pastille/spray…) avec mode d'emploi visuel ; mini-aide au dosage selon le niveau de consommation ; vrai/faux sur les idées reçues.
-
-### 4. Outils et stratégies validées d'aide au sevrage
-- **Message clé** : approches efficaces — TCC / gestion des situations à risque, gestion du craving, soutien (Tabac Info Service 39 89, applis), traitements médicamenteux (varénicline, bupropion), accompagnement professionnel.
-- **Interactivité possible** : « boîte à outils » de cartes-stratégies à explorer ; chaque carte = principe + exemple concret + niveau de preuve.
+**Question encore ouverte (transverse) :** affichage des sources médicales — visible dans chaque module, ou discret (icône/au survol) ? → à trancher.
 
 ---
 
-## Modules complémentaires (v1 / v1+)
+## Modules retenus (cadrage v1)
 
-### 5. Les bénéfices de l'arrêt
-- Frise temporelle interactive : 20 min → 24 h → 72 h → 2 sem → 1 an → 5 ans → 15 ans (bénéfices cardio, respiratoires, risque cancer…).
+1. Les composantes de l'addiction
+2. La nicotine : cinétique & seuils
+3. Utilisation des substituts & titration du patch
+4. La nicotine n'est pas le toxique
+5. Le piège du soulagement
+6. Gérer le craving (4D)
 
-### 6. Gérer le craving (envie de fumer)
-- Technique des **4D/5D** (Différer, Distraire, Décider de ne pas fumer, boire de l'eau, respirer) ; rappel que le craving dure quelques minutes (interaction : minuteur « l'envie passe »).
-
-### 7. Balance décisionnelle / motivation
-- Le patient liste à l'écran ses bénéfices attendus vs ses freins (saisie **éphémère**, non stockée) ; visualisation en balance.
-
-### 8. Le coût du tabac (calculateur d'économies)
-- Saisie nb cigarettes/jour + prix paquet → économies par semaine/mois/an, projetées (saisie éphémère).
-
-### 9. La place du vapotage
-- Repères actuels sur la cigarette électronique dans une démarche d'arrêt (à sourcer soigneusement, sujet sensible).
-
-### 10. La rechute fait partie du processus
-- Dédramatiser : la rechute est fréquente et n'efface pas les progrès ; en tirer des enseignements (roue de l'apprentissage).
-
-### 11. (Optionnel) Évaluer sa dépendance / son stade
-- Versions visuelles non imposées de **Fagerström** (dépendance) et de la **roue de Prochaska** (stades du changement),
-  proposées comme modules consultables — pas comme filtre d'entrée.
-
-### 12. (Optionnel) Gérer la prise de poids
-- Repères pour anticiper/limiter la prise de poids à l'arrêt.
+Carte des renvois : 1 → 2, 3, 6 · 4 ↔ 2, 3 · 5 ↔ 1, 2 · 6 ← 1
 
 ---
 
-## Questions ouvertes à trancher ensemble
-- Quels 3–4 modules pour le **MVP** (preuve de concept de l'interactivité) ?
-- Niveau d'animation souhaité (statique illustré ↔ animations riches) ?
-- Faut-il afficher les **niveaux de preuve / sources** visiblement dans chaque module ?
-- Ton/identité visuelle : clinique sobre, chaleureux rassurant, ludique ?
-- Une **fiche récap imprimable éphémère** en fin de séance : v1 ou plus tard ?
+### Module 1 — Les composantes de l'addiction
+
+**Objectif** : comprendre que l'addiction au tabac a 3 dimensions imbriquées, chacune avec ses leviers.
+
+**Structure interactive** : 3 piliers cliquables — **Physique (nicotinique)** · **Psychologique** · **Comportementale**.
+Clic sur un pilier → 2 onglets : « De quoi parle-t-on ? » (exemples illustrés) puis « Outils / stratégies » (conseils courts + renvois). Les 3 piliers restent visibles (vision d'ensemble).
+
+| Composante | Exemples (« de quoi on parle ») | Outils (courts) + renvois |
+|---|---|---|
+| Physique | manque, irritabilité, nervosité, troubles concentration/sommeil, fringales, craving | substituts adaptés → *Module 3* ; comprendre le manque → *Module 2* |
+| Psychologique | stress, anxiété, ennui, plaisir, récompense, stimulation, « anti-déprime » | gestion stress/respiration, alternatives plaisir → *Module 6* |
+| Comportementale | automatismes : café-clope, après repas, pause, voiture, téléphone, social, alcool | repérer/rompre les associations, modifier routines → *Module 6* |
+
+**Point de vigilance** : rester une carte d'orientation, ne pas dupliquer le contenu des modules dédiés.
+
+---
+
+### Module 2 — La nicotine : cinétique & seuils
+
+**Objectif** : visualiser pourquoi on fume « pour ne pas être en manque » et comment les substituts maintiennent la nicotinémie dans la zone confortable.
+
+**Structure interactive (bac à sable)** : un graphique unique (temps en x, nicotinémie en y) avec **2 lignes horizontales** : *seuil de manque* (dessous → craving) et *seuil de tolérance* (au-dessus → inconfort/surdosage). La zone entre les deux = « zone confortable ».
+
+Contrôles manipulables librement, la courbe se recompose en direct :
+- **Fumer une cigarette** : pic rapide et haut, puis chute → illustre le yo-yo et le pic rapide (renforçant).
+- **Patch (continu)** : toggle → plateau stable au-dessus du seuil de manque (comble le fond).
+- **Substitut ponctuel** : petit pic lent à la demande (gère les pics).
+- **Vapoteuse** : pics intermédiaires modulables (entre cigarette et patch ; à la demande sans combustion).
+- Combinaisons possibles (ex. patch + ponctuel) → rester dans la zone confortable.
+
+**Messages clés** : pic rapide = renforcement ; chute sous le seuil = craving ; le bon usage des substituts = rester dans la zone sans combustion.
+
+**Points de vigilance** : courbes **pédagogiques, non pharmacocinétiques** (mention « schéma illustratif ») ; pas de valeurs chiffrées. Renvois → Modules 3 et 5.
+
+---
+
+### Module 3 — Utilisation des substituts & titration du patch
+
+**Objectif** : bonnes pratiques par forme + démystifier le dosage (le sous-dosage est une cause fréquente d'échec).
+
+**Partie A — Bonnes pratiques par forme.** Sélecteur de formes ; chaque forme = mode d'emploi visuel + erreurs fréquentes :
+- Patch (24 h / 16 h), gomme, pastille, comprimé sublingual, inhaleur, spray buccal, **vapoteuse**.
+
+**Partie B — Assistant de titration du patch (échelle interactive manipulable)** :
+```
+Dose de départ → "Envie de fumer persistante ?"
+     ├ oui + pas de signe de surdosage → + ¼ de patch → réévaluer
+     ├ signes de surdosage → − ¼ de patch
+     └ stable → dose d'entretien
+```
+Échelle/curseur que l'on monte par ¼, avec à chaque palier les deux check « envie ? » / « surdosage ? ».
+
+**Points de vigilance** : insister sur le risque de sous-dosage ; illustration du « ¼ » dépend de la réponse sécable/superposition.
+
+> ⚠️ **Bloquant** : contenu clinique de la Partie B à fournir (voir §"Données cliniques à fournir").
+
+---
+
+### Module 4 — La nicotine n'est pas (le principal) toxique
+
+**Objectif** : lever le frein n°1 à l'usage des substituts/vapoteuse (« je remplace une drogue par une autre »).
+
+**Structure interactive** : comparatif visuel **fumée de cigarette** (goudrons, monoxyde de carbone, +7000 substances, ~70 cancérogènes → c'est ce qui rend malade) vs **nicotine** (responsable de la dépendance, pas des cancers/maladies). Manipulation : cliquer/basculer les composants pour voir « ce qui crée la dépendance » vs « ce qui rend malade ».
+
+**Renvois** → Modules 3 (donc substituts/vapoteuse acceptables) et 2.
+**Point de vigilance** : message précis (la nicotine n'est pas anodine, mais ce n'est pas elle qui tue) — formulation à sourcer.
+
+---
+
+### Module 5 — Le piège du soulagement
+
+**Objectif** : déconstruire le « plaisir » de la cigarette — elle soulage surtout le manque qu'elle a elle-même créé.
+
+**Structure interactive** : s'appuie sur la courbe du Module 2. Comparer **non-fumeur** (ligne stable, pas de manque) vs **fumeur** (yo-yo : la cigarette ne fait que ramener au niveau « normal »). Le « plaisir » ressenti = soulagement du manque, pas un gain réel.
+
+**Renvois** ↔ Modules 1 et 2.
+**Point de vigilance** : ton **non culpabilisant** (cohérent avec le public mixte).
+
+---
+
+### Module 6 — Gérer le craving (4D)
+
+**Objectif** : montrer que l'envie est une **vague de quelques minutes** qui retombe, et donner des techniques immédiates.
+
+**Structure interactive** : minuteur « l'envie passe » — une courbe en vague (monte puis redescend) avec un bouton qui lance le compte à rebours et la fait retomber. + cartes des **4D** à explorer.
+
+> ⚠️ **À valider** : la liste exacte des « 4D » (ou 5D) que tu utilises. Proposition à confirmer : **Différer · se Distraire · respirer (Décontraction) · boire de l'eau**.
+
+**Renvoi** ← Module 1 (composantes psychologique & comportementale).
+
+---
+
+## Données cliniques à fournir par Thibault
+
+Bloquant pour finaliser les modules concernés :
+
+**Titration du patch (Module 3-B)**
+1. Dose de départ selon la consommation (règle exacte).
+2. Cadence d'ajustement (délai avant d'ajouter un ¼, rythme de réévaluation).
+3. Dose maximale (garde-fou).
+4. Liste des signes de surdosage retenue.
+5. ¼ de patch = sécable ou superposition ?
+
+**Vapoteuse (Modules 2 & 3)**
+6. Positionnement/ton : outil d'aide à l'arrêt à part entière, ou avec réserve ?
+7. Dosage : on reste qualitatif, ou repères en mg/mL / type de matériel ?
+
+**Module 6**
+8. Validation de la liste 4D/5D.
+
+**Transverse**
+9. Affichage des sources : visible ou discret ?
+
+---
+
+## Questions ouvertes (rappel)
+- Quel module développer en premier comme **preuve de concept** de la manipulation libre ? (le Module 2 est le meilleur candidat : il sert aussi de socle aux modules 5 et — partiellement — 3.)
