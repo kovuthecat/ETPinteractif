@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { MODULES } from './features/registry';
 import type { ModuleId } from './features/types';
+import Home from './components/Home';
 
 type View = 'home' | ModuleId;
 
@@ -10,18 +11,7 @@ function App() {
   const navigateTo = (id: ModuleId) => setView(id);
 
   if (view === 'home') {
-    return (
-      <div>
-        <h1>Sevrage tabagique</h1>
-        <ul>
-          {MODULES.map((m) => (
-            <li key={m.id}>
-              <button type="button" onClick={() => navigateTo(m.id)}>{m.titre}</button>
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
+    return <Home onNavigate={navigateTo} />;
   }
 
   const module = MODULES.find((m) => m.id === view);
