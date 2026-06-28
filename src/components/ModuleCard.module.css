@@ -1,0 +1,35 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  width: 100%;
+  padding: var(--space-lg);
+  border: none;
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.card:hover,
+.card:focus-visible {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.icon {
+  color: var(--color-accent);
+}
+
+.titre {
+  font-size: 1.15em;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume {
+  font-size: 0.95em;
+  opacity: 0.75;
+  color: var(--color-text);
+}

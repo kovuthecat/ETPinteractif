@@ -105,7 +105,7 @@ dans `docs/contenu-modules.md` (autorité du contenu).
   - visuel : composants isolés rendables (vérifié indirectement en T4).
 - **Si bloqué :** —
 - **Commit :** `feat: coquille de module, sources discretes et carte`
-- **Statut :** [ ] à faire · exécuté par : — · le : — · commit : —
+- **Statut :** [x] fait · exécuté par : Sonnet · le : 2026-06-28 · commit : (à renseigner après commit)
 
 ### T4 — Carte centrale (accueil) · Modèle : Haiku
 - **But :** écran d'accueil = grille des modules à partir du registre.

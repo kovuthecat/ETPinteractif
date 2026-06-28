@@ -18,6 +18,7 @@ Objectif : construire le socle technique (T1-T4) avant les modules de contenu (T
 ### Composants / modules
 - 6 stubs de modules (« À venir ») reliés au registre : `addiction`, `nicotine`, `substituts`, `nicotine-toxique`, `soulagement`, `craving` (T2).
 - Registre `src/features/registry.ts` (titre/résumé/icône/Component par module) et types `src/features/types.ts` (`ModuleId`, `ModuleProps`, `ModuleDef`).
+- Coquille partagée (T3) : `src/components/ModuleShell.tsx` (en-tête + retour + sources), `src/components/Sources.tsx` (pop-over discret, placeholder « à compléter » si vide), `src/components/ModuleCard.tsx` (carte cliquable icône/titre/résumé). Pas encore consommés par `App.tsx` (intégration prévue en T4).
 
 ### API / backend
 - Sans objet (projet sans backend par conception).
@@ -29,7 +30,7 @@ Objectif : construire le socle technique (T1-T4) avant les modules de contenu (T
 - (rien)
 
 ## Ce qui ne fonctionne pas / n'est pas testé
-- Aucun contenu de module implémenté (stubs uniquement). Coquille partagée (`ModuleShell`/`Sources`/`ModuleCard`) = T3, carte stylée = T4, contenu des 6 modules = T5-T11.
+- Aucun contenu de module implémenté (stubs uniquement). Carte d'accueil stylée + intégration de `ModuleShell` dans `App.tsx` = T4, contenu des 6 modules = T5-T11.
 
 ## Validation manuelle effectuée
 - [ ] Desktop navigateur principal
