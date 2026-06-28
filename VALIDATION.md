@@ -61,3 +61,12 @@
 - [ ] Boutons et contrôles plus hauts (cible tactile ≥ 44 px) sans rupture de mise en page.
 - [ ] Aucun module n'utilise encore la nouvelle palette sémantique (confort/toxique/vigilance/nav) : normal, c'est prévu en C2-C9.
 - [ ] Rien à vérifier sur `.activeDoubled` (pas encore consommée par un composant) ni sur `prefers-reduced-motion` (pas encore d'animation dans l'app à ce stade).
+
+## C2 — Substituts : titration illimitée + patchs en grille 2×2
+- [ ] On atteint 2, 3, 4+ patchs avec « + ¼ » (plus aucun blocage à 4/4) ; chaque patch dessiné en grille **2×2** (4 petits carrés), pas une barre découpée en 4 bandes verticales.
+- [ ] Exemple à vérifier : amener à 9 quarts → on voit 2 patchs pleins + 1 case remplie sur un 3ᵉ patch ; le libellé affiche **« 2 patchs + 1/4 (9 quarts) »** simultanément.
+- [ ] « + ¼ (à J+2-3) » (vert) reste désactivé si « envie persiste » est décoché ou si « signes de surdosage » est coché.
+- [ ] Nouveau bouton **« − ¼ »** (neutre, contour bleu) toujours cliquable hors surdosage, jusqu'à 0 quart (désactivé à 0).
+- [ ] « Signes de surdosage → revenir en arrière » (rouge) reste désactivé hors surdosage ou à 0 quart.
+- [ ] Toggle Jour/Nuit : le bloc nuit reste clampé ≤ dose de jour et s'affiche aussi en multi-patchs 2×2.
+- [ ] Message « Expérimentez, fiez-vous à votre ressenti » toujours présent ; aucun dosage chiffré affiché.

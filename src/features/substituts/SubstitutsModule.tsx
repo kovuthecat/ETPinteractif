@@ -49,22 +49,42 @@ const FORMES_DATA: Record<FormeId, { label: string; bonnesPratiques: string[]; e
   },
 };
 
-const MAX_QUARTS = 4;
-const INITIAL_QUARTS = 1;
+const QUARTS_PAR_PATCH = 4;
+const INITIAL_QUARTS = QUARTS_PAR_PATCH;
+
+const FRACTIONS_RESTE: Record<number, string> = { 1: '1/4', 2: '1/2', 3: '3/4' };
+
+function formatPatchs(patchsPleins: number, reste: number): string {
+  if (patchsPleins === 0 && reste === 0) return '0 patch';
+  const partiePleins = patchsPleins > 0 ? `${patchsPleins} patch${patchsPleins > 1 ? 's' : ''}` : '';
+  const partieReste = reste > 0 ? FRACTIONS_RESTE[reste] : '';
+  return [partiePleins, partieReste].filter(Boolean).join(' + ');
+}
 
 function PatchQuarts({ quarts, label }: { quarts: number; label: string }) {
+  const patchsPleins = Math.floor(quarts / QUARTS_PAR_PATCH);
+  const reste = quarts % QUARTS_PAR_PATCH;
+  const patchsAffiches = Math.max(patchsPleins + (reste > 0 ? 1 : 0), 1);
+
   return (
     <div className={styles.patchBlock}>
-      <div className={styles.patch}>
-        {Array.from({ length: MAX_QUARTS }, (_, i) => (
-          <div
-            key={i}
-            className={i < quarts ? styles.quartFilled : styles.quartEmpty}
-          />
-        ))}
+      <div className={styles.patchesGrid}>
+        {Array.from({ length: patchsAffiches }, (_, patchIndex) => {
+          const quartsDansCePatch = patchIndex < patchsPleins ? QUARTS_PAR_PATCH : reste;
+          return (
+            <div key={patchIndex} className={styles.patch}>
+              {Array.from({ length: QUARTS_PAR_PATCH }, (_, i) => (
+                <div
+                  key={i}
+                  className={i < quartsDansCePatch ? styles.quartFilled : styles.quartEmpty}
+                />
+              ))}
+            </div>
+          );
+        })}
       </div>
       <p className={styles.patchLabel}>
-        {label} — {quarts}/{MAX_QUARTS}
+        {label} — {formatPatchs(patchsPleins, reste)} ({quarts} quart{quarts === 1 ? '' : 's'})
       </p>
     </div>
   );
@@ -82,10 +102,10 @@ export default function SubstitutsModule(_: ModuleProps) {
   const quartsNuitAffiche = Math.min(quartsNuit, quartsJour);
 
   function ajouterQuart() {
-    setQuartsJour((q) => Math.min(MAX_QUARTS, q + 1));
+    setQuartsJour((q) => q + 1);
   }
 
-  function revenirEnArriere() {
+  function retirerQuart() {
     setQuartsJour((q) => Math.max(0, q - 1));
   }
 
@@ -193,17 +213,25 @@ export default function SubstitutsModule(_: ModuleProps) {
             type="button"
             className={styles.btn}
             onClick={ajouterQuart}
-            disabled={!envie || surdosage || quartsJour >= MAX_QUARTS}
+            disabled={!envie || surdosage}
           >
             + ¼ (à J+2-3)
           </button>
           <button
             type="button"
+            className={styles.btnNeutral}
+            onClick={retirerQuart}
+            disabled={quartsJour === 0}
+          >
+            − ¼
+          </button>
+          <button
+            type="button"
             className={styles.btnWarn}
-            onClick={revenirEnArriere}
+            onClick={retirerQuart}
             disabled={!surdosage || quartsJour === 0}
           >
-            Surdosage → revenir en arrière
+            Signes de surdosage → revenir en arrière
           </button>
         </div>
 

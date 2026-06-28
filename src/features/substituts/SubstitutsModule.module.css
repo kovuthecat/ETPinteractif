@@ -114,28 +114,32 @@
   gap: var(--space-sm);
 }
 
-.patch {
+.patchesGrid {
   display: flex;
-  width: 160px;
-  height: 80px;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  justify-content: center;
+}
+
+.patch {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  width: 64px;
+  height: 64px;
+  gap: 2px;
   border-radius: var(--radius);
   overflow: hidden;
-  border: 2px solid var(--color-accent);
+  border: 2px solid var(--color-nav);
 }
 
 .quartFilled,
 .quartEmpty {
-  flex: 1;
-  border-right: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.quartFilled:last-child,
-.quartEmpty:last-child {
-  border-right: none;
+  border-radius: 2px;
 }
 
 .quartFilled {
-  background: var(--color-accent);
+  background: var(--color-nav);
 }
 
 .quartEmpty {
@@ -180,31 +184,45 @@
 }
 
 .btn,
+.btnNeutral,
 .btnWarn {
   padding: var(--space-sm) var(--space-md);
-  border: none;
   border-radius: var(--radius);
   font-size: 1em;
   cursor: pointer;
+}
+
+.btn,
+.btnWarn {
+  border: none;
   color: var(--color-surface);
 }
 
 .btn {
-  background: var(--color-accent);
+  background: var(--color-confort);
+}
+
+.btnNeutral {
+  background: var(--color-surface);
+  color: var(--color-nav);
+  border: 2px solid var(--color-nav);
 }
 
 .btnWarn {
-  background: var(--color-warn);
+  background: var(--color-toxique);
 }
 
 .btn:hover:not(:disabled),
 .btn:focus-visible:not(:disabled),
+.btnNeutral:hover:not(:disabled),
+.btnNeutral:focus-visible:not(:disabled),
 .btnWarn:hover:not(:disabled),
 .btnWarn:focus-visible:not(:disabled) {
   opacity: 0.85;
 }
 
 .btn:disabled,
+.btnNeutral:disabled,
 .btnWarn:disabled {
   opacity: 0.35;
   cursor: not-allowed;
