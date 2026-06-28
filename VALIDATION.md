@@ -70,3 +70,12 @@
 - [ ] « Signes de surdosage → revenir en arrière » (rouge) reste désactivé hors surdosage ou à 0 quart.
 - [ ] Toggle Jour/Nuit : le bloc nuit reste clampé ≤ dose de jour et s'affiche aussi en multi-patchs 2×2.
 - [ ] Message « Expérimentez, fiez-vous à votre ressenti » toujours présent ; aucun dosage chiffré affiché.
+
+## C3 — Nicotine : timeline animée + coloration par zone
+- [ ] Cliquer sur « Fumer une cigarette » / « Substitut ponctuel » / « Vapoteuse » / « Poser un patch » ajoute un pictogramme sur l'axe du temps, à la position du curseur « maintenant » (pas à un créneau fixe).
+- [ ] « Lecture » fait avancer le curseur de gauche à droite ; la courbe déjà parcourue se colore en **vert** dans la zone confortable et en **rouge** sous le seuil de manque ou au-dessus du seuil de tolérance ; le reste de la courbe (futur) reste fin et discret.
+- [ ] Le libellé « État actuel : Manque / Confort / Trop haut » au-dessus du graphe change en cohérence avec la couleur de la courbe au niveau du curseur (texte toujours présent, jamais la couleur seule).
+- [ ] « Pause » arrête le curseur sans le remettre à zéro ; « Lecture » reprend depuis la position figée. Bouton « Vitesse ×1/×2/×4 » change la vitesse de défilement.
+- [ ] « Réinitialiser » remet le curseur à 0, efface les prises et la courbe.
+- [ ] Mention « schéma illustratif » toujours présente ; aucune valeur chiffrée de dosage.
+- [ ] Avec « Réduire les animations » activé au niveau OS/navigateur : pas de défilement animé, la courbe complète s'affiche directement et les boutons de lecture/vitesse disparaissent (seul « Réinitialiser » reste, avec les boutons de prise).

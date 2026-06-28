@@ -1,5 +1,13 @@
 import { describe, it, expect } from 'vitest';
-import { PATCH_PLATEAU, sampleCurve, toSvgPath, type CurveEvent } from './nicotineCurve';
+import {
+  PATCH_PLATEAU,
+  THRESHOLD_LOW,
+  THRESHOLD_HIGH,
+  classifyZone,
+  sampleCurve,
+  toSvgPath,
+  type CurveEvent,
+} from './nicotineCurve';
 
 describe('sampleCurve', () => {
   it('sans patch ni event, renvoie n valeurs (defaut 120) toutes dans [0,1]', () => {
@@ -51,6 +59,17 @@ describe('sampleCurve', () => {
       expect(y).toBeGreaterThanOrEqual(0);
     }
   });
+
+  it('un event "patch" ne produit rien avant t0 puis rampe vers PATCH_PLATEAU', () => {
+    const t0 = 0.3;
+    const ys = sampleCurve({ patch: false, events: [{ kind: 'patch', t: t0 }] });
+    const n = ys.length;
+    ys.forEach((y, i) => {
+      const x = i / (n - 1);
+      if (x < t0) expect(y).toBe(0);
+    });
+    expect(ys[ys.length - 1]).toBeCloseTo(PATCH_PLATEAU, 2);
+  });
 });
 
 describe('toSvgPath', () => {
@@ -58,5 +77,23 @@ describe('toSvgPath', () => {
     const path = toSvgPath([0, 1], 100, 50);
     expect(path.length).toBeGreaterThan(0);
     expect(path.startsWith('M')).toBe(true);
+  });
+});
+
+describe('classifyZone', () => {
+  it('renvoie "manque" strictement sous THRESHOLD_LOW', () => {
+    expect(classifyZone(0)).toBe('manque');
+    expect(classifyZone(THRESHOLD_LOW - 0.01)).toBe('manque');
+  });
+
+  it('renvoie "confort" entre les deux seuils, frontieres incluses', () => {
+    expect(classifyZone(THRESHOLD_LOW)).toBe('confort');
+    expect(classifyZone((THRESHOLD_LOW + THRESHOLD_HIGH) / 2)).toBe('confort');
+    expect(classifyZone(THRESHOLD_HIGH)).toBe('confort');
+  });
+
+  it('renvoie "haut" strictement au-dessus de THRESHOLD_HIGH', () => {
+    expect(classifyZone(THRESHOLD_HIGH + 0.01)).toBe('haut');
+    expect(classifyZone(1)).toBe('haut');
   });
 });

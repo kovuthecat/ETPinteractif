@@ -4,7 +4,8 @@
   gap: var(--space-md);
 }
 
-.controls {
+.controls,
+.playback {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -12,7 +13,11 @@
 }
 
 .btn,
+.btnSmall,
 .reset {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
   padding: var(--space-sm) var(--space-md);
   border: none;
   border-radius: var(--radius);
@@ -22,25 +27,45 @@
   cursor: pointer;
 }
 
-.btn:hover,
-.btn:focus-visible,
+.btnSmall {
+  font-size: 0.9em;
+}
+
+.btn:hover:not(:disabled),
+.btn:focus-visible:not(:disabled),
+.btnSmall:hover,
+.btnSmall:focus-visible,
 .reset:hover,
 .reset:focus-visible {
   opacity: 0.85;
+}
+
+.btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
 }
 
 .reset {
   background: var(--color-warn);
 }
 
-.toggle {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-  padding: var(--space-sm) var(--space-md);
+.gauge {
+  display: inline-flex;
+  align-self: flex-start;
+  margin: 0;
+  padding: var(--space-xs) var(--space-md);
   border-radius: var(--radius);
-  background: var(--color-surface);
-  cursor: pointer;
+  font-weight: 600;
+}
+
+.gaugeConfort {
+  background: var(--color-confort-soft);
+  color: var(--color-confort);
+}
+
+.gaugeToxique {
+  background: var(--color-toxique-soft);
+  color: var(--color-toxique);
 }
 
 .graph {
@@ -50,9 +75,12 @@
   border-radius: var(--radius);
 }
 
-.zoneConfortable {
-  fill: var(--color-accent);
-  opacity: 0.08;
+.bandConfort {
+  fill: var(--color-confort-soft);
+}
+
+.bandToxique {
+  fill: var(--color-toxique-soft);
 }
 
 .seuil {
@@ -68,10 +96,41 @@
   opacity: 0.6;
 }
 
+.courbeDiscrete {
+  fill: none;
+  stroke: var(--color-text);
+  stroke-width: 2;
+  opacity: 0.18;
+}
+
 .courbe {
   fill: none;
-  stroke: var(--color-accent);
   stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.courbeConfort {
+  stroke: var(--color-confort);
+}
+
+.courbeToxique {
+  stroke: var(--color-toxique);
+}
+
+.axisLine {
+  stroke: var(--color-text);
+  stroke-width: 1;
+  opacity: 0.25;
+}
+
+.pictogramme {
+  color: var(--color-text);
+}
+
+.cursor {
+  stroke: var(--color-nav);
+  stroke-width: 2;
+  stroke-dasharray: 4 4;
 }
 
 .mention {
