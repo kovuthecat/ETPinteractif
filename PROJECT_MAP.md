@@ -33,7 +33,7 @@ src/
   features/
     types.ts                # ModuleId, ModuleProps, ModuleDef
     registry.ts              # MODULES: ModuleDef[] — les 6 modules tabac, titres/résumés/icônes
-    addiction/AddictionModule.tsx              # Module 1 — composantes de l'addiction (T8)
+    addiction/AddictionModule.tsx              # Module 1 — composantes de l'addiction (T8, C6 : 3 cercles qui se chevauchent)
     nicotine/NicotineModule.tsx                # Module 2 — nicotine, bac à sable (T6)
     substituts/SubstitutsModule.tsx            # Module 3 — substituts & titration (T9)
     nicotine-toxique/NicotineToxiqueModule.tsx # Module 4 — nicotine ≠ toxique (T10)

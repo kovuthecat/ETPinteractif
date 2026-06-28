@@ -95,6 +95,15 @@
 - [ ] Tous les boutons (4D, Passer 30 s, Une envie arrive/Rejouer) restent confortables au doigt (cible ≥ 44 px).
 - [ ] Avec « Réduire les animations » activé au niveau OS/navigateur : l'icône « Distraire » et le cercle « Décontracter » ne pulsent plus (figés), le reste du comportement (compte à rebours, gorgées, passer 30 s) est inchangé.
 
+## C6 — Addiction : trois cercles qui se chevauchent
+- [ ] **Critère d'acceptation (audit) :** sans lire le détail, on identifie les 3 dimensions (Physique, Psychologique, Comportementale) et on comprend qu'elles se combinent — un message « Ces dimensions s'alimentent entre elles » est visible au centre du diagramme.
+- [ ] Les 3 cercles **se chevauchent** (pas concentriques), chacun coloré (ambre/bleu/vert) et **étiqueté** (le libellé reste lisible, pas seulement la couleur) ; quelques mots-clés visibles au repos sous chaque libellé.
+- [ ] Cliquer un cercle : il s'agrandit légèrement et passe au-dessus des autres (contour plus épais + ombre) ; ses exemples (§Module 1, liste inchangée) apparaissent en **bulles** dans le coin du diagramme associé (physique → haut-gauche, psychologique → haut-droite, comportementale → bas-centre).
+- [ ] Sous le diagramme, un panneau « Outils & stratégies — {pilier} » apparaît avec une **bande de couleur** reprenant la couleur du cercle sélectionné ; les boutons de renvoi (`onNavigate`) portent la mention **« autre module »** (avec icône flèche) pour signaler le changement de module.
+- [ ] Cliquer à nouveau le même cercle le désélectionne (retour à l'état de repos, 3 cercles).
+- [ ] Aucun contenu (libellés, exemples, outils) n'a changé par rapport à l'ancienne version à onglets — seule la présentation a changé.
+- [ ] Cibles tactiles (cercles et boutons) confortables au doigt/tablette.
+
 ## C3 — Nicotine : timeline animée + coloration par zone
 - [ ] Cliquer sur « Fumer une cigarette » / « Substitut ponctuel » / « Vapoteuse » / « Poser un patch » ajoute un pictogramme sur l'axe du temps, à la position du curseur « maintenant » (pas à un créneau fixe).
 - [ ] « Lecture » fait avancer le curseur de gauche à droite ; la courbe déjà parcourue se colore en **vert** dans la zone confortable et en **rouge** sous le seuil de manque ou au-dessus du seuil de tolérance ; le reste de la courbe (futur) reste fin et discret.

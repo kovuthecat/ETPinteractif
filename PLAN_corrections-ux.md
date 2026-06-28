@@ -186,7 +186,7 @@ l'ordre recommandé par son §9 : socle visuel → modèles fonctionnels → sc�
   3 dimensions et on comprend qu'elles se combinent.
 - **Si bloqué :** —
 - **Commit :** `feat(module): addiction en trois cercles qui se chevauchent`
-- **Statut :** [ ] à faire
+- **Statut :** [x] fait
 
 ### C7 — Nicotine ≠ toxique : affiche interactive recomposée (P0) · Modèle : Sonnet  *(Codex acceptable)*
 - **But :** recomposer l'idée de l'affiche en **scène interactive** (cigarette au centre, hotspots, bulles) où

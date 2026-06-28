@@ -1,20 +1,34 @@
 import { useState } from 'react';
+import type { CSSProperties } from 'react';
+import { ArrowRight } from 'lucide-react';
 import type { ModuleProps } from '../types';
 import styles from './AddictionModule.module.css';
 
 type Pilier = 'physique' | 'psychologique' | 'comportementale';
-type TabType = 'exemples' | 'outils';
 
-const PILLARS_DATA: Record<
-  Pilier,
-  {
-    label: string;
-    exemples: string[];
-    outils: { text: string; navigation?: { id: 'nicotine' | 'substituts' | 'craving'; label: string } }[];
-  }
-> = {
+interface PilierData {
+  label: string;
+  color: string;
+  colorSoft: string;
+  cx: number;
+  cy: number;
+  exemples: string[];
+  outils: { text: string; navigation?: { id: 'nicotine' | 'substituts' | 'craving'; label: string } }[];
+}
+
+const VIEW_W = 600;
+const VIEW_H = 460;
+const R = 130;
+
+const ORDER: Pilier[] = ['physique', 'psychologique', 'comportementale'];
+
+const PILLARS_DATA: Record<Pilier, PilierData> = {
   physique: {
     label: 'Physique (nicotinique)',
+    color: 'var(--color-vigilance)',
+    colorSoft: 'var(--color-vigilance-soft)',
+    cx: 210,
+    cy: 160,
     exemples: [
       'Manque',
       'Irritabilité',
@@ -37,26 +51,27 @@ const PILLARS_DATA: Record<
   },
   psychologique: {
     label: 'Psychologique',
-    exemples: [
-      'Stress',
-      'Anxiété',
-      'Ennui',
-      'Plaisir et récompense',
-      'Stimulation',
-      '"Anti-déprime"',
-    ],
+    color: 'var(--color-nav)',
+    colorSoft: 'var(--color-nav-soft)',
+    cx: 390,
+    cy: 160,
+    exemples: ['Stress', 'Anxiété', 'Ennui', 'Plaisir et récompense', 'Stimulation', '"Anti-déprime"'],
     outils: [
       {
         text: 'Gestion du stress et respiration pour apaiser sans fumer.',
       },
       {
-        text: 'Trouver des alternatives de plaisir et s\'occuper l\'esprit.',
+        text: "Trouver des alternatives de plaisir et s'occuper l'esprit.",
         navigation: { id: 'craving', label: 'Techniques anti-craving' },
       },
     ],
   },
   comportementale: {
     label: 'Comportementale',
+    color: 'var(--color-confort)',
+    colorSoft: 'var(--color-confort-soft)',
+    cx: 300,
+    cy: 300,
     exemples: [
       'Café-clope',
       'Après les repas',
@@ -64,7 +79,7 @@ const PILLARS_DATA: Record<
       'En voiture',
       'Avec le téléphone',
       'En social',
-      'Avec l\'alcool',
+      "Avec l'alcool",
     ],
     outils: [
       {
@@ -78,81 +93,129 @@ const PILLARS_DATA: Record<
   },
 };
 
-export default function AddictionModule({ onNavigate }: ModuleProps) {
-  const [selectedPillar, setSelectedPillar] = useState<Pilier | null>(null);
-  const [selectedTab, setSelectedTab] = useState<TabType>('exemples');
+const CLUSTER_CLASS: Record<Pilier, string> = {
+  physique: styles.clusterPhysique,
+  psychologique: styles.clusterPsychologique,
+  comportementale: styles.clusterComportementale,
+};
 
-  const pillarData = selectedPillar ? PILLARS_DATA[selectedPillar] : null;
+function pillarVars(p: PilierData): CSSProperties {
+  return { '--pillar-color': p.color, '--pillar-color-soft': p.colorSoft } as CSSProperties;
+}
+
+export default function AddictionModule({ onNavigate }: ModuleProps) {
+  const [selected, setSelected] = useState<Pilier | null>(null);
+
+  function toggle(pilier: Pilier) {
+    setSelected((cur) => (cur === pilier ? null : pilier));
+  }
+
+  const renderOrder = selected ? [...ORDER.filter((p) => p !== selected), selected] : ORDER;
+  const data = selected ? PILLARS_DATA[selected] : null;
 
   return (
     <div className={styles.module}>
-      <div className={styles.pillars}>
-        {(Object.keys(PILLARS_DATA) as Pilier[]).map((pilier) => (
-          <button
-            key={pilier}
-            type="button"
-            className={`${styles.pillarBtn} ${selectedPillar === pilier ? styles.pillarBtnActive : ''}`}
-            onClick={() => {
-              setSelectedPillar(pilier);
-              setSelectedTab('exemples');
-            }}
-            aria-pressed={selectedPillar === pilier}
-          >
-            {PILLARS_DATA[pilier].label}
-          </button>
-        ))}
+      <p className={styles.intro}>
+        L'addiction au tabac a trois dimensions imbriquées. Touchez un cercle pour l'explorer.
+      </p>
+
+      <div className={styles.vennWrap}>
+        <svg
+          className={styles.venn}
+          viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
+          role="img"
+          aria-label="Trois cercles qui se chevauchent : physique, psychologique et comportementale"
+        >
+          {renderOrder.map((pilier) => {
+            const p = PILLARS_DATA[pilier];
+            const isSelected = selected === pilier;
+            return (
+              <g
+                key={pilier}
+                className={isSelected ? styles.circleGroupActive : styles.circleGroup}
+                style={pillarVars(p)}
+              >
+                <circle
+                  cx={p.cx}
+                  cy={p.cy}
+                  r={isSelected ? R * 1.06 : R}
+                  className={styles.circleShape}
+                />
+                <text x={p.cx} y={p.cy - 6} textAnchor="middle" className={styles.circleLabel}>
+                  {p.label}
+                </text>
+                {selected !== pilier && (
+                  <text x={p.cx} y={p.cy + 16} textAnchor="middle" className={styles.circleKeywords}>
+                    {p.exemples.slice(0, 2).join(' · ')}
+                  </text>
+                )}
+              </g>
+            );
+          })}
+        </svg>
+
+        <p className={styles.centerCaption}>Ces dimensions s'alimentent entre elles</p>
+
+        {ORDER.map((pilier) => {
+          const p = PILLARS_DATA[pilier];
+          const isSelected = selected === pilier;
+          return (
+            <button
+              key={pilier}
+              type="button"
+              className={styles.hitArea}
+              style={{
+                left: `${(p.cx / VIEW_W) * 100}%`,
+                top: `${(p.cy / VIEW_H) * 100}%`,
+                width: `${((R * 2) / VIEW_W) * 100}%`,
+                height: `${((R * 2) / VIEW_H) * 100}%`,
+              }}
+              aria-pressed={isSelected}
+              aria-label={`Dimension ${p.label}${isSelected ? ' (sélectionnée)' : ''}`}
+              onClick={() => toggle(pilier)}
+            />
+          );
+        })}
+
+        {data && (
+          <div className={`${styles.bubbleCluster} ${CLUSTER_CLASS[selected as Pilier]}`}>
+            <p className={styles.clusterCaption}>De quoi parle-t-on ?</p>
+            <div className={styles.bubbleRow}>
+              {data.exemples.map((exemple) => (
+                <span key={exemple} className={styles.bubble} style={pillarVars(data)}>
+                  {exemple}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
-      {pillarData && (
-        <div className={styles.content}>
-          <div className={styles.tabs}>
-            <button
-              type="button"
-              className={`${styles.tab} ${selectedTab === 'exemples' ? styles.tabActive : ''}`}
-              onClick={() => setSelectedTab('exemples')}
-              aria-selected={selectedTab === 'exemples'}
-            >
-              De quoi parle-t-on ?
-            </button>
-            <button
-              type="button"
-              className={`${styles.tab} ${selectedTab === 'outils' ? styles.tabActive : ''}`}
-              onClick={() => setSelectedTab('outils')}
-              aria-selected={selectedTab === 'outils'}
-            >
-              Outils & stratégies
-            </button>
-          </div>
-
-          <div className={styles.tabContent}>
-            {selectedTab === 'exemples' && (
-              <div className={styles.exemples}>
-                <ul className={styles.exemplesList}>
-                  {pillarData.exemples.map((exemple, idx) => (
-                    <li key={idx}>{exemple}</li>
-                  ))}
-                </ul>
+      {data && (
+        <div className={styles.actionsPanel} style={pillarVars(data)}>
+          <p className={styles.actionsTitle}>
+            <span className={styles.actionsDot} aria-hidden="true" />
+            Outils &amp; stratégies — {data.label}
+          </p>
+          <div className={styles.actionsRow}>
+            {data.outils.map((outil, idx) => (
+              <div key={idx} className={styles.actionCard}>
+                <p className={styles.actionText}>{outil.text}</p>
+                {outil.navigation && (
+                  <button
+                    type="button"
+                    className={styles.navBtn}
+                    onClick={() => onNavigate(outil.navigation!.id)}
+                  >
+                    <span>{outil.navigation.label}</span>
+                    <span className={styles.navHint}>
+                      <ArrowRight size={14} aria-hidden="true" />
+                      autre module
+                    </span>
+                  </button>
+                )}
               </div>
-            )}
-
-            {selectedTab === 'outils' && (
-              <div className={styles.outils}>
-                {pillarData.outils.map((outil, idx) => (
-                  <div key={idx} className={styles.outilItem}>
-                    <p className={styles.outilText}>{outil.text}</p>
-                    {outil.navigation && (
-                      <button
-                        type="button"
-                        className={styles.navBtn}
-                        onClick={() => onNavigate(outil.navigation!.id)}
-                      >
-                        {outil.navigation.label}
-                      </button>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
+            ))}
           </div>
         </div>
       )}
