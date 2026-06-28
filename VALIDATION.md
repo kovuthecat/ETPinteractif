@@ -112,3 +112,14 @@
 - [ ] « Réinitialiser » remet le curseur à 0, efface les prises et la courbe.
 - [ ] Mention « schéma illustratif » toujours présente ; aucune valeur chiffrée de dosage.
 - [ ] Avec « Réduire les animations » activé au niveau OS/navigateur : pas de défilement animé, la courbe complète s'affiche directement et les boutons de lecture/vitesse disparaissent (seul « Réinitialiser » reste, avec les boutons de prise).
+
+## C7 - Nicotine vs toxique : affiche interactive recomposée *(contenu à valider par Thibault)*
+- [ ] Sans ouvrir de bulle, on comprend « rouge = toxiques de la combustion » et « vert = nicotine / dépendance ».
+- [ ] Cigarette et fumée au centre ; quatre hotspots rouges reliés à la combustion ; nicotine isolée dans une zone verte.
+- [ ] La couleur est doublée par hachures, icônes, contours et libellés.
+- [ ] Chaque hotspot ouvre une bulle lisible avec famille, effet et pictogramme ; la croix la ferme.
+- [ ] Sur tablette/mobile, la bulle ne recouvre pas les hotspots et il n'y a aucun débordement horizontal.
+- [ ] Les filtres atténuent l'autre groupe sans le masquer ; recliquer le filtre actif restaure la vue complète.
+- [ ] Les deux renvois ouvrent les bons modules.
+- [ ] **Validation médicale :** confirmer les regroupements « Goudrons et particules », « Monoxyde de carbone », « environ 70 cancérogènes connus » et « environ 7 000 substances chimiques ».
+- [ ] **Validation médicale :** confirmer la formulation nicotine : elle crée la dépendance, n'est pas anodine, mais ne provoque pas les cancers et maladies liés à la fumée.

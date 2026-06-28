@@ -5,198 +5,441 @@
 }
 
 .intro {
+  max-width: 820px;
   margin: 0;
-  font-size: 1em;
-  line-height: 1.6;
   color: var(--color-text);
+  font-size: var(--font-size-lead, 1.1rem);
+  line-height: 1.55;
 }
 
-.toggleContainer {
+.filters {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-sm);
-  align-items: flex-start;
-}
-
-.toggleLabel {
-  font-weight: 500;
-  color: var(--color-text);
-  font-size: 0.95em;
-}
-
-.toggleButtons {
-  display: flex;
-  gap: var(--space-sm);
   flex-wrap: wrap;
-}
-
-.toggleBtn,
-.toggleBtnActive {
-  padding: var(--space-sm) var(--space-md);
-  border: 2px solid;
-  border-radius: calc(var(--radius) * 0.5);
-  font-size: 0.9em;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.toggleBtn {
-  background: var(--color-surface);
-  color: var(--color-text);
-  border-color: rgba(0, 0, 0, 0.15);
-}
-
-.toggleBtn:hover,
-.toggleBtn:focus-visible {
-  border-color: var(--color-accent);
-  opacity: 0.85;
-}
-
-.toggleBtnActive {
-  background: var(--color-accent);
-  color: var(--color-surface);
-  border-color: var(--color-accent);
-}
-
-.columns {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-md);
-}
-
-@media (max-width: 600px) {
-  .columns {
-    grid-template-columns: 1fr;
-  }
-}
-
-.column {
-  padding: var(--space-md);
-  background: var(--color-surface);
-  border-radius: var(--radius);
-  border: 2px solid rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
-}
-
-.columnHighlighted {
-  border-color: var(--color-accent);
-  background: rgba(29, 111, 165, 0.05);
-}
-
-.columnTitle {
-  margin: 0 0 var(--space-md) 0;
-  font-size: 1em;
-  font-weight: 600;
-  color: var(--color-text);
-}
-
-.itemsList {
-  display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: var(--space-sm);
 }
 
-.item {
-  padding: var(--space-md);
-  background: transparent;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: calc(var(--radius) * 0.5);
-  text-align: left;
-  font-size: 0.9em;
-  color: var(--color-text);
+.filtersLabel {
+  margin-right: var(--space-xs);
+  color: var(--color-text-muted, var(--color-text));
+  font-size: var(--font-size-small, 1rem);
+  font-weight: 600;
+}
+
+.filterButton {
+  display: inline-flex;
+  min-height: var(--target-min, 44px);
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.65rem 1rem;
+  border: 2px solid currentColor;
+  border-radius: 999px;
+  background: var(--color-surface);
+  font: inherit;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
 }
 
-.item:hover,
-.item:focus-visible {
-  background: rgba(0, 0, 0, 0.03);
-  border-color: var(--color-accent);
+.filterButton svg,
+.legend svg {
+  width: 1.2rem;
+  height: 1.2rem;
 }
 
-.detail {
-  padding: var(--space-md);
-  background: rgba(29, 111, 165, 0.08);
-  border-left: 4px solid var(--color-accent);
-  border-radius: calc(var(--radius) * 0.5);
+.filterToxiques,
+.legendToxiques,
+.toxiques {
+  color: var(--color-toxique, #b4232d);
+}
+
+.filterDependance,
+.legendDependance,
+.dependance {
+  color: var(--color-confort, #24734b);
+}
+
+.filterButton[aria-pressed='true'] {
+  outline: 3px solid currentColor;
+  outline-offset: 2px;
+}
+
+.filterToxiques[aria-pressed='true'] {
+  background: var(--color-toxique-soft, #fbe9e9);
+}
+
+.filterDependance[aria-pressed='true'] {
+  background: var(--color-confort-soft, #e6f4ec);
+}
+
+.sceneShell {
+  overflow: hidden;
+  border: 1px solid rgb(45 38 31 / 12%);
+  border-radius: calc(var(--radius) * 1.25);
+  background: var(--color-surface);
+  box-shadow: 0 18px 50px rgb(50 43 35 / 8%);
+}
+
+.legend {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: var(--space-md);
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-sm) var(--space-lg);
+  padding: 0.8rem var(--space-md);
+  border-bottom: 1px solid rgb(45 38 31 / 10%);
+  font-size: var(--font-size-small, 1rem);
+  font-weight: 800;
+}
+
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.scene {
+  position: relative;
+  min-height: 590px;
+  isolation: isolate;
+}
+
+.illustration {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.toxicArea {
+  fill: var(--color-toxique-soft, #fbe9e9);
+  opacity: 0.68;
+}
+
+.hatchedArea {
+  fill: url('#toxicHatch');
+  opacity: 0.24;
+}
+
+.hatchLine {
+  stroke: var(--color-toxique, #b4232d);
+  stroke-width: 3;
+}
+
+.nicotineArea {
+  fill: var(--color-confort-soft, #e6f4ec);
+  stroke: var(--color-confort, #24734b);
+  stroke-width: 3;
+  stroke-dasharray: 8 10;
+}
+
+.connectorToxic,
+.connectorNicotine {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 3 11;
+}
+
+.connectorToxic {
+  stroke: var(--color-toxique, #b4232d);
+}
+
+.connectorNicotine {
+  stroke: var(--color-confort, #24734b);
+}
+
+.smoke {
+  fill: none;
+  stroke: var(--color-toxique, #b4232d);
+  stroke-width: 18;
+  stroke-linecap: round;
+  opacity: 0.32;
+}
+
+.cigarette rect {
+  fill: #fffdfa;
+  stroke: #806e5b;
+  stroke-width: 3;
+}
+
+.cigarette .filterTip {
+  fill: #d9aa69;
+}
+
+.cigarette .burningTip {
+  fill: #493b35;
+  stroke: var(--color-toxique, #b4232d);
+}
+
+.ember {
+  fill: none;
+  stroke: #ef7a32;
+  stroke-width: 7;
+  stroke-linecap: round;
+}
+
+.nicotineMark {
+  fill: var(--color-surface);
+  stroke: var(--color-confort, #24734b);
+  stroke-width: 5;
+}
+
+.nicotineMolecule {
+  fill: none;
+  stroke: var(--color-confort, #24734b);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.dimmed {
+  opacity: 0.2;
+  transition: opacity 180ms ease;
+}
+
+.hotspot {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  min-height: var(--target-min, 44px);
+  max-width: 190px;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.65rem 0.8rem;
+  border: 2px solid currentColor;
+  border-radius: calc(var(--radius) * 0.75);
+  background: var(--color-surface);
+  box-shadow: 0 7px 18px rgb(45 38 31 / 12%);
+  font: inherit;
+  font-size: var(--font-size-small, 1rem);
+  font-weight: 800;
+  line-height: 1.15;
+  text-align: left;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  transition: opacity 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+.hotspot svg {
+  width: 1.45rem;
+  height: 1.45rem;
+  flex: 0 0 auto;
+}
+
+.hotspot:hover,
+.hotspot:focus-visible,
+.hotspotSelected {
+  z-index: 4;
+  box-shadow: 0 10px 24px rgb(45 38 31 / 20%);
+  transform: translate(-50%, -50%) scale(1.04);
+}
+
+.hotspotSelected {
+  outline: 4px solid currentColor;
+  outline-offset: 3px;
+}
+
+.hotspotDimmed {
+  opacity: 0.26;
+}
+
+.hotspotDimmed:hover,
+.hotspotDimmed:focus-visible {
+  opacity: 0.72;
+}
+
+.topLeft { top: 17%; left: 15%; }
+.bottomLeft { top: 76%; left: 14%; }
+.topRight { top: 13%; left: 58%; }
+.bottomRight { top: 80%; left: 60%; }
+.nicotine { top: 50%; left: 83%; }
+
+.sceneLabel {
+  position: absolute;
+  z-index: 1;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  transition: opacity 180ms ease;
+}
+
+.combustionLabel {
+  top: 55%;
+  left: 38%;
+  background: var(--color-toxique-soft, #fbe9e9);
+  color: var(--color-toxique, #b4232d);
+}
+
+.nicotineLabel {
+  top: 67%;
+  left: 76%;
+  background: var(--color-confort-soft, #e6f4ec);
+  color: var(--color-confort, #24734b);
+}
+
+.detailBubble {
+  position: absolute;
+  z-index: 6;
+  right: 25%;
+  bottom: 4%;
+  display: grid;
+  width: min(430px, 47%);
+  grid-template-columns: auto 1fr auto;
+  gap: 0.8rem;
+  align-items: start;
+  padding: 1rem;
+  border: 2px solid currentColor;
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  box-shadow: 0 16px 38px rgb(45 38 31 / 22%);
+}
+
+.detailBubble::after {
+  position: absolute;
+  right: 18%;
+  bottom: -11px;
+  width: 18px;
+  height: 18px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  background: var(--color-surface);
+  content: '';
+  transform: rotate(45deg);
+}
+
+.detailBubble > svg {
+  width: 1.8rem;
+  height: 1.8rem;
 }
 
 .detailContent {
-  flex: 1;
-}
-
-.detailTitle {
-  margin: 0 0 var(--space-sm) 0;
-  font-size: 1em;
-  font-weight: 600;
-  color: var(--color-text);
-}
-
-.detailRole {
-  margin: 0;
-  font-size: 0.9em;
-  line-height: 1.5;
-  color: var(--color-text);
-}
-
-.detailClose {
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  background: transparent;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: calc(var(--radius) * 0.5);
-  color: var(--color-text);
-  font-size: 1.2em;
-  cursor: pointer;
   display: flex;
+  flex-direction: column;
+  gap: 0.22rem;
+}
+
+.detailContent strong {
+  color: var(--color-text);
+  font-size: 1.05rem;
+}
+
+.detailContent p {
+  margin: 0.25rem 0 0;
+  color: var(--color-text);
+  font-size: var(--font-size-small, 1rem);
+  line-height: 1.45;
+}
+
+.detailEyebrow {
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.closeButton {
+  display: inline-flex;
+  width: var(--target-min, 44px);
+  height: var(--target-min, 44px);
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  padding: 0;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
 }
 
-.detailClose:hover,
-.detailClose:focus-visible {
-  border-color: var(--color-accent);
-  background: rgba(29, 111, 165, 0.1);
+.takeaway {
+  margin: 0;
+  padding: var(--space-md);
+  border-left: 5px solid var(--color-confort, #24734b);
+  border-radius: calc(var(--radius) * 0.7);
+  background: var(--color-confort-soft, #e6f4ec);
+  color: var(--color-text);
+  font-size: var(--font-size-lead, 1.1rem);
+  line-height: 1.5;
 }
 
 .navigation {
-  padding: var(--space-md);
-  background: var(--color-surface);
-  border-radius: var(--radius);
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
   gap: var(--space-sm);
+  padding-top: var(--space-sm);
 }
 
-.navigationLabel {
-  margin: 0;
-  font-weight: 500;
-  color: var(--color-text);
-  font-size: 0.95em;
+.navigation span {
+  margin-right: var(--space-xs);
+  color: var(--color-text-muted, var(--color-text));
+  font-weight: 700;
 }
 
-.navBtn {
-  padding: var(--space-sm) var(--space-md);
-  background: var(--color-accent);
-  color: var(--color-surface);
-  border: none;
-  border-radius: calc(var(--radius) * 0.5);
-  font-size: 0.9em;
-  font-weight: 500;
+.navigation button {
+  display: inline-flex;
+  min-height: var(--target-min, 44px);
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.7rem 1rem;
+  border: 2px solid var(--color-nav, var(--color-accent));
+  border-radius: calc(var(--radius) * 0.6);
+  background: var(--color-surface);
+  color: var(--color-nav, var(--color-accent));
+  font: inherit;
+  font-weight: 800;
   cursor: pointer;
-  transition: opacity 0.2s ease;
-  align-self: flex-start;
 }
 
-.navBtn:hover,
-.navBtn:focus-visible {
-  opacity: 0.85;
+.navigation button:hover,
+.navigation button:focus-visible {
+  background: var(--color-nav-soft, #e9f2f8);
+}
+
+.navigation button svg {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+@media (max-width: 900px) {
+  .scene { min-height: 640px; }
+  .detailBubble {
+    right: var(--space-md);
+    bottom: var(--space-md);
+    left: var(--space-md);
+    width: auto;
+  }
+  .detailBubble::after { display: none; }
+  .hotspot { max-width: 165px; }
+}
+
+@media (max-width: 620px) {
+  .filters { align-items: stretch; }
+  .filtersLabel { flex-basis: 100%; }
+  .filterButton { flex: 1 1 210px; justify-content: center; }
+  .legend { align-items: flex-start; flex-direction: column; }
+  .scene { min-height: 720px; }
+  .illustration { top: 45px; height: 520px; }
+  .hotspot { max-width: 145px; padding: 0.55rem 0.65rem; font-size: 0.9rem; }
+  .hotspot svg { width: 1.2rem; height: 1.2rem; }
+  .topLeft { top: 16%; left: 23%; }
+  .bottomLeft { top: 57%; left: 23%; }
+  .topRight { top: 16%; left: 66%; }
+  .bottomRight { top: 57%; left: 66%; }
+  .nicotine { top: 39%; left: 78%; }
+  .combustionLabel { top: 43%; left: 25%; }
+  .nicotineLabel { top: 47%; left: 63%; }
+  .detailBubble { bottom: 0.75rem; }
+  .navigation { align-items: stretch; flex-direction: column; }
+  .navigation button { justify-content: space-between; width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dimmed,
+  .hotspot,
+  .sceneLabel {
+    transition: none;
+  }
 }
