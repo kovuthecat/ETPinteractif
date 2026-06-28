@@ -46,12 +46,11 @@ Objectif : figer les décisions structurantes et le contenu des modules avant to
 - Zones à documenter davantage : **contenu des modules** (`docs/contenu-modules.md`)
 
 ## Prochaines étapes immédiates
-1. Obtenir de Thibault les **données cliniques en attente** (titration patch, vapoteuse, liste 4D, affichage sources) — cf. `docs/contenu-modules.md`.
-2. Décider de l'identité visuelle / ton (ton non injonctif déjà acté).
-3. Scaffolder l'app Vite + React + TS, la carte centrale et le **Module 2 (nicotine)** comme preuve de concept de la manipulation libre.
+1. Exécuter `PLAN_modules-tabac.md` (T1 → T11) avec Sonnet / Codex / Haiku.
+2. Compléter le contenu non bloquant : références de sources par module, « bonnes pratiques / erreurs » par forme de substitut (Module 3-A).
 
 ## Notes / décisions en attente
-- Données cliniques bloquantes pour le Module 3-B (titration) — voir `docs/contenu-modules.md` §"Données cliniques à fournir".
-- Affichage des sources médicales : visible ou discret ? (non tranché)
-- Module pressenti pour la preuve de concept : **Module 2 (nicotine)** (socle des modules 5 et 3).
+- Données cliniques **validées** (titration, vapoteuse, 4D, sources discrètes) — cf. `docs/contenu-modules.md`.
+- Plan d'exécution prêt : `PLAN_modules-tabac.md` (squelette + 6 modules).
+- Reste à fournir (non bloquant) : sources exactes ; contenu détaillé des formes de substituts.
 - Frise des bénéfices de l'arrêt : repoussée hors du cadrage initial.
