@@ -248,7 +248,7 @@ dans `docs/contenu-modules.md` (autorité du contenu).
 - **Validation :** auto `npm run build` ; visuel : minuteur joue/rejoue et se nettoie ; cartes dépliables ; respiration anime.
 - **Si bloqué :** —
 - **Commit :** `feat(module): gerer le craving (4D)`
-- **Statut :** [ ] à faire · exécuté par : — · le : — · commit : —
+- **Statut :** [x] fait · exécuté par : Sonnet · le : 2026-06-28 · commit : 304552e
 
 ## Contrat coquille (à respecter par tous les modules)
 
@@ -268,10 +268,12 @@ T8, T9, T10, T11 indépendants entre eux (après T2/T3)
 
 ## Après le lot — mise à jour du contexte (obligatoire)
 
-- [ ] **PLAN** : passer chaque tâche faite à `[x]` (exécuté par / le / commit).
-- [ ] **STATUS.md** : refléter l'état réel (modules fonctionnels, placeholders restants).
-- [ ] **VALIDATION.md** : checklist visuelle/UX à jour (1 entrée par module/tâche) pour la passe de Thibault.
-- [ ] **PROJECT_MAP.md** : remplacer l'arborescence « cible » par l'arborescence réelle ; lister les modules.
-- [ ] **Autres fichiers SEULEMENT si changés** : DECISIONS / ROADMAP / TASKS / PROJECT_BRIEF.
-- [ ] Vérifier qu'aucun fichier de contexte n'est devenu faux.
-- [ ] Commits atomiques par tâche (messages ci-dessus).
+- [x] **PLAN** : passer chaque tâche faite à `[x]` (exécuté par / le / commit). → T1-T11 tous faits.
+- [x] **STATUS.md** : refléter l'état réel (modules fonctionnels, placeholders restants).
+- [x] **VALIDATION.md** : checklist visuelle/UX à jour (1 entrée par module/tâche) pour la passe de Thibault. → déjà à jour jusqu'à T11.
+- [x] **PROJECT_MAP.md** : remplacer l'arborescence « cible » par l'arborescence réelle ; lister les modules.
+- [ ] **Autres fichiers SEULEMENT si changés** : DECISIONS / ROADMAP / TASKS / PROJECT_BRIEF. (non modifiés ce lot, pas de changement structurant)
+- [x] Vérifier qu'aucun fichier de contexte n'est devenu faux.
+- [x] Commits atomiques par tâche (messages ci-dessus).
+
+**Lot T1-T11 terminé le 2026-06-28.** Les 6 modules du thème tabac sont implémentés. Reste non bloquant : sources exactes par module, contenu détaillé « bonnes pratiques/erreurs » par forme de substitut (Module 3-A), passe de validation visuelle par Thibault (`npm run dev` + `VALIDATION.md`).
