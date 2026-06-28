@@ -9,7 +9,7 @@
 **Phase 1 — Squelette applicatif + 6 modules tabac : terminée (T1-T11, lot `PLAN_modules-tabac.md` clos le 2026-06-28).**
 Les 6 modules du thème tabac sont implémentés et naviguables. Reste : passe de validation visuelle par Thibault, et contenu non bloquant à fournir (sources, bonnes pratiques substituts).
 
-**Phase 2 - Corrections UX (audit du 28/06, `PLAN_corrections-ux.md`) : en cours.** C1 à C7 faits. Reste C8-C10.
+**Phase 2 - Corrections UX (audit du 28/06, `PLAN_corrections-ux.md`) : en cours.** C1-C9 faits. Reste C10 (bloqué sur contenu Thibault).
 
 ## Ce qui fonctionne
 
@@ -69,9 +69,9 @@ Les 6 modules du thème tabac sont implémentés et naviguables. Reste : passe d
 - Zones à documenter davantage : **contenu des modules** (`docs/contenu-modules.md`) — sources exactes, contenu substituts
 
 ## Prochaines étapes immédiates
-1. **Lot `PLAN_corrections-ux.md` en cours.** C1 à C7 faits. Suite : C9 → C8 → C10.
-2. Compléter le contenu non bloquant : références de sources par module, « bonnes pratiques / erreurs » par forme de substitut (Module 3-A, cf. C10 — bloqué sur contenu Thibault).
-3. Passe de validation visuelle/UX par Thibault (`npm run dev`, checklist `VALIDATION.md`) au fil des tâches du lot.
+1. **Lot `PLAN_corrections-ux.md`.** C1-C9 faits. Reste C10 (bloqué sur contenu Thibault).
+2. **Passe de validation visuelle/UX par Thibault** (`npm run dev`, checklist `VALIDATION.md` pour C8-C9).
+3. C10 en attente : compléter le contenu non bloquant — références de sources par module, « bonnes pratiques / erreurs » par forme de substitut (Module 3-A).
 
 ## Notes / décisions en attente
 - **C4 (soulagement)** : récit chiffré du modèle de stress codé par Claude à titre illustratif (amplitudes relatives, cf. `VALIDATION.md`) - **en attente de validation/ajustement par Thibault**.
