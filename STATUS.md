@@ -6,16 +6,18 @@
 
 ## Phase actuelle
 
-**Phase 0 — Cadrage / conception.**
-Objectif : figer les décisions structurantes et le contenu des modules avant tout code.
+**Phase 1 — Squelette applicatif.**
+Objectif : construire le socle technique (T1-T4) avant les modules de contenu (T5+).
 
 ## Ce qui fonctionne
 
 ### Pages / écrans
-- Scaffolding Vite + React + TS en place (T1) : page placeholder « ETP — socle OK ».
+- Scaffolding Vite + React + TS en place (T1).
+- Navigation par état carte ↔ module (T2) : liste cliquable des 6 modules, retour à l'accueil. Liste non stylée (stylage prévu en T4).
 
 ### Composants / modules
-- (aucun module encore — stubs prévus en T2)
+- 6 stubs de modules (« À venir ») reliés au registre : `addiction`, `nicotine`, `substituts`, `nicotine-toxique`, `soulagement`, `craving` (T2).
+- Registre `src/features/registry.ts` (titre/résumé/icône/Component par module) et types `src/features/types.ts` (`ModuleId`, `ModuleProps`, `ModuleDef`).
 
 ### API / backend
 - Sans objet (projet sans backend par conception).
@@ -27,7 +29,7 @@ Objectif : figer les décisions structurantes et le contenu des modules avant to
 - (rien)
 
 ## Ce qui ne fonctionne pas / n'est pas testé
-- Aucun module fonctionnel encore (types/registre/navigation = T2, composants partagés = T3, carte = T4).
+- Aucun contenu de module implémenté (stubs uniquement). Coquille partagée (`ModuleShell`/`Sources`/`ModuleCard`) = T3, carte stylée = T4, contenu des 6 modules = T5-T11.
 
 ## Validation manuelle effectuée
 - [ ] Desktop navigateur principal

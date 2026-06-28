@@ -8,6 +8,16 @@
 - **Date :** 2026-06-28 · **Rédigé par :** Opus · **Branche :** — (repo local, main)
 - **Plan parent / lié :** —
 
+## Convention de validation (s'applique à TOUTES les tâches)
+
+Chaque tâche a deux niveaux de validation :
+- **Auto** = gate du commit, responsabilité de l'exécutant : `npm run build` (typecheck inclus)
+  et `npm run test` quand la tâche touche de la logique pure. Pas de commit si ça échoue.
+- **Visuel** = responsabilité de **Thibault**, **non bloquant** : l'exécutant **ne tente PAS**
+  de le vérifier (pas de navigateur, pas de capture d'écran). Il reporte la ligne « visuel : »
+  de la tâche dans `VALIDATION.md` (1 entrée/tâche : quoi regarder, attendu) et continue.
+  Thibault déroule la checklist en une session `npm run dev` en fin de lot.
+
 ## Objectif global
 
 Construire le squelette de l'app ETP (Vite + React + TS, local-first, zéro persistance) et les 6 premiers
@@ -18,8 +28,8 @@ dans `docs/contenu-modules.md` (autorité du contenu).
 
 - Invariants : `CLAUDE.md` (zéro persistance, hors-ligne, multi-thèmes, sources discrètes).
 - Conception des modules : `docs/contenu-modules.md` §"Décisions de conception transverses" + §Module X.
-- **Pile imposée (ne pas ajouter d'autre dépendance)** : `react`, `react-dom`, `vite`, `typescript`,
-  `@vitejs/plugin-react`, `lucide-react` (icônes). **Styles : CSS Modules** (`*.module.css`) + `tokens.css`.
+- **Pile runtime imposée (ne pas ajouter d'autre dépendance _runtime_)** : `react`, `react-dom`, `vite`, `typescript`,
+  `@vitejs/plugin-react`, `lucide-react` (icônes). _Exception devDep test_ : `vitest` autorisé (cf. T5). **Styles : CSS Modules** (`*.module.css`) + `tokens.css`.
   **Pas de router** (navigation par état dans `App.tsx`). **Pas de lib de graphes** (courbes en SVG pur).
 - **Contrat de navigation** : chaque module reçoit la prop `onNavigate(id: ModuleId)` pour les renvois.
 - **Contrat visuel** : lisible à ~1 m (grandes cibles, contrastes), mention « schéma illustratif » sur les courbes.
@@ -76,7 +86,7 @@ dans `docs/contenu-modules.md` (autorité du contenu).
   - visuel : liste cliquable des 6 modules → ouvre chaque stub « À venir » → retour possible.
 - **Si bloqué :** si le typage `LucideIcon` pose problème, typer `Icon: React.ComponentType<{size?:number}>` ; ne pas changer l'archi.
 - **Commit :** `feat: types, registre des modules et navigation par etat`
-- **Statut :** [ ] à faire · exécuté par : — · le : — · commit : —
+- **Statut :** [x] fait · exécuté par : Sonnet · le : 2026-06-28 · commit : fa8f923
 
 ### T3 — Coquille de module + sources discrètes + carte · Modèle : Sonnet
 - **But :** composants partagés : `ModuleShell` (en-tête + retour + sources), `Sources` (pop-over discret), `ModuleCard`.
@@ -114,11 +124,13 @@ dans `docs/contenu-modules.md` (autorité du contenu).
 - **Statut :** [ ] à faire · exécuté par : — · le : — · commit : —
 
 ### T5 — Utilitaire de courbe nicotine · Modèle : Sonnet
-- **But :** fonction pure générant les courbes (partagée par Modules 2 et 5), valeurs **relatives 0–1**.
+- **But :** fonction pure générant les courbes (partagée par Modules 2 et 5), valeurs **relatives 0–1**, **avec test unitaire** (c'est ici que l'auto-validation a le plus de valeur : logique pure, pas de rendu).
 - **Lire :** `docs/contenu-modules.md` §Module 2 (modèle de courbe) ; ce PLAN (constantes ci-dessous).
-- **Modifier (créer) :** `src/lib/nicotineCurve.ts`.
-- **Hors périmètre :** aucun composant React, aucun SVG d'UI (juste path string).
-- **Étapes :** implémenter exactement :
+- **Modifier (créer) :** `src/lib/nicotineCurve.ts`, `src/lib/nicotineCurve.test.ts` ; `package.json` (script `test`, devDep `vitest`).
+- **Hors périmètre :** aucun composant React, aucun SVG d'UI (juste path string). Ne pas configurer jsdom (logique pure, runtime node suffit).
+- **Étapes :**
+  0. `npm i -D vitest` ; ajouter `"test": "vitest run"` dans `package.json` (scripts).
+  1. Implémenter `src/lib/nicotineCurve.ts` exactement :
   ```ts
   export const THRESHOLD_LOW = 0.25;
   export const THRESHOLD_HIGH = 0.80;
@@ -132,10 +144,17 @@ dans `docs/contenu-modules.md` (autorité du contenu).
   export function sampleCurve(opts: { patch: boolean; events: CurveEvent[]; n?: number }): number[]; // n défaut 120, somme clampée [0,1]
   export function toSvgPath(ys: number[], width: number, height: number): string; // y=0 en bas
   ```
+  2. Écrire `src/lib/nicotineCurve.test.ts` (Vitest) — au minimum :
+     - `sampleCurve({patch:false, events:[]})` → longueur `n` (défaut 120), toutes valeurs dans `[0,1]`.
+     - une cigarette à `t=0.2` → la courbe n'est PAS plate (max > 0) et le pic est proche de `t=0.2`.
+     - même `t`, pic `cigarette` > pic `ponctuel` (amplitudes 0.90 vs 0.35).
+     - `patch:true` → plateau ≈ `PATCH_PLATEAU` après la rampe (x ≥ 0.1).
+     - composition de plusieurs events → valeurs toujours clampées ≤ 1.
+     - `toSvgPath([0,1], 100, 50)` → renvoie une string non vide commençant par `M`.
 - **Validation :**
-  - auto : `npm run build` → succès (typecheck OK).
+  - auto : `npm run build` → succès (typecheck OK) **et** `npm run test` → tous verts.
 - **Si bloqué :** si une normalisation rend la courbe plate, garder les amplitudes brutes clampées — ne pas réajuster le design.
-- **Commit :** `feat: utilitaire de courbe nicotine (SVG)`
+- **Commit :** `feat: utilitaire de courbe nicotine (SVG) + tests vitest`
 - **Statut :** [ ] à faire · exécuté par : — · le : — · commit : —
 
 ### T6 — Module 2 : nicotine (bac à sable) · Modèle : Sonnet  *(Codex acceptable)*
@@ -251,6 +270,7 @@ T8, T9, T10, T11 indépendants entre eux (après T2/T3)
 
 - [ ] **PLAN** : passer chaque tâche faite à `[x]` (exécuté par / le / commit).
 - [ ] **STATUS.md** : refléter l'état réel (modules fonctionnels, placeholders restants).
+- [ ] **VALIDATION.md** : checklist visuelle/UX à jour (1 entrée par module/tâche) pour la passe de Thibault.
 - [ ] **PROJECT_MAP.md** : remplacer l'arborescence « cible » par l'arborescence réelle ; lister les modules.
 - [ ] **Autres fichiers SEULEMENT si changés** : DECISIONS / ROADMAP / TASKS / PROJECT_BRIEF.
 - [ ] Vérifier qu'aucun fichier de contexte n'est devenu faux.
