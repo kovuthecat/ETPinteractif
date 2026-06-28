@@ -45,7 +45,7 @@ dans `docs/contenu-modules.md` (autorité du contenu).
   - visuel : page « ETP — socle OK » s'affiche.
 - **Si bloqué :** si `npm create vite` refuse d'écrire dans le dossier non vide et qu'aucune option `.`/sous-dossier ne marche → STOP, signaler.
 - **Commit :** `chore: scaffolding Vite React-TS + styles de base`
-- **Statut :** [ ] à faire · exécuté par : — · le : — · commit : —
+- **Statut :** [x] fait · exécuté par : Sonnet · le : 2026-06-28 · commit : c101ef4
 
 ### T2 — Types, registre des modules, navigation · Modèle : Sonnet
 - **But :** poser le modèle de données des modules, le registre, et la navigation par état (carte ↔ module), avec des **stubs** pour les 6 modules.

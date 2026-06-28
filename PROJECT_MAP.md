@@ -2,7 +2,7 @@
 
 Carte synthétique du projet. Permet à ChatGPT et Claude Code de localiser vite les zones pertinentes.
 
-> État : **conception (Phase 0)** — le code n'est pas encore scaffoldé. Cette carte décrit la cible.
+> État : **scaffolding fait (T1)**, modules pas encore implémentés (T2+). Cette carte décrit la cible.
 
 ---
 

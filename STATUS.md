@@ -12,10 +12,10 @@ Objectif : figer les décisions structurantes et le contenu des modules avant to
 ## Ce qui fonctionne
 
 ### Pages / écrans
-- (aucun code encore)
+- Scaffolding Vite + React + TS en place (T1) : page placeholder « ETP — socle OK ».
 
 ### Composants / modules
-- (aucun)
+- (aucun module encore — stubs prévus en T2)
 
 ### API / backend
 - Sans objet (projet sans backend par conception).
@@ -27,12 +27,12 @@ Objectif : figer les décisions structurantes et le contenu des modules avant to
 - (rien)
 
 ## Ce qui ne fonctionne pas / n'est pas testé
-- L'application n'est pas encore initialisée (pas de scaffolding Vite).
+- Aucun module fonctionnel encore (types/registre/navigation = T2, composants partagés = T3, carte = T4).
 
 ## Validation manuelle effectuée
 - [ ] Desktop navigateur principal
 - [ ] Mobile / tablette
-- [ ] Build production
+- [x] Build production
 - [ ] Déploiement
 
 ## Complexité technique actuelle
@@ -46,7 +46,7 @@ Objectif : figer les décisions structurantes et le contenu des modules avant to
 - Zones à documenter davantage : **contenu des modules** (`docs/contenu-modules.md`)
 
 ## Prochaines étapes immédiates
-1. Exécuter `PLAN_modules-tabac.md` (T1 → T11) avec Sonnet / Codex / Haiku.
+1. T1 fait (scaffolding). Poursuivre `PLAN_modules-tabac.md` à partir de T2 (types, registre, navigation).
 2. Compléter le contenu non bloquant : références de sources par module, « bonnes pratiques / erreurs » par forme de substitut (Module 3-A).
 
 ## Notes / décisions en attente
