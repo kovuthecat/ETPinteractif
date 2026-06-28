@@ -11,7 +11,7 @@ Instructions permanentes pour Claude Code dans ce projet (ETP interactif).
 ## Invariants non négociables du projet
 1. **Zéro donnée patient stockée** : aucune persistance (pas de localStorage, cookies, base, ni envoi réseau). Toute interaction est éphémère.
 2. **Local-first / hors-ligne** : pas de dépendance réseau au runtime.
-3. **Stack figée** : Vite + React + TypeScript, sans backend. Ne pas changer sans validation.
+3. **Pile runtime figée** : Vite + React + TypeScript, sans backend, et **aucune dépendance runtime ajoutée** (invariant produit : local-first / offline). *Exception* : les devDependencies d'outillage/test (ex. Vitest) sont autorisées **si listées dans le PLAN**.
 4. **Multi-thèmes par conception** : ne pas coder « en dur » pour le tabac dans le moteur de module générique.
 5. **Exactitude médicale** : tout contenu médical doit être sourcé (HAS, Tabac Info Service). En cas de doute clinique, signaler plutôt qu'inventer.
 6. **Support de consultation** : sobriété visuelle, gros éléments lisibles à distance, interactivité (≠ diaporama).
@@ -21,6 +21,12 @@ Instructions permanentes pour Claude Code dans ce projet (ETP interactif).
 - Architecture feature-first par module : chaque module isolé, modifiable sans charger tout le projet.
 - Avant de coder : plan court (objectif, fichiers concernés, 3–5 étapes, risques).
 - Conserver le style existant ; éviter les changements cosmétiques inutiles.
+
+## Validation
+- **Auto (bloque le commit)** : `npm run build` + typecheck ; **tests unitaires Vitest** pour la logique pure (ex. `src/lib/nicotineCurve.ts`).
+- **Visuel / UX (humain, non bloquant)** : lisibilité à ~1 m, sobriété, interactivité. Claude n'évalue PAS le rendu lui-même : il consigne une checklist dans `VALIDATION.md` (1 entrée/tâche) que Thibault déroule en une session `npm run dev`.
+- Claude n'installe ni ne lance **jamais** Playwright / automatisation navigateur / capture d'écran.
+- En mode autonome : enchaîner les tâches (gate = Auto), accumuler la checklist `VALIDATION.md`, rendre la main en fin de lot.
 
 ## Après chaque modification
 1. Mettre à jour les fichiers de contexte pertinents (`STATUS.md`, `TASKS.md`, `DECISIONS.md`, `PROJECT_MAP.md`, `ROADMAP.md` si besoin).
