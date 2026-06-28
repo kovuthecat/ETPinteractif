@@ -155,7 +155,7 @@ dans `docs/contenu-modules.md` (autorité du contenu).
   - auto : `npm run build` → succès (typecheck OK) **et** `npm run test` → tous verts.
 - **Si bloqué :** si une normalisation rend la courbe plate, garder les amplitudes brutes clampées — ne pas réajuster le design.
 - **Commit :** `feat: utilitaire de courbe nicotine (SVG) + tests vitest`
-- **Statut :** [ ] à faire · exécuté par : — · le : — · commit : —
+- **Statut :** [x] fait · exécuté par : Sonnet · le : 2026-06-28 · commit : d275377
 
 ### T6 — Module 2 : nicotine (bac à sable) · Modèle : Sonnet  *(Codex acceptable)*
 - **Pourquoi ce modèle :** logique interactive + SVG la plus complexe du lot.

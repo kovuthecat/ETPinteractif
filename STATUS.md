@@ -23,8 +23,13 @@ Objectif : construire le socle technique (T1-T4) avant les modules de contenu (T
 ### API / backend
 - Sans objet (projet sans backend par conception).
 
+### Logique pure
+
+- `src/lib/nicotineCurve.ts` (T5) : `sampleCurve` (composition cigarette/ponctuel/vapoteuse/patch, valeurs relatives 0–1 clampées) et `toSvgPath`. Couvert par tests Vitest (`nicotineCurve.test.ts`, 6 tests verts). Partagé par les futurs Module 2 (T6) et Module 5 (T7).
+
 ### Scripts / pipeline
-- (aucun)
+
+- `npm run test` (Vitest) ajouté en devDependency, pour la logique pure uniquement (pas de jsdom configuré).
 
 ## Ce qui est prototypal ou instable
 - (rien)
@@ -49,7 +54,7 @@ Objectif : construire le socle technique (T1-T4) avant les modules de contenu (T
 - Zones à documenter davantage : **contenu des modules** (`docs/contenu-modules.md`)
 
 ## Prochaines étapes immédiates
-1. T1 fait (scaffolding). Poursuivre `PLAN_modules-tabac.md` à partir de T2 (types, registre, navigation).
+1. T1–T5 faits (scaffolding, types/registre/navigation, coquille/sources/carte, carte centrale, utilitaire de courbe). Poursuivre `PLAN_modules-tabac.md` à partir de T6 (Module 2 — nicotine, bac à sable).
 2. Compléter le contenu non bloquant : références de sources par module, « bonnes pratiques / erreurs » par forme de substitut (Module 3-A).
 
 ## Notes / décisions en attente
