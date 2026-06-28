@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { MODULES } from './features/registry';
 import type { ModuleId } from './features/types';
 import Home from './components/Home';
+import ModuleShell from './components/ModuleShell';
 
 type View = 'home' | ModuleId;
 
@@ -17,13 +18,11 @@ function App() {
   const module = MODULES.find((m) => m.id === view);
   if (!module) return null;
 
-  const { Component, titre } = module;
+  const { Component, titre, sources } = module;
   return (
-    <div>
-      <button type="button" onClick={() => setView('home')}>Retour</button>
-      <h1>{titre}</h1>
+    <ModuleShell titre={titre} sources={sources} onBack={() => setView('home')}>
       <Component onNavigate={navigateTo} />
-    </div>
+    </ModuleShell>
   );
 }
 
