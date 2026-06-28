@@ -188,7 +188,7 @@ dans `docs/contenu-modules.md` (autorité du contenu).
 - **Validation :** auto `npm run build` ; visuel : bascule change la courbe + le message.
 - **Si bloqué :** —
 - **Commit :** `feat(module): le piege du soulagement`
-- **Statut :** [ ] à faire · exécuté par : — · le : — · commit : —
+- **Statut :** [x] fait · exécuté par : Sonnet · le : 2026-06-28 · commit : —
 
 ### T8 — Module 1 : composantes de l'addiction · Modèle : Haiku
 - **But :** 3 piliers cliquables, chacun 2 onglets (exemples / outils+renvois).
