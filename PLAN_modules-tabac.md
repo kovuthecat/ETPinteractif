@@ -232,7 +232,7 @@ dans `docs/contenu-modules.md` (autorité du contenu).
 - **Validation :** auto `npm run build` ; visuel : bascule + items cliquables + renvois.
 - **Si bloqué :** —
 - **Commit :** `feat(module): la nicotine n'est pas le toxique`
-- **Statut :** [ ] à faire · exécuté par : — · le : — · commit : —
+- **Statut :** [x] fait · exécuté par : Haiku · le : 2026-06-28 · commit : 164a460
 
 ### T11 — Module 6 : gérer le craving (4D) · Modèle : Sonnet
 - **But :** vague de l'envie (minuteur ~30 s) + 4 cartes D (dont animation de respiration).
