@@ -55,3 +55,9 @@
 - [ ] Bouton replay ; pas de fuite après navigation (timer nettoyé).
 - [ ] 4 cartes D dépliables ; « Décontracter » anime la respiration (inspire 4 s / expire 6 s).
 - [ ] Aparté « Tabac Info Service 39 89 » discret.
+
+## C1 — Tokens sémantiques + utilitaires d'accessibilité
+- [ ] Fond d'écran plus chaud (`--color-bg`) sur l'accueil et les 6 modules, rien de cassé visuellement.
+- [ ] Boutons et contrôles plus hauts (cible tactile ≥ 44 px) sans rupture de mise en page.
+- [ ] Aucun module n'utilise encore la nouvelle palette sémantique (confort/toxique/vigilance/nav) : normal, c'est prévu en C2-C9.
+- [ ] Rien à vérifier sur `.activeDoubled` (pas encore consommée par un composant) ni sur `prefers-reduced-motion` (pas encore d'animation dans l'app à ce stade).

@@ -64,7 +64,7 @@ l'ordre recommandé par son §9 : socle visuel → modèles fonctionnels → sc�
 - **Validation :** auto `npm run build`. visuel : fond plus chaud, boutons plus hauts, rien de cassé sur l'accueil et les 6 modules.
 - **Si bloqué :** —
 - **Commit :** `feat(ui): palette semantique + utilitaires accessibilite (tokens)`
-- **Statut :** [ ] à faire
+- **Statut :** [x] fait
 
 ---
 

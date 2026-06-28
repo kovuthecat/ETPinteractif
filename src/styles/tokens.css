@@ -1,13 +1,35 @@
+/**
+ * Convention sémantique des couleurs (cf. AUDIT_VISUEL_UX_2026-06-28.md §1) :
+ *   vert  (--color-confort)   = confort, nicotine isolée de la combustion, action protectrice
+ *   rouge (--color-toxique)   = toxicité, sous/surdosage, pic problématique
+ *   ambre (--color-vigilance) = vigilance, manque en approche
+ *   bleu  (--color-nav)       = navigation, actions neutres (= --color-accent)
+ * La couleur n'est JAMAIS le seul signal : toujours doublée d'un libellé, d'une icône
+ * ou d'une forme (accessibilité daltonisme, cf. CLAUDE.md invariant 6).
+ */
 :root {
-  --color-bg: #f7f7f5;
+  --color-bg: #f9f4ea;
   --color-surface: #ffffff;
   --color-text: #1a1a1a;
   --color-accent: #1d6fa5;
   --color-warn: #c4451c;
 
+  --color-confort: #1f7a4d;
+  --color-confort-soft: #e3f3e8;
+  --color-toxique: #b3261e;
+  --color-toxique-soft: #fbe4e2;
+  --color-vigilance: #9c6500;
+  --color-vigilance-soft: #fbeed1;
+  --color-nav: var(--color-accent);
+  --color-nav-soft: #dfedf6;
+
   --radius: 12px;
 
   --font-size-base: 18px;
+  --font-size-lead: 20px;
+  --font-size-small: 16px;
+
+  --target-min: 44px;
 
   --space-xs: 4px;
   --space-sm: 8px;

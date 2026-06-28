@@ -17,3 +17,52 @@ body {
   color: var(--color-text);
   background: var(--color-bg);
 }
+
+button,
+[role='button'],
+input[type='checkbox'],
+input[type='radio'],
+select {
+  min-height: var(--target-min);
+  min-width: var(--target-min);
+}
+
+/*
+ * État actif "doublé" : la couleur seule ne suffit jamais (invariant accessibilité
+ * daltonisme). Ajoute un contour + un repère ✓ en plus de la couleur, portée par
+ * --active-color (à surcharger par le consommateur, ex. --active-color: var(--color-confort)).
+ */
+.activeDoubled {
+  --active-color: var(--color-nav);
+  position: relative;
+  outline: 3px solid var(--active-color);
+  outline-offset: 2px;
+}
+
+.activeDoubled::after {
+  content: '✓';
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--active-color);
+  color: #fff;
+  font-size: 14px;
+  line-height: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

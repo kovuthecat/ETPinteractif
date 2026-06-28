@@ -9,6 +9,8 @@
 **Phase 1 — Squelette applicatif + 6 modules tabac : terminée (T1-T11, lot `PLAN_modules-tabac.md` clos le 2026-06-28).**
 Les 6 modules du thème tabac sont implémentés et naviguables. Reste : passe de validation visuelle par Thibault, et contenu non bloquant à fournir (sources, bonnes pratiques substituts).
 
+**Phase 2 — Corrections UX (audit du 28/06, `PLAN_corrections-ux.md`) : en cours.** C1 (socle visuel sémantique) fait. Reste C2-C10.
+
 ## Ce qui fonctionne
 
 ### Pages / écrans
@@ -28,6 +30,10 @@ Les 6 modules du thème tabac sont implémentés et naviguables. Reste : passe d
 
 ### API / backend
 - Sans objet (projet sans backend par conception).
+
+### Styles / accessibilité
+- `src/styles/tokens.css` (C1) : palette sémantique ajoutée (`--color-confort` vert, `--color-toxique` rouge, `--color-vigilance` ambre, `--color-nav` bleu = `--color-accent`, + variantes `-soft`) ; `--color-bg` passé à un fond chaud clair. Tokens de lisibilité `--font-size-lead`/`--font-size-small`, `--target-min: 44px`. Anciens tokens conservés (non cassés).
+- `src/styles/global.css` (C1) : cibles tactiles `min-height`/`min-width: var(--target-min)` sur `button`/contrôles ; classe utilitaire `.activeDoubled` (contour + ✓ + couleur via `--active-color`, jamais la couleur seule) ; bloc `prefers-reduced-motion` neutralisant animations/transitions. Pas encore consommés par les modules (prévu C2-C9).
 
 ### Logique pure
 
@@ -63,9 +69,9 @@ Les 6 modules du thème tabac sont implémentés et naviguables. Reste : passe d
 - Zones à documenter davantage : **contenu des modules** (`docs/contenu-modules.md`) — sources exactes, contenu substituts
 
 ## Prochaines étapes immédiates
-1. **Lot `PLAN_modules-tabac.md` (T1-T11) terminé.** Passe de validation visuelle/UX par Thibault (`npm run dev`, checklist `VALIDATION.md`).
-2. Compléter le contenu non bloquant : références de sources par module, « bonnes pratiques / erreurs » par forme de substitut (Module 3-A).
-3. Décider de la suite : itérations de contenu sur le thème tabac, ou cadrage d'un 2ᵉ thème (l'app est multi-thèmes par conception).
+1. **Lot `PLAN_corrections-ux.md` en cours.** C1 fait (socle visuel). Suite recommandée par le plan : C2 → C3 → C5 → C6 → C9 → C8 → C4 → C7 → C10.
+2. Compléter le contenu non bloquant : références de sources par module, « bonnes pratiques / erreurs » par forme de substitut (Module 3-A, cf. C10 — bloqué sur contenu Thibault).
+3. Passe de validation visuelle/UX par Thibault (`npm run dev`, checklist `VALIDATION.md`) au fil des tâches du lot.
 
 ## Notes / décisions en attente
 - Données cliniques **validées** (titration, vapoteuse, 4D, sources discrètes) — cf. `docs/contenu-modules.md`.
