@@ -121,7 +121,7 @@ dans `docs/contenu-modules.md` (autorité du contenu).
   - visuel : grille de 6 cartes lisibles, clic ouvre le module, retour fonctionne.
 - **Si bloqué :** —
 - **Commit :** `feat: carte centrale des modules`
-- **Statut :** [x] fait · exécuté par : Haiku · le : 2026-06-28 · commit : 0fc4637
+- **Statut :** [x] fait · exécuté par : Haiku · le : 2026-06-28 · commits : 0fc4637 (grille), 17f2b64 (ModuleShell)
 
 ### T5 — Utilitaire de courbe nicotine · Modèle : Sonnet
 - **But :** fonction pure générant les courbes (partagée par Modules 2 et 5), valeurs **relatives 0–1**, **avec test unitaire** (c'est ici que l'auto-validation a le plus de valeur : logique pure, pas de rendu).
