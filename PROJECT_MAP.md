@@ -40,7 +40,7 @@ src/
     soulagement/SoulagementModule.tsx          # Module 5 — le piège du soulagement (T7)
     craving/CravingModule.tsx                  # Module 6 — gérer le craving / 4D (T11)
   lib/
-    nicotineCurve.ts + .test.ts  # logique pure : sampleCurve/toSvgPath, partagée Modules 2 & 5
+    nicotineCurve.ts + .test.ts  # logique pure : sampleCurve/toSvgPath/sampleStress, partagée Modules 2 & 5
 docs/
   architecture.md
   contenu-modules.md          # autorité du contenu médical par module

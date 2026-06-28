@@ -71,6 +71,19 @@
 - [ ] Toggle Jour/Nuit : le bloc nuit reste clampé ≤ dose de jour et s'affiche aussi en multi-patchs 2×2.
 - [ ] Message « Expérimentez, fiez-vous à votre ressenti » toujours présent ; aucun dosage chiffré affiché.
 
+## C4 — Soulagement : graphe stress + nicotine *(récit proposé, à valider par Thibault)*
+- [ ] **Écran non-fumeur** : une seule ligne (verte, pleine) « Stress basal (stable) », **aucune courbe ni mention de nicotine**.
+- [ ] **Écran fumeur** : courbe nicotine en **pointillé gris discret** (« Nicotine (repère, pointillé) ») + courbe stress en **trait plein ambre** (« Stress (trait plein) ») qui monte quand la nicotine redescend et **chute brièvement** juste après chaque cigarette.
+- [ ] Annotation italique « soulagement du manque » visible au niveau d'un creux de la courbe de stress (vers le milieu du graphe).
+- [ ] Bouton **« Comparer au non-fumeur »** (visible seulement en mode Fumeur) superpose un repère pointillé vert horizontal stable ; visuellement, la courbe de stress du fumeur reste **majoritairement au-dessus** de ce repère.
+- [ ] Message sous le graphe change avec la bascule (ton non culpabilisant conservé).
+- [ ] Mention « schéma illustratif » présente.
+- **Question d'arbitrage (cf. PLAN §C4, « Si bloqué ») :** le récit chiffré codé est une proposition plausible, pas une donnée clinique :
+  - stress basal non-fumeur = 0,25 (échelle relative 0–1) ;
+  - stress basal fumeur juste après une cigarette (soulagement) = 0,30 (légèrement au-dessus du non-fumeur) ;
+  - amplitude de manque = 0,35 → plafond de tension du fumeur sans cigarette récente ≈ 0,65.
+  La chute de stress est synchronisée exactement avec le pic de nicotine (même cinétique que `cigaretteKernel`). **À valider/ajuster par Thibault** : ces amplitudes relatives correspondent-elles au message pédagogique voulu, ou faut-il un creux plus marqué / un plafond plus bas ?
+
 ## C3 — Nicotine : timeline animée + coloration par zone
 - [ ] Cliquer sur « Fumer une cigarette » / « Substitut ponctuel » / « Vapoteuse » / « Poser un patch » ajoute un pictogramme sur l'axe du temps, à la position du curseur « maintenant » (pas à un créneau fixe).
 - [ ] « Lecture » fait avancer le curseur de gauche à droite ; la courbe déjà parcourue se colore en **vert** dans la zone confortable et en **rouge** sous le seuil de manque ou au-dessus du seuil de tolérance ; le reste de la courbe (futur) reste fin et discret.

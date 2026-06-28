@@ -3,6 +3,16 @@ export const THRESHOLD_HIGH = 0.80;
 export const PATCH_PLATEAU = 0.45;
 export const PATCH_RAMP = 0.1;
 
+/**
+ * Modèle de stress illustratif (C4) : non-fumeur = palier bas constant ;
+ * fumeur = palier légèrement plus haut (relief, juste après une prise) qui
+ * remonte vers un plafond (manque) au fur et à mesure que la nicotine redescend.
+ * Valeurs pédagogiques, pas cliniques — cf. AUDIT_VISUEL_UX_2026-06-28.md §6.
+ */
+export const STRESS_BASAL_NON_FUMEUR = 0.25;
+export const STRESS_BASAL_FUMEUR = 0.30;
+export const STRESS_AMPLITUDE_MANQUE = 0.35;
+
 export type CurveEvent = { kind: 'cigarette' | 'ponctuel' | 'vapoteuse' | 'patch'; t: number };
 export type Zone = 'manque' | 'confort' | 'haut';
 
@@ -45,6 +55,15 @@ export function sampleCurve(opts: { patch: boolean; events: CurveEvent[]; n?: nu
     ys.push(Math.min(1, Math.max(0, y)));
   }
   return ys;
+}
+
+export function sampleStress(opts: { fumeur: boolean; events?: CurveEvent[]; n?: number }): number[] {
+  const n = opts.n ?? 120;
+  if (!opts.fumeur) return Array.from({ length: n }, () => STRESS_BASAL_NON_FUMEUR);
+  const nicotine = sampleCurve({ patch: false, events: opts.events ?? [], n });
+  return nicotine.map((y) =>
+    Math.min(1, Math.max(0, STRESS_BASAL_FUMEUR + STRESS_AMPLITUDE_MANQUE * (1 - y))),
+  );
 }
 
 export function classifyZone(y: number): Zone {

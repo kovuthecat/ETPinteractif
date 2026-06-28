@@ -40,28 +40,56 @@
   border-radius: var(--radius);
 }
 
-.zoneConfortable {
-  fill: var(--color-accent);
-  opacity: 0.08;
-}
-
-.seuil {
+.courbeNicotine {
+  fill: none;
   stroke: var(--color-text);
-  stroke-width: 1.5;
-  stroke-dasharray: 6 6;
-  opacity: 0.5;
+  stroke-width: 2;
+  stroke-dasharray: 5 5;
+  opacity: 0.45;
 }
 
-.label {
+.labelNicotine {
   font-size: 12px;
   fill: var(--color-text);
   opacity: 0.6;
 }
 
-.courbe {
+.courbeStressCalme {
   fill: none;
-  stroke: var(--color-accent);
+  stroke: var(--color-confort);
   stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.courbeStressFumeur {
+  fill: none;
+  stroke: var(--color-vigilance);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.labelStress {
+  font-size: 12px;
+  font-weight: 600;
+  fill: var(--color-text);
+}
+
+.repereNonFumeur {
+  stroke: var(--color-confort);
+  stroke-width: 1.5;
+  stroke-dasharray: 6 6;
+  opacity: 0.7;
+}
+
+.labelRepere {
+  font-size: 12px;
+  fill: var(--color-confort);
+}
+
+.labelAnnotation {
+  font-size: 12px;
+  font-style: italic;
+  fill: var(--color-vigilance);
 }
 
 .mention {

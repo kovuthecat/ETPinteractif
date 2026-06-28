@@ -3,8 +3,12 @@ import {
   PATCH_PLATEAU,
   THRESHOLD_LOW,
   THRESHOLD_HIGH,
+  STRESS_BASAL_NON_FUMEUR,
+  STRESS_BASAL_FUMEUR,
+  STRESS_AMPLITUDE_MANQUE,
   classifyZone,
   sampleCurve,
+  sampleStress,
   toSvgPath,
   type CurveEvent,
 } from './nicotineCurve';
@@ -69,6 +73,50 @@ describe('sampleCurve', () => {
       if (x < t0) expect(y).toBe(0);
     });
     expect(ys[ys.length - 1]).toBeCloseTo(PATCH_PLATEAU, 2);
+  });
+});
+
+describe('sampleStress', () => {
+  it('non-fumeur : palier bas constant, sans dependre des events', () => {
+    const ys = sampleStress({ fumeur: false, n: 50 });
+    expect(ys).toHaveLength(50);
+    for (const y of ys) expect(y).toBe(STRESS_BASAL_NON_FUMEUR);
+  });
+
+  it('fumeur sans event : reste au plafond de manque (jamais soulage)', () => {
+    const ys = sampleStress({ fumeur: true, events: [], n: 10 });
+    for (const y of ys) {
+      expect(y).toBeCloseTo(STRESS_BASAL_FUMEUR + STRESS_AMPLITUDE_MANQUE, 5);
+    }
+  });
+
+  it('fumeur : le palier de manque depasse le palier bas du non-fumeur', () => {
+    expect(STRESS_BASAL_FUMEUR + STRESS_AMPLITUDE_MANQUE).toBeGreaterThan(STRESS_BASAL_NON_FUMEUR);
+    expect(STRESS_BASAL_FUMEUR).toBeGreaterThan(STRESS_BASAL_NON_FUMEUR);
+  });
+
+  it('fumeur : une cigarette cree un creux de stress synchronise avec le pic de nicotine', () => {
+    const t = 0.3;
+    const events: CurveEvent[] = [{ kind: 'cigarette', t }];
+    const nicotine = sampleCurve({ patch: false, events, n: 120 });
+    const stress = sampleStress({ fumeur: true, events, n: 120 });
+
+    const peakNicotine = Math.max(...nicotine);
+    const peakNicotineIndex = nicotine.indexOf(peakNicotine);
+    const minStressIndex = stress.indexOf(Math.min(...stress));
+    expect(minStressIndex).toBe(peakNicotineIndex);
+
+    const expectedMinStress = STRESS_BASAL_FUMEUR + STRESS_AMPLITUDE_MANQUE * (1 - peakNicotine);
+    expect(Math.min(...stress)).toBeCloseTo(expectedMinStress, 5);
+  });
+
+  it('fumeur : reste toujours dans [0,1] meme avec plusieurs cigarettes', () => {
+    const events: CurveEvent[] = [0.1, 0.3, 0.5, 0.7, 0.9].map((t) => ({ kind: 'cigarette', t }));
+    const ys = sampleStress({ fumeur: true, events, n: 120 });
+    for (const y of ys) {
+      expect(y).toBeGreaterThanOrEqual(0);
+      expect(y).toBeLessThanOrEqual(1);
+    }
   });
 });
 
