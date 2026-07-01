@@ -97,6 +97,24 @@ function pillarVars(p: PilierData): CSSProperties {
   return { '--pillar-color': p.color, '--pillar-color-soft': p.colorSoft } as CSSProperties;
 }
 
+// Secteur d'arc (degrés, 0°=droite, 90°=bas) choisi pour s'éloigner des deux autres cercles.
+const SECTORS: Record<Pilier, [number, number]> = {
+  physique: [120, 240],
+  psychologique: [-60, 60],
+  comportementale: [30, 150],
+};
+
+const BUBBLE_R = R + 60;
+
+function bubblePosition(p: PilierData, sector: [number, number], index: number, total: number) {
+  const t = total <= 1 ? 0.5 : index / (total - 1);
+  const angleDeg = sector[0] + t * (sector[1] - sector[0]);
+  const angleRad = (angleDeg * Math.PI) / 180;
+  const x = p.cx + BUBBLE_R * Math.cos(angleRad);
+  const y = p.cy + BUBBLE_R * Math.sin(angleRad);
+  return { left: (x / VIEW_W) * 100, top: (y / VIEW_H) * 100 };
+}
+
 export default function AddictionModule({ onNavigate }: ModuleProps) {
   const [selected, setSelected] = useState<Pilier | null>(null);
 
@@ -112,6 +130,12 @@ export default function AddictionModule({ onNavigate }: ModuleProps) {
       <p className={styles.intro}>
         L'addiction au tabac a trois dimensions imbriquées. Touchez un cercle pour l'explorer.
       </p>
+
+      {data && (
+        <p className={styles.exploreTitle} style={pillarVars(data)}>
+          De quoi parle-t-on ? — {data.label}
+        </p>
+      )}
 
       <div className={styles.vennWrap}>
         <svg
@@ -170,20 +194,22 @@ export default function AddictionModule({ onNavigate }: ModuleProps) {
             />
           );
         })}
-      </div>
 
-      {data && (
-        <div className={styles.explorePanel} style={pillarVars(data)}>
-          <p className={styles.exploreTitle}>De quoi parle-t-on ? — {data.label}</p>
-          <div className={styles.bubbleRow}>
-            {data.exemples.map((exemple) => (
-              <span key={exemple} className={styles.bubble} style={pillarVars(data)}>
+        {selected &&
+          data &&
+          data.exemples.map((exemple, index) => {
+            const { left, top } = bubblePosition(data, SECTORS[selected], index, data.exemples.length);
+            return (
+              <span
+                key={exemple}
+                className={styles.radialBubble}
+                style={{ left: `${left}%`, top: `${top}%`, ...pillarVars(data) }}
+              >
                 {exemple}
               </span>
-            ))}
-          </div>
-        </div>
-      )}
+            );
+          })}
+      </div>
 
       {data && (
         <div className={styles.actionsPanel} style={pillarVars(data)}>

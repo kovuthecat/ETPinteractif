@@ -353,3 +353,24 @@ régression.
 - [ ] Sur tablette/mobile, le diagramme s'adapte proportionnellement sans cassure (responsive OK).
 
 **Auto :** `npm run build` OK ; `tsc -b` + `vite build` OK.
+
+## V2 — Addiction : items « De quoi parle-t-on » en menu radial
+> Le panneau `.explorePanel`/`.bubbleRow` (liste sous forme de panneau, en flux) est remplacé par des bulles
+> positionnées en arc autour du cercle sélectionné, en % du `.vennWrap` (même méthode que les `.hitArea`).
+> Secteur par pilier (angle 0°=droite, 90°=bas), choisi pour s'éloigner des deux autres cercles :
+> physique 120°→240° (gauche), psychologique -60°→60° (droite), comportementale 30°→150° (bas). Rayon des
+> bulles = `R + 60` (rayon du cercle + 60, soit ~190px en coordonnées viewBox). Le titre « De quoi parle-t-on ?
+> — {label} » reste en flux, au-dessus du diagramme (ne recouvre rien). Pas de trait de liaison bulle↔cercle
+> (optionnel dans le plan, omis pour rester sobre).
+
+- [ ] Cliquer chaque pilier (Physique / Psychologique / Comportementale) : ses exemples s'affichent en éventail
+  autour du bon cercle, lisibles, sans recouvrir le cercle sélectionné ni les deux autres cercles/hitAreas.
+- [ ] Le secteur choisi s'éloigne bien des cercles voisins (physique → vers la gauche, psychologique → vers la
+  droite, comportementale → vers le bas).
+- [ ] Désélectionner (recliquer le même cercle) retire toutes les bulles.
+- [ ] Le titre « De quoi parle-t-on ? — {pilier} » reste lisible, sans chevaucher le diagramme.
+- [ ] Sur mobile/tablette étroite, pas de chevauchement gênant entre bulles (7 exemples pour physique et
+  comportementale) ; si chevauchement gênant, cf. §Si bloqué du plan (agrandir rayon/secteur).
+- [ ] Le panneau « Outils & stratégies » sous le diagramme est inchangé.
+
+**Auto :** `tsc -b` + `vite build` OK (voir commande ci-dessus).

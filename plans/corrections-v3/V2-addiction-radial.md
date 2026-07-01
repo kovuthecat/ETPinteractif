@@ -58,4 +58,4 @@ en laissant libre le côté des cercles voisins. Si toujours impossible propreme
 `fix(addiction): disposer les items en menu radial autour du cercle sélectionné (V2)`
 
 ## Statut
-[ ] à faire
+[x] fait

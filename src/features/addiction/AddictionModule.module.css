@@ -82,36 +82,28 @@
   outline-offset: -6px;
 }
 
-.explorePanel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-sm);
-  padding: var(--space-md);
-  background: var(--pillar-color-soft);
-  border-radius: var(--radius);
-  border-left: 6px solid var(--pillar-color);
-}
-
 .exploreTitle {
   margin: 0;
-  font-size: var(--font-size-lead);
+  text-align: center;
+  font-size: var(--font-size-small);
   font-weight: 600;
   color: var(--pillar-color);
 }
 
-.bubbleRow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-xs);
-}
-
-.bubble {
+.radialBubble {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  max-width: 130px;
   padding: var(--space-xs) var(--space-sm);
-  background: var(--color-surface);
+  background: var(--pillar-color-soft);
   border: 1.5px solid var(--pillar-color);
   border-radius: var(--radius);
+  color: var(--color-text);
   font-size: var(--font-size-small);
-  white-space: nowrap;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  pointer-events: none;
 }
 
 .actionsPanel {
