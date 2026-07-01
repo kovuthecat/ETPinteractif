@@ -69,8 +69,12 @@
 }
 
 .graph {
+  display: block;
   width: 100%;
+  max-width: 720px;
   height: auto;
+  max-height: 46vh;
+  margin-inline: auto;
   background: var(--color-surface);
   border-radius: var(--radius);
 }

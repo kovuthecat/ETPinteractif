@@ -137,3 +137,10 @@
 - [ ] Accroche « Que voulez-vous explorer ? » présente sous le titre.
 - [ ] Les 6 cartes sont lisibles à ~1 m (résumés en taille 16–18 px, icônes claires).
 - [ ] Responsive (2×3 sur mobile 768 px, puis 1 colonne sur mobile étroit).
+
+## R1 — Débordement systémique : zone de contenu et graphiques SVG bornés
+
+- [ ] Sur écran large (≥1800 px), aucun module (Nicotine, Soulagement, Craving, Addiction, Nicotine/toxique) ne dépasse le cadre visible ; le contenu tient dans une colonne centrée (~960 px).
+- [ ] Les graphiques SVG (courbes Nicotine/Soulagement/Craving, Venn Addiction) restent centrés, lisibles, sans étirement disproportionné ni déformation du tracé.
+- [ ] M5 (Nicotine, vue non-fumeur) : le titre n'est plus repoussé tout en bas par un grand espace vide.
+- [ ] Nicotine/toxique : la scène (illustration cigarette/fumée) tient dans la largeur de contenu bornée, sans régression des positions de hotspots.

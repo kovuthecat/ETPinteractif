@@ -4,11 +4,11 @@
 
 > **Frontières** — STATUS : état actuel · `TASKS.md` : backlog + tâches · `plans/` : plan d'une tâche active · `VALIDATION.md` : checklist visuelle.
 >
-> **Dernière mise à jour :** 2026-06-28
+> **Dernière mise à jour :** 2026-07-01
 
 ## Phase actuelle
 
-Phase 1 (squelette + 6 modules tabac) terminée. Phase 2 (corrections UX, `plans/PLAN_corrections-ux.md`) : C1-C9 faits, reste **C10** (bloqué sur contenu à fournir par Thibault). Reste globalement : passe de validation visuelle par Thibault + contenu non bloquant (sources, bonnes pratiques substituts).
+Phase 1 (squelette + 6 modules tabac) terminée. Phase 2 (corrections UX, `plans/PLAN_corrections-ux.md`) : C1-C9 faits, reste **C10** (bloqué sur contenu à fournir par Thibault). Phase 3 (`plans/PLAN_corrections-v2.md`, captures Thibault 2026-07-01) : **R1** fait (débordement systémique : `.content` borné à 960px, graphiques SVG bornés en hauteur/largeur dans Nicotine/Soulagement/Craving/Addiction) — `npm run build` non exécutable dans cet environnement (npm indisponible), à valider par Thibault. Reste globalement : passe de validation visuelle par Thibault + contenu non bloquant (sources, bonnes pratiques substituts) + suite du Lot A/B de `PLAN_corrections-v2.md`.
 
 ## Ce qui fonctionne
 
