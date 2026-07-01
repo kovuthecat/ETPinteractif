@@ -242,3 +242,72 @@
 
 **Auto :** `tsc -b` + `vite build` + `vitest run` (17 tests, dont les 2 nouveaux tests d'invariant R5) exécutés
 via `node_modules/.bin` (`/c/Program Files/nodejs/node.exe` sur le PATH) — tous verts, aucune régression.
+
+## R6 — Addiction : exploration lisible + outils dans le cadre
+
+> Le panneau « De quoi parle-t-on ? » (bulles d'exemples) qui était positionné en **absolu par-dessus le
+> diagramme de Venn** (un coin par pilier, pouvait chevaucher les cercles/libellés) est désormais un **panneau
+> en flux normal, sous le diagramme**, comme le panneau « Outils & stratégies » déjà existant — les deux
+> panneaux s'empilent verticalement, jamais de superposition. Le diagramme reste au repos (3 cercles, léger
+> grossissement ×1.06 au clic, pas d'onglets) ; l'intersection centrale reste lisible. Le contenu des « Outils
+> & stratégies » n'a **pas** été étoffé au-delà des 2 items déjà présents par pilier : `docs/contenu-modules.md`
+> §Module 1 ne fournit pas d'items supplémentaires sourcés — en ajouter aurait signifié inventer du contenu
+> médical, explicitement interdit par le plan (§Si bloqué). **Question pour Thibault** : fournir du contenu
+> « outils/stratégies » supplémentaire par pilier si un enrichissement est souhaité au-delà de la carte
+> d'orientation actuelle.
+
+- [ ] Cliquer un cercle ouvre, sous le diagramme (jamais par-dessus), un panneau « De quoi parle-t-on ? »
+  listant les exemples en bulles, entièrement lisible, sans chevauchement avec le Venn.
+- [ ] Le panneau « Outils & stratégies » reste juste en dessous, également dans le cadre.
+- [ ] Recliquer sur le même cercle referme les deux panneaux (retour au repos).
+- [ ] Les renvois « autre module » (substituts, nicotine, craving) fonctionnent toujours.
+- [ ] L'intersection centrale « Ces dimensions s'alimentent entre elles » reste visible et lisible en toute
+  circonstance.
+
+**Auto :** `tsc -b` + `vite build` + `vitest run` (17 tests) via `node_modules/.bin` — tous verts, aucune
+régression.
+
+## R7 — Craving : courbe « vague » plus expressive
+
+> Ajout d'un remplissage dégradé sous la courbe (aire, via `<linearGradient>` SVG inline), épaississement du
+> trait (`stroke-width` 3→4, arrondi), marqueur du « maintenant » renforcé (halo semi-transparent + point plein
+> cerclé), repère discret du pic (ligne pointillée verticale + libellé italique léger) et d'un axe temps discret
+> en bas du graphe. Aucune dépendance ajoutée, aucun changement de logique (`bellValue`/`getPhase` intacts).
+
+- [ ] La vague affiche une aire teintée sous la courbe (dégradé qui s'estompe vers le bas), pas seulement un
+  simple trait.
+- [ ] Le marqueur « maintenant » (point qui avance) est nettement plus visible qu'avant (halo + contour blanc).
+- [ ] Un repère pointillé discret marque le pic de l'envie, libellé « pic ».
+- [ ] Une ligne d'axe fine est visible en bas du graphe.
+- [ ] Toujours sobre, lisible à ~1 m ; aucune régression sur l'atténuation de la courbe quand « Distraire » est
+  actif.
+
+**Auto :** `tsc -b` + `vite build` + `vitest run` (17 tests) via `node_modules/.bin` — tous verts, aucune
+régression.
+
+## R8 — Substituts : refonte ergonomique de la titration
+
+> Les 3 cases à cocher brutes (« Envie de fumer persiste », « Signes de surdosage », « Jour / Nuit ») sont
+> devenues des **cartes cliquables** (checkbox natif masqué visuellement mais accessible), cible ≥ 44 px,
+> icône (Flame / AlertTriangle / Moon) + état actif coloré par token sémantique (ambre vigilance pour
+> l'envie/jour-nuit, rouge toxique pour le surdosage). Le bouton grisé « Signes de surdosage → revenir en
+> arrière » est remplacé par une **bannière d'alerte explicite** (fond + bordure rouge toxique, icône, texte)
+> qui n'apparaît que si le surdosage est coché, avec le bouton d'action dedans. Les commandes de dose sont
+> regroupées par bloc jour / nuit (« Dose de jour » / « Dose de nuit », icône Sun/Moon), chaque bloc avec ses
+> propres boutons ± ¼ ≥ 44 px. Le libellé des patchs 2×2 passe sur deux lignes (nom en gras, détail
+> « 2 patchs + ¼ (9 quarts) » en dessous, plus discret) pour la lisibilité. Aucun changement de mécanique
+> (quarts illimités, patchs 2×2, jour ≥ nuit implicite via `Math.min`, aucun dosage chiffré).
+
+- [ ] Les 3 états (envie / surdosage / jour-nuit) se présentent comme des cartes avec icône, cible confortable
+  au clic/tactile, état actif visuellement distinct (couleur + icône, jamais couleur seule).
+- [ ] Cocher « Signes de surdosage » fait apparaître une bannière d'alerte rouge explicite avec le bouton
+  « Revenir en arrière (− ¼) », plutôt qu'un bouton grisé peu parlant.
+- [ ] Décocher « Signes de surdosage » fait disparaître la bannière.
+- [ ] Les blocs « Dose de jour » / « Dose de nuit » (ce dernier seulement si « Jour / Nuit » coché) sont
+  visuellement séparés, chacun avec ses patchs et ses boutons ± ¼.
+- [ ] Le double libellé des patchs (nom + décompte quarts) est lisible en deux lignes distinctes.
+- [ ] La mécanique reste identique à avant (cf. `VALIDATION.md` §C2) : pas de dosage chiffré, patchs sécables en
+  quarts, dose de nuit toujours ≤ dose de jour.
+
+**Auto :** `tsc -b` + `vite build` + `vitest run` (17 tests) via `node_modules/.bin` — tous verts, aucune
+régression.

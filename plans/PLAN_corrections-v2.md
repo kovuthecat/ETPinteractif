@@ -219,7 +219,7 @@ La v1 (6 modules + socle sémantique) fonctionne, mais une passe de test en cond
 - **Si bloqué :** enrichissement des outils = reformuler/regrouper le contenu §Module 1 existant, **pas** inventer de
   nouvelles affirmations médicales → si un ajout dépasse la source, **STOP** et signaler dans `VALIDATION.md`.
 - **Commit :** `feat(module): addiction exploration lisible + outils enrichis`
-- **Statut :** [ ] à faire
+- **Statut :** [~] fait (auto OK : `tsc -b`, `vite build`, `vitest run` verts via `node_modules/.bin` ; visuel → `VALIDATION.md` ; enrichissement des outils au-delà des 2 items existants non fait — la source §Module 1 n'en fournit pas d'autres, signalé dans `VALIDATION.md` plutôt qu'inventé)
 
 ---
 
@@ -239,7 +239,7 @@ La v1 (6 modules + socle sémantique) fonctionne, mais une passe de test en cond
 - **Validation :** auto `npm run build`. visuel : la vague est nettement plus lisible/expressive, toujours sobre.
 - **Si bloqué :** —
 - **Commit :** `style(module): craving courbe de la vague plus expressive`
-- **Statut :** [ ] à faire
+- **Statut :** [~] fait (auto OK : `tsc -b`, `vite build`, `vitest run` verts via `node_modules/.bin` ; visuel → `VALIDATION.md`)
 
 ### R8 — Substituts : refonte ergonomique de la titration · Modèle : Sonnet, effort : medium
 - **But :** l'interface « Méthode de titration du patch » est jugée « moche et peu ergonomique » → la restructurer
@@ -261,7 +261,7 @@ La v1 (6 modules + socle sémantique) fonctionne, mais une passe de test en cond
   la mécanique C2 (cf. `VALIDATION.md` §C2) reste vraie ; aucun dosage chiffré.
 - **Si bloqué :** —
 - **Commit :** `feat(module): substituts refonte ergonomique de la titration`
-- **Statut :** [ ] à faire
+- **Statut :** [~] fait (auto OK : `tsc -b`, `vite build`, `vitest run` verts via `node_modules/.bin` ; visuel → `VALIDATION.md`)
 
 ---
 
