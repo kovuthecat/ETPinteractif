@@ -384,3 +384,22 @@ régression.
 - [ ] Le panneau « Outils & stratégies » sous le diagramme est inchangé.
 
 **Auto :** `tsc -b` + `vite build` OK (voir commande ci-dessus).
+
+## V4 — Soulagement : clic → chute/remontée figée, plus de curseur
+> Alignement sur le modèle nicotine V3 : suppression du balayage continu (`now`/rAF/`resetTick`), du
+> curseur bleu et du hook `useReducedMotion` devenu inutile. « Fumer une cigarette » dépose désormais
+> une prise sur une frise statique via `nextEventTime` (même mécanique que Nicotine). Les courbes
+> nicotine (repère pointillé) et stress (trait plein) se tracent d'un coup sur toute la frise ; le
+> `troughIndex`/l'annotation « soulagement du manque » se recalent sur la courbe complète. `nicotineCurve.ts`
+> non modifié (formule héritée du retune V3).
+
+- [ ] Plus de curseur bleu ni de balayage automatique à l'ouverture du module.
+- [ ] Cliquer « Fumer une cigarette » dépose un pictogramme sur la frise ; le stress chute au pic de
+  nicotine (courbe pointillée grise) puis remonte, courbe figée immédiatement (pas d'animation).
+- [ ] Enchaîner plusieurs cigarettes cumule les creux/rebonds (dents de scie) sur la frise.
+- [ ] Annotation italique « soulagement du manque » ancrée au creux le plus bas de la courbe complète.
+- [ ] « Comparer au non-fumeur » superpose toujours la ligne repère sous le creux le plus bas du fumeur.
+- [ ] « Réinitialiser » vide les événements et la courbe redevient plate au plafond de manque.
+- [ ] Mention « schéma illustratif » toujours présente.
+
+**Auto :** `tsc -b` + `vite build` + `vitest run` (20 tests) — tous verts, aucune régression.

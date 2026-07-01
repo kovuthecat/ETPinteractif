@@ -152,12 +152,6 @@
   color: var(--color-text);
 }
 
-.cursor {
-  stroke: var(--color-nav);
-  stroke-width: 2;
-  stroke-dasharray: 4 4;
-}
-
 .mention {
   margin: 0;
   font-size: 0.85em;

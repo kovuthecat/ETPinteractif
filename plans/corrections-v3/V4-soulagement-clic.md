@@ -57,4 +57,4 @@ VALIDATION.md (arbitrage d'amplitude), ne pas re-modifier la lib sans accord. Do
 `fix(soulagement): supprimer le curseur/balayage, aligner sur le modèle cumul (V4)`
 
 ## Statut
-[ ] à faire
+[x] fait
