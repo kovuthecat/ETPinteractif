@@ -17,9 +17,10 @@ interface Carte {
   detail: string;
   x: number;
   y: number;
+  placed: boolean;
 }
 
-const SEED_CARTES: Omit<Carte, 'detail'>[] = [
+const SEED_CARTES: Omit<Carte, 'detail' | 'placed'>[] = [
   { id: 'sante', texte: 'Ma santé', x: 20, y: 22 },
   { id: 'argent', texte: "L'argent économisé", x: 50, y: 16 },
   { id: 'gout', texte: "Retrouver le goût et l'odorat", x: 80, y: 24 },
@@ -59,7 +60,7 @@ export default function MotivationModule(_: ModuleProps) {
   const [confiance, setConfiance] = useState(5);
 
   const [cartes, setCartes] = useState<Carte[]>(() =>
-    SEED_CARTES.map((c) => ({ ...c, detail: '' })),
+    SEED_CARTES.map((c) => ({ ...c, detail: '', placed: false })),
   );
   const [dragId, setDragId] = useState<string | null>(null);
   const [focusId, setFocusId] = useState<string | null>(null);
@@ -105,8 +106,17 @@ export default function MotivationModule(_: ModuleProps) {
     });
   }
 
-  function handlePointerUp(id: string) {
-    if (dragId === id) setDragId(null);
+  function handlePointerUp(e: ReactPointerEvent<HTMLButtonElement>, id: string) {
+    if (dragId !== id) return;
+    const rect = containerRef.current?.getBoundingClientRect();
+    const dansLeTableau =
+      !!rect &&
+      e.clientX >= rect.left &&
+      e.clientX <= rect.right &&
+      e.clientY >= rect.top &&
+      e.clientY <= rect.bottom;
+    if (!dansLeTableau) updateCarte(id, { placed: false });
+    setDragId(null);
   }
 
   function handleKeyDown(e: ReactKeyboardEvent<HTMLButtonElement>, id: string) {
@@ -132,8 +142,16 @@ export default function MotivationModule(_: ModuleProps) {
     const n = cartes.length;
     const x = clamp(20 + ((n * 17) % 60), MARGIN, 100 - MARGIN);
     const y = clamp(20 + ((n * 29) % 60), MARGIN, 100 - MARGIN);
-    setCartes((prev) => [...prev, { id, texte: '', detail: '', x, y }]);
+    setCartes((prev) => [...prev, { id, texte: '', detail: '', x, y, placed: false }]);
     setFocusId(id);
+  }
+
+  function placerCarte(id: string) {
+    updateCarte(id, { placed: true });
+  }
+
+  function retirerCarte(id: string) {
+    updateCarte(id, { placed: false });
   }
 
   const onglets: { id: Onglet; label: string }[] = [
@@ -237,49 +255,95 @@ export default function MotivationModule(_: ModuleProps) {
       >
         <h2 className={styles.sectionTitle}>Mes raisons</h2>
         <p className={styles.sousTitre}>
-          Déplacez les cartes, complétez-les avec un détail personnel, ou ajoutez les vôtres.
+          Piochez dans la réserve les raisons qui comptent pour vous et glissez-les sur le
+          tableau (ou utilisez les boutons « Placer » / « Retirer »).
         </p>
 
+        <div className={styles.reserveBloc}>
+          <h3 className={styles.reserveTitre}>Réserve</h3>
+          <div className={styles.reserve}>
+            {cartes
+              .filter((carte) => !carte.placed)
+              .map((carte) => (
+                <div key={carte.id} className={styles.carteReserve}>
+                  <input
+                    ref={(el) => {
+                      if (el) inputRefs.current.set(carte.id, el);
+                      else inputRefs.current.delete(carte.id);
+                    }}
+                    className={styles.carteInputReserve}
+                    value={carte.texte}
+                    onChange={(e) => updateCarte(carte.id, { texte: e.target.value })}
+                    placeholder="Une raison…"
+                    aria-label="Texte de la raison"
+                  />
+                  <button
+                    type="button"
+                    className={styles.btnPlacer}
+                    onClick={() => placerCarte(carte.id)}
+                  >
+                    Placer
+                  </button>
+                </div>
+              ))}
+            {cartes.filter((carte) => !carte.placed).length === 0 && (
+              <p className={styles.reserveVide}>Toutes les cartes sont sur le tableau.</p>
+            )}
+          </div>
+        </div>
+
         <div className={styles.whiteboard} ref={containerRef}>
-          {cartes.map((carte) => (
-            <div
-              key={carte.id}
-              className={styles.carte}
-              style={{ left: `${carte.x}%`, top: `${carte.y}%` }}
-            >
-              <button
-                type="button"
-                className={styles.poignee}
-                onPointerDown={(e) => handlePointerDown(e, carte.id)}
-                onPointerMove={(e) => handlePointerMove(e, carte.id)}
-                onPointerUp={() => handlePointerUp(carte.id)}
-                onPointerCancel={() => handlePointerUp(carte.id)}
-                onKeyDown={(e) => handleKeyDown(e, carte.id)}
-                aria-label={`Déplacer la carte « ${carte.texte || 'sans titre'} » (flèches du clavier ou glisser)`}
+          {cartes
+            .filter((carte) => carte.placed)
+            .map((carte) => (
+              <div
+                key={carte.id}
+                className={styles.carte}
+                style={{ left: `${carte.x}%`, top: `${carte.y}%` }}
               >
-                <GripVertical size={18} aria-hidden="true" />
-              </button>
-              <input
-                ref={(el) => {
-                  if (el) inputRefs.current.set(carte.id, el);
-                  else inputRefs.current.delete(carte.id);
-                }}
-                className={styles.carteInput}
-                value={carte.texte}
-                onChange={(e) => updateCarte(carte.id, { texte: e.target.value })}
-                placeholder="Une raison…"
-                aria-label="Texte de la raison"
-              />
-              <textarea
-                className={styles.carteDetail}
-                value={carte.detail}
-                onChange={(e) => updateCarte(carte.id, { detail: e.target.value })}
-                placeholder="+ un détail (optionnel)"
-                aria-label="Détail personnel"
-                rows={2}
-              />
-            </div>
-          ))}
+                <div className={styles.carteHeader}>
+                  <button
+                    type="button"
+                    className={styles.poignee}
+                    onPointerDown={(e) => handlePointerDown(e, carte.id)}
+                    onPointerMove={(e) => handlePointerMove(e, carte.id)}
+                    onPointerUp={(e) => handlePointerUp(e, carte.id)}
+                    onPointerCancel={() => setDragId((current) => (current === carte.id ? null : current))}
+                    onKeyDown={(e) => handleKeyDown(e, carte.id)}
+                    aria-label={`Déplacer la carte « ${carte.texte || 'sans titre'} » (flèches du clavier ou glisser)`}
+                  >
+                    <GripVertical size={18} aria-hidden="true" />
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.btnRetirer}
+                    onClick={() => retirerCarte(carte.id)}
+                    aria-label={`Retirer la carte « ${carte.texte || 'sans titre'} » du tableau (renvoyer à la réserve)`}
+                  >
+                    Retirer
+                  </button>
+                </div>
+                <input
+                  ref={(el) => {
+                    if (el) inputRefs.current.set(carte.id, el);
+                    else inputRefs.current.delete(carte.id);
+                  }}
+                  className={styles.carteInput}
+                  value={carte.texte}
+                  onChange={(e) => updateCarte(carte.id, { texte: e.target.value })}
+                  placeholder="Une raison…"
+                  aria-label="Texte de la raison"
+                />
+                <textarea
+                  className={styles.carteDetail}
+                  value={carte.detail}
+                  onChange={(e) => updateCarte(carte.id, { detail: e.target.value })}
+                  placeholder="+ un détail (optionnel)"
+                  aria-label="Détail personnel"
+                  rows={2}
+                />
+              </div>
+            ))}
         </div>
 
         <button type="button" className={styles.btnAjouter} onClick={ajouterCarte}>

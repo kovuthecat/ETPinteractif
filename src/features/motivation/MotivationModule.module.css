@@ -97,9 +97,83 @@
   opacity: 0.75;
 }
 
+.reserveBloc {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-md);
+  background: var(--color-surface);
+  border-radius: var(--radius);
+}
+
+.reserveTitre {
+  margin: 0;
+  font-size: 1em;
+  opacity: 0.8;
+}
+
+.reserve {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.reserveVide {
+  margin: 0;
+  font-size: var(--font-size-small);
+  font-style: italic;
+  opacity: 0.7;
+}
+
+.carteReserve {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--color-confort-soft);
+  border: 2px solid var(--color-confort);
+  border-radius: var(--radius);
+}
+
+.carteInputReserve {
+  width: 180px;
+  padding: var(--space-xs) var(--space-sm);
+  border: 1px solid var(--color-confort);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 1em;
+  font-weight: 600;
+}
+
+.btnPlacer,
+.btnRetirer {
+  min-height: 44px;
+  padding: 0 var(--space-sm);
+  border: 2px solid var(--color-confort);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--color-confort);
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btnPlacer:hover,
+.btnRetirer:hover {
+  background: var(--color-confort-soft);
+}
+
+.btnPlacer:focus-visible,
+.btnRetirer:focus-visible {
+  background: var(--color-confort-soft);
+  outline: 3px solid var(--color-confort);
+  outline-offset: 2px;
+}
+
 .whiteboard {
   position: relative;
-  min-height: 420px;
+  min-height: min(70vh, 640px);
   background: var(--color-surface);
   border: 2px dashed var(--color-nav-soft);
   border-radius: var(--radius);
@@ -120,11 +194,19 @@
   border-radius: var(--radius);
 }
 
+.carteHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xs);
+}
+
 .poignee {
-  align-self: center;
   display: flex;
   align-items: center;
   justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
   background: transparent;
   border: none;
   color: var(--color-confort);

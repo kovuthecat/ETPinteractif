@@ -50,4 +50,4 @@ Si Thibault n'a pas encore validé le texte → appliquer la proposition ci-dess
 `fix(nicotine-toxique): reformuler « Mélange chimique » avec sa conséquence (V6)`
 
 ## Statut
-[ ] à faire
+[x] fait — texte à valider par Thibault (cf. VALIDATION.md)

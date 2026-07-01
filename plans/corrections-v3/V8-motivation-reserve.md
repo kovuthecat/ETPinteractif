@@ -67,4 +67,6 @@ repositionnement **dans** le tableau. Signaler le choix dans VALIDATION.md. Dout
 `feat(motivation): réserve de cartes + tableau agrandi, glisser pour placer/retirer (V8)`
 
 ## Statut
-[ ] à faire
+[x] fait — voir VALIDATION.md §V8. Drag natif conservé uniquement pour le repositionnement
+intra-tableau (cf. §Si bloqué : capture pointeur trop fragile entre deux conteneurs DOM) ; les
+boutons « Placer » / « Retirer » assurent le passage réserve ↔ tableau.

@@ -429,3 +429,65 @@ régression.
 - [ ] Cibles tactiles (cartes, boutons internes) restent confortables malgré la taille réduite.
 
 **Auto :** `tsc -b` + `vite build` OK.
+
+## V7 — Motivation : scinder en 2 onglets
+> Barre d'onglets (`role="tablist"`) ajoutée en tête du module : « Où en êtes-vous ? » / « Mes
+> raisons ». Les deux `<section>` existantes restent montées en permanence (aucun état perdu,
+> les curseurs/cartes vivent déjà dans le state du composant parent) et sont masquées via
+> l'attribut HTML `hidden` selon l'onglet actif. Navigation clavier flèches gauche/droite entre
+> onglets (`aria-selected`, `tabIndex` roving), cibles ≥ 44 px.
+
+- [ ] Deux onglets visibles en haut du module, bascule fluide au clic.
+- [ ] Flèches gauche/droite au clavier (focus sur un onglet) changent l'onglet actif.
+- [ ] Modifier un curseur ou une carte, changer d'onglet puis revenir : les valeurs sont conservées.
+- [ ] Lisible à ~1 m ; un seul panneau visible à la fois.
+
+**Auto :** `tsc -b` + `vite build` OK.
+
+## V8 — Motivation : tableau plus grand + cartes en réserve
+> Ajout d'un champ `placed: boolean` sur `Carte` ; les 6 cartes seed et toute nouvelle carte
+> démarrent `placed:false` (dans la **réserve**, un bac en flux normal au-dessus du tableau).
+> Deux boutons non-drag « Placer » / « Retirer » (≥ 44 px) permettent de faire passer une carte
+> entre réserve et tableau — **choix délibéré retenu depuis le §« Si bloqué » du plan** : le
+> glisser-déposer natif (pointer capture) entre deux conteneurs DOM distincts (réserve en flux vs
+> tableau en position absolue) démonterait/remonterait le bouton-poignée en cours de glissement et
+> casserait la capture du pointeur — fragile pour un gain d'ergonomie marginal face aux boutons
+> dédiés. Le drag au pointeur reste donc utilisé **uniquement pour repositionner une carte déjà
+> placée à l'intérieur du tableau** (comportement inchangé) ; en bonus, relâcher le glissement
+> **en dehors** du cadre du tableau renvoie la carte à la réserve (`placed:false`), en plus du
+> bouton « Retirer ». `.whiteboard` agrandi (`min-height: min(70vh, 640px)`, borné par `.content`).
+
+- [ ] Au chargement du module, les 6 cartes de départ sont toutes dans la **réserve** (en haut),
+  le tableau en dessous est **vide** et nettement plus grand qu'avant.
+- [ ] Bouton « Placer » sur une carte de la réserve : la carte apparaît sur le tableau, à sa
+  position d'origine (ou dernière position connue).
+- [ ] Bouton « Retirer » sur une carte du tableau : la carte revient dans la réserve (bac), rien
+  n'est perdu (texte/détail conservés).
+- [ ] Glisser une carte déjà placée (poignée) puis relâcher **en dehors** du cadre du tableau : la
+  carte revient aussi dans la réserve.
+- [ ] Glisser une carte placée **à l'intérieur** du tableau se comporte comme avant (repositionnement
+  libre, bornes 10–90 %).
+- [ ] Déplacement au clavier (flèches, une fois la poignée focus) fonctionne toujours pour les
+  cartes placées.
+- [ ] « + Une raison » crée une nouvelle carte **dans la réserve**, focus posé sur son champ texte.
+- [ ] Quand toutes les cartes sont placées, la réserve affiche « Toutes les cartes sont sur le
+  tableau. » plutôt qu'un bac vide silencieux.
+- [ ] Cibles tactiles (Placer / Retirer / poignée) confortables (≥ 44 px) ; utilisable au doigt.
+
+**Auto :** `tsc -b` + `vite build` OK.
+
+## V6 — Nicotine-toxique : « Mélange chimique » reformulé avec conséquence *(texte à valider par Thibault)*
+> Le `detail` du hotspot `melange` n'énonçait que le chiffre (« ~7 000 substances chimiques ») sans
+> conséquence. Reformulé pour nommer la conséquence, cohérent avec la source
+> (`docs/contenu-modules.md` §Module 4 : « c'est la fumée/combustion qui rend malade, pas la
+> nicotine ») : « En brûlant, le tabac libère un cocktail d'environ 7 000 substances chimiques. C'est
+> ce mélange issu de la combustion — et non la nicotine — qui rend malade. » `eyebrow` inchangé
+> (« Fumée de combustion »).
+
+- [ ] Ouvrir le pop-up « Mélange chimique » : une conséquence claire est énoncée (« rend malade »),
+  pas seulement le chiffre.
+- [ ] Cohérent avec le message du module : c'est la combustion (pas la nicotine) qui rend malade.
+- [ ] **Validation médicale (Thibault) :** confirmer la formulation « cocktail... rend malade » —
+  texte proposé par Claude, à ajuster si besoin.
+
+**Auto :** `tsc -b` + `vite build` OK.
