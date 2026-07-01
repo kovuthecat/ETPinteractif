@@ -98,7 +98,8 @@
 
 .scene {
   position: relative;
-  min-height: 590px;
+  width: 100%;
+  aspect-ratio: 1000 / 620;
   isolation: isolate;
 }
 
@@ -247,12 +248,6 @@
   opacity: 0.72;
 }
 
-.topLeft { top: 17%; left: 15%; }
-.bottomLeft { top: 76%; left: 14%; }
-.topRight { top: 13%; left: 58%; }
-.bottomRight { top: 80%; left: 60%; }
-.nicotine { top: 50%; left: 83%; }
-
 .sceneLabel {
   position: absolute;
   z-index: 1;
@@ -282,10 +277,9 @@
 .detailBubble {
   position: absolute;
   z-index: 6;
-  right: 25%;
-  bottom: 4%;
   display: grid;
-  width: min(430px, 47%);
+  width: min(360px, 44%);
+  max-width: calc(100% - var(--space-md) * 2);
   grid-template-columns: auto 1fr auto;
   gap: 0.8rem;
   align-items: start;
@@ -294,19 +288,6 @@
   border-radius: var(--radius);
   background: var(--color-surface);
   box-shadow: 0 16px 38px rgb(45 38 31 / 22%);
-}
-
-.detailBubble::after {
-  position: absolute;
-  right: 18%;
-  bottom: -11px;
-  width: 18px;
-  height: 18px;
-  border-right: 2px solid currentColor;
-  border-bottom: 2px solid currentColor;
-  background: var(--color-surface);
-  content: '';
-  transform: rotate(45deg);
 }
 
 .detailBubble > svg {
@@ -404,14 +385,17 @@
 }
 
 @media (max-width: 900px) {
-  .scene { min-height: 640px; }
+  /* Sous 900px : le pop-up quitte l'ancrage au point cliqué pour un bandeau
+     bas pleine largeur — il ne peut alors jamais recouvrir un hotspot ni déborder. */
   .detailBubble {
-    right: var(--space-md);
-    bottom: var(--space-md);
-    left: var(--space-md);
-    width: auto;
+    top: auto !important;
+    right: var(--space-md) !important;
+    bottom: var(--space-md) !important;
+    left: var(--space-md) !important;
+    width: auto !important;
+    max-width: none;
+    margin: 0 !important;
   }
-  .detailBubble::after { display: none; }
   .hotspot { max-width: 165px; }
 }
 
@@ -420,18 +404,9 @@
   .filtersLabel { flex-basis: 100%; }
   .filterButton { flex: 1 1 210px; justify-content: center; }
   .legend { align-items: flex-start; flex-direction: column; }
-  .scene { min-height: 720px; }
-  .illustration { top: 45px; height: 520px; }
   .hotspot { max-width: 145px; padding: 0.55rem 0.65rem; font-size: 0.9rem; }
   .hotspot svg { width: 1.2rem; height: 1.2rem; }
-  .topLeft { top: 16%; left: 23%; }
-  .bottomLeft { top: 57%; left: 23%; }
-  .topRight { top: 16%; left: 66%; }
-  .bottomRight { top: 57%; left: 66%; }
-  .nicotine { top: 39%; left: 78%; }
-  .combustionLabel { top: 43%; left: 25%; }
-  .nicotineLabel { top: 47%; left: 63%; }
-  .detailBubble { bottom: 0.75rem; }
+  .detailBubble { bottom: 0.75rem !important; }
   .navigation { align-items: stretch; flex-direction: column; }
   .navigation button { justify-content: space-between; width: 100%; }
 }

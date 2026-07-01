@@ -8,7 +8,7 @@
 
 ## Phase actuelle
 
-Phase 1 (squelette + 6 modules tabac) terminée. Phase 2 (corrections UX, `plans/PLAN_corrections-ux.md`) : C1-C9 faits, reste **C10** (bloqué sur contenu à fournir par Thibault). Phase 3 (`plans/PLAN_corrections-v2.md`, captures Thibault 2026-07-01) : **R1** fait (débordement systémique : `.content` borné à 960px, graphiques SVG bornés en hauteur/largeur dans Nicotine/Soulagement/Craving/Addiction) — `npm run build` non exécutable dans cet environnement (npm indisponible), à valider par Thibault. Reste globalement : passe de validation visuelle par Thibault + contenu non bloquant (sources, bonnes pratiques substituts) + suite du Lot A/B de `PLAN_corrections-v2.md`.
+Phase 1 (squelette + 6 modules tabac) terminée. Phase 2 (corrections UX, `plans/PLAN_corrections-ux.md`) : C1-C9 faits, reste **C10** (bloqué sur contenu à fournir par Thibault). Phase 3 (`plans/PLAN_corrections-v2.md`, captures Thibault 2026-07-01) : **R1** fait (débordement systémique : `.content` borné à 960px, graphiques SVG bornés en hauteur/largeur dans Nicotine/Soulagement/Craving/Addiction). **R2** fait (Nicotine-toxique : hotspots/étiquettes/pop-up dérivés d'un point unique en coordonnées viewBox ; `.scene` suit le ratio du viewBox `1000/620` — supprime le décalage lié au letterboxing du SVG sur les breakpoints mobiles ; pop-up ancré près du point cliqué au lieu d'un coin fixe). `npm run build` non exécutable dans cet environnement (npm indisponible), à valider par Thibault. Reste globalement : passe de validation visuelle par Thibault + contenu non bloquant (sources, bonnes pratiques substituts) + suite du Lot B/C/D/E de `PLAN_corrections-v2.md` (R3-R9).
 
 ## Ce qui fonctionne
 

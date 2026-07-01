@@ -111,7 +111,7 @@ La v1 (6 modules + socle sémantique) fonctionne, mais une passe de test en cond
   (haut-gauche) ouvre le pop-up **près de haut-gauche**, pas en bas à droite ; rien ne dépasse.
 - **Si bloqué :** conversion coordonnées instable au resize → privilégier `<foreignObject>` dans le SVG (suit le viewBox).
 - **Commit :** `fix(module): nicotine-toxique etiquettes alignees + popup ancre`
-- **Statut :** [ ] à faire
+- **Statut :** [~] fait (auto en attente : `npm` indisponible dans cet environnement pour lancer `npm run build` ; visuel → `VALIDATION.md`)
 
 ### R3 — Craving : sortir les cartes 4D du hors-champ · Modèle : Sonnet, effort : medium
 - **But :** les cartes des outils 4D (Différer / Distraire / Décontracter / De l'eau) ne doivent plus **sortir de

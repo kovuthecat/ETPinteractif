@@ -144,3 +144,18 @@
 - [ ] Les graphiques SVG (courbes Nicotine/Soulagement/Craving, Venn Addiction) restent centrés, lisibles, sans étirement disproportionné ni déformation du tracé.
 - [ ] M5 (Nicotine, vue non-fumeur) : le titre n'est plus repoussé tout en bas par un grand espace vide.
 - [ ] Nicotine/toxique : la scène (illustration cigarette/fumée) tient dans la largeur de contenu bornée, sans régression des positions de hotspots.
+
+## R2 — Nicotine-toxique : étiquettes alignées + pop-up ancré
+
+> Refonte : les 4 hotspots toxiques + la position « nicotine » sont désormais définis par un point unique
+> (coordonnées viewBox) qui sert à la fois au tracé du trait pointillé, au placement de l'étiquette et à
+> l'ancrage du pop-up. La scène (`.scene`) suit maintenant le ratio du viewBox (`aspect-ratio: 1000/620`),
+> ce qui supprime le besoin de repositionner les hotspots par media query (root cause du décalage : le SVG
+> se redimensionnait en lettrboxing sans que les étiquettes HTML suivent).
+
+- [ ] Chaque étiquette (« Goudrons et particules », « Monoxyde de carbone », « Cancérogènes », « Mélange chimique ») touche bien l'extrémité de sa ligne pointillée, à toutes les tailles d'écran (large, tablette, mobile).
+- [ ] Cliquer « Goudrons et particules » (haut-gauche) ouvre le pop-up **près du point cliqué** (à droite/en dessous), pas en bas à droite de la scène.
+- [ ] Cliquer « Cancérogènes » ou « Mélange chimique » (à droite du cadre) ouvre le pop-up qui s'anchore à gauche du point (jamais hors cadre à droite).
+- [ ] Sous 900 px (tablette/mobile), le pop-up devient un bandeau ancré en bas de la scène : il ne recouvre aucun hotspot et ne déborde jamais horizontalement.
+- [ ] Redimensionner la fenêtre ne désynchronise plus jamais trait / étiquette / pop-up (positions dérivées d'une seule source).
+- [ ] Aucune régression : filtres toxiques/dépendance, fermeture du pop-up (croix), renvois vers Substituts/Nicotine.
