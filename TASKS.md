@@ -1,25 +1,15 @@
 # TASKS.md
 
-## Règles
-- Une tâche = une intention claire, peu de fichiers, validable indépendamment.
-- Découper avant implémentation ; repasser par la réflexion si l'arbitrage est large.
+Index des tâches : backlog + actives. Historique des tâches faites : `git log`.
 
-## À faire
-- [ ] Exécuter `PLAN_modules-tabac.md` : T1–T11 (squelette Vite + 6 modules)
-- [ ] Compléter (non bloquant) : références de sources par module
-- [ ] Compléter (non bloquant) : « bonnes pratiques / erreurs » par forme de substitut (Module 3-A)
+> **Frontières** — TASKS : le quoi · `STATUS.md` : l'état · `plans/` : le comment · `VALIDATION.md` : visuel.
+> Convention : `- [statut] T-ID — titre · modèle: X, effort: Y · plan: <lien ou —>`
+> effort : `minimal · low · medium · high · max` (à vérifier avant de lancer la session).
 
-## En cours
-- [ ] Phase 0 — cadrage du projet (prêt à passer en Phase 1 dès exécution du plan)
+## Tâches
 
-## Fait
-- [x] Initialiser le contexte projet (fichiers de contexte créés le 2026-06-28)
-- [x] Décisions structurantes (usage / navigation / données / stack)
-- [x] Cadrage des 6 premiers modules + décisions de conception (2026-06-28)
-- [x] Données cliniques validées + plan d'exécution `PLAN_modules-tabac.md` (2026-06-28)
-
-## Bugs connus
-- (aucun)
-
-## Dette technique
-- (aucune)
+- [~] C10 — Compléter le contenu non bloquant · modèle: Sonnet, effort: low · plan: → plans/PLAN_corrections-ux.md
+  - [ ] Références de sources par module (HAS / Tabac Info Service) dans `registry.ts`
+  - [ ] « Bonnes pratiques / erreurs fréquentes » par forme de substitut (Module 3-A)
+  - **Bloqué** : en attente du contenu à fournir par Thibault.
+- [ ] T-301 — Passe de validation visuelle/UX par Thibault (`npm run dev`, cf. `VALIDATION.md`) · humain
