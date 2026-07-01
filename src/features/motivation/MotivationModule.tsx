@@ -46,12 +46,15 @@ function relanceConfiance(valeur: number): { bas?: string; haut?: string } {
   };
 }
 
+type Onglet = 'echelles' | 'raisons';
+
 export default function MotivationModule(_: ModuleProps) {
   const importanceId = useId();
   const confianceId = useId();
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRefs = useRef<Map<string, HTMLInputElement>>(new Map());
 
+  const [onglet, setOnglet] = useState<Onglet>('echelles');
   const [importance, setImportance] = useState(5);
   const [confiance, setConfiance] = useState(5);
 
@@ -133,9 +136,46 @@ export default function MotivationModule(_: ModuleProps) {
     setFocusId(id);
   }
 
+  const onglets: { id: Onglet; label: string }[] = [
+    { id: 'echelles', label: 'Où en êtes-vous ?' },
+    { id: 'raisons', label: 'Mes raisons' },
+  ];
+
+  function handleTabKeyDown(e: ReactKeyboardEvent<HTMLButtonElement>, index: number) {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    e.preventDefault();
+    const nextIndex = (index + (e.key === 'ArrowRight' ? 1 : -1) + onglets.length) % onglets.length;
+    setOnglet(onglets[nextIndex].id);
+  }
+
   return (
     <div className={styles.module}>
-      <section className={styles.section}>
+      <div className={styles.tabs} role="tablist" aria-label="Étapes du module Motivation">
+        {onglets.map((o, index) => (
+          <button
+            key={o.id}
+            type="button"
+            role="tab"
+            id={`tab-${o.id}`}
+            aria-selected={onglet === o.id}
+            aria-controls={`panel-${o.id}`}
+            tabIndex={onglet === o.id ? 0 : -1}
+            className={onglet === o.id ? `${styles.tab} ${styles.tabActive}` : styles.tab}
+            onClick={() => setOnglet(o.id)}
+            onKeyDown={(e) => handleTabKeyDown(e, index)}
+          >
+            {o.label}
+          </button>
+        ))}
+      </div>
+
+      <section
+        id="panel-echelles"
+        role="tabpanel"
+        aria-labelledby="tab-echelles"
+        hidden={onglet !== 'echelles'}
+        className={styles.section}
+      >
         <h2 className={styles.sectionTitle}>Où en êtes-vous ?</h2>
         <p className={styles.sousTitre}>
           Deux échelles pour faire le point, à votre rythme — il n'y a pas de bonne réponse.
@@ -188,7 +228,13 @@ export default function MotivationModule(_: ModuleProps) {
         </div>
       </section>
 
-      <section className={styles.section}>
+      <section
+        id="panel-raisons"
+        role="tabpanel"
+        aria-labelledby="tab-raisons"
+        hidden={onglet !== 'raisons'}
+        className={styles.section}
+      >
         <h2 className={styles.sectionTitle}>Mes raisons</h2>
         <p className={styles.sousTitre}>
           Déplacez les cartes, complétez-les avec un détail personnel, ou ajoutez les vôtres.

@@ -10,6 +10,41 @@
   gap: var(--space-md);
 }
 
+.tabs {
+  display: flex;
+  gap: var(--space-xs);
+  border-bottom: 2px solid var(--color-nav-soft);
+}
+
+.tab {
+  min-height: 44px;
+  padding: var(--space-sm) var(--space-md);
+  border: none;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: var(--color-text);
+  font-size: 1em;
+  font-weight: 600;
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+.tab:hover,
+.tab:focus-visible {
+  opacity: 1;
+}
+
+.tab:focus-visible {
+  outline: 3px solid var(--color-confort);
+  outline-offset: 2px;
+}
+
+.tabActive {
+  opacity: 1;
+  color: var(--color-confort);
+  border-bottom-color: var(--color-confort);
+}
+
 .sectionTitle {
   margin: 0;
   font-size: 1.2em;
