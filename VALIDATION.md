@@ -28,6 +28,16 @@
 - [ ] « Réinitialiser » remet à zéro.
 - [ ] Mention « schéma illustratif » présente.
 
+## V3 — Nicotine : cumul sur axe fixe (2026-07-01)
+- [ ] Plus de curseur bleu ni de défilement automatique (courbe grisée fantôme supprimée).
+- [ ] 1 clic « Fumer une cigarette » seule = une bosse qui monte au milieu de la zone verte
+      (confort) puis redescend et se fige.
+- [ ] Enchaîner plusieurs cigarettes rapprochées fait grimper la courbe dans la zone rouge du
+      haut (surdosage).
+- [ ] Patch + cigarettes rapprochées : même constat de surdosage.
+- [ ] Couleurs de zone (bande + trait) cohérentes sur toute la courbe cumulée.
+- [ ] « Réinitialiser » vide bien tous les événements (courbe et pictogrammes disparaissent).
+
 ## T7 — Module 5 : le piège du soulagement
 - [ ] Bascule « Non-fumeur / Fumeur » change la courbe.
 - [ ] Non-fumeur = ligne plate calme ; Fumeur = yo-yo sous LOW.

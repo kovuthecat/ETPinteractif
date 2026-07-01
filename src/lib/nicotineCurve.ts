@@ -18,7 +18,10 @@ export type Zone = 'manque' | 'confort' | 'haut';
 
 function cigaretteKernel(x: number, t0: number): number {
   if (x < t0) return 0;
-  return 0.90 * Math.exp(-(x - t0) / 0.03);
+  // Amplitude ~0.50 (milieu de la zone confort) et décroissance assez lente
+  // pour que des prises rapprochées (cf. EVENT_STEP) cumulent au-delà de
+  // THRESHOLD_HIGH — cf. plans/corrections-v3/V3-nicotine-cumul.md.
+  return 0.50 * Math.exp(-(x - t0) / 0.07);
 }
 
 function ponctuelKernel(x: number, t0: number): number {

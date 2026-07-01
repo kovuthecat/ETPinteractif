@@ -32,11 +32,35 @@ describe('sampleCurve', () => {
     expect(Math.abs(peakT - t)).toBeLessThan(0.05);
   });
 
-  it('a t egal, le pic cigarette (0.90) depasse le pic ponctuel (0.35)', () => {
+  it('a t egal, le pic cigarette depasse le pic ponctuel', () => {
     const t = 0.2;
     const cigarette = sampleCurve({ patch: false, events: [{ kind: 'cigarette', t }] });
     const ponctuel = sampleCurve({ patch: false, events: [{ kind: 'ponctuel', t }] });
     expect(Math.max(...cigarette)).toBeGreaterThan(Math.max(...ponctuel));
+  });
+
+  it('une seule cigarette culmine en zone confort, au milieu des seuils (V3)', () => {
+    const ys = sampleCurve({ patch: false, events: [{ kind: 'cigarette', t: 0.2 }] });
+    const max = Math.max(...ys);
+    expect(max).toBeGreaterThanOrEqual(0.40);
+    expect(max).toBeLessThanOrEqual(0.65);
+    expect(classifyZone(max)).toBe('confort');
+  });
+
+  it('3 cigarettes rapprochees (pas 0.05, cf. EVENT_STEP) cumulent en surdosage (V3)', () => {
+    const events: CurveEvent[] = [0.2, 0.25, 0.3].map((t) => ({ kind: 'cigarette', t }));
+    const ys = sampleCurve({ patch: false, events });
+    expect(Math.max(...ys)).toBeGreaterThan(THRESHOLD_HIGH);
+  });
+
+  it('patch + 2 cigarettes rapprochees cumulent en surdosage (V3)', () => {
+    const events: CurveEvent[] = [
+      { kind: 'patch', t: 0 },
+      { kind: 'cigarette', t: 0.2 },
+      { kind: 'cigarette', t: 0.25 },
+    ];
+    const ys = sampleCurve({ patch: false, events });
+    expect(Math.max(...ys)).toBeGreaterThan(THRESHOLD_HIGH);
   });
 
   it('avec patch, la courbe forme un plateau proche de PATCH_PLATEAU apres la rampe (x >= 0.1)', () => {

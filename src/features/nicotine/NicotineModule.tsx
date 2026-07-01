@@ -1,20 +1,9 @@
-import { useEffect, useId, useMemo, useRef, useState } from 'react';
+import { useId, useMemo, useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
-import {
-  AlertTriangle,
-  Bandage,
-  CheckCircle2,
-  Cigarette,
-  Pause,
-  Pill,
-  Play,
-  RotateCcw,
-  Wind,
-} from 'lucide-react';
+import { AlertTriangle, Bandage, CheckCircle2, Cigarette, Pill, RotateCcw, Wind } from 'lucide-react';
 import type { ModuleProps } from '../types';
 import {
   sampleCurve,
-  toSvgPath,
   classifyZone,
   THRESHOLD_LOW,
   THRESHOLD_HIGH,
@@ -28,11 +17,9 @@ const HEIGHT = 280;
 const AXIS_GAP = 28;
 const VIEW_HEIGHT = HEIGHT + AXIS_GAP;
 const N = 120;
-const DURATION_MS = 14000;
-const SPEEDS = [1, 2, 4];
 
 const FIRST_EVENT_T = 0.08;
-const EVENT_STEP = 0.12;
+const EVENT_STEP = 0.05;
 const MAX_EVENT_T = 0.92;
 
 const EVENTS_DEF: { kind: CurveEvent['kind']; label: string; Icon: LucideIcon }[] = [
@@ -112,104 +99,26 @@ function buildZoneSegments(ys: number[]): { zone: Zone; points: string[] }[] {
   return segments;
 }
 
-function useReducedMotion(): boolean {
-  const [reduced, setReduced] = useState(
-    () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-  );
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const onChange = () => setReduced(mq.matches);
-    mq.addEventListener('change', onChange);
-    return () => mq.removeEventListener('change', onChange);
-  }, []);
-  return reduced;
-}
-
 export default function NicotineModule(_: ModuleProps) {
-  const reducedMotion = useReducedMotion();
   const gradId = useId();
   const [events, setEvents] = useState<CurveEvent[]>([]);
-  const [now, setNow] = useState(0);
-  const [playing, setPlaying] = useState(() => !reducedMotion);
-  const [speedIndex, setSpeedIndex] = useState(0);
-  const [resetTick, setResetTick] = useState(0);
-  const rafRef = useRef<number | null>(null);
-  const startRef = useRef<number | null>(null);
-  const baseRef = useRef(0);
-  const nowRef = useRef(0);
-
-  useEffect(() => {
-    nowRef.current = now;
-  }, [now]);
-
-  useEffect(() => {
-    return () => {
-      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
-    };
-  }, []);
-
-  // Balayage continu façon oscilloscope : le temps avance tout seul, en boucle,
-  // sans jamais dépendre d'un clic sur "Lecture" (cf. PLAN_corrections-v2 R4).
-  useEffect(() => {
-    if (!playing || reducedMotion) return;
-    startRef.current = null;
-    baseRef.current = nowRef.current;
-    const speed = SPEEDS[speedIndex];
-    const step = (timestamp: number) => {
-      if (startRef.current === null) startRef.current = timestamp;
-      const elapsedMs = (timestamp - startRef.current) * speed;
-      let p = baseRef.current + elapsedMs / DURATION_MS;
-      if (p >= 1) {
-        p -= Math.floor(p);
-        baseRef.current = p;
-        startRef.current = timestamp;
-      }
-      setNow(p);
-      rafRef.current = requestAnimationFrame(step);
-    };
-    rafRef.current = requestAnimationFrame(step);
-    return () => {
-      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
-    };
-    // resetTick force le redémarrage du balayage après "Réinitialiser" même quand
-    // `playing` était déjà true (sinon la mise à jour d'état est un no-op et le
-    // balayage reste figé, cf. PLAN_corrections-v2 R4).
-  }, [playing, speedIndex, reducedMotion, resetTick]);
 
   const ys = useMemo(() => sampleCurve({ patch: false, events, n: N }), [events]);
-  const fullPath = useMemo(() => toSvgPath(ys, WIDTH, HEIGHT), [ys]);
+  const zoneSegments = useMemo(() => buildZoneSegments(ys), [ys]);
 
-  const effectiveNow = reducedMotion ? 1 : now;
-  const nowIndex = Math.min(N - 1, Math.round(effectiveNow * (N - 1)));
-  const elapsedYs = ys.slice(0, nowIndex + 1);
-  const zoneSegments = useMemo(() => buildZoneSegments(elapsedYs), [elapsedYs]);
-  const currentZone = classifyZone(ys[nowIndex]);
+  const peakIndex = ys.reduce((best, y, i) => (y > ys[best] ? i : best), 0);
+  const currentZone = classifyZone(ys[peakIndex]);
   const ZoneIcon = ZONE_ICON[currentZone];
 
   const lowY = (1 - THRESHOLD_LOW) * HEIGHT;
   const highY = (1 - THRESHOLD_HIGH) * HEIGHT;
-  const cursorX = now * WIDTH;
 
   function addEvent(kind: CurveEvent['kind']) {
-    setEvents((prev) => [
-      ...prev,
-      { kind, t: reducedMotion ? nextEventTime(prev) : nowRef.current },
-    ]);
-  }
-
-  function togglePlay() {
-    setPlaying((p) => !p);
-  }
-
-  function cycleSpeed() {
-    setSpeedIndex((i) => (i + 1) % SPEEDS.length);
+    setEvents((prev) => [...prev, { kind, t: nextEventTime(prev) }]);
   }
 
   function reset() {
-    setNow(0);
     setEvents([]);
-    setPlaying(!reducedMotion);
-    setResetTick((t) => t + 1);
   }
 
   return (
@@ -235,21 +144,6 @@ export default function NicotineModule(_: ModuleProps) {
         </p>
 
         <div className={styles.playback}>
-          {!reducedMotion && (
-            <>
-              <button type="button" className={styles.btnSecondary} onClick={togglePlay}>
-                {playing ? (
-                  <Pause size={16} aria-hidden="true" />
-                ) : (
-                  <Play size={16} aria-hidden="true" />
-                )}
-                {playing ? 'Pause' : 'Reprendre'}
-              </button>
-              <button type="button" className={styles.btnSecondary} onClick={cycleSpeed}>
-                Vitesse ×{SPEEDS[speedIndex]}
-              </button>
-            </>
-          )}
           <button type="button" className={styles.reset} onClick={reset}>
             <RotateCcw size={16} aria-hidden="true" />
             Réinitialiser
@@ -261,7 +155,7 @@ export default function NicotineModule(_: ModuleProps) {
         className={styles.graph}
         viewBox={`0 0 ${WIDTH} ${VIEW_HEIGHT}`}
         role="img"
-        aria-label="Schéma illustratif de la nicotinémie dans le temps, en lecture continue"
+        aria-label="Schéma illustratif du cumul de nicotinémie selon les prises ajoutées"
       >
         <defs>
           <linearGradient id={`${gradId}-confort`} x1="0" y1="0" x2="0" y2="1">
@@ -287,7 +181,6 @@ export default function NicotineModule(_: ModuleProps) {
           Seuil de tolérance
         </text>
 
-        <path d={fullPath} className={styles.courbeDiscrete} />
         {zoneSegments.map((seg, i) => (
           <path
             key={`aire-${i}`}
@@ -314,10 +207,6 @@ export default function NicotineModule(_: ModuleProps) {
             </g>
           );
         })}
-
-        {!reducedMotion && (
-          <line x1={cursorX} y1={0} x2={cursorX} y2={VIEW_HEIGHT} className={styles.cursor} />
-        )}
       </svg>
       <p className={styles.mention}>Schéma illustratif — pas une courbe pharmacocinétique réelle.</p>
 

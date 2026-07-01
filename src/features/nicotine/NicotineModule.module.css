@@ -46,25 +46,6 @@
   gap: var(--space-sm);
 }
 
-.btnSecondary {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-  min-height: var(--target-min);
-  padding: var(--space-xs) var(--space-sm);
-  border: 2px solid var(--color-nav);
-  border-radius: var(--radius);
-  background: transparent;
-  color: var(--color-nav);
-  font-size: 0.9em;
-  cursor: pointer;
-}
-
-.btnSecondary:hover,
-.btnSecondary:focus-visible {
-  background: var(--color-nav-soft);
-}
-
 .reset {
   display: flex;
   align-items: center;
@@ -137,13 +118,6 @@
   opacity: 0.6;
 }
 
-.courbeDiscrete {
-  fill: none;
-  stroke: var(--color-text);
-  stroke-width: 2;
-  opacity: 0.18;
-}
-
 .courbe {
   fill: none;
   stroke-width: 3;
@@ -180,12 +154,6 @@
 
 .pictogramme {
   color: var(--color-text);
-}
-
-.cursor {
-  stroke: var(--color-nav);
-  stroke-width: 2;
-  stroke-dasharray: 4 4;
 }
 
 .mention {
