@@ -338,3 +338,18 @@ régression.
 
 **Auto :** `tsc -b` + `vite build` + `vitest run` (17 tests) via `node_modules/.bin` — tous verts, aucune
 régression.
+
+## V1 — Addiction : agrandir le diagramme de Venn
+> Agrandissement de la taille de rendu du diagramme de Venn et augmentation de la lisibilité des labels
+> pour une meilleure visibilité à ~1 m. Modifications CSS : `.vennWrap` max-width 640→800px, `.venn` max-height
+> 46vh→65vh, `.circleLabel` font-size 18→24px, `.circleKeywords` font-size 13→16px.
+
+- [ ] Le diagramme de Venn (3 cercles) est nettement plus grand à l'écran (cercles + labels visiblement agrandis).
+- [ ] Les labels (« Physique (nicotinique) », « Psychologique », « Comportementale ») et mots-clés sous chaque cercle sont lisibles à ~1 m.
+- [ ] Cliquer chaque cercle sélectionne toujours le bon pilier ; aucune régression sur l'interaction.
+- [ ] Les `.hitArea` restent correctement alignées avec les cercles après agrandissement (pas de décalage).
+- [ ] Le message central « Ces dimensions s'alimentent entre elles » reste visible et lisible.
+- [ ] Aucun débordement horizontal du diagramme en dehors du `.content` (960 px) sur desktop.
+- [ ] Sur tablette/mobile, le diagramme s'adapte proportionnellement sans cassure (responsive OK).
+
+**Auto :** `npm run build` OK ; `tsc -b` + `vite build` OK.

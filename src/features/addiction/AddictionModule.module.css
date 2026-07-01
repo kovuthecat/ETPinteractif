@@ -11,7 +11,7 @@
 
 .vennWrap {
   position: relative;
-  max-width: 640px;
+  max-width: 800px;
   margin-inline: auto;
   padding: var(--space-md) 0;
 }
@@ -20,7 +20,7 @@
   display: block;
   width: 100%;
   height: auto;
-  max-height: 46vh;
+  max-height: 65vh;
   pointer-events: none;
 }
 
@@ -40,13 +40,13 @@
 .circleLabel {
   fill: var(--pillar-color);
   font-weight: 700;
-  font-size: 18px;
+  font-size: 24px;
 }
 
 .circleKeywords {
   fill: var(--color-text);
   opacity: 0.55;
-  font-size: 13px;
+  font-size: 16px;
 }
 
 .centerCaption {
