@@ -80,4 +80,4 @@ seuils cliniques. Doute majeur → STOP.
 `fix(nicotine): cumul sur axe fixe, suppression du balayage/curseur, retune amplitudes (V3)`
 
 ## Statut
-[ ] à faire
+[x] fait
