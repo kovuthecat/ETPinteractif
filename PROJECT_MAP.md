@@ -2,7 +2,7 @@
 
 Carte synthétique du projet. Permet à ChatGPT et Claude Code de localiser vite les zones pertinentes.
 
-> État : **lot `PLAN_modules-tabac.md` (T1-T11) terminé le 2026-06-28** — scaffolding + les 6 modules du thème tabac sont implémentés et naviguables. Cette carte décrit l'arborescence réelle.
+> État : **lot `PLAN_modules-tabac.md` (T1-T11) terminé le 2026-06-28** — scaffolding + les 6 modules du thème tabac sont implémentés et naviguables. **`plans/PLAN_corrections-v2.md` (R1-R9) terminé le 2026-07-01** — dont R9 : ajout d'un 7ᵉ module transverse, `motivation/`. Cette carte décrit l'arborescence réelle.
 
 ---
 
@@ -32,13 +32,14 @@ src/
     ModuleCard.tsx / .module.css  # carte cliquable (icône + titre + résumé)
   features/
     types.ts                # ModuleId, ModuleProps, ModuleDef
-    registry.ts              # MODULES: ModuleDef[] — les 6 modules tabac, titres/résumés/icônes
+    registry.ts              # MODULES: ModuleDef[] — les 7 modules, titres/résumés/icônes
     addiction/AddictionModule.tsx              # Module 1 — composantes de l'addiction (T8, C6 : 3 cercles qui se chevauchent)
     nicotine/NicotineModule.tsx                # Module 2 — nicotine, bac à sable (T6)
     substituts/SubstitutsModule.tsx            # Module 3 — substituts & titration (T9)
     nicotine-toxique/NicotineToxiqueModule.tsx # Module 4 — nicotine ≠ toxique (T10)
     soulagement/SoulagementModule.tsx          # Module 5 — le piège du soulagement (T7)
     craving/CravingModule.tsx                  # Module 6 — gérer le craving / 4D (T11)
+    motivation/MotivationModule.tsx            # Module 7 — explorer ma motivation (R9, échelles + tableau blanc)
   lib/
     nicotineCurve.ts + .test.ts  # logique pure : sampleCurve/toSvgPath/sampleStress, partagée Modules 2 & 5
 docs/
@@ -63,7 +64,7 @@ Fichiers clés : `src/components/ModuleShell.tsx`, `src/components/Sources.tsx`,
 Points de vigilance : généricité = clé de la réutilisation multi-thèmes ; aucun module ne duplique son propre en-tête.
 
 ### Feature 3 — Modules du thème tabac
-Rôle : le contenu interactif des 6 modules (addiction, nicotine, substituts, nicotine-toxique, soulagement, craving).
+Rôle : le contenu interactif des 7 modules (addiction, nicotine, substituts, nicotine-toxique, soulagement, craving, motivation).
 Fichiers clés : `src/features/<slug>/`, contenu source dans `docs/contenu-modules.md`.
 Points de vigilance : exactitude médicale, sources affichables (via `registry.ts` → `sources?: string[]`), sobriété visuelle, aucun dosage chiffré pour les substituts.
 

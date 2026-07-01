@@ -7,7 +7,8 @@ export type ModuleId =
   | 'substituts'
   | 'nicotine-toxique'
   | 'soulagement'
-  | 'craving';
+  | 'craving'
+  | 'motivation';
 
 export interface ModuleProps {
   onNavigate: (id: ModuleId) => void;

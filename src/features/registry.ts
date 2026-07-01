@@ -1,4 +1,4 @@
-import { Brain, Activity, Pill, Scale, Repeat, Waves } from 'lucide-react';
+import { Brain, Activity, Pill, Scale, Repeat, Waves, Compass } from 'lucide-react';
 import type { ModuleDef } from './types';
 import AddictionModule from './addiction/AddictionModule';
 import NicotineModule from './nicotine/NicotineModule';
@@ -6,6 +6,7 @@ import SubstitutsModule from './substituts/SubstitutsModule';
 import NicotineToxiqueModule from './nicotine-toxique/NicotineToxiqueModule';
 import SoulagementModule from './soulagement/SoulagementModule';
 import CravingModule from './craving/CravingModule';
+import MotivationModule from './motivation/MotivationModule';
 
 export const MODULES: ModuleDef[] = [
   {
@@ -49,5 +50,12 @@ export const MODULES: ModuleDef[] = [
     resume: "Montrer que l'envie est une vague de quelques minutes qui retombe, et donner des techniques immédiates.",
     Icon: Waves,
     Component: CravingModule,
+  },
+  {
+    id: 'motivation',
+    titre: 'Explorer ma motivation',
+    resume: "Faire le point sur ses raisons d'arrêter, à son rythme, sans balance ni jugement.",
+    Icon: Compass,
+    Component: MotivationModule,
   },
 ];

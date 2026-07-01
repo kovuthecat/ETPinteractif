@@ -311,3 +311,30 @@ régression.
 
 **Auto :** `tsc -b` + `vite build` + `vitest run` (17 tests) via `node_modules/.bin` — tous verts, aucune
 régression.
+
+## R9 — Nouveau module M7 « Explorer ma motivation »
+
+> Squelette branché comme les 6 autres modules (`types.ts` + `registry.ts`, icône `Compass`) — `App.tsx` n'a
+> nécessité **aucune modification** : il rend déjà les modules génériquement via `MODULES.find`. Deux outils :
+> (A) deux curseurs 0–10 (importance / confiance) avec relance non culpabilisante sous chaque valeur ; (C) un
+> tableau blanc de cartes « Mes raisons » (6 cartes de départ), déplaçables via pointer events natifs **et**
+> flèches du clavier (poignée = `<button>` focusable, aucune librairie de drag), éditables (texte + détail
+> optionnel), avec bouton « + une raison » pour en créer de nouvelles. Aucune persistance (state React
+> éphémère). Contenu de départ = proposition neutre non sourcée, cf. `docs/contenu-modules.md` §Module 7,
+> **à valider par Thibault**.
+
+- [ ] Le module « Explorer ma motivation » apparaît comme 7ᵉ carte sur l'accueil (grille reste correcte, rien
+  ne casse visuellement avec 7 cartes).
+- [ ] Les deux curseurs 0–10 sont manipulables ; la valeur s'affiche ; la relance change avec la valeur (aucune
+  relance « plus bas » à 0, aucune relance « plus haut » à 10).
+- [ ] Les 6 cartes de départ sont visibles, dans le cadre, sans chevauchement excessif.
+- [ ] Une carte se déplace à la souris/tactile (glisser la poignée) et reste dans le cadre du tableau blanc.
+- [ ] Une carte se déplace aussi au clavier (Tab jusqu'à la poignée, flèches directionnelles).
+- [ ] Le texte d'une carte est éditable ; ajouter un détail dans le champ dédié fonctionne.
+- [ ] « + une raison » crée une nouvelle carte vide, éditable immédiatement (focus posé dessus).
+- [ ] Recharger la page (reload) réinitialise tout (aucune persistance).
+- [ ] **Question pour Thibault** : la liste des 6 cartes seed (santé, argent, goût/odorat, souffle, proches,
+  liberté) et les deux libellés d'échelle sont-ils satisfaisants, ou à remplacer/compléter ?
+
+**Auto :** `tsc -b` + `vite build` + `vitest run` (17 tests) via `node_modules/.bin` — tous verts, aucune
+régression.

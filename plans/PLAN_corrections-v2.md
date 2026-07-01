@@ -303,7 +303,9 @@ La v1 (6 modules + socle sémantique) fonctionne, mais une passe de test en cond
 - **Si bloqué :** drag natif instable au resize/tablette → borner le tableau blanc en coordonnées relatives et
   clamp dans le cadre ; si le contenu (libellés/seed) dépasse une source neutre → **STOP**, placeholder, signaler dans `VALIDATION.md`.
 - **Commit :** `feat(module): explorer ma motivation (echelles + tableau blanc)`
-- **Statut :** [ ] à faire
+- **Statut :** [x] fait (auto OK : `tsc -b`, `vite build`, `vitest run` 17 tests verts ; visuel → `VALIDATION.md` ;
+  contenu de départ (libellés d'échelles + liste seed « Mes raisons ») = proposition non sourcée, à valider par
+  Thibault, cf. `docs/contenu-modules.md` §Module 7)
 
 ---
 

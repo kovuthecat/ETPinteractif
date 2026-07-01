@@ -18,7 +18,7 @@
 
 ---
 
-## Modules retenus (cadrage v1)
+## Modules retenus (cadrage v1 + v2)
 
 1. Les composantes de l'addiction
 2. La nicotine : cinétique & seuils
@@ -26,6 +26,7 @@
 4. La nicotine n'est pas le toxique
 5. Le piège du soulagement
 6. Gérer le craving (4D)
+7. Explorer ma motivation (ajouté 2026-07-01, `PLAN_corrections-v2.md` R9)
 
 Carte des renvois : 1 → 2, 3, 6 · 4 ↔ 2, 3 · 5 ↔ 1, 2 · 6 ← 1
 
@@ -148,6 +149,35 @@ Interaction : cliquer un composant pour afficher son rôle/effet.
 
 **Renvoi** ← Module 1 (composantes psychologique & comportementale).
 **Sources** : HAS / Tabac Info Service *(à compléter)*.
+
+---
+
+### Module 7 — Explorer ma motivation
+
+**Objectif** : module centré sur le **positif**, sans balance décisionnelle (jugée limitante, cf. arbitrage
+Thibault du 2026-07-01) — faire le point sur ses raisons d'arrêter, à son rythme.
+
+**Structure interactive** :
+
+1. **Outil A — Échelles 0–10** : deux curseurs — « À quel point est-ce important pour vous d'arrêter ? » et
+   « À quel point vous sentez-vous capable / confiant(e) ? ». Sous chaque valeur, une **relance non
+   culpabilisante** façon entretien motivationnel : « Pourquoi pas *[valeur − 1]* plutôt que *[valeur]* ? »
+   (fait verbaliser ses propres raisons du niveau atteint plutôt que de le justifier a posteriori) et
+   « Qu'est-ce qui aiderait à passer à *[valeur + 1]* ? ». Éphémère (state React), pas de sauvegarde.
+2. **Outil C — « Mes raisons » (tableau blanc)** : cartes déplaçables (pointer events natifs + flèches du
+   clavier, aucune librairie de drag), éditables (champ raison + détail personnel optionnel), et création de
+   nouvelles cartes vierges via « + une raison ».
+
+**Contenu de départ (cartes seed)** — catégories de raisons couramment citées pour l'arrêt du tabac, **neutres
+et non médicales** (pas une affirmation clinique à sourcer HAS) : santé, argent économisé, goût/odorat,
+souffle/forme physique, proches, liberté de ne plus dépendre.
+
+**⚠️ À valider par Thibault** : la liste de cartes seed ci-dessus et les libellés des deux échelles sont une
+proposition de Claude (cf. `PLAN_corrections-v2.md` R9, « Si bloqué ») — à confirmer, ajuster ou remplacer.
+
+**Vigilance** : pas de balance décisionnelle (avantages/inconvénients du tabac) ; ton positif et non injonctif.
+**Sources** : catégories génériques d'entretien motivationnel, pas de donnée clinique chiffrée nécessitant une
+source HAS/Tabac Info Service.
 
 ---
 

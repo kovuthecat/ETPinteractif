@@ -1,0 +1,147 @@
+.module {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: 1.2em;
+}
+
+.sousTitre {
+  margin: 0;
+  font-size: var(--font-size-small);
+  opacity: 0.8;
+}
+
+.echelle {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-md);
+  background: var(--color-surface);
+  border-radius: var(--radius);
+}
+
+.echelleLabel {
+  font-weight: 600;
+}
+
+.slider {
+  width: 100%;
+  accent-color: var(--color-confort);
+  cursor: pointer;
+  padding-block: var(--space-sm);
+}
+
+.echelleValeur {
+  margin: 0;
+  font-size: 1.1em;
+  font-weight: 600;
+  color: var(--color-confort);
+}
+
+.relance {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  min-height: 1.4em;
+}
+
+.relance p {
+  margin: 0;
+  font-size: var(--font-size-small);
+  font-style: italic;
+  opacity: 0.75;
+}
+
+.whiteboard {
+  position: relative;
+  min-height: 420px;
+  background: var(--color-surface);
+  border: 2px dashed var(--color-nav-soft);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.carte {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-xs);
+  width: 200px;
+  padding: var(--space-sm);
+  background: var(--color-confort-soft);
+  border: 2px solid var(--color-confort);
+  border-radius: var(--radius);
+}
+
+.poignee {
+  align-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--color-confort);
+  cursor: grab;
+  touch-action: none;
+}
+
+.poignee:active {
+  cursor: grabbing;
+}
+
+.poignee:focus-visible {
+  outline: 3px solid var(--color-confort);
+  outline-offset: 2px;
+}
+
+.carteInput {
+  padding: var(--space-xs) var(--space-sm);
+  border: 1px solid var(--color-confort);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 1em;
+  font-weight: 600;
+}
+
+.carteDetail {
+  padding: var(--space-xs) var(--space-sm);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--font-size-small);
+  resize: none;
+}
+
+.btnAjouter {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  align-self: flex-start;
+  padding: var(--space-sm) var(--space-md);
+  border: 2px solid var(--color-confort);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--color-confort);
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btnAjouter:hover,
+.btnAjouter:focus-visible {
+  background: var(--color-confort-soft);
+}
