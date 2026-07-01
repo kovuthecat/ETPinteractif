@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { AlertTriangle, Flame, Moon, Sun } from 'lucide-react';
 import type { ModuleProps } from '../types';
 import styles from './SubstitutsModule.module.css';
 
@@ -84,7 +85,10 @@ function PatchQuarts({ quarts, label }: { quarts: number; label: string }) {
         })}
       </div>
       <p className={styles.patchLabel}>
-        {label} — {formatPatchs(patchsPleins, reste)} ({quarts} quart{quarts === 1 ? '' : 's'})
+        <span className={styles.patchLabelMain}>{label}</span>
+        <span className={styles.patchLabelDetail}>
+          {formatPatchs(patchsPleins, reste)} ({quarts} quart{quarts === 1 ? '' : 's'})
+        </span>
       </p>
     </div>
   );
@@ -154,85 +158,112 @@ export default function SubstitutsModule(_: ModuleProps) {
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>Méthode de titration du patch</h2>
 
-        <div className={styles.toggles}>
-          <label className={styles.toggle}>
+        <div className={styles.stateCards}>
+          <label className={`${styles.stateCard} ${envie ? styles.stateCardActive : ''}`}>
             <input
               type="checkbox"
+              className={styles.stateInput}
               checked={envie}
               onChange={(e) => setEnvie(e.target.checked)}
             />
-            Envie de fumer persiste
+            <Flame size={20} aria-hidden="true" />
+            <span>Envie de fumer persiste</span>
           </label>
-          <label className={styles.toggle}>
+          <label
+            className={`${styles.stateCard} ${styles.stateCardWarn} ${surdosage ? styles.stateCardActive : ''}`}
+          >
             <input
               type="checkbox"
+              className={styles.stateInput}
               checked={surdosage}
               onChange={(e) => setSurdosage(e.target.checked)}
             />
-            Signes de surdosage
+            <AlertTriangle size={20} aria-hidden="true" />
+            <span>Signes de surdosage</span>
           </label>
-          <label className={styles.toggle}>
+          <label className={`${styles.stateCard} ${jourNuit ? styles.stateCardActive : ''}`}>
             <input
               type="checkbox"
+              className={styles.stateInput}
               checked={jourNuit}
               onChange={(e) => setJourNuit(e.target.checked)}
             />
-            Jour / Nuit
+            <Moon size={20} aria-hidden="true" />
+            <span>Distinguer jour / nuit</span>
           </label>
         </div>
 
-        <div className={styles.patches}>
-          <PatchQuarts quarts={quartsJour} label="Dose de jour" />
+        {surdosage && (
+          <div className={styles.alertBanner} role="alert">
+            <AlertTriangle size={22} aria-hidden="true" />
+            <p className={styles.alertText}>
+              Signes de surdosage — revenez à la dose précédente.
+            </p>
+            <button
+              type="button"
+              className={styles.btnWarn}
+              onClick={retirerQuart}
+              disabled={quartsJour === 0}
+            >
+              Revenir en arrière (− ¼)
+            </button>
+          </div>
+        )}
+
+        <div className={styles.doseGroups}>
+          <div className={styles.doseGroup}>
+            <p className={styles.doseGroupTitle}>
+              <Sun size={18} aria-hidden="true" />
+              Dose de jour
+            </p>
+            <PatchQuarts quarts={quartsJour} label="Jour" />
+            <div className={styles.doseControls}>
+              <button
+                type="button"
+                className={styles.btn}
+                onClick={ajouterQuart}
+                disabled={!envie || surdosage}
+              >
+                + ¼ (à J+2-3)
+              </button>
+              <button
+                type="button"
+                className={styles.btnNeutral}
+                onClick={retirerQuart}
+                disabled={quartsJour === 0}
+              >
+                − ¼
+              </button>
+            </div>
+          </div>
+
           {jourNuit && (
-            <div className={styles.patchBlock}>
-              <PatchQuarts quarts={quartsNuitAffiche} label="Dose de nuit" />
-              <div className={styles.nuitControls}>
+            <div className={styles.doseGroup}>
+              <p className={styles.doseGroupTitle}>
+                <Moon size={18} aria-hidden="true" />
+                Dose de nuit
+              </p>
+              <PatchQuarts quarts={quartsNuitAffiche} label="Nuit" />
+              <div className={styles.doseControls}>
                 <button
                   type="button"
-                  className={styles.btnSmall}
+                  className={styles.btnNeutral}
                   onClick={() => setQuartsNuit((q) => Math.max(0, q - 1))}
                   disabled={quartsNuitAffiche === 0}
                 >
-                  − ¼ nuit
+                  − ¼
                 </button>
                 <button
                   type="button"
-                  className={styles.btnSmall}
+                  className={styles.btn}
                   onClick={() => setQuartsNuit((q) => Math.min(quartsJour, q + 1))}
                   disabled={quartsNuitAffiche >= quartsJour}
                 >
-                  + ¼ nuit
+                  + ¼
                 </button>
               </div>
             </div>
           )}
-        </div>
-
-        <div className={styles.controls}>
-          <button
-            type="button"
-            className={styles.btn}
-            onClick={ajouterQuart}
-            disabled={!envie || surdosage}
-          >
-            + ¼ (à J+2-3)
-          </button>
-          <button
-            type="button"
-            className={styles.btnNeutral}
-            onClick={retirerQuart}
-            disabled={quartsJour === 0}
-          >
-            − ¼
-          </button>
-          <button
-            type="button"
-            className={styles.btnWarn}
-            onClick={retirerQuart}
-            disabled={!surdosage || quartsJour === 0}
-          >
-            Signes de surdosage → revenir en arrière
-          </button>
         </div>
 
         <p className={styles.message}>Expérimentez, fiez-vous à votre ressenti.</p>
