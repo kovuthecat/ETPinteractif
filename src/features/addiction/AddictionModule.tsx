@@ -93,12 +93,6 @@ const PILLARS_DATA: Record<Pilier, PilierData> = {
   },
 };
 
-const CLUSTER_CLASS: Record<Pilier, string> = {
-  physique: styles.clusterPhysique,
-  psychologique: styles.clusterPsychologique,
-  comportementale: styles.clusterComportementale,
-};
-
 function pillarVars(p: PilierData): CSSProperties {
   return { '--pillar-color': p.color, '--pillar-color-soft': p.colorSoft } as CSSProperties;
 }
@@ -176,20 +170,20 @@ export default function AddictionModule({ onNavigate }: ModuleProps) {
             />
           );
         })}
-
-        {data && (
-          <div className={`${styles.bubbleCluster} ${CLUSTER_CLASS[selected as Pilier]}`}>
-            <p className={styles.clusterCaption}>De quoi parle-t-on ?</p>
-            <div className={styles.bubbleRow}>
-              {data.exemples.map((exemple) => (
-                <span key={exemple} className={styles.bubble} style={pillarVars(data)}>
-                  {exemple}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
+
+      {data && (
+        <div className={styles.explorePanel} style={pillarVars(data)}>
+          <p className={styles.exploreTitle}>De quoi parle-t-on ? — {data.label}</p>
+          <div className={styles.bubbleRow}>
+            {data.exemples.map((exemple) => (
+              <span key={exemple} className={styles.bubble} style={pillarVars(data)}>
+                {exemple}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       {data && (
         <div className={styles.actionsPanel} style={pillarVars(data)}>

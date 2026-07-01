@@ -82,41 +82,21 @@
   outline-offset: -6px;
 }
 
-.bubbleCluster {
-  position: absolute;
+.explorePanel {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
-  max-width: 46%;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  background: var(--pillar-color-soft);
+  border-radius: var(--radius);
+  border-left: 6px solid var(--pillar-color);
 }
 
-.clusterPhysique {
-  top: 0;
-  left: 0;
-  align-items: flex-start;
-}
-
-.clusterPsychologique {
-  top: 0;
-  right: 0;
-  align-items: flex-end;
-  text-align: right;
-}
-
-.clusterComportementale {
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  max-width: 80%;
-  align-items: center;
-  text-align: center;
-}
-
-.clusterCaption {
+.exploreTitle {
   margin: 0;
-  font-size: var(--font-size-small);
+  font-size: var(--font-size-lead);
   font-weight: 600;
-  opacity: 0.75;
+  color: var(--pillar-color);
 }
 
 .bubbleRow {
@@ -125,21 +105,9 @@
   gap: var(--space-xs);
 }
 
-.clusterPhysique .bubbleRow {
-  justify-content: flex-start;
-}
-
-.clusterPsychologique .bubbleRow {
-  justify-content: flex-end;
-}
-
-.clusterComportementale .bubbleRow {
-  justify-content: center;
-}
-
 .bubble {
   padding: var(--space-xs) var(--space-sm);
-  background: var(--pillar-color-soft);
+  background: var(--color-surface);
   border: 1.5px solid var(--pillar-color);
   border-radius: var(--radius);
   font-size: var(--font-size-small);
