@@ -1,6 +1,16 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
-import { Bandage, Cigarette, Pause, Pill, Play, RotateCcw, Wind } from 'lucide-react';
+import {
+  AlertTriangle,
+  Bandage,
+  CheckCircle2,
+  Cigarette,
+  Pause,
+  Pill,
+  Play,
+  RotateCcw,
+  Wind,
+} from 'lucide-react';
 import type { ModuleProps } from '../types';
 import {
   sampleCurve,
@@ -38,16 +48,22 @@ const ZONE_LABEL: Record<Zone, string> = {
   haut: 'Trop haut',
 };
 
+const ZONE_ICON: Record<Zone, LucideIcon> = {
+  manque: AlertTriangle,
+  confort: CheckCircle2,
+  haut: AlertTriangle,
+};
+
 const ZONE_STROKE_CLASS: Record<Zone, string> = {
   manque: styles.courbeToxique,
   confort: styles.courbeConfort,
   haut: styles.courbeToxique,
 };
 
-const ZONE_GAUGE_CLASS: Record<Zone, string> = {
-  manque: styles.gaugeToxique,
-  confort: styles.gaugeConfort,
-  haut: styles.gaugeToxique,
+const ZONE_CHIP_CLASS: Record<Zone, string> = {
+  manque: styles.chipToxique,
+  confort: styles.chipConfort,
+  haut: styles.chipToxique,
 };
 
 const BAND_CLASS: Record<Zone, string> = {
@@ -65,27 +81,34 @@ function segmentPath(points: string[]): string {
   return rest.length > 0 ? `M${first} L${rest.join(' ')}` : `M${first}`;
 }
 
-function buildZoneSegments(ys: number[]): { zone: Zone; d: string }[] {
+function areaPath(points: string[]): string {
+  if (points.length === 0) return '';
+  const x0 = points[0].split(',')[0];
+  const xLast = points[points.length - 1].split(',')[0];
+  return `M${x0},${HEIGHT} L${points.join(' L')} L${xLast},${HEIGHT} Z`;
+}
+
+function buildZoneSegments(ys: number[]): { zone: Zone; points: string[] }[] {
   if (ys.length === 0) return [];
   const point = (i: number) => {
     const x = ys.length === 1 ? 0 : (i / (ys.length - 1)) * WIDTH;
     return `${x},${(1 - ys[i]) * HEIGHT}`;
   };
-  const segments: { zone: Zone; d: string }[] = [];
+  const segments: { zone: Zone; points: string[] }[] = [];
   let zone = classifyZone(ys[0]);
   let points = [point(0)];
   for (let i = 1; i < ys.length; i++) {
     const z = classifyZone(ys[i]);
     if (z !== zone) {
       points.push(point(i));
-      segments.push({ zone, d: segmentPath(points) });
+      segments.push({ zone, points });
       zone = z;
       points = [point(i - 1), point(i)];
     } else {
       points.push(point(i));
     }
   }
-  segments.push({ zone, d: segmentPath(points) });
+  segments.push({ zone, points });
   return segments;
 }
 
@@ -104,10 +127,12 @@ function useReducedMotion(): boolean {
 
 export default function NicotineModule(_: ModuleProps) {
   const reducedMotion = useReducedMotion();
+  const gradId = useId();
   const [events, setEvents] = useState<CurveEvent[]>([]);
   const [now, setNow] = useState(0);
-  const [playing, setPlaying] = useState(false);
+  const [playing, setPlaying] = useState(() => !reducedMotion);
   const [speedIndex, setSpeedIndex] = useState(0);
+  const [resetTick, setResetTick] = useState(0);
   const rafRef = useRef<number | null>(null);
   const startRef = useRef<number | null>(null);
   const baseRef = useRef(0);
@@ -123,28 +148,33 @@ export default function NicotineModule(_: ModuleProps) {
     };
   }, []);
 
+  // Balayage continu façon oscilloscope : le temps avance tout seul, en boucle,
+  // sans jamais dépendre d'un clic sur "Lecture" (cf. PLAN_corrections-v2 R4).
   useEffect(() => {
-    if (!playing) return;
+    if (!playing || reducedMotion) return;
     startRef.current = null;
     baseRef.current = nowRef.current;
     const speed = SPEEDS[speedIndex];
     const step = (timestamp: number) => {
       if (startRef.current === null) startRef.current = timestamp;
       const elapsedMs = (timestamp - startRef.current) * speed;
-      const p = Math.min(1, baseRef.current + elapsedMs / DURATION_MS);
-      setNow(p);
-      if (p < 1) {
-        rafRef.current = requestAnimationFrame(step);
-      } else {
-        setPlaying(false);
-        rafRef.current = null;
+      let p = baseRef.current + elapsedMs / DURATION_MS;
+      if (p >= 1) {
+        p -= Math.floor(p);
+        baseRef.current = p;
+        startRef.current = timestamp;
       }
+      setNow(p);
+      rafRef.current = requestAnimationFrame(step);
     };
     rafRef.current = requestAnimationFrame(step);
     return () => {
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     };
-  }, [playing, speedIndex]);
+    // resetTick force le redémarrage du balayage après "Réinitialiser" même quand
+    // `playing` était déjà true (sinon la mise à jour d'état est un no-op et le
+    // balayage reste figé, cf. PLAN_corrections-v2 R4).
+  }, [playing, speedIndex, reducedMotion, resetTick]);
 
   const ys = useMemo(() => sampleCurve({ patch: false, events, n: N }), [events]);
   const fullPath = useMemo(() => toSvgPath(ys, WIDTH, HEIGHT), [ys]);
@@ -154,11 +184,11 @@ export default function NicotineModule(_: ModuleProps) {
   const elapsedYs = ys.slice(0, nowIndex + 1);
   const zoneSegments = useMemo(() => buildZoneSegments(elapsedYs), [elapsedYs]);
   const currentZone = classifyZone(ys[nowIndex]);
+  const ZoneIcon = ZONE_ICON[currentZone];
 
   const lowY = (1 - THRESHOLD_LOW) * HEIGHT;
   const highY = (1 - THRESHOLD_HIGH) * HEIGHT;
   const cursorX = now * WIDTH;
-  const showCursor = !reducedMotion && (now > 0 || playing);
 
   function addEvent(kind: CurveEvent['kind']) {
     setEvents((prev) => [
@@ -168,7 +198,6 @@ export default function NicotineModule(_: ModuleProps) {
   }
 
   function togglePlay() {
-    if (now >= 1) return;
     setPlaying((p) => !p);
   }
 
@@ -177,57 +206,74 @@ export default function NicotineModule(_: ModuleProps) {
   }
 
   function reset() {
-    if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
-    rafRef.current = null;
-    setPlaying(false);
     setNow(0);
     setEvents([]);
+    setPlaying(!reducedMotion);
+    setResetTick((t) => t + 1);
   }
 
   return (
     <div className={styles.module}>
-      <div className={styles.controls}>
+      <div className={styles.gestes}>
         {EVENTS_DEF.map(({ kind, label, Icon }) => (
-          <button key={kind} type="button" className={styles.btn} onClick={() => addEvent(kind)}>
+          <button
+            key={kind}
+            type="button"
+            className={styles.gesteBtn}
+            onClick={() => addEvent(kind)}
+          >
             <Icon size={18} aria-hidden="true" />
             {label}
           </button>
         ))}
       </div>
 
-      <div className={styles.playback}>
-        {!reducedMotion && (
-          <>
-            <button
-              type="button"
-              className={styles.btn}
-              onClick={togglePlay}
-              disabled={now >= 1}
-            >
-              {playing ? <Pause size={18} aria-hidden="true" /> : <Play size={18} aria-hidden="true" />}
-              {playing ? 'Pause' : 'Lecture'}
-            </button>
-            <button type="button" className={styles.btnSmall} onClick={cycleSpeed}>
-              Vitesse ×{SPEEDS[speedIndex]}
-            </button>
-          </>
-        )}
-        <button type="button" className={styles.reset} onClick={reset}>
-          <RotateCcw size={18} aria-hidden="true" />
-          Réinitialiser
-        </button>
-      </div>
+      <div className={styles.graphHeader}>
+        <p className={`${styles.chip} ${ZONE_CHIP_CLASS[currentZone]}`} aria-live="polite">
+          <ZoneIcon size={16} aria-hidden="true" />
+          État actuel : {ZONE_LABEL[currentZone]}
+        </p>
 
-      <p className={`${styles.gauge} ${ZONE_GAUGE_CLASS[currentZone]}`} aria-live="polite">
-        État actuel : {ZONE_LABEL[currentZone]}
-      </p>
+        <div className={styles.playback}>
+          {!reducedMotion && (
+            <>
+              <button type="button" className={styles.btnSecondary} onClick={togglePlay}>
+                {playing ? (
+                  <Pause size={16} aria-hidden="true" />
+                ) : (
+                  <Play size={16} aria-hidden="true" />
+                )}
+                {playing ? 'Pause' : 'Reprendre'}
+              </button>
+              <button type="button" className={styles.btnSecondary} onClick={cycleSpeed}>
+                Vitesse ×{SPEEDS[speedIndex]}
+              </button>
+            </>
+          )}
+          <button type="button" className={styles.reset} onClick={reset}>
+            <RotateCcw size={16} aria-hidden="true" />
+            Réinitialiser
+          </button>
+        </div>
+      </div>
 
       <svg
         className={styles.graph}
         viewBox={`0 0 ${WIDTH} ${VIEW_HEIGHT}`}
         role="img"
-        aria-label="Schéma illustratif de la nicotinémie dans le temps, lecture animée"
+        aria-label="Schéma illustratif de la nicotinémie dans le temps, en lecture continue"
       >
+        <defs>
+          <linearGradient id={`${gradId}-confort`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" className={styles.stopConfortStart} />
+            <stop offset="100%" className={styles.stopEnd} />
+          </linearGradient>
+          <linearGradient id={`${gradId}-toxique`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" className={styles.stopToxiqueStart} />
+            <stop offset="100%" className={styles.stopEnd} />
+          </linearGradient>
+        </defs>
+
         <rect x={0} y={0} width={WIDTH} height={highY} className={BAND_CLASS.haut} />
         <rect x={0} y={highY} width={WIDTH} height={lowY - highY} className={BAND_CLASS.confort} />
         <rect x={0} y={lowY} width={WIDTH} height={HEIGHT - lowY} className={BAND_CLASS.manque} />
@@ -243,7 +289,19 @@ export default function NicotineModule(_: ModuleProps) {
 
         <path d={fullPath} className={styles.courbeDiscrete} />
         {zoneSegments.map((seg, i) => (
-          <path key={i} d={seg.d} className={`${styles.courbe} ${ZONE_STROKE_CLASS[seg.zone]}`} />
+          <path
+            key={`aire-${i}`}
+            d={areaPath(seg.points)}
+            fill={`url(#${gradId}-${seg.zone === 'confort' ? 'confort' : 'toxique'})`}
+            stroke="none"
+          />
+        ))}
+        {zoneSegments.map((seg, i) => (
+          <path
+            key={`ligne-${i}`}
+            d={segmentPath(seg.points)}
+            className={`${styles.courbe} ${ZONE_STROKE_CLASS[seg.zone]}`}
+          />
         ))}
 
         <line x1={0} y1={HEIGHT + 4} x2={WIDTH} y2={HEIGHT + 4} className={styles.axisLine} />
@@ -257,7 +315,7 @@ export default function NicotineModule(_: ModuleProps) {
           );
         })}
 
-        {showCursor && (
+        {!reducedMotion && (
           <line x1={cursorX} y1={0} x2={cursorX} y2={VIEW_HEIGHT} className={styles.cursor} />
         )}
       </svg>

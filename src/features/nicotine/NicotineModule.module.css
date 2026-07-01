@@ -4,7 +4,41 @@
   gap: var(--space-md);
 }
 
-.controls,
+.gestes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.gesteBtn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  min-height: var(--target-min);
+  padding: var(--space-sm) var(--space-md);
+  border: none;
+  border-radius: var(--radius);
+  background: var(--color-accent);
+  color: var(--color-surface);
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.gesteBtn:hover,
+.gesteBtn:focus-visible {
+  opacity: 0.85;
+}
+
+.graphHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
 .playback {
   display: flex;
   flex-wrap: wrap;
@@ -12,58 +46,61 @@
   gap: var(--space-sm);
 }
 
-.btn,
-.btnSmall,
+.btnSecondary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  min-height: var(--target-min);
+  padding: var(--space-xs) var(--space-sm);
+  border: 2px solid var(--color-nav);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--color-nav);
+  font-size: 0.9em;
+  cursor: pointer;
+}
+
+.btnSecondary:hover,
+.btnSecondary:focus-visible {
+  background: var(--color-nav-soft);
+}
+
 .reset {
   display: flex;
   align-items: center;
   gap: var(--space-xs);
-  padding: var(--space-sm) var(--space-md);
-  border: none;
+  min-height: var(--target-min);
+  padding: var(--space-xs) var(--space-sm);
+  border: 2px solid var(--color-warn);
   border-radius: var(--radius);
-  background: var(--color-accent);
-  color: var(--color-surface);
-  font-size: 1em;
+  background: transparent;
+  color: var(--color-warn);
+  font-size: 0.9em;
   cursor: pointer;
 }
 
-.btnSmall {
-  font-size: 0.9em;
-}
-
-.btn:hover:not(:disabled),
-.btn:focus-visible:not(:disabled),
-.btnSmall:hover,
-.btnSmall:focus-visible,
 .reset:hover,
 .reset:focus-visible {
-  opacity: 0.85;
+  background: var(--color-toxique-soft);
 }
 
-.btn:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-}
-
-.reset {
-  background: var(--color-warn);
-}
-
-.gauge {
+.chip {
   display: inline-flex;
-  align-self: flex-start;
+  align-items: center;
+  gap: var(--space-xs);
   margin: 0;
   padding: var(--space-xs) var(--space-md);
+  border: 2px solid currentColor;
   border-radius: var(--radius);
   font-weight: 600;
 }
 
-.gaugeConfort {
+.chipConfort {
   background: var(--color-confort-soft);
   color: var(--color-confort);
 }
 
-.gaugeToxique {
+.chipToxique {
   background: var(--color-toxique-soft);
   color: var(--color-toxique);
 }
@@ -119,6 +156,20 @@
 
 .courbeToxique {
   stroke: var(--color-toxique);
+}
+
+.stopConfortStart {
+  stop-color: var(--color-confort);
+  stop-opacity: 0.32;
+}
+
+.stopToxiqueStart {
+  stop-color: var(--color-toxique);
+  stop-opacity: 0.32;
+}
+
+.stopEnd {
+  stop-opacity: 0;
 }
 
 .axisLine {

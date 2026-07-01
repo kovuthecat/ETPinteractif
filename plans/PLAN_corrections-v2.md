@@ -164,7 +164,7 @@ La v1 (6 modules + socle sémantique) fonctionne, mais une passe de test en cond
 - **Si bloqué :** si le défilement continu rend l'axe temps confus (prises qui « sortent » de l'écran temporel),
   clamp/rembobinage simple — ne pas réintroduire la dépendance à un bouton Lecture.
 - **Commit :** `feat(module): nicotine cinetique temps reel au clic + refonte visuelle`
-- **Statut :** [ ] à faire
+- **Statut :** [x] fait (auto OK : `tsc -b`, `vite build`, `vitest run` verts via `node_modules/.bin` — `node.exe` trouvé sous `/c/Program Files/nodejs/` ; visuel → `VALIDATION.md`)
 
 ### R5 — Soulagement : modèle temps réel + superposition non-fumeur sur la même courbe · Modèle : Sonnet, effort : high
 - **But :** remplacer la bascule d'onglets par un **bac à sable temps réel** : le fumeur part d'un **stress de base** ;

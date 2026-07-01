@@ -175,3 +175,30 @@
 - [ ] Dans les deux modes (superposé / grille), la vague (courbe + repère) continue de se dessiner/avancer visiblement.
 - [ ] Comportement des widgets inchangé : compte à rebours « Différer », pulsation « Distraire » (respecte `prefers-reduced-motion`), cercle de respiration « Décontracter », séquence de gorgées « De l'eau ».
 - [ ] Cibles tactiles (cartes, boutons internes) toujours confortables (≥ 44 px) dans les deux modes d'affichage.
+
+## R4 — Nicotine : cinétique temps réel au clic + refonte visuelle
+
+> Le modèle « lecture différée jusqu'à Lecture » est supprimé : le temps avance désormais tout seul en boucle
+> continue dès l'ouverture du module (façon balayage d'oscilloscope), sans dépendre d'un clic sur un bouton
+> Lecture. Un clic sur un geste (cigarette/substitut/vapoteuse/patch) insère la prise **au temps courant** du
+> balayage et sa cinétique se dessine immédiatement. Pause/Vitesse sont conservés en contrôles secondaires
+> (discrets, sous forme de boutons contour) ; le geste (primaire, rempli) reste l'action principale. Le
+> balayage boucle en continu tant qu'il n'est pas mis en pause (root cause de l'ancien blocage : `now`
+> restait figé à 0 tant que `playing` n'était jamais activé). Ajout d'un léger dégradé de remplissage sous la
+> partie de la courbe déjà parcourue (couleur zone : vert confort / rouge manque-trop haut), et d'un chip
+> « État actuel » avec icône (✓ confort, ⚠ manque/trop haut) mieux intégré au-dessus du graphe.
+> `nicotineCurve.ts` n'a pas été modifié (partagé avec R5, non touché comme prévu).
+
+- [ ] Dès l'ouverture du module, le curseur temporel avance déjà tout seul (pas besoin de cliquer sur un bouton Lecture pour voir quoi que ce soit bouger).
+- [ ] Cliquer sur un geste (« Fumer une cigarette », « Substitut ponctuel », « Vapoteuse », « Poser un patch ») insère immédiatement un pictogramme au temps courant et sa cinétique (montée/descente) se dessine tout de suite, sans étape intermédiaire.
+- [ ] Le bouton « Pause » (contrôle secondaire) fige le balayage ; il devient « Reprendre » et relance depuis la position figée.
+- [ ] « Vitesse ×1/×2/×4 » change la vitesse de balayage.
+- [ ] « Réinitialiser » remet le curseur à 0, efface les prises, et le balayage repart automatiquement (pas besoin de recliquer Lecture après un reset).
+- [ ] Le balayage boucle en continu (revient à 0 après un tour) sans que la courbe déjà tracée (repère fin en arrière-plan) ne change — seule la portion colorée « déjà parcourue » se redessine à chaque tour.
+- [ ] Le chip « État actuel : Manque / Confort / Trop haut » (icône + couleur + texte) est bien lisible au-dessus du graphe et change en cohérence avec la couleur de la courbe au niveau du curseur.
+- [ ] Un léger dégradé de couleur (vert ou rouge selon la zone) est visible sous la portion de courbe déjà parcourue, sans nuire à la lisibilité des bandes de zone en arrière-plan.
+- [ ] Hiérarchie visuelle des boutons perceptible : gestes en boutons pleins (accent), Pause/Vitesse en contour discret, Réinitialiser en contour rouge/alerte à part.
+- [ ] Mention « schéma illustratif » toujours présente ; aucune valeur chiffrée de dosage.
+- [ ] Avec « Réduire les animations » activé au niveau OS/navigateur : pas de balayage animé ni de curseur, la courbe complète s'affiche directement, les boutons Pause/Vitesse disparaissent (reste geste + Réinitialiser) ; ajouter un geste met quand même à jour la courbe.
+
+**Auto :** `tsc -b` + `vite build` + `vitest run` (15 tests) exécutés directement via `node_modules/.bin` (npm/node non détectés sur le PATH de cet environnement, mais `/c/Program Files/nodejs/node.exe` est présent) — tous verts, aucune régression.
