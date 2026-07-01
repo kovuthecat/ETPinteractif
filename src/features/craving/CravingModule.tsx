@@ -31,7 +31,14 @@ function buildBellPath(width: number, height: number): string {
   return `M${first} L${rest.join(' ')}`;
 }
 
+function buildAreaPath(width: number, height: number): string {
+  return `${BELL_PATH} L${width},${height} L0,${height} Z`;
+}
+
 const BELL_PATH = buildBellPath(WIDTH, HEIGHT);
+const AREA_PATH = buildAreaPath(WIDTH, HEIGHT);
+const PEAK_X = PEAK * WIDTH;
+const AXIS_Y = HEIGHT - 2;
 
 function getPhase(progress: number, running: boolean): Phase {
   if (!running && progress === 0) return 'idle';
@@ -215,8 +222,25 @@ export default function CravingModule(_: ModuleProps) {
             role="img"
             aria-label="Schéma illustratif de la vague d'envie dans le temps"
           >
+            <defs>
+              <linearGradient id="craving-aire" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="var(--color-accent)" stopOpacity="0.35" />
+                <stop offset="100%" stopColor="var(--color-accent)" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+            <line x1={0} y1={AXIS_Y} x2={WIDTH} y2={AXIS_Y} className={styles.axe} />
+            <line x1={PEAK_X} y1={0} x2={PEAK_X} y2={AXIS_Y} className={styles.repereMax} />
+            <text x={PEAK_X} y={14} textAnchor="middle" className={styles.repereMaxLabel}>
+              pic
+            </text>
+            <path d={AREA_PATH} className={styles.aire} />
             <path d={BELL_PATH} className={courbeClass} />
-            {dejaLancee && <circle cx={markerX} cy={markerY} r={8} className={styles.marqueur} />}
+            {dejaLancee && (
+              <g>
+                <circle cx={markerX} cy={markerY} r={13} className={styles.marqueurHalo} />
+                <circle cx={markerX} cy={markerY} r={7} className={styles.marqueur} />
+              </g>
+            )}
           </svg>
 
           {!trop && cartesActives.length > 0 && (

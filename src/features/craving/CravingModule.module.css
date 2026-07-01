@@ -33,15 +33,49 @@
 .courbe {
   fill: none;
   stroke: var(--color-accent);
-  stroke-width: 3;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .courbeAttenuee {
   opacity: 0.25;
 }
 
+.aire {
+  fill: url(#craving-aire);
+  stroke: none;
+}
+
+.axe {
+  stroke: var(--color-text);
+  stroke-opacity: 0.15;
+  stroke-width: 1;
+}
+
+.repereMax {
+  stroke: var(--color-text);
+  stroke-opacity: 0.25;
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+
+.repereMaxLabel {
+  fill: var(--color-text);
+  opacity: 0.45;
+  font-size: 12px;
+  font-style: italic;
+}
+
 .marqueur {
   fill: var(--color-warn);
+  stroke: var(--color-surface);
+  stroke-width: 2;
+}
+
+.marqueurHalo {
+  fill: var(--color-warn);
+  opacity: 0.2;
 }
 
 .overlayZone {
