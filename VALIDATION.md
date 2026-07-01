@@ -202,3 +202,43 @@
 - [ ] Avec « Réduire les animations » activé au niveau OS/navigateur : pas de balayage animé ni de curseur, la courbe complète s'affiche directement, les boutons Pause/Vitesse disparaissent (reste geste + Réinitialiser) ; ajouter un geste met quand même à jour la courbe.
 
 **Auto :** `tsc -b` + `vite build` + `vitest run` (15 tests) exécutés directement via `node_modules/.bin` (npm/node non détectés sur le PATH de cet environnement, mais `/c/Program Files/nodejs/node.exe` est présent) — tous verts, aucune régression.
+
+## R5 — Soulagement : modèle temps réel + superposition non-fumeur sur la même courbe
+
+> La bascule d'onglets « Non-fumeur / Fumeur » est supprimée : le module est désormais un **bac à sable temps
+> réel calqué sur R4** (balayage continu façon oscilloscope, dès l'ouverture). Cliquer « Fumer une cigarette »
+> insère la prise au temps courant ; le stress chute exactement au pic de nicotine puis remonte. Un seul
+> bouton « Comparer au non-fumeur » superpose, **sur le même graphe**, une ligne de repère stable — toujours
+> **sous** le creux le plus bas atteint par le fumeur (invariant garanti par construction : le plancher de
+> stress fumeur = `STRESS_BASAL_FUMEUR` = 0,30, strictement > `STRESS_BASAL_NON_FUMEUR` = 0,25, même si
+> plusieurs cigarettes saturent la nicotine à 1). `nicotineCurve.ts` n'a pas eu besoin de changer de formule ;
+> deux tests Vitest ont été ajoutés pour figer cet invariant en comportement observable (pas seulement en
+> comparaison de constantes) : saturation multi-cigarettes + monotonie creux/rebond après une cigarette.
+
+- [ ] Dès l'ouverture du module, le curseur temporel avance déjà tout seul ; la courbe de stress est plate au
+  plafond de manque (aucune cigarette encore « fumée »).
+- [ ] Cliquer « Fumer une cigarette » insère immédiatement un pictogramme au temps courant ; le stress chute
+  au même instant (synchronisé au pic de nicotine, courbe pointillée grise en repère) puis remonte
+  progressivement vers le plafond, jusqu'à la cigarette suivante.
+- [ ] Cliquer plusieurs fois de suite : chaque clic ajoute un pictogramme distinct sur l'axe du temps et un
+  nouveau creux, sans jamais faire descendre le stress sous le plancher illustré.
+- [ ] Bouton « Comparer au non-fumeur » : superpose une ligne verte pointillée horizontale, libellée
+  « Repère : stress non-fumeur (stable) », visuellement **sous** (plus bas que) tous les creux du fumeur —
+  jamais couleur seule (libellé texte toujours présent). Un second paragraphe de légende apparaît, expliquant
+  que le fumeur reste au-dessus même soulagé.
+- [ ] Annotation italique « soulagement du manque » ancrée au creux le plus bas actuellement dessiné, une
+  fois qu'au moins une cigarette a été « fumée ».
+- [ ] « Réinitialiser » efface les cigarettes posées et remet le curseur à 0 ; le balayage continue
+  automatiquement (le toggle « Comparer » n'est pas réinitialisé, c'est une préférence d'affichage).
+- [ ] Mention « schéma illustratif — pas une mesure clinique » toujours présente ; ton non culpabilisant
+  conservé (la cigarette « soulage un manque qu'elle a elle-même créé », jamais formulé comme une faute).
+- [ ] Avec « Réduire les animations » activé : pas de balayage animé, la courbe s'affiche directement en
+  entier (état final) ; cliquer « Fumer une cigarette » ajoute quand même un nouveau creux visible, espacé
+  automatiquement sur l'axe.
+- **Question d'arbitrage héritée (cf. §C4 ci-dessus, non retranchée par R5)** : les amplitudes restent celles
+  déjà proposées (basal non-fumeur 0,25 ; basal fumeur juste après soulagement 0,30 ; amplitude de manque
+  0,35 → plafond ≈ 0,65) — **toujours à valider/ajuster par Thibault** dans le nouveau contexte temps réel
+  (le récit visuel change : creux ponctuels répétés au clic plutôt qu'une séquence de 5 cigarettes fixes).
+
+**Auto :** `tsc -b` + `vite build` + `vitest run` (17 tests, dont les 2 nouveaux tests d'invariant R5) exécutés
+via `node_modules/.bin` (`/c/Program Files/nodejs/node.exe` sur le PATH) — tous verts, aucune régression.

@@ -118,6 +118,43 @@ describe('sampleStress', () => {
       expect(y).toBeLessThanOrEqual(1);
     }
   });
+
+  it('fumeur : meme quand plusieurs cigarettes saturent la nicotine a 1, le creux le plus bas du stress reste strictement au-dessus du basal non-fumeur (invariant R5)', () => {
+    const n = 200;
+    const events: CurveEvent[] = Array.from({ length: 6 }, (_, i) => ({
+      kind: 'cigarette',
+      t: 0.3 + i * 0.001,
+    }));
+    const nicotine = sampleCurve({ patch: false, events, n });
+    expect(Math.max(...nicotine)).toBe(1);
+    const stress = sampleStress({ fumeur: true, events, n });
+    expect(Math.min(...stress)).toBeCloseTo(STRESS_BASAL_FUMEUR, 5);
+    expect(Math.min(...stress)).toBeGreaterThan(STRESS_BASAL_NON_FUMEUR);
+  });
+
+  it('fumeur : une cigarette cree un creux synchronise sur son pic puis un rebond monotone vers le plafond de manque', () => {
+    // n=101 choisi pour que t0=0.3 tombe exactement sur un index (30/100), sans arrondi.
+    const n = 101;
+    const t0 = 0.3;
+    const events: CurveEvent[] = [{ kind: 'cigarette', t: t0 }];
+    const stress = sampleStress({ fumeur: true, events, n });
+    const t0Index = t0 * (n - 1);
+    expect(Number.isInteger(t0Index)).toBe(true);
+
+    // plateau constant avant la cigarette (rien a soulager tant qu'elle n'a pas ete "fumee")
+    for (let i = 1; i < t0Index; i++) {
+      expect(stress[i]).toBeCloseTo(stress[0], 5);
+    }
+
+    // le creux est exactement synchronise avec le pic de nicotine (cf. VALIDATION.md §C4)
+    expect(stress[t0Index]).toBeLessThan(stress[0]);
+    expect(stress.indexOf(Math.min(...stress))).toBe(t0Index);
+
+    // rebond monotone (non decroissant) apres le creux, jusqu'a la fin du balayage
+    for (let i = t0Index + 1; i < n; i++) {
+      expect(stress[i]).toBeGreaterThanOrEqual(stress[i - 1]);
+    }
+  });
 });
 
 describe('toSvgPath', () => {

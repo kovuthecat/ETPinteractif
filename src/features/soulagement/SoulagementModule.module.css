@@ -4,13 +4,47 @@
   gap: var(--space-md);
 }
 
-.controls {
+.gestes {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.gesteBtn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  min-height: var(--target-min);
+  padding: var(--space-sm) var(--space-md);
+  border: none;
+  border-radius: var(--radius);
+  background: var(--color-accent);
+  color: var(--color-surface);
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.gesteBtn:hover,
+.gesteBtn:focus-visible {
+  opacity: 0.85;
+}
+
+.graphHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
   gap: var(--space-sm);
 }
 
 .btn,
 .btnActive {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  min-height: var(--target-min);
   padding: var(--space-sm) var(--space-md);
   border: none;
   border-radius: var(--radius);
@@ -31,6 +65,25 @@
 .btnActive {
   background: var(--color-accent);
   color: var(--color-surface);
+}
+
+.reset {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  min-height: var(--target-min);
+  padding: var(--space-xs) var(--space-sm);
+  border: 2px solid var(--color-warn);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--color-warn);
+  font-size: 0.9em;
+  cursor: pointer;
+}
+
+.reset:hover,
+.reset:focus-visible {
+  background: var(--color-toxique-soft);
 }
 
 .graph {
@@ -58,14 +111,7 @@
   opacity: 0.6;
 }
 
-.courbeStressCalme {
-  fill: none;
-  stroke: var(--color-confort);
-  stroke-width: 3;
-  stroke-linecap: round;
-}
-
-.courbeStressFumeur {
+.courbeStress {
   fill: none;
   stroke: var(--color-vigilance);
   stroke-width: 3;
@@ -94,6 +140,22 @@
   font-size: 12px;
   font-style: italic;
   fill: var(--color-vigilance);
+}
+
+.axisLine {
+  stroke: var(--color-text);
+  stroke-width: 1;
+  opacity: 0.25;
+}
+
+.pictogramme {
+  color: var(--color-text);
+}
+
+.cursor {
+  stroke: var(--color-nav);
+  stroke-width: 2;
+  stroke-dasharray: 4 4;
 }
 
 .mention {

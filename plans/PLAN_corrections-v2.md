@@ -194,7 +194,7 @@ La v1 (6 modules + socle sémantique) fonctionne, mais une passe de test en cond
 - **Si bloqué :** si les amplitudes exactes sont incertaines → coder une version plausible marquée « illustrative »
   et **lister la question dans `VALIDATION.md`** pour arbitrage Thibault (ne pas inventer de chiffres cliniques).
 - **Commit :** `feat(module): soulagement temps reel + repere non-fumeur superpose`
-- **Statut :** [ ] à faire
+- **Statut :** [x] fait (auto OK : `tsc -b`, `vite build`, `vitest run` 17 tests verts ; visuel → `VALIDATION.md` ; question d'amplitudes toujours en attente d'arbitrage Thibault)
 
 ### R6 — Addiction : exploration d'une dimension lisible + outils dans le cadre · Modèle : Sonnet, effort : medium
 - **But :** au clic sur un cercle, remplacer le **zoom illisible** (texte qui déborde / se chevauche) par un

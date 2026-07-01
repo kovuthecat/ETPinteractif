@@ -13,7 +13,7 @@ Index des tâches : backlog + actives. Historique des tâches faites : `git log`
 - [~] R2 — Nicotine-toxique : étiquettes alignées + pop-up ancré · modèle: Sonnet, effort: medium (auto en attente : npm indispo dans cet env ; visuel → VALIDATION.md)
 - [~] R3 — Craving : cartes 4D dans le cadre (overlay borné) · modèle: Sonnet, effort: medium (auto en attente : npm indispo dans cet env ; visuel → VALIDATION.md)
 - [x] R4 — Nicotine : cinétique temps réel au clic + refonte visuelle · modèle: Sonnet, effort: high (auto OK : tsc+vite build+vitest verts ; visuel → VALIDATION.md)
-- [ ] R5 — Soulagement : temps réel + repère non-fumeur superposé · modèle: Sonnet, effort: high *(récit à valider Thibault)*
+- [x] R5 — Soulagement : temps réel + repère non-fumeur superposé · modèle: Sonnet, effort: high *(récit à valider Thibault)* (auto OK : tsc+vite build+vitest 17 tests verts ; visuel → VALIDATION.md)
 - [ ] R6 — Addiction : exploration lisible + outils enrichis · modèle: Sonnet, effort: medium
 - [ ] R7 — Craving : courbe « vague » plus expressive · modèle: Haiku, effort: low
 - [ ] R8 — Substituts : refonte ergonomique de la titration · modèle: Sonnet, effort: medium
