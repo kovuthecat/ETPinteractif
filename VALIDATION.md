@@ -159,3 +159,19 @@
 - [ ] Sous 900 px (tablette/mobile), le pop-up devient un bandeau ancré en bas de la scène : il ne recouvre aucun hotspot et ne déborde jamais horizontalement.
 - [ ] Redimensionner la fenêtre ne désynchronise plus jamais trait / étiquette / pop-up (positions dérivées d'une seule source).
 - [ ] Aucune régression : filtres toxiques/dépendance, fermeture du pop-up (croix), renvois vers Substituts/Nicotine.
+
+## R3 — Craving : cartes 4D bornées au cadre
+
+> Root cause : `.overlayZone` était en position absolue avec un `max-width: 75%` mais **sans borne de hauteur** ;
+> avec plusieurs cartes actives, `flex-wrap` empilait les lignes et le bloc débordait vers le bas du `graphWrap`
+> (et donc de l'écran, cf. R1). Fix : la zone superposée est maintenant bornée par `inset` + `max-height: 88%` +
+> `overflow: auto` **tant qu'il y a ≤ 1 outil actif** ; dès que **2 outils ou plus** sont actifs, les cartes basculent
+> automatiquement **sous le graphe** dans une grille responsive (`repeat(auto-fit, minmax(200px,1fr))`), le marqueur
+> et la courbe restant visibles sur le graphe dans les deux cas.
+
+- [ ] Activer 1 seul outil (ex. « Différer ») : la carte reste **superposée sur le graphe**, ancrée en haut de la zone du pic, sans dépasser le cadre du graphique.
+- [ ] Activer les **4 outils en même temps** : les cartes basculent **sous le graphe** en grille (2 colonnes environ sur écran large, empilées sur mobile) ; rien ne sort de l'écran, pas de scroll horizontal.
+- [ ] Repasser de 2+ outils à 1 seul (désactiver 3 outils) : la carte restante revient bien **superposée sur le graphe** (pas coincée sous le graphe).
+- [ ] Dans les deux modes (superposé / grille), la vague (courbe + repère) continue de se dessiner/avancer visiblement.
+- [ ] Comportement des widgets inchangé : compte à rebours « Différer », pulsation « Distraire » (respecte `prefers-reduced-motion`), cercle de respiration « Décontracter », séquence de gorgées « De l'eau ».
+- [ ] Cibles tactiles (cartes, boutons internes) toujours confortables (≥ 44 px) dans les deux modes d'affichage.

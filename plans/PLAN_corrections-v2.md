@@ -133,7 +133,7 @@ La v1 (6 modules + socle sémantique) fonctionne, mais une passe de test en cond
   la vague reste visible et continue derrière/à côté ; comportement des widgets inchangé.
 - **Si bloqué :** —
 - **Commit :** `fix(module): craving 4D dans le cadre (overlay borne)`
-- **Statut :** [ ] à faire
+- **Statut :** [~] fait (auto en attente : `npm` indisponible dans cet environnement pour lancer `npm run build` ; visuel → `VALIDATION.md`)
 
 ---
 

@@ -146,6 +146,62 @@ export default function CravingModule(_: ModuleProps) {
   const courbeClass = activeTools.has('distraire')
     ? `${styles.courbe} ${styles.courbeAttenuee}`
     : styles.courbe;
+  const cartesActives = D_CARDS.filter((card) => activeTools.has(card.key));
+  const trop = cartesActives.length >= 2;
+
+  const cartes = cartesActives.map((card) => (
+    <div key={card.key} className={styles.overlayCard}>
+      <p className={styles.overlayTitre}>
+        <card.Icon size={18} aria-hidden="true" />
+        {card.titre}
+      </p>
+      <p className={styles.overlayConseil}>{card.conseil}</p>
+
+      {card.key === 'differer' && (
+        <p className={styles.overlayDetail} aria-live="polite">
+          {remainingS > 0 ? `Encore ${remainingS} s…` : "C'est passé."}
+        </p>
+      )}
+
+      {card.key === 'distraire' && (
+        <Sparkles size={26} className={styles.distraireIcon} aria-hidden="true" />
+      )}
+
+      {card.key === 'decontracter' && (
+        <div className={styles.respiration}>
+          <div
+            className={respirationActive ? `${styles.cercle} ${styles.cercleActif}` : styles.cercle}
+          />
+          <button
+            type="button"
+            className={styles.btnSmall}
+            onClick={() => setRespirationActive((a) => !a)}
+          >
+            {respirationActive ? 'Arrêter' : 'Démarrer'}
+          </button>
+        </div>
+      )}
+
+      {card.key === 'eau' && (
+        <div className={styles.eauWidget}>
+          <p className={styles.overlayDetail} aria-live="polite">
+            {gorgees === 0
+              ? 'Prenez le verre.'
+              : gorgees >= GORGEES_TOTAL
+                ? "C'est fait, bien joué."
+                : `Gorgée ${gorgees}/${GORGEES_TOTAL}…`}
+          </p>
+          <button
+            type="button"
+            className={styles.btnSmall}
+            onClick={() => setGorgees((g) => (g >= GORGEES_TOTAL ? 0 : g + 1))}
+          >
+            {gorgees >= GORGEES_TOTAL ? 'Recommencer' : 'Une gorgée'}
+          </button>
+        </div>
+      )}
+    </div>
+  ));
 
   return (
     <div className={styles.module}>
@@ -163,70 +219,12 @@ export default function CravingModule(_: ModuleProps) {
             {dejaLancee && <circle cx={markerX} cy={markerY} r={8} className={styles.marqueur} />}
           </svg>
 
-          {activeTools.size > 0 && (
-            <div className={styles.overlayZone}>
-              {D_CARDS.filter((card) => activeTools.has(card.key)).map((card) => (
-                <div key={card.key} className={styles.overlayCard}>
-                  <p className={styles.overlayTitre}>
-                    <card.Icon size={18} aria-hidden="true" />
-                    {card.titre}
-                  </p>
-                  <p className={styles.overlayConseil}>{card.conseil}</p>
-
-                  {card.key === 'differer' && (
-                    <p className={styles.overlayDetail} aria-live="polite">
-                      {remainingS > 0 ? `Encore ${remainingS} s…` : "C'est passé."}
-                    </p>
-                  )}
-
-                  {card.key === 'distraire' && (
-                    <Sparkles size={26} className={styles.distraireIcon} aria-hidden="true" />
-                  )}
-
-                  {card.key === 'decontracter' && (
-                    <div className={styles.respiration}>
-                      <div
-                        className={
-                          respirationActive
-                            ? `${styles.cercle} ${styles.cercleActif}`
-                            : styles.cercle
-                        }
-                      />
-                      <button
-                        type="button"
-                        className={styles.btnSmall}
-                        onClick={() => setRespirationActive((a) => !a)}
-                      >
-                        {respirationActive ? 'Arrêter' : 'Démarrer'}
-                      </button>
-                    </div>
-                  )}
-
-                  {card.key === 'eau' && (
-                    <div className={styles.eauWidget}>
-                      <p className={styles.overlayDetail} aria-live="polite">
-                        {gorgees === 0
-                          ? 'Prenez le verre.'
-                          : gorgees >= GORGEES_TOTAL
-                            ? "C'est fait, bien joué."
-                            : `Gorgée ${gorgees}/${GORGEES_TOTAL}…`}
-                      </p>
-                      <button
-                        type="button"
-                        className={styles.btnSmall}
-                        onClick={() =>
-                          setGorgees((g) => (g >= GORGEES_TOTAL ? 0 : g + 1))
-                        }
-                      >
-                        {gorgees >= GORGEES_TOTAL ? 'Recommencer' : 'Une gorgée'}
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+          {!trop && cartesActives.length > 0 && (
+            <div className={styles.overlayZone}>{cartes}</div>
           )}
         </div>
+
+        {trop && <div className={styles.overlayZoneBelow}>{cartes}</div>}
 
         <p className={styles.mention}>
           Schéma illustratif — les ~30 secondes ici représentent quelques minutes réelles.

@@ -46,14 +46,20 @@
 
 .overlayZone {
   position: absolute;
-  top: 8%;
-  left: 30%;
-  transform: translate(-45%, 0);
+  inset: 6% 6% auto 6%;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  align-content: flex-start;
   gap: var(--space-sm);
-  max-width: 75%;
+  max-height: 88%;
+  overflow: auto;
+}
+
+.overlayZoneBelow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-sm);
 }
 
 .overlayCard {
