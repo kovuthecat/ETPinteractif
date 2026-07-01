@@ -63,4 +63,4 @@ le titre de chaque carte lisible. Doute → STOP.
 `fix(craving): les 4 D recouvrent et masquent progressivement le pic (V5)`
 
 ## Statut
-[ ] à faire
+[x] fait

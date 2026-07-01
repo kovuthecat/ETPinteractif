@@ -38,10 +38,6 @@
   stroke-linejoin: round;
 }
 
-.courbeAttenuee {
-  opacity: 0.25;
-}
-
 .aire {
   fill: url(#craving-aire);
   stroke: none;
@@ -80,20 +76,16 @@
 
 .overlayZone {
   position: absolute;
-  inset: 6% 6% auto 6%;
+  top: 3%;
+  transform: translateX(-50%);
+  max-width: 60%;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-content: flex-start;
-  gap: var(--space-sm);
-  max-height: 88%;
+  gap: var(--space-xs);
+  max-height: 90%;
   overflow: auto;
-}
-
-.overlayZoneBelow {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--space-sm);
 }
 
 .overlayCard {
@@ -101,12 +93,14 @@
   flex-direction: column;
   align-items: center;
   gap: var(--space-xs);
-  min-width: 140px;
-  padding: var(--space-sm) var(--space-md);
+  min-width: 96px;
+  max-width: 150px;
+  padding: var(--space-xs) var(--space-sm);
   background: var(--color-confort-soft);
   border: 2px solid var(--color-confort);
   border-radius: var(--radius);
   text-align: center;
+  font-size: 0.9em;
 }
 
 .overlayTitre {

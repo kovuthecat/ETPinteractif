@@ -403,3 +403,29 @@ régression.
 - [ ] Mention « schéma illustratif » toujours présente.
 
 **Auto :** `tsc -b` + `vite build` + `vitest run` (20 tests) — tous verts, aucune régression.
+
+## V5 — Craving : les 4 D masquent progressivement le pic
+> Supprime la bascule « sous le graphe dès 2+ outils » (root cause R3/C5 devenue obsolète) : il n'y a
+> plus qu'un seul conteneur `.overlayZone`, toujours superposé au SVG, ancré au-dessus de la zone du
+> pic (centré sur `PEAK_X`, ~30 % de la largeur du graphe), en disposition flexbox compacte (jusqu'à
+> 2×2, cartes réduites en taille/police pour tenir sur la zone haute). L'atténuation binaire de la
+> courbe (`courbeAttenuee`, liée au seul « Distraire ») est remplacée par une opacité graduée
+> (`picOpacity`, palette 1 / 0,55 / 0,35 / 0,2 / 0,1) pilotée par `activeTools.size`, appliquée en
+> style inline sur le `<path>` de la courbe. **Remplace donc les critères R3/C5 ci-dessus qui
+> décrivaient l'ancien comportement (bascule sous le graphe) — ne plus s'y fier pour ce module.**
+
+- [ ] Activer 1 seul outil : sa carte **recouvre la zone du pic** (jamais sous le graphe), le pic est
+  légèrement estompé derrière (opacité ~0,55) mais toujours devinable.
+- [ ] Activer 2, 3 puis 4 outils : les cartes s'empilent en grille compacte (2×2 max) toujours sur la
+  zone du pic, et le pic derrière s'assombrit/s'estompe **de plus en plus** jusqu'à devenir à peine
+  visible avec les 4 outils actifs (opacité ~0,1).
+- [ ] À chaque étape, les cartes restent **lisibles** (fond opaque, titre + icône visibles), même
+  réduites en taille pour tenir sur la zone haute du graphe.
+- [ ] Rien ne déborde du cadre `.graphWrap`, à aucun moment (1 à 4 outils actifs).
+- [ ] Désactiver les outils un par un : le pic redevient progressivement net (opacité qui remonte),
+  jusqu'à disparition complète des cartes et pic à pleine opacité sans aucun outil actif.
+- [ ] Comportement des widgets inchangé : compte à rebours « Différer », pulsation « Distraire »,
+  cercle de respiration « Décontracter », séquence de gorgées « De l'eau ».
+- [ ] Cibles tactiles (cartes, boutons internes) restent confortables malgré la taille réduite.
+
+**Auto :** `tsc -b` + `vite build` OK.

@@ -38,7 +38,14 @@ function buildAreaPath(width: number, height: number): string {
 const BELL_PATH = buildBellPath(WIDTH, HEIGHT);
 const AREA_PATH = buildAreaPath(WIDTH, HEIGHT);
 const PEAK_X = PEAK * WIDTH;
+const PEAK_X_PERCENT = (PEAK_X / WIDTH) * 100;
 const AXIS_Y = HEIGHT - 2;
+
+const PIC_OPACITY_BY_COUNT = [1, 0.55, 0.35, 0.2, 0.1];
+
+function picOpacity(activeCount: number): number {
+  return PIC_OPACITY_BY_COUNT[Math.min(activeCount, PIC_OPACITY_BY_COUNT.length - 1)];
+}
 
 function getPhase(progress: number, running: boolean): Phase {
   if (!running && progress === 0) return 'idle';
@@ -150,11 +157,7 @@ export default function CravingModule(_: ModuleProps) {
   const markerX = progress * WIDTH;
   const markerY = (1 - bellValue(progress)) * HEIGHT;
   const remainingS = Math.max(0, Math.ceil(((1 - progress) * DURATION_MS) / 1000));
-  const courbeClass = activeTools.has('distraire')
-    ? `${styles.courbe} ${styles.courbeAttenuee}`
-    : styles.courbe;
   const cartesActives = D_CARDS.filter((card) => activeTools.has(card.key));
-  const trop = cartesActives.length >= 2;
 
   const cartes = cartesActives.map((card) => (
     <div key={card.key} className={styles.overlayCard}>
@@ -234,7 +237,11 @@ export default function CravingModule(_: ModuleProps) {
               pic
             </text>
             <path d={AREA_PATH} className={styles.aire} />
-            <path d={BELL_PATH} className={courbeClass} />
+            <path
+              d={BELL_PATH}
+              className={styles.courbe}
+              style={{ opacity: picOpacity(activeTools.size) }}
+            />
             {dejaLancee && (
               <g>
                 <circle cx={markerX} cy={markerY} r={13} className={styles.marqueurHalo} />
@@ -243,12 +250,12 @@ export default function CravingModule(_: ModuleProps) {
             )}
           </svg>
 
-          {!trop && cartesActives.length > 0 && (
-            <div className={styles.overlayZone}>{cartes}</div>
+          {cartesActives.length > 0 && (
+            <div className={styles.overlayZone} style={{ left: `${PEAK_X_PERCENT}%` }}>
+              {cartes}
+            </div>
           )}
         </div>
-
-        {trop && <div className={styles.overlayZoneBelow}>{cartes}</div>}
 
         <p className={styles.mention}>
           Schéma illustratif — les ~30 secondes ici représentent quelques minutes réelles.
