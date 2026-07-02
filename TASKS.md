@@ -31,6 +31,21 @@ Index des tâches : backlog + actives. Historique des tâches faites : `git log`
 - [x] V8 — Motivation : tableau agrandi + cartes en réserve à glisser · modèle: Sonnet, effort: high · plan: → plans/corrections-v3/V8-motivation-reserve.md (auto OK : tsc+vite build verts ; drag limité au repositionnement intra-tableau, boutons Placer/Retirer pour changer de zone → VALIDATION.md)
   - Ordre recommandé : V6 → V1 → V2 → V5 → V7 → V8 → V3 → V4. Dépendances : V2 après V1, V8 après V7, V4 après V3 (lib partagée).
 
+### Corrections v4 (2026-07-02, audit Playwright 2026-07-01) · plan: → plans/corrections-v4/ (1 fichier/étape)
+- [x] A1 — Substituts : contenu validé (5 formes) + repli « en rédaction » + titration précisée · modèle: Sonnet, effort: medium · plan: → plans/corrections-v4/A1-substituts-contenu.md (auto OK ; visuel → VALIDATION.md §A1)
+- [x] A2 — Motivation : corriger masquage onglets (`.section[hidden] { display: none }`) · modèle: Haiku, effort: minimal · plan: → plans/corrections-v4/A2-motivation-masquage.md (auto OK ; visuel → VALIDATION.md §A2)
+- [x] A3 — Accueil : grille par familles (Comprendre / Agir / Se motiver) · modèle: Sonnet, effort: medium · plan: → plans/corrections-v4/A3-accueil-grille.md (auto OK ; visuel → VALIDATION.md §A3)
+- [x] A4 — Coquille : libellé « Sources » explicite + focus clavier visible · modèle: Sonnet, effort: low · plan: → plans/corrections-v4/A4-affordances-sources.md (auto OK ; visuel → VALIDATION.md §A4)
+- [x] A5 — Addiction : vocabulaire desktop + titre physique + légende couleur/symptômes/stratégies · modèle: Sonnet, effort: medium · plan: → plans/corrections-v4/A5-addiction-desktop-legende.md (auto OK ; visuel → VALIDATION.md §A5)
+- [x] A6 — Nicotine : consigne d'amorce + chip « Pic atteint » + frise plus lisible · modèle: Sonnet, effort: low · plan: → plans/corrections-v4/A6-nicotine-consigne-libelle.md (auto OK ; visuel → VALIDATION.md §A6)
+- [x] A7 — Nicotine-toxique : double encodage non chromatique + atténuation légère · modèle: Sonnet, effort: medium · plan: → plans/corrections-v4/A7-toxique-equilibre.md (auto OK ; visuel → VALIDATION.md §A7)
+- [x] A8 — Soulagement : consigne 2 temps + annotation délai chute/remontée + « tension liée au manque » · modèle: Sonnet, effort: low · plan: → plans/corrections-v4/A8-soulagement-lecture.md (auto OK ; visuel → VALIDATION.md §A8)
+- [x] A9 — Craving : « C'est passé » réservé à la fin réelle de la vague (3 états) · modèle: Sonnet, effort: medium · plan: → plans/corrections-v4/A9-craving-timing.md (auto OK ; visuel → VALIDATION.md §A9)
+- [x] A10 — Motivation : cartes élargies (220–280 px) + sliders épaissis + bornes 0/10 + tableau moins haut · modèle: Sonnet, effort: medium · plan: → plans/corrections-v4/A10-motivation-cartes-sliders.md (auto OK ; visuel → VALIDATION.md §A10)
+- [x] A11 — Nicotine : drag-and-drop des prises sur la frise (position = temps) + fallback clic/clavier · modèle: Sonnet, effort: high · plan: → plans/corrections-v4/A11-nicotine-drag-frise.md (auto OK ; visuel → VALIDATION.md §A11)
+- [x] A12 — Motivation : placer/retirer les cartes par drag-and-drop HTML5 (réserve ↔ tableau) + Entrée/Suppr · modèle: Sonnet, effort: high · plan: → plans/corrections-v4/A12-motivation-drag-drop.md (auto OK : tsc+vite build verts ; visuel → VALIDATION.md §A12)
+  - Ordre : Wave 1 (A1–A9 en parallèle, 9 agents) → Wave 2 (A10+A11, 2 agents) → Wave 3 (A12). 3 commits.
+
 ### Reliquat v1
 - [~] C10 — Compléter le contenu non bloquant · modèle: Sonnet, effort: low · plan: → plans/PLAN_corrections-ux.md
   - [ ] Références de sources par module (HAS / Tabac Info Service) dans `registry.ts`
