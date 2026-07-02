@@ -123,6 +123,10 @@ export default function NicotineModule(_: ModuleProps) {
 
   return (
     <div className={styles.module}>
+      <p className={styles.consigne}>
+        Ajoutez des prises (cigarette, patch…) et observez l'évolution de la nicotinémie.
+      </p>
+
       <div className={styles.gestes}>
         {EVENTS_DEF.map(({ kind, label, Icon }) => (
           <button
@@ -138,9 +142,13 @@ export default function NicotineModule(_: ModuleProps) {
       </div>
 
       <div className={styles.graphHeader}>
-        <p className={`${styles.chip} ${ZONE_CHIP_CLASS[currentZone]}`} aria-live="polite">
+        <p
+          className={`${styles.chip} ${ZONE_CHIP_CLASS[currentZone]}`}
+          aria-live="polite"
+          aria-label={`Pic atteint : ${ZONE_LABEL[currentZone]}`}
+        >
           <ZoneIcon size={16} aria-hidden="true" />
-          État actuel : {ZONE_LABEL[currentZone]}
+          Pic atteint : {ZONE_LABEL[currentZone]}
         </p>
 
         <div className={styles.playback}>
@@ -200,14 +208,27 @@ export default function NicotineModule(_: ModuleProps) {
         <line x1={0} y1={HEIGHT + 4} x2={WIDTH} y2={HEIGHT + 4} className={styles.axisLine} />
         {events.map((event, i) => {
           const Icon = EVENTS_DEF.find((d) => d.kind === event.kind)?.Icon ?? Cigarette;
-          const x = Math.min(WIDTH - 18, Math.max(0, event.t * WIDTH - 9));
+          const x = Math.min(WIDTH - 22, Math.max(0, event.t * WIDTH - 11));
           return (
-            <g key={i} transform={`translate(${x}, ${HEIGHT + 8})`} className={styles.pictogramme}>
-              <Icon size={18} aria-hidden="true" />
+            <g key={i} transform={`translate(${x}, ${HEIGHT + 6})`} className={styles.pictogramme}>
+              <Icon size={22} aria-hidden="true" />
             </g>
           );
         })}
       </svg>
+      {events.length > 0 && (
+        <ul className={styles.prisesList} aria-label="Prises ajoutées">
+          {events.map((event, i) => {
+            const def = EVENTS_DEF.find((d) => d.kind === event.kind);
+            return (
+              <li key={i} className={styles.prisesItem}>
+                {def?.label ?? event.kind}
+              </li>
+            );
+          })}
+        </ul>
+      )}
+
       <p className={styles.mention}>Schéma illustratif — pas une courbe pharmacocinétique réelle.</p>
 
       <div className={styles.legende}>

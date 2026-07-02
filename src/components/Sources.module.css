@@ -6,20 +6,35 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  gap: var(--space-xs, 0.25rem);
+  min-width: 44px;
+  min-height: 44px;
+  padding-inline: var(--space-sm, 0.5rem);
   border: none;
   border-radius: var(--radius);
   background: transparent;
   color: var(--color-text);
-  opacity: 0.6;
+  opacity: 0.7;
   cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
 }
 
-.trigger:hover,
+.trigger:hover {
+  opacity: 1;
+  background: var(--color-bg);
+}
+
 .trigger:focus-visible {
   opacity: 1;
   background: var(--color-bg);
+  outline: 3px solid var(--color-primary, currentColor);
+  outline-offset: 2px;
+}
+
+.label {
+  /* libellé visible en permanence */
+  white-space: nowrap;
 }
 
 .popover {

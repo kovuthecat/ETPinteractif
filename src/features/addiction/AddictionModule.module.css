@@ -38,6 +38,16 @@
   filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.2));
 }
 
+/* Halo de fond derrière le libellé SVG pour éviter la confusion lors du chevauchement */
+.circleLabelBg {
+  fill: rgba(255, 255, 255, 0.82);
+  stroke: none;
+}
+
+.circleGroupActive .circleLabelBg {
+  fill: rgba(255, 255, 255, 0.92);
+}
+
 .circleLabel {
   fill: var(--pillar-color);
   font-weight: 700;
@@ -185,5 +195,57 @@
   gap: 4px;
   font-size: 0.8em;
   font-weight: 400;
+  opacity: 0.85;
+}
+
+/* ── Légende couleur → symptômes → stratégies ── */
+.legendePanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--pillar-color-soft);
+  border-left: 4px solid var(--pillar-color);
+  border-radius: calc(var(--radius) * 0.5);
+}
+
+.legendeRow {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.3em 0.45em;
+  font-size: var(--font-size-small);
+  line-height: 1.4;
+}
+
+.legendeDot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--pillar-color);
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.legendeNom {
+  font-weight: 700;
+  color: var(--pillar-color);
+}
+
+.legendeSep {
+  color: var(--color-text);
+  opacity: 0.5;
+  font-weight: 400;
+}
+
+.legendeLabel {
+  font-weight: 600;
+  color: var(--color-text);
+  flex-shrink: 0;
+}
+
+.legendeItems {
+  color: var(--color-text);
   opacity: 0.85;
 }

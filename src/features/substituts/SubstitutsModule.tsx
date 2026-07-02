@@ -12,41 +12,79 @@ type FormeId =
   | 'spray'
   | 'vapoteuse';
 
-const FORMES_DATA: Record<FormeId, { label: string; bonnesPratiques: string[]; erreurs: string[] }> = {
+type FormeContent =
+  | { label: string; bonnesPratiques: string[]; erreurs: string[]; enRedaction?: false }
+  | { label: string; enRedaction: true };
+
+const FORMES_DATA: Record<FormeId, FormeContent> = {
   patch: {
     label: 'Patch (24 h / 16 h)',
-    bonnesPratiques: ['À compléter'],
-    erreurs: ['À compléter'],
+    bonnesPratiques: [
+      'Appliquer 1 patch le matin au réveil.',
+      'Changer de site d'application chaque jour.',
+      'L'effet commence à se faire sentir ~30 min après l'application.',
+      'Autant que possible, garder le patch la nuit pour ne pas manquer de nicotine le matin.',
+    ],
+    erreurs: [
+      'Attendre un effet immédiat (il faut ~30 min).',
+      'Retirer le patch la nuit alors qu'on a besoin de nicotine au réveil (sauf sommeil perturbé → dose de nuit plus faible, cf. titration).',
+      'Reposer le patch toujours au même endroit.',
+    ],
   },
   gomme: {
     label: 'Gomme',
-    bonnesPratiques: ['À compléter'],
-    erreurs: ['À compléter'],
+    bonnesPratiques: [
+      'Prendre une gomme dès que l'envie de fumer se fait sentir.',
+      'Mâcher lentement 5–6 fois, puis garder la gomme contre la joue ~2 min (la nicotine se libère et est absorbée par la muqueuse buccale).',
+      'Remâcher lentement puis reposer contre la joue, et recommencer ainsi pendant ~30 min.',
+      'Gérer « au coup par coup » : une gomme dès que l'envie réapparaît dans la journée.',
+    ],
+    erreurs: [
+      'Mâcher vite et en continu comme un chewing-gum (la nicotine est avalée, moins efficace).',
+      'Avaler la salive au lieu de laisser absorber par la joue.',
+    ],
   },
   pastille: {
     label: 'Pastille',
-    bonnesPratiques: ['À compléter'],
-    erreurs: ['À compléter'],
+    bonnesPratiques: [
+      'Prendre une pastille dès que l'envie de fumer se fait sentir.',
+      'Laisser se dissoudre sous la langue, ou contre la joue en la déplaçant régulièrement d'un côté à l'autre de la bouche.',
+      'En 2–3 min, l'effet se fait sentir et l'envie s'estompe.',
+    ],
+    erreurs: [
+      'Croquer ou avaler la pastille (elle doit fondre lentement).',
+    ],
   },
   sublingual: {
     label: 'Comprimé sublingual',
-    bonnesPratiques: ['À compléter'],
-    erreurs: ['À compléter'],
+    bonnesPratiques: [
+      'Prendre un ou deux comprimés dès que l'envie se fait sentir.',
+      'Placer le comprimé sous la langue ou contre la joue et le laisser fondre.',
+      'L'effet se fait sentir en quelques minutes.',
+    ],
+    erreurs: [
+      'Croquer ou avaler le comprimé.',
+    ],
   },
   inhaleur: {
     label: 'Inhaleur',
-    bonnesPratiques: ['À compléter'],
-    erreurs: ['À compléter'],
+    enRedaction: true,
   },
   spray: {
     label: 'Spray buccal',
-    bonnesPratiques: ['À compléter'],
-    erreurs: ['À compléter'],
+    bonnesPratiques: [
+      'Une ou deux pulvérisations à chaque fois que l'envie de fumer se fait sentir.',
+      'Pulvériser dans la bouche, sur l'intérieur des joues (placer le spray un peu de côté pour atteindre l'intérieur de la joue).',
+      'On peut vaporiser sous la langue puis répartir sur l'intérieur des joues en bougeant la langue ; l'essentiel est de bien couvrir la muqueuse des joues.',
+      'Efficace en ~1 min.',
+    ],
+    erreurs: [
+      'Viser le fond de la gorge / inhaler la pulvérisation.',
+    ],
   },
   vapoteuse: {
     label: 'Vapoteuse',
-    bonnesPratiques: ['À compléter'],
-    erreurs: ['À compléter'],
+    enRedaction: true,
   },
 };
 
@@ -119,6 +157,7 @@ export default function SubstitutsModule(_: ModuleProps) {
     <div className={styles.module}>
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>Bonnes pratiques par forme</h2>
+        <p className={styles.formeConsigne}>Sélectionnez une forme pour afficher les conseils d'utilisation.</p>
         <div className={styles.chips}>
           {(Object.keys(FORMES_DATA) as FormeId[]).map((forme) => (
             <button
@@ -134,24 +173,30 @@ export default function SubstitutsModule(_: ModuleProps) {
         </div>
 
         {formeData && (
-          <div className={styles.panels}>
-            <div className={styles.panel}>
-              <h3 className={styles.panelTitle}>Bonnes pratiques</h3>
-              <ul className={styles.panelList}>
-                {formeData.bonnesPratiques.map((item, idx) => (
-                  <li key={idx}>{item}</li>
-                ))}
-              </ul>
+          formeData.enRedaction ? (
+            <div className={styles.panelRedaction}>
+              <p>Fiche en cours de rédaction — à voir avec votre soignant.</p>
             </div>
-            <div className={styles.panel}>
-              <h3 className={styles.panelTitle}>Erreurs fréquentes</h3>
-              <ul className={styles.panelList}>
-                {formeData.erreurs.map((item, idx) => (
-                  <li key={idx}>{item}</li>
-                ))}
-              </ul>
+          ) : (
+            <div className={styles.panels}>
+              <div className={styles.panel}>
+                <h3 className={styles.panelTitle}>{formeData.label} — bonnes pratiques</h3>
+                <ul className={styles.panelList}>
+                  {formeData.bonnesPratiques.map((item, idx) => (
+                    <li key={idx}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className={styles.panel}>
+                <h3 className={styles.panelTitle}>{formeData.label} — erreurs fréquentes</h3>
+                <ul className={styles.panelList}>
+                  {formeData.erreurs.map((item, idx) => (
+                    <li key={idx}>{item}</li>
+                  ))}
+                </ul>
+              </div>
             </div>
-          </div>
+          )
         )}
       </section>
 
@@ -197,7 +242,7 @@ export default function SubstitutsModule(_: ModuleProps) {
           <div className={styles.alertBanner} role="alert">
             <AlertTriangle size={22} aria-hidden="true" />
             <p className={styles.alertText}>
-              Signes de surdosage — revenez à la dose précédente.
+              Signes de surdosage (impression d'avoir trop fumé, nausées, vertiges, palpitations) — revenez à la dose précédente : c'est la dose dont vous avez besoin.
             </p>
             <button
               type="button"
@@ -224,7 +269,7 @@ export default function SubstitutsModule(_: ModuleProps) {
                 onClick={ajouterQuart}
                 disabled={!envie || surdosage}
               >
-                + ¼ (à J+2-3)
+                + ¼ (tous les 3 jours)
               </button>
               <button
                 type="button"
@@ -235,6 +280,9 @@ export default function SubstitutsModule(_: ModuleProps) {
                 − ¼
               </button>
             </div>
+            <p className={styles.titrationAide}>
+              Augmentez d'¼ tous les 3 jours tant que l'envie persiste (&gt;3 cig/j), sans signe de surdosage.
+            </p>
           </div>
 
           {jourNuit && (

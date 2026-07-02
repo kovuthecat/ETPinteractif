@@ -14,8 +14,11 @@ export interface ModuleProps {
   onNavigate: (id: ModuleId) => void;
 }
 
+export type FamilleId = 'comprendre' | 'agir' | 'motivation';
+
 export interface ModuleDef {
   id: ModuleId;
+  famille: FamilleId;
   titre: string;
   resume: string;
   sources?: string[];

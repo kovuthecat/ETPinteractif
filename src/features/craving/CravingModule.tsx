@@ -100,6 +100,9 @@ export default function CravingModule(_: ModuleProps) {
   const [activeTools, setActiveTools] = useState<Set<DKey>>(new Set());
   const [respirationActive, setRespirationActive] = useState(false);
   const [gorgees, setGorgees] = useState(0);
+  // Vrai si "Différer" a été activé pendant que la vague était en cours,
+  // afin d'afficher "C'est passé." uniquement lorsque la vague se termine réellement.
+  const [differActifPendantCourse, setDifferActifPendantCourse] = useState(false);
   const rafRef = useRef<number | null>(null);
   const startRef = useRef<number | null>(null);
 
@@ -109,11 +112,19 @@ export default function CravingModule(_: ModuleProps) {
     };
   }, []);
 
+  // Quand "Différer" est activé et que la vague est en cours → mémoriser pour "C'est passé."
+  useEffect(() => {
+    if (running && activeTools.has('differer')) {
+      setDifferActifPendantCourse(true);
+    }
+  }, [running, activeTools]);
+
   function lancerVague() {
     if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     startRef.current = null;
     setProgress(0);
     setRunning(true);
+    setDifferActifPendantCourse(false);
 
     const step = (timestamp: number) => {
       if (startRef.current === null) startRef.current = timestamp;
@@ -169,7 +180,13 @@ export default function CravingModule(_: ModuleProps) {
 
       {card.key === 'differer' && (
         <p className={styles.overlayDetail} aria-live="polite">
-          {remainingS > 0 ? `Encore ${remainingS} s…` : "C'est passé."}
+          {running
+            ? remainingS > 0
+              ? `Encore ${remainingS} s…`
+              : "C'est passé."
+            : differActifPendantCourse && progress >= 1
+              ? "C'est passé."
+              : 'Lancez la vague et différez pendant qu'elle monte.'}
         </p>
       )}
 

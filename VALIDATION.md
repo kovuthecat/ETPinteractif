@@ -491,3 +491,96 @@ régression.
   texte proposé par Claude, à ajuster si besoin.
 
 **Auto :** `tsc -b` + `vite build` OK.
+
+---
+
+## Corrections v4 (2026-07-02)
+
+> Lot issu de l'audit `AUDIT_UI_UX_PLAYWRIGHT.md`. Wave 1 (A1–A9) : `tsc --noEmit` vert.
+> Wave 2 (A10, A11) et Wave 3 (A12) à compléter avant de dérouler.
+
+## A2 — Motivation masquage
+
+**Fichier modifié :** `src/features/motivation/MotivationModule.module.css` — ajout de `.section[hidden] { display: none; }`
+
+- [ ] Au chargement du module Motivation, seul le panneau « Où en êtes-vous ? » est visible ; « Mes raisons » est absent de la page.
+- [ ] Cliquer « Mes raisons » : les sliders/échelles disparaissent, le whiteboard apparaît seul.
+- [ ] Cliquer « Où en êtes-vous ? » : retour inverse.
+- [ ] Navigation clavier gauche/droite entre onglets : contenu bascule correctement.
+- [ ] Valeurs des sliders **conservées** lors du changement d'onglet.
+- [ ] État des cartes (positions, textes) **conservé** lors du retour sur « Mes raisons ».
+- [ ] Hauteur de page cohérente (~contenu d'un seul panneau, pas ~1 688 px).
+
+## A1 — Substituts
+
+Contenu médical validé par Thibault (2026-07-01).
+
+**Partie A — Formes**
+- [ ] Consigne « Sélectionnez une forme pour afficher les conseils d'utilisation. » visible au-dessus des chips.
+- [ ] **Patch** : panels « Patch (24 h / 16 h) — bonnes pratiques » / « — erreurs fréquentes » avec contenu réel (4 BP, 3 erreurs).
+- [ ] **Gomme** : 4 bonnes pratiques, 2 erreurs.
+- [ ] **Pastille** : 3 bonnes pratiques, 1 erreur.
+- [ ] **Comprimé sublingual** : 3 bonnes pratiques, 1 erreur.
+- [ ] **Spray buccal** : 4 bonnes pratiques, 1 erreur.
+- [ ] **Inhaleur** : bloc unique « Fiche en cours de rédaction — à voir avec votre soignant. » (plus « À compléter »).
+- [ ] **Vapoteuse** : même comportement « en rédaction ».
+
+**Partie B — Titration**
+- [ ] Bouton « + ¼ (tous les 3 jours) » (plus « à J+2-3 »).
+- [ ] Aide visible : « Augmentez d'¼ tous les 3 jours tant que l'envie persiste (>3 cig/j), sans signe de surdosage. »
+- [ ] Bannière surdosage détaillée : « impression d'avoir trop fumé, nausées, vertiges, palpitations ».
+
+**Note :** Inhaleur et Vapoteuse en repli — contenu à fournir par Thibault.
+
+## A4 — Libellé « Sources » + focus clavier
+
+- [ ] Bouton en-tête affiche **« Sources »** en toutes lettres (visible sans survol).
+- [ ] Cible ≥ 44 px.
+- [ ] Clavier : bouton **Retour** + bouton **Sources** ont un `:focus-visible` net (3 px, offset 2 px).
+- [ ] Titre de l'en-tête reste centré ; popover s'ouvre/ferme normalement.
+
+**Note :** popover « Sources : à compléter » — références à fournir par Thibault dans `registry.ts`.
+
+## A3 — Accueil familles
+
+- [ ] Trois sections titrées : **Comprendre** (4 cartes), **Agir** (2 cartes), **Se motiver** (1 carte).
+- [ ] Intertitres discrets (uppercase, petite taille).
+- [ ] « Explorer ma motivation » n'est plus orpheline.
+- [ ] Grille 3 col → 2 col à 768 px → 1 col à 480 px.
+- [ ] Résumés légèrement plus lisibles ; cartes entièrement cliquables.
+
+## A5 — Addiction desktop/légende
+
+- [ ] Intro : **« Cliquez un cercle »** (plus « Touchez »).
+- [ ] Cercle physique labellisé **« Physique »** (sans « nicotinique »).
+- [ ] Cercle agrandi : libellé lisible grâce au halo blanc.
+- [ ] Bloc **légende** sous la scène Venn dès qu'un cercle est sélectionné (couleur → Symptômes → Stratégies).
+- [ ] Légende change avec la dimension active ; lisible à ~1 m.
+
+## A6 — Nicotine consigne/Pic
+
+- [ ] Consigne « Ajoutez des prises… » visible au-dessus des boutons.
+- [ ] Chip : **« Pic atteint : Manque / Confort / Trop haut »** (plus « État actuel »).
+- [ ] Liste des prises jouées sous le graphe (invisible si 0 prise).
+- [ ] Pictogrammes frise légèrement plus grands ; cumul inchangé.
+
+## A7 — Nicotine-toxique équilibre
+
+- [ ] Filtre activé → l'autre groupe reste lisible (atténuation légère seulement).
+- [ ] Sans couleur : **« Ce qui rend malade »** vs **« Ce qui crée la dépendance »** lisibles en texte.
+- [ ] Étiquettes de scène avec icône (⚠ / 🧠).
+- [ ] Nicotine non anodine toujours énoncée ; message principal fort ; V6 intact.
+
+## A8 — Soulagement lecture 2 temps
+
+- [ ] Consigne en 2 temps visible **dès l'ouverture**, encadrée (bordure orange).
+- [ ] Annotation de délai (segment + « puis ça remonte… ») apparaît entre chute et remontée.
+- [ ] Légende : **« Tension liée au manque »** (plus « Stress »).
+- [ ] Mention bas de page mise à jour ; aucun curseur/animation réintroduit.
+
+## A9 — Craving timing
+
+- [ ] « Différer » sans vague lancée → « Lancez la vague et différez pendant qu'elle monte. » (pas « C'est passé. »).
+- [ ] Idem après « Passer 30 s ».
+- [ ] « Différer » pendant la vague → compte à rebours normal → « C'est passé. » à la fin réelle.
+- [ ] « Rejouer » → message d'invitation revient.

@@ -29,8 +29,8 @@
 }
 
 .resume {
-  font-size: 1em;
-  line-height: 1.4;
+  font-size: 1.05em;
+  line-height: 1.55;
   opacity: 0.75;
   color: var(--color-text);
 }

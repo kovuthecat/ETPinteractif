@@ -24,7 +24,7 @@ const ORDER: Pilier[] = ['physique', 'psychologique', 'comportementale'];
 
 const PILLARS_DATA: Record<Pilier, PilierData> = {
   physique: {
-    label: 'Physique (nicotinique)',
+    label: 'Physique',
     color: 'var(--color-vigilance)',
     colorSoft: 'var(--color-vigilance-soft)',
     cx: 210,
@@ -128,7 +128,7 @@ export default function AddictionModule({ onNavigate }: ModuleProps) {
   return (
     <div className={styles.module}>
       <p className={styles.intro}>
-        L'addiction au tabac a trois dimensions imbriquées. Touchez un cercle pour l'explorer.
+        L'addiction au tabac a trois dimensions imbriquées. Cliquez un cercle pour l'explorer.
       </p>
 
       {data && (
@@ -158,6 +158,15 @@ export default function AddictionModule({ onNavigate }: ModuleProps) {
                   cy={p.cy}
                   r={isSelected ? R * 1.06 : R}
                   className={styles.circleShape}
+                />
+                {/* Halo de fond derrière le libellé pour éviter le chevauchement illisible */}
+                <rect
+                  x={p.cx - 90}
+                  y={p.cy - 26}
+                  width={180}
+                  height={28}
+                  rx={6}
+                  className={styles.circleLabelBg}
                 />
                 <text x={p.cx} y={p.cy - 6} textAnchor="middle" className={styles.circleLabel}>
                   {p.label}
@@ -210,6 +219,22 @@ export default function AddictionModule({ onNavigate }: ModuleProps) {
             );
           })}
       </div>
+
+      {data && (
+        <div className={styles.legendePanel} style={pillarVars(data)}>
+          <div className={styles.legendeRow}>
+            <span className={styles.legendeDot} aria-hidden="true" />
+            <span className={styles.legendeNom}>{data.label}</span>
+            <span className={styles.legendeSep} aria-hidden="true">→</span>
+            <span className={styles.legendeLabel}>Symptômes :</span>
+            <span className={styles.legendeItems}>{data.exemples.join(' · ')}</span>
+          </div>
+          <div className={styles.legendeRow}>
+            <span className={styles.legendeLabel}>Stratégies :</span>
+            <span className={styles.legendeItems}>{data.outils.map((o) => o.text).join(' · ')}</span>
+          </div>
+        </div>
+      )}
 
       {data && (
         <div className={styles.actionsPanel} style={pillarVars(data)}>

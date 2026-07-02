@@ -46,8 +46,8 @@ export default function NicotineToxiqueModule({ onNavigate }: ModuleProps) {
 
       <div className={styles.sceneShell}>
         <div className={styles.legend} aria-label="Légende de la scène">
-          <span className={styles.legendToxiques}><ShieldAlert aria-hidden="true" /> Rouge : fumée toxique</span>
-          <span className={styles.legendDependance}><Brain aria-hidden="true" /> Vert : nicotine / dépendance</span>
+          <span className={styles.legendToxiques}><ShieldAlert aria-hidden="true" /><span className={styles.legendRole}>Ce qui rend malade</span> fumée / combustion</span>
+          <span className={styles.legendDependance}><Brain aria-hidden="true" /><span className={styles.legendRole}>Ce qui crée la dépendance</span> nicotine</span>
         </div>
         <div className={styles.scene}>
           <svg className={styles.illustration} viewBox="0 0 1000 620" role="img" aria-label="Une cigarette en combustion produit une fumée reliée à quatre familles toxiques rouges. La nicotine est isolée dans une zone verte.">
@@ -80,8 +80,8 @@ export default function NicotineToxiqueModule({ onNavigate }: ModuleProps) {
               </button>
             );
           })}
-          <div className={`${styles.sceneLabel} ${styles.combustionLabel} ${filter === 'dependance' ? styles.dimmed : ''}`}>Combustion</div>
-          <div className={`${styles.sceneLabel} ${styles.nicotineLabel} ${filter === 'toxiques' ? styles.dimmed : ''}`}>Nicotine isolée</div>
+          <div className={`${styles.sceneLabel} ${styles.combustionLabel} ${filter === 'dependance' ? styles.dimmedLabel : ''}`}><ShieldAlert aria-hidden="true" /> Ce qui rend malade</div>
+          <div className={`${styles.sceneLabel} ${styles.nicotineLabel} ${filter === 'toxiques' ? styles.dimmedLabel : ''}`}><Brain aria-hidden="true" /> Dépendance</div>
 
           {selected ? (() => {
             const pct = toPercent(selected.point);

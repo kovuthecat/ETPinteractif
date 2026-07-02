@@ -29,25 +29,43 @@
   opacity: 0.75;
 }
 
+/* Section famille */
+.famille {
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.familleLabel {
+  margin: 0;
+  font-size: 0.8em;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  opacity: 0.8;
+  padding-bottom: var(--space-xs, 4px);
+  border-bottom: 1px solid var(--color-accent);
+  border-bottom-opacity: 0.25;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: auto auto;
   gap: var(--space-lg);
   width: 100%;
-  max-width: 1000px;
 }
 
 @media (max-width: 768px) {
   .grid {
     grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: auto auto auto;
   }
 }
 
 @media (max-width: 480px) {
   .grid {
     grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto auto auto auto;
   }
 }

@@ -11,6 +11,7 @@ import MotivationModule from './motivation/MotivationModule';
 export const MODULES: ModuleDef[] = [
   {
     id: 'addiction',
+    famille: 'comprendre',
     titre: "Les composantes de l'addiction",
     resume: "Comprendre que l'addiction au tabac a 3 dimensions imbriquées, chacune avec ses leviers.",
     Icon: Brain,
@@ -18,20 +19,15 @@ export const MODULES: ModuleDef[] = [
   },
   {
     id: 'nicotine',
+    famille: 'comprendre',
     titre: 'La nicotine : cinétique & seuils',
     resume: "Visualiser pourquoi on fume « pour ne pas être en manque » et comment les substituts maintiennent la nicotinémie dans la zone confortable.",
     Icon: Activity,
     Component: NicotineModule,
   },
   {
-    id: 'substituts',
-    titre: 'Utilisation des substituts & titration du patch',
-    resume: "Bonnes pratiques par forme et démystifier le dosage, en autonomisant la personne.",
-    Icon: Pill,
-    Component: SubstitutsModule,
-  },
-  {
     id: 'nicotine-toxique',
+    famille: 'comprendre',
     titre: "La nicotine n'est pas le toxique",
     resume: "Lever le frein n°1 à l'usage des substituts/vapoteuse (« je remplace une drogue par une autre »).",
     Icon: Scale,
@@ -39,13 +35,23 @@ export const MODULES: ModuleDef[] = [
   },
   {
     id: 'soulagement',
+    famille: 'comprendre',
     titre: 'Le piège du soulagement',
     resume: "Déconstruire le « plaisir » : la cigarette soulage surtout le manque qu'elle a elle-même créé.",
     Icon: Repeat,
     Component: SoulagementModule,
   },
   {
+    id: 'substituts',
+    famille: 'agir',
+    titre: 'Utilisation des substituts & titration du patch',
+    resume: "Bonnes pratiques par forme et démystifier le dosage, en autonomisant la personne.",
+    Icon: Pill,
+    Component: SubstitutsModule,
+  },
+  {
     id: 'craving',
+    famille: 'agir',
     titre: 'Gérer le craving (4D)',
     resume: "Montrer que l'envie est une vague de quelques minutes qui retombe, et donner des techniques immédiates.",
     Icon: Waves,
@@ -53,6 +59,7 @@ export const MODULES: ModuleDef[] = [
   },
   {
     id: 'motivation',
+    famille: 'motivation',
     titre: 'Explorer ma motivation',
     resume: "Faire le point sur ses raisons d'arrêter, à son rythme, sans balance ni jugement.",
     Icon: Compass,

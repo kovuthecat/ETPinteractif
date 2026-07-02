@@ -10,6 +10,10 @@
   gap: var(--space-md);
 }
 
+.section[hidden] {
+  display: none;
+}
+
 .tabs {
   display: flex;
   gap: var(--space-xs);

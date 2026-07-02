@@ -18,7 +18,8 @@ export default function Sources({ items }: SourcesProps) {
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
       >
-        <Info size={18} />
+        <Info size={18} aria-hidden="true" />
+        <span className={styles.label}>Sources</span>
       </button>
       {open && (
         <div className={styles.popover} role="dialog">

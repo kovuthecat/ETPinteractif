@@ -96,6 +96,12 @@
   gap: 0.45rem;
 }
 
+/* Libellé de rôle non chromatique mis en gras dans la légende */
+.legendRole {
+  font-weight: 900;
+  margin-right: 0.15rem;
+}
+
 .scene {
   position: relative;
   width: 100%;
@@ -193,7 +199,13 @@
 }
 
 .dimmed {
-  opacity: 0.2;
+  opacity: 0.38;
+  transition: opacity 180ms ease;
+}
+
+/* Atténuation légère pour les étiquettes de zone (encore plus lisibles que le SVG) */
+.dimmedLabel {
+  opacity: 0.48;
   transition: opacity 180ms ease;
 }
 
@@ -240,7 +252,7 @@
 }
 
 .hotspotDimmed {
-  opacity: 0.26;
+  opacity: 0.42;
 }
 
 .hotspotDimmed:hover,
@@ -251,6 +263,9 @@
 .sceneLabel {
   position: absolute;
   z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   padding: 0.3rem 0.65rem;
   border-radius: 999px;
   font-size: 0.9rem;
@@ -258,6 +273,12 @@
   letter-spacing: 0.03em;
   text-transform: uppercase;
   transition: opacity 180ms ease;
+}
+
+.sceneLabel svg {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
 }
 
 .combustionLabel {
@@ -413,6 +434,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .dimmed,
+  .dimmedLabel,
   .hotspot,
   .sceneLabel {
     transition: none;

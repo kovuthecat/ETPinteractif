@@ -80,7 +80,25 @@ seuil manque ≈ 0.25 · seuil tolérance ≈ 0.80 · plateau patch ≈ 0.45 · 
 **Partie A — Bonnes pratiques par forme.** Sélecteur de formes ; chaque forme = « bonnes pratiques » + « erreurs fréquentes » :
 
 - Patch (24 h / 16 h), gomme, pastille, comprimé sublingual, inhaleur, spray buccal, **vapoteuse**.
-- *(Contenu détaillé par forme : à transcrire depuis la pratique de Thibault — placeholders dans le code, à remplir.)*
+
+**Contenu validé par Thibault (2026-07-01) — intégré dans le code :**
+
+*Patch (24 h / 16 h)* — bonnes pratiques : appliquer 1 patch le matin au réveil ; changer de site chaque jour ; effet ~30 min après application ; garder le patch la nuit autant que possible.
+Erreurs : attendre un effet immédiat ; retirer le patch la nuit sans raison ; reposer au même endroit.
+
+*Gomme* — bonnes pratiques : prendre une gomme dès que l'envie se fait sentir ; mâcher lentement 5–6 fois puis garder contre la joue ~2 min ; remâcher et reposer, ~30 min au total ; gérer au coup par coup.
+Erreurs : mâcher vite et en continu (nicotine avalée) ; avaler la salive.
+
+*Pastille* — bonnes pratiques : prendre dès que l'envie se fait sentir ; laisser fondre sous la langue ou contre la joue ; effet en 2–3 min.
+Erreurs : croquer ou avaler la pastille.
+
+*Comprimé sublingual* — bonnes pratiques : prendre un ou deux comprimés dès que l'envie se fait sentir ; laisser fondre sous la langue ou contre la joue ; effet en quelques minutes.
+Erreurs : croquer ou avaler le comprimé.
+
+*Spray buccal* — bonnes pratiques : une ou deux pulvérisations dès que l'envie se fait sentir ; pulvériser sur l'intérieur des joues ; efficace en ~1 min.
+Erreurs : viser le fond de la gorge / inhaler la pulvérisation.
+
+*Inhaleur / Vapoteuse* — contenu non encore fourni ; affichage « Fiche en cours de rédaction — à voir avec votre soignant » (à compléter par Thibault).
 
 **Partie B — Méthode de titration du patch (illustration de la MÉTHODE, pas un calculateur)** :
 
@@ -191,4 +209,4 @@ source HAS/Tabac Info Service.
 ## Reste à fournir par Thibault (non bloquant pour le squelette)
 
 - Références de sources exactes par module.
-- Contenu détaillé « bonnes pratiques / erreurs fréquentes » par forme de substitut (Module 3-A).
+- Contenu « bonnes pratiques / erreurs fréquentes » pour l'**inhaleur** et la **vapoteuse** (Module 3-A) — en attente, repli « fiche en cours de rédaction » affiché dans l'app.
