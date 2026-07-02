@@ -30,12 +30,16 @@
   color: var(--color-surface);
   font-size: 1em;
   font-weight: 600;
-  cursor: pointer;
+  cursor: grab;
 }
 
 .gesteBtn:hover,
 .gesteBtn:focus-visible {
   opacity: 0.85;
+}
+
+.gesteBtn:active {
+  cursor: grabbing;
 }
 
 .graphHeader {
@@ -104,6 +108,15 @@
   border-radius: var(--radius);
 }
 
+/* Ligne fantôme de dépôt (SVG <line>) */
+.dropLine {
+  stroke: var(--color-accent);
+  stroke-width: 2;
+  stroke-dasharray: 6 4;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
 .bandConfort {
   fill: var(--color-confort-soft);
 }
@@ -159,10 +172,34 @@
   opacity: 0.25;
 }
 
+/* Pictogramme de prise sous l'axe */
 .pictogramme {
   color: var(--color-text);
 }
 
+/* Groupe de retrait — se superpose au pictogramme */
+.pictoRetirer {
+  cursor: pointer;
+  outline: none;
+}
+
+.pictoRetirer:focus-visible .retirerCircle {
+  stroke: var(--color-accent);
+  stroke-width: 2;
+}
+
+/* Cercle de fond de la croix de retrait */
+.retirerCircle {
+  fill: var(--color-toxique-soft);
+  stroke: none;
+}
+
+/* Croix X dans le cercle */
+.retirerX {
+  color: var(--color-toxique);
+}
+
+/* Liste des prises en texte sous le graphe */
 .prisesList {
   display: flex;
   flex-wrap: wrap;
@@ -178,11 +215,34 @@
   display: flex;
   align-items: center;
   gap: var(--space-xs);
+  min-height: var(--target-min);
 }
 
 .prisesItem::before {
   content: '•';
   opacity: 0.5;
+}
+
+/* Bouton de retrait dans la liste texte */
+.retirerBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: var(--space-xs);
+  border: none;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--color-toxique);
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.retirerBtn:hover,
+.retirerBtn:focus-visible {
+  opacity: 1;
+  background: var(--color-toxique-soft);
 }
 
 .mention {

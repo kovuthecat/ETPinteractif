@@ -78,6 +78,54 @@
   accent-color: var(--color-confort);
   cursor: pointer;
   padding-block: var(--space-sm);
+  /* Piste épaisse — Firefox */
+  height: 8px;
+}
+
+/* Piste épaisse — Chrome/Safari/Edge */
+.slider::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--color-confort) 30%, transparent);
+}
+
+/* Pouce large — Chrome/Safari/Edge */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-confort);
+  margin-top: -10px; /* centrage vertical par rapport à la piste de 8 px */
+  cursor: pointer;
+}
+
+/* Piste épaisse — Firefox */
+.slider::-moz-range-track {
+  height: 8px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--color-confort) 30%, transparent);
+}
+
+/* Pouce large — Firefox */
+.slider::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: var(--color-confort);
+  cursor: pointer;
+}
+
+.sliderBornes {
+  display: flex;
+  justify-content: space-between;
+  margin-top: calc(-1 * var(--space-xs));
+  font-size: var(--font-size-small);
+  opacity: 0.6;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .echelleValeur {
@@ -140,7 +188,7 @@
 }
 
 .carteInputReserve {
-  width: 180px;
+  width: 220px;
   padding: var(--space-xs) var(--space-sm);
   border: 1px solid var(--color-confort);
   border-radius: var(--radius);
@@ -177,7 +225,7 @@
 
 .whiteboard {
   position: relative;
-  min-height: min(70vh, 640px);
+  min-height: min(40vh, 360px);
   background: var(--color-surface);
   border: 2px dashed var(--color-nav-soft);
   border-radius: var(--radius);
@@ -191,7 +239,9 @@
   flex-direction: column;
   align-items: stretch;
   gap: var(--space-xs);
-  width: 200px;
+  min-width: 220px;
+  max-width: 280px;
+  width: max-content;
   padding: var(--space-sm);
   background: var(--color-confort-soft);
   border: 2px solid var(--color-confort);
@@ -228,6 +278,7 @@
 }
 
 .carteInput {
+  width: 100%;
   padding: var(--space-xs) var(--space-sm);
   border: 1px solid var(--color-confort);
   border-radius: var(--radius);

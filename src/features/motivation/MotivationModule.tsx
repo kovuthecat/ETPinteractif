@@ -213,6 +213,10 @@ export default function MotivationModule(_: ModuleProps) {
             onChange={(e) => setImportance(Number(e.target.value))}
             className={styles.slider}
           />
+          <div className={styles.sliderBornes} aria-hidden="true">
+            <span>0</span>
+            <span>10</span>
+          </div>
           <p className={styles.echelleValeur} aria-live="polite">
             {importance} / 10
           </p>
@@ -236,6 +240,10 @@ export default function MotivationModule(_: ModuleProps) {
             onChange={(e) => setConfiance(Number(e.target.value))}
             className={styles.slider}
           />
+          <div className={styles.sliderBornes} aria-hidden="true">
+            <span>0</span>
+            <span>10</span>
+          </div>
           <p className={styles.echelleValeur} aria-live="polite">
             {confiance} / 10
           </p>

@@ -584,3 +584,27 @@ Contenu médical validé par Thibault (2026-07-01).
 - [ ] Idem après « Passer 30 s ».
 - [ ] « Différer » pendant la vague → compte à rebours normal → « C'est passé. » à la fin réelle.
 - [ ] « Rejouer » → message d'invitation revient.
+
+## A10 — Motivation cartes/sliders
+
+- [ ] Réserve : titres longs (« Retrouver le goût et l'odorat »…) s'affichent en entier dans les champs (largeur 220 px).
+- [ ] Tableau : cartes placées affichent le titre complet (min-width 220 px, max-width 280 px), sans troncature.
+- [ ] Drag intra-tableau et nudge clavier (flèches) : fonctionnels avec les cartes élargies.
+- [ ] Slider importance + slider confiance : piste visible (~8 px), pouce rond ~28 px, lisible à ~1 m.
+- [ ] Sous chaque slider : bornes **« 0 »** (gauche) et **« 10 »** (droite) visibles sous la piste.
+- [ ] Tableau blanc au repos : hauteur nettement réduite (≈ 40 vh / 360 px max vs 70 vh avant).
+- [ ] Boutons « Placer » / « Retirer » toujours présents (A12 les retirera).
+
+## A11 — Nicotine drag-frise
+
+Implémentation : drag natif HTML5 (`draggable` + `onDragStart/onDragOver/onDrop`) sur le SVG ; `getBoundingClientRect()` → `t`. Ligne fantôme comme `<line>` SVG. Retrait : croix sur pictogramme + bouton X dans la liste texte.
+
+- [ ] Les 4 boutons de geste ont un curseur `grab` au survol.
+- [ ] Glisser un bouton sur la frise : ligne verticale en pointillés (couleur accent) suit le curseur.
+- [ ] Relâcher sur la frise : la prise apparaît **à la position X déposée** (pas au temps suivant automatique).
+- [ ] Déposer deux prises rapprochées : la courbe cumule vers le haut (V3 inchangé).
+- [ ] Cliquer un bouton sans drag : la prise s'ajoute au temps suivant (fallback clic/clavier OK).
+- [ ] Cliquer la croix sur un pictogramme sous l'axe : la prise disparaît, courbe recalculée.
+- [ ] Bouton X dans la liste texte : même effet.
+- [ ] Focus clavier sur un pictogramme + Entrée/Espace : retrait OK.
+- [ ] « Réinitialiser » vide tout ; aucun curseur ni animation réintroduit.
