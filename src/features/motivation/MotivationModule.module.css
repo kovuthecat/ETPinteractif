@@ -155,7 +155,14 @@
   gap: var(--space-xs);
   padding: var(--space-md);
   background: var(--color-surface);
+  border: 2px solid transparent;
   border-radius: var(--radius);
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.reserveBlocOver {
+  border-color: var(--color-confort);
+  background: var(--color-confort-soft);
 }
 
 .reserveTitre {
@@ -182,9 +189,20 @@
   align-items: center;
   gap: var(--space-xs);
   padding: var(--space-xs) var(--space-sm);
+  min-height: 44px;
   background: var(--color-confort-soft);
   border: 2px solid var(--color-confort);
   border-radius: var(--radius);
+  cursor: grab;
+}
+
+.carteReserve:active {
+  cursor: grabbing;
+}
+
+.carteReserve:focus-visible {
+  outline: 3px solid var(--color-confort);
+  outline-offset: 2px;
 }
 
 .carteInputReserve {
@@ -196,31 +214,8 @@
   color: var(--color-text);
   font-size: 1em;
   font-weight: 600;
-}
-
-.btnPlacer,
-.btnRetirer {
-  min-height: 44px;
-  padding: 0 var(--space-sm);
-  border: 2px solid var(--color-confort);
-  border-radius: var(--radius);
-  background: transparent;
-  color: var(--color-confort);
-  font-size: var(--font-size-small);
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.btnPlacer:hover,
-.btnRetirer:hover {
-  background: var(--color-confort-soft);
-}
-
-.btnPlacer:focus-visible,
-.btnRetirer:focus-visible {
-  background: var(--color-confort-soft);
-  outline: 3px solid var(--color-confort);
-  outline-offset: 2px;
+  /* L'input ne doit pas capturer le curseur grab de la carte */
+  cursor: text;
 }
 
 .whiteboard {
@@ -230,10 +225,19 @@
   border: 2px dashed var(--color-nav-soft);
   border-radius: var(--radius);
   overflow: hidden;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.whiteboardOver {
+  border-color: var(--color-confort);
+  border-style: solid;
+  background: color-mix(in srgb, var(--color-confort-soft) 60%, var(--color-surface));
 }
 
 .carte {
   position: absolute;
+  left: var(--carte-x, 50%);
+  top: var(--carte-y, 50%);
   transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;

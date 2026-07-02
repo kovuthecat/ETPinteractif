@@ -186,7 +186,7 @@ export default function CravingModule(_: ModuleProps) {
               : "C'est passé."
             : differActifPendantCourse && progress >= 1
               ? "C'est passé."
-              : 'Lancez la vague et différez pendant qu'elle monte.'}
+              : "Lancez la vague et différez pendant qu'elle monte."}
         </p>
       )}
 

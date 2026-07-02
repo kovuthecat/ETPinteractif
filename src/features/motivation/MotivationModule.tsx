@@ -1,5 +1,9 @@
-import { useEffect, useId, useRef, useState } from 'react';
-import type { PointerEvent as ReactPointerEvent, KeyboardEvent as ReactKeyboardEvent } from 'react';
+import React, { useEffect, useId, useRef, useState } from 'react';
+import type {
+  DragEvent as ReactDragEvent,
+  PointerEvent as ReactPointerEvent,
+  KeyboardEvent as ReactKeyboardEvent,
+} from 'react';
 import { GripVertical, Plus } from 'lucide-react';
 import type { ModuleProps } from '../types';
 import styles from './MotivationModule.module.css';
@@ -64,6 +68,16 @@ export default function MotivationModule(_: ModuleProps) {
   );
   const [dragId, setDragId] = useState<string | null>(null);
   const [focusId, setFocusId] = useState<string | null>(null);
+
+  // Pour le drag HTML5 inter-zones, on stocke l'id en état React
+  // (plus fiable que dataTransfer seul sur tous les navigateurs)
+  const html5DragId = useRef<string | null>(null);
+
+  // Surbrillance drop zones
+  const [whiteboardOver, setWhiteboardOver] = useState(false);
+  const [reserveOver, setReserveOver] = useState(false);
+
+  // Pour le drag pointer intra-tableau (repositionnement)
   const dragOffset = useRef({ dx: 0, dy: 0 });
 
   useEffect(() => {
@@ -88,6 +102,7 @@ export default function MotivationModule(_: ModuleProps) {
     };
   }
 
+  // ── Drag intra-tableau (repositionnement des cartes placées) ────────────────
   function handlePointerDown(e: ReactPointerEvent<HTMLButtonElement>, id: string) {
     const carte = cartes.find((c) => c.id === id);
     if (!carte) return;
@@ -119,6 +134,7 @@ export default function MotivationModule(_: ModuleProps) {
     setDragId(null);
   }
 
+  // ── Nudge clavier + Suppr pour retirer (cartes placées) ────────────────────
   function handleKeyDown(e: ReactKeyboardEvent<HTMLButtonElement>, id: string) {
     const deltas: Record<string, { dx: number; dy: number }> = {
       ArrowUp: { dx: 0, dy: -NUDGE_STEP },
@@ -127,16 +143,102 @@ export default function MotivationModule(_: ModuleProps) {
       ArrowRight: { dx: NUDGE_STEP, dy: 0 },
     };
     const delta = deltas[e.key];
-    if (!delta) return;
-    e.preventDefault();
-    const carte = cartes.find((c) => c.id === id);
-    if (!carte) return;
-    updateCarte(id, {
-      x: clamp(carte.x + delta.dx, MARGIN, 100 - MARGIN),
-      y: clamp(carte.y + delta.dy, MARGIN, 100 - MARGIN),
-    });
+    if (delta) {
+      e.preventDefault();
+      const carte = cartes.find((c) => c.id === id);
+      if (!carte) return;
+      updateCarte(id, {
+        x: clamp(carte.x + delta.dx, MARGIN, 100 - MARGIN),
+        y: clamp(carte.y + delta.dy, MARGIN, 100 - MARGIN),
+      });
+      return;
+    }
+    if (e.key === 'Delete' || e.key === 'Backspace') {
+      e.preventDefault();
+      updateCarte(id, { placed: false });
+    }
   }
 
+  // ── Clavier pour cartes de réserve (Entrée/Espace = placer) ────────────────
+  function handleReserveKeyDown(e: ReactKeyboardEvent<HTMLDivElement>, id: string) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      const n = cartes.filter((c) => c.placed).length;
+      const x = clamp(20 + ((n * 17) % 60), MARGIN, 100 - MARGIN);
+      const y = clamp(20 + ((n * 29) % 60), MARGIN, 100 - MARGIN);
+      updateCarte(id, { placed: true, x, y });
+    }
+  }
+
+  // ── Drag HTML5 depuis la réserve ────────────────────────────────────────────
+  function handleDragStart(e: ReactDragEvent<HTMLDivElement>, id: string) {
+    html5DragId.current = id;
+    try {
+      e.dataTransfer.setData('text/plain', id);
+      e.dataTransfer.effectAllowed = 'move';
+    } catch {
+      // dataTransfer non disponible dans certains contextes (tests)
+    }
+  }
+
+  function handleDragEnd() {
+    html5DragId.current = null;
+  }
+
+  // ── Drop sur le tableau ─────────────────────────────────────────────────────
+  function handleWhiteboardDragOver(e: ReactDragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setWhiteboardOver(true);
+  }
+
+  function handleWhiteboardDragLeave(e: ReactDragEvent<HTMLDivElement>) {
+    // Ne pas désactiver si la souris entre dans un enfant
+    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+      setWhiteboardOver(false);
+    }
+  }
+
+  function handleWhiteboardDrop(e: ReactDragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    setWhiteboardOver(false);
+    const id = html5DragId.current ?? e.dataTransfer.getData('text/plain');
+    if (!id) return;
+    html5DragId.current = null;
+
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (!rect) {
+      updateCarte(id, { placed: true });
+      return;
+    }
+    const x = clamp(((e.clientX - rect.left) / rect.width) * 100, MARGIN, 100 - MARGIN);
+    const y = clamp(((e.clientY - rect.top) / rect.height) * 100, MARGIN, 100 - MARGIN);
+    updateCarte(id, { placed: true, x, y });
+  }
+
+  // ── Drop sur la réserve (retour) ────────────────────────────────────────────
+  function handleReserveDragOver(e: ReactDragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setReserveOver(true);
+  }
+
+  function handleReserveDragLeave(e: ReactDragEvent<HTMLDivElement>) {
+    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+      setReserveOver(false);
+    }
+  }
+
+  function handleReserveDrop(e: ReactDragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    setReserveOver(false);
+    const id = html5DragId.current ?? e.dataTransfer.getData('text/plain');
+    if (!id) return;
+    html5DragId.current = null;
+    updateCarte(id, { placed: false });
+  }
+
+  // ── Ajout carte ─────────────────────────────────────────────────────────────
   function ajouterCarte() {
     const id = `carte-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
     const n = cartes.length;
@@ -144,14 +246,6 @@ export default function MotivationModule(_: ModuleProps) {
     const y = clamp(20 + ((n * 29) % 60), MARGIN, 100 - MARGIN);
     setCartes((prev) => [...prev, { id, texte: '', detail: '', x, y, placed: false }]);
     setFocusId(id);
-  }
-
-  function placerCarte(id: string) {
-    updateCarte(id, { placed: true });
-  }
-
-  function retirerCarte(id: string) {
-    updateCarte(id, { placed: false });
   }
 
   const onglets: { id: Onglet; label: string }[] = [
@@ -263,17 +357,36 @@ export default function MotivationModule(_: ModuleProps) {
       >
         <h2 className={styles.sectionTitle}>Mes raisons</h2>
         <p className={styles.sousTitre}>
-          Piochez dans la réserve les raisons qui comptent pour vous et glissez-les sur le
-          tableau (ou utilisez les boutons « Placer » / « Retirer »).
+          Piochez dans la réserve les raisons qui comptent pour vous et glissez-les sur le tableau
+          (ou appuyez sur Entrée/Espace pour placer la carte sélectionnée).
         </p>
 
-        <div className={styles.reserveBloc}>
+        <div
+          className={
+            reserveOver
+              ? `${styles.reserveBloc} ${styles.reserveBlocOver}`
+              : styles.reserveBloc
+          }
+          onDragOver={handleReserveDragOver}
+          onDragLeave={handleReserveDragLeave}
+          onDrop={handleReserveDrop}
+        >
           <h3 className={styles.reserveTitre}>Réserve</h3>
           <div className={styles.reserve}>
             {cartes
               .filter((carte) => !carte.placed)
               .map((carte) => (
-                <div key={carte.id} className={styles.carteReserve}>
+                <div
+                  key={carte.id}
+                  className={styles.carteReserve}
+                  draggable
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`Carte « ${carte.texte || 'sans titre'} » — glisser vers le tableau ou Entrée/Espace pour placer`}
+                  onDragStart={(e) => handleDragStart(e, carte.id)}
+                  onDragEnd={handleDragEnd}
+                  onKeyDown={(e) => handleReserveKeyDown(e, carte.id)}
+                >
                   <input
                     ref={(el) => {
                       if (el) inputRefs.current.set(carte.id, el);
@@ -284,14 +397,9 @@ export default function MotivationModule(_: ModuleProps) {
                     onChange={(e) => updateCarte(carte.id, { texte: e.target.value })}
                     placeholder="Une raison…"
                     aria-label="Texte de la raison"
+                    // Empêcher le drag de l'input de capturer l'événement
+                    onDragStart={(e) => e.stopPropagation()}
                   />
-                  <button
-                    type="button"
-                    className={styles.btnPlacer}
-                    onClick={() => placerCarte(carte.id)}
-                  >
-                    Placer
-                  </button>
                 </div>
               ))}
             {cartes.filter((carte) => !carte.placed).length === 0 && (
@@ -300,14 +408,29 @@ export default function MotivationModule(_: ModuleProps) {
           </div>
         </div>
 
-        <div className={styles.whiteboard} ref={containerRef}>
+        <div
+          className={
+            whiteboardOver
+              ? `${styles.whiteboard} ${styles.whiteboardOver}`
+              : styles.whiteboard
+          }
+          ref={containerRef}
+          onDragOver={handleWhiteboardDragOver}
+          onDragLeave={handleWhiteboardDragLeave}
+          onDrop={handleWhiteboardDrop}
+        >
           {cartes
             .filter((carte) => carte.placed)
             .map((carte) => (
               <div
                 key={carte.id}
                 className={styles.carte}
-                style={{ left: `${carte.x}%`, top: `${carte.y}%` }}
+                style={
+                  {
+                    '--carte-x': `${carte.x}%`,
+                    '--carte-y': `${carte.y}%`,
+                  } as React.CSSProperties
+                }
               >
                 <div className={styles.carteHeader}>
                   <button
@@ -318,17 +441,9 @@ export default function MotivationModule(_: ModuleProps) {
                     onPointerUp={(e) => handlePointerUp(e, carte.id)}
                     onPointerCancel={() => setDragId((current) => (current === carte.id ? null : current))}
                     onKeyDown={(e) => handleKeyDown(e, carte.id)}
-                    aria-label={`Déplacer la carte « ${carte.texte || 'sans titre'} » (flèches du clavier ou glisser)`}
+                    aria-label={`Déplacer « ${carte.texte || 'sans titre'} » (flèches ou glisser) · Suppr ou ← Retour arrière pour renvoyer à la réserve`}
                   >
                     <GripVertical size={18} aria-hidden="true" />
-                  </button>
-                  <button
-                    type="button"
-                    className={styles.btnRetirer}
-                    onClick={() => retirerCarte(carte.id)}
-                    aria-label={`Retirer la carte « ${carte.texte || 'sans titre'} » du tableau (renvoyer à la réserve)`}
-                  >
-                    Retirer
                   </button>
                 </div>
                 <input

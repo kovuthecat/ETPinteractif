@@ -585,6 +585,21 @@ Contenu médical validé par Thibault (2026-07-01).
 - [ ] « Différer » pendant la vague → compte à rebours normal → « C'est passé. » à la fin réelle.
 - [ ] « Rejouer » → message d'invitation revient.
 
+## A12 — Motivation drag-drop
+
+- [ ] Cartes de la réserve : curseur `grab` au survol.
+- [ ] Glisser une carte de la réserve sur le tableau : elle se place au point de dépôt (borné ≥ 10 % des bords).
+- [ ] Glisser une carte du tableau vers la réserve : elle revient dans le bac.
+- [ ] Plus aucun bouton « Placer » ni « Retirer » visible.
+- [ ] Clavier (Tab sur carte réserve) : Entrée ou Espace place la carte sur le tableau.
+- [ ] Clavier (Tab sur poignée carte placée) : Suppr ou Retour arrière renvoie à la réserve.
+- [ ] Flèches sur la poignée : nudge intra-tableau conservé.
+- [ ] Drag pointeur sur la poignée : repositionnement intra-tableau conservé.
+- [ ] Lâcher hors du tableau (drag pointeur) : retour réserve conservé.
+- [ ] Zone tableau + zone réserve se surbrillent pendant un glisser au-dessus.
+- [ ] A2 intact : basculer sur « Où en êtes-vous ? » masque bien « Mes raisons ».
+- [ ] A10 intact : cartes 220–280 px, sliders épais, bornes 0/10, tableau ≤ 40 vh.
+
 ## A10 — Motivation cartes/sliders
 
 - [ ] Réserve : titres longs (« Retrouver le goût et l'odorat »…) s'affichent en entier dans les champs (largeur 220 px).
