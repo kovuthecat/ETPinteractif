@@ -623,3 +623,14 @@ Implémentation : drag natif HTML5 (`draggable` + `onDragStart/onDragOver/onDrop
 - [ ] Bouton X dans la liste texte : même effet.
 - [ ] Focus clavier sur un pictogramme + Entrée/Espace : retrait OK.
 - [ ] « Réinitialiser » vide tout ; aucun curseur ni animation réintroduit.
+
+## B1 — Addiction : diagramme actif stabilisé
+
+Contrôle automatisé Playwright ciblé à 1440 × 900 sur les états Physique, Psychologique et Comportementale : panneau complet dans le viewport, message central présent, lien inter-module focalisable, aucune erreur console. `npm run build` et `npm test` (20/20) passent.
+
+- [x] Les trois cercles conservent le même rayon dans les quatre états.
+- [x] Les symptômes sont affichés dans un panneau latéral, sans bulles autour du diagramme.
+- [x] Le message « Ces dimensions s'alimentent entre elles » reste présent dans les trois états actifs.
+- [x] Le panneau d'action complet reste dans le premier écran à 1440 × 900.
+- [x] Le lien vers un autre module reçoit le focus clavier.
+- [ ] Validation humaine : absence de chevauchement visuel à 1440 × 900, 1366 × 768, zoom 125 % et 150 %.

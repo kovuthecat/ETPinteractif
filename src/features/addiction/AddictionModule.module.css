@@ -249,3 +249,14 @@
   color: var(--color-text);
   opacity: 0.85;
 }
+
+.explorer { display: grid; grid-template-columns: minmax(0, 800px); justify-content: center; gap: var(--space-lg); align-items: center; }
+.explorerActive { grid-template-columns: minmax(520px, 1.35fr) minmax(320px, 0.85fr); }
+.circleGroup { opacity: 0.72; transition: opacity 0.15s ease; }
+.circleGroupActive { opacity: 1; }
+.sectionLabel { margin: 0 0 var(--space-xs); font-size: var(--font-size-small); font-weight: 700; }
+.symptomList { display: flex; flex-wrap: wrap; gap: var(--space-xs); margin: 0; padding: 0; list-style: none; }
+.symptomList li { padding: 0.35rem 0.65rem; background: var(--pillar-color-soft); border-radius: 999px; font-size: var(--font-size-small); line-height: 1.25; }
+@media (max-width: 1000px) { .explorerActive { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .circleShape, .circleGroup { transition: none; } }
+.circleGroupActive .circleShape { transform: scale(1.025); transform-box: fill-box; transform-origin: center; }

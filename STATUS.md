@@ -4,7 +4,7 @@
 
 > **Frontières** — STATUS : état actuel · `TASKS.md` : backlog + tâches · `plans/` : plan d'une tâche active · `VALIDATION.md` : checklist visuelle.
 >
-> **Dernière mise à jour :** 2026-07-02 (corrections-v4 A1–A12 exécutées)
+> **Dernière mise à jour :** 2026-07-03 (B1 amélioration UI/UX v5 exécutée)
 
 ## Phase actuelle
 
@@ -15,7 +15,7 @@ Phase 1 (squelette + 6 modules tabac) terminée. Phase 2 (corrections UX, `plans
 - **Scaffolding** Vite + React + TS ; navigation carte ↔ module (pile d'historique éphémère) ; accueil grille familles (Comprendre / Agir / Se motiver, A3) responsive.
 - **Coquille partagée** : `ModuleShell`, `Sources` (libellé « Sources » visible + focus clavier A4), `ModuleCard`. Registre + `famille` par module (A3).
 - **Les 6 modules du thème tabac + 1 module transverse** implémentés (plus aucun stub) :
-  1. **Addiction** (`addiction/`) — diagramme de Venn 3 cercles, sélection + exemples en menu radial (V2) + panneau outils en flux + renvois ; vocabulaire desktop « Cliquez », titre physique sans « nicotinique », halo SVG + légende couleur→symptômes→stratégies (A5).
+  1. **Addiction** (`addiction/`) — diagramme de Venn à géométrie fixe, sélection par contour/opacité/échelle légère + panneau latéral unique signes/pistes et renvois (B1) ; message central toujours visible.
   2. **Nicotine** (`nicotine/`) — frise temporelle statique (V3) ; consigne d'amorce + chip « Pic atteint » + pictogrammes agrandis + liste prises (A6) ; drag-and-drop des prises sur la frise (position = temps), ligne fantôme, retrait par clic, fallback clic/clavier (A11).
   3. **Substituts & titration** (`substituts/`) — 7 formes ; contenu médical validé pour 5 formes (bonnes pratiques + erreurs), repli « en rédaction » pour inhaleur/vapoteuse (A1) ; titration : bouton « + ¼ (tous les 3 jours) » + aide de condition + bannière surdosage détaillée ; aucun dosage chiffré.
   4. **Nicotine ≠ toxique** (`nicotine-toxique/`) — scène SVG, hotspots, filtres ; atténuation légère de l'autre groupe + double encodage non chromatique (icônes ⚠/🧠 + libellés de rôle) (A7) ; contenu médical à valider.

@@ -169,8 +169,7 @@ export default function NicotineModule(_: ModuleProps) {
     e.preventDefault();
     const kind =
       dragKindRef.current ??
-      (e.dataTransfer.getData('text/plain') as CurveEvent['kind'] | '') ||
-      null;
+      ((e.dataTransfer.getData('text/plain') as CurveEvent['kind'] | '') || null);
     if (!kind) return;
     const t = tFromClientX(e.clientX);
     setEvents((prev) => [...prev, { kind, t }]);

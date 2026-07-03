@@ -97,24 +97,6 @@ function pillarVars(p: PilierData): CSSProperties {
   return { '--pillar-color': p.color, '--pillar-color-soft': p.colorSoft } as CSSProperties;
 }
 
-// Secteur d'arc (degrés, 0°=droite, 90°=bas) choisi pour s'éloigner des deux autres cercles.
-const SECTORS: Record<Pilier, [number, number]> = {
-  physique: [120, 240],
-  psychologique: [-60, 60],
-  comportementale: [30, 150],
-};
-
-const BUBBLE_R = R + 60;
-
-function bubblePosition(p: PilierData, sector: [number, number], index: number, total: number) {
-  const t = total <= 1 ? 0.5 : index / (total - 1);
-  const angleDeg = sector[0] + t * (sector[1] - sector[0]);
-  const angleRad = (angleDeg * Math.PI) / 180;
-  const x = p.cx + BUBBLE_R * Math.cos(angleRad);
-  const y = p.cy + BUBBLE_R * Math.sin(angleRad);
-  return { left: (x / VIEW_W) * 100, top: (y / VIEW_H) * 100 };
-}
-
 export default function AddictionModule({ onNavigate }: ModuleProps) {
   const [selected, setSelected] = useState<Pilier | null>(null);
 
@@ -131,139 +113,92 @@ export default function AddictionModule({ onNavigate }: ModuleProps) {
         L'addiction au tabac a trois dimensions imbriquées. Cliquez un cercle pour l'explorer.
       </p>
 
-      {data && (
-        <p className={styles.exploreTitle} style={pillarVars(data)}>
-          De quoi parle-t-on ? — {data.label}
-        </p>
-      )}
+      <div className={`${styles.explorer} ${data ? styles.explorerActive : ''}`}>
+        <div className={styles.vennWrap}>
+          <svg
+            className={styles.venn}
+            viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
+            role="img"
+            aria-label="Trois cercles qui se chevauchent : physique, psychologique et comportementale"
+          >
+            {renderOrder.map((pilier) => {
+              const p = PILLARS_DATA[pilier];
+              const isSelected = selected === pilier;
+              return (
+                <g
+                  key={pilier}
+                  className={isSelected ? styles.circleGroupActive : styles.circleGroup}
+                  style={pillarVars(p)}
+                >
+                  <circle cx={p.cx} cy={p.cy} r={R} className={styles.circleShape} />
+                  <rect x={p.cx - 90} y={p.cy - 26} width={180} height={28} rx={6} className={styles.circleLabelBg} />
+                  <text x={p.cx} y={p.cy - 6} textAnchor="middle" className={styles.circleLabel}>{p.label}</text>
+                  {selected !== pilier && (
+                    <text x={p.cx} y={p.cy + 16} textAnchor="middle" className={styles.circleKeywords}>
+                      {p.exemples.slice(0, 2).join(' · ')}
+                    </text>
+                  )}
+                </g>
+              );
+            })}
+          </svg>
 
-      <div className={styles.vennWrap}>
-        <svg
-          className={styles.venn}
-          viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
-          role="img"
-          aria-label="Trois cercles qui se chevauchent : physique, psychologique et comportementale"
-        >
-          {renderOrder.map((pilier) => {
+          <p className={styles.centerCaption}>Ces dimensions s'alimentent entre elles</p>
+
+          {ORDER.map((pilier) => {
             const p = PILLARS_DATA[pilier];
             const isSelected = selected === pilier;
             return (
-              <g
+              <button
                 key={pilier}
-                className={isSelected ? styles.circleGroupActive : styles.circleGroup}
-                style={pillarVars(p)}
-              >
-                <circle
-                  cx={p.cx}
-                  cy={p.cy}
-                  r={isSelected ? R * 1.06 : R}
-                  className={styles.circleShape}
-                />
-                {/* Halo de fond derrière le libellé pour éviter le chevauchement illisible */}
-                <rect
-                  x={p.cx - 90}
-                  y={p.cy - 26}
-                  width={180}
-                  height={28}
-                  rx={6}
-                  className={styles.circleLabelBg}
-                />
-                <text x={p.cx} y={p.cy - 6} textAnchor="middle" className={styles.circleLabel}>
-                  {p.label}
-                </text>
-                {selected !== pilier && (
-                  <text x={p.cx} y={p.cy + 16} textAnchor="middle" className={styles.circleKeywords}>
-                    {p.exemples.slice(0, 2).join(' · ')}
-                  </text>
-                )}
-              </g>
+                type="button"
+                className={styles.hitArea}
+                style={{
+                  left: `${(p.cx / VIEW_W) * 100}%`,
+                  top: `${(p.cy / VIEW_H) * 100}%`,
+                  width: `${((R * 2) / VIEW_W) * 100}%`,
+                  height: `${((R * 2) / VIEW_H) * 100}%`,
+                }}
+                aria-pressed={isSelected}
+                aria-label={`Dimension ${p.label}${isSelected ? ' (sélectionnée)' : ''}`}
+                onClick={() => toggle(pilier)}
+              />
             );
           })}
-        </svg>
+        </div>
 
-        <p className={styles.centerCaption}>Ces dimensions s'alimentent entre elles</p>
-
-        {ORDER.map((pilier) => {
-          const p = PILLARS_DATA[pilier];
-          const isSelected = selected === pilier;
-          return (
-            <button
-              key={pilier}
-              type="button"
-              className={styles.hitArea}
-              style={{
-                left: `${(p.cx / VIEW_W) * 100}%`,
-                top: `${(p.cy / VIEW_H) * 100}%`,
-                width: `${((R * 2) / VIEW_W) * 100}%`,
-                height: `${((R * 2) / VIEW_H) * 100}%`,
-              }}
-              aria-pressed={isSelected}
-              aria-label={`Dimension ${p.label}${isSelected ? ' (sélectionnée)' : ''}`}
-              onClick={() => toggle(pilier)}
-            />
-          );
-        })}
-
-        {selected &&
-          data &&
-          data.exemples.map((exemple, index) => {
-            const { left, top } = bubblePosition(data, SECTORS[selected], index, data.exemples.length);
-            return (
-              <span
-                key={exemple}
-                className={styles.radialBubble}
-                style={{ left: `${left}%`, top: `${top}%`, ...pillarVars(data) }}
-              >
-                {exemple}
-              </span>
-            );
-          })}
+        {data && (
+          <aside className={styles.actionsPanel} style={pillarVars(data)} aria-live="polite">
+            <p className={styles.actionsTitle}>
+              <span className={styles.actionsDot} aria-hidden="true" />
+              Dimension {data.label}
+            </p>
+            <div>
+              <p className={styles.sectionLabel}>Signes possibles</p>
+              <ul className={styles.symptomList}>
+                {data.exemples.map((exemple) => <li key={exemple}>{exemple}</li>)}
+              </ul>
+            </div>
+            <p className={styles.sectionLabel}>Pistes à explorer</p>
+            <div className={styles.actionsRow}>
+              {data.outils.map((outil) => (
+                <div key={outil.text} className={styles.actionCard}>
+                  <p className={styles.actionText}>{outil.text}</p>
+                  {outil.navigation && (
+                    <button type="button" className={styles.navBtn} onClick={() => onNavigate(outil.navigation!.id)}>
+                      <span>{outil.navigation.label}</span>
+                      <span className={styles.navHint}>
+                        <ArrowRight size={14} aria-hidden="true" />
+                        autre module
+                      </span>
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </aside>
+        )}
       </div>
-
-      {data && (
-        <div className={styles.legendePanel} style={pillarVars(data)}>
-          <div className={styles.legendeRow}>
-            <span className={styles.legendeDot} aria-hidden="true" />
-            <span className={styles.legendeNom}>{data.label}</span>
-            <span className={styles.legendeSep} aria-hidden="true">→</span>
-            <span className={styles.legendeLabel}>Symptômes :</span>
-            <span className={styles.legendeItems}>{data.exemples.join(' · ')}</span>
-          </div>
-          <div className={styles.legendeRow}>
-            <span className={styles.legendeLabel}>Stratégies :</span>
-            <span className={styles.legendeItems}>{data.outils.map((o) => o.text).join(' · ')}</span>
-          </div>
-        </div>
-      )}
-
-      {data && (
-        <div className={styles.actionsPanel} style={pillarVars(data)}>
-          <p className={styles.actionsTitle}>
-            <span className={styles.actionsDot} aria-hidden="true" />
-            Outils &amp; stratégies — {data.label}
-          </p>
-          <div className={styles.actionsRow}>
-            {data.outils.map((outil, idx) => (
-              <div key={idx} className={styles.actionCard}>
-                <p className={styles.actionText}>{outil.text}</p>
-                {outil.navigation && (
-                  <button
-                    type="button"
-                    className={styles.navBtn}
-                    onClick={() => onNavigate(outil.navigation!.id)}
-                  >
-                    <span>{outil.navigation.label}</span>
-                    <span className={styles.navHint}>
-                      <ArrowRight size={14} aria-hidden="true" />
-                      autre module
-                    </span>
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

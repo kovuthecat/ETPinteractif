@@ -46,6 +46,9 @@ Index des tâches : backlog + actives. Historique des tâches faites : `git log`
 - [x] A12 — Motivation : placer/retirer les cartes par drag-and-drop HTML5 (réserve ↔ tableau) + Entrée/Suppr · modèle: Sonnet, effort: high · plan: → plans/corrections-v4/A12-motivation-drag-drop.md (auto OK : tsc+vite build verts ; visuel → VALIDATION.md §A12)
   - Ordre : Wave 1 (A1–A9 en parallèle, 9 agents) → Wave 2 (A10+A11, 2 agents) → Wave 3 (A12). 3 commits.
 
+### Amélioration UI/UX v5 (2026-07-03) · plan: → plans/PLAN_amelioration-ui-ux-v5.md
+- [x] B1 — Addiction : stabiliser le diagramme actif · modèle: Codex, effort: medium (Playwright ciblé 1440 × 900 OK ; npm run build OK ; npm test 20/20 OK)
+
 ### Reliquat v1
 - [~] C10 — Compléter le contenu non bloquant · modèle: Sonnet, effort: low · plan: → plans/PLAN_corrections-ux.md
   - [ ] Références de sources par module (HAS / Tabac Info Service) dans `registry.ts`
