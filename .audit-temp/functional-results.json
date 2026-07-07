@@ -1,0 +1,17 @@
+{
+  "checks": [
+    {
+      "module": "Accueil",
+      "flow": "Afficher les sept choix",
+      "passed": true,
+      "evidence": "7 cartes interactives"
+    },
+    {
+      "module": "Navigation",
+      "flow": "Ouvrir puis quitter chaque module",
+      "passed": true,
+      "evidence": "7/7 retours vers accueil"
+    }
+  ],
+  "console": []
+}

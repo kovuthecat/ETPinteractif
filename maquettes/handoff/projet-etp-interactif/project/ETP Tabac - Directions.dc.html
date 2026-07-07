@@ -1,0 +1,1564 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Work+Sans:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#EDE6DA;font-family:'Work Sans',sans-serif}
+  .dv-turn{padding:44px 44px 36px}
+  .dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 6px}
+  .dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#3A332C;color:#fff;border-radius:4px;text-decoration:none}
+  .dv-tname{font:600 15px/1.2 'Work Sans',sans-serif;color:#3A332C}
+  .dv-sub{font:400 13px/1.5 'Work Sans',sans-serif;color:rgba(58,51,44,.6);margin:0 0 26px}
+  .dv-opts{display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start}
+  .dv-opt{flex:none;display:flex;flex-direction:column;gap:10px;scroll-margin-top:16px}
+  .dv-oid{font:700 11px ui-monospace,Menlo,monospace;padding:3px 8px;background:rgba(58,51,44,.1);color:#3A332C;border-radius:5px;text-decoration:none}
+  .dv-olabel{display:flex;align-items:baseline;gap:8px;font:400 12px/1.3 'Work Sans',sans-serif;color:rgba(58,51,44,.6)}
+  .dv-olabel b{color:#3A332C;font-weight:600}
+  .dv-card{width:600px;background:#fff;border-radius:14px;box-shadow:0 8px 28px rgba(58,51,44,.14);overflow:hidden}
+  .dv-opt:target .dv-oid{background:#2a78d6;color:#fff}
+  .dv-next{margin:26px 0 0;font:12px/1.6 'Work Sans',sans-serif;color:rgba(58,51,44,.55)}
+  .scr{width:600px;box-sizing:border-box}
+  .scr-lbl{font:600 10px ui-monospace,Menlo,monospace;color:rgba(58,51,44,.4);padding:8px 16px 0}
+</style>
+</helmet>
+
+<section class="dv-turn" id="t9">
+  <div class="dv-thd"><a class="dv-tid" href="#t9">9</a><span class="dv-tname">Module « Le piège du soulagement » — 3 pistes visuelles</span></div>
+  <p class="dv-sub">D'après <code>DESCRIPTION_MODULES.md</code> §2.4 : reprend la mécanique du module Nicotine (frise + dépôt de « Fumer une cigarette ») mais superpose une 2<sup>e</sup> courbe, la <b>tension liée au manque</b> (renommée depuis « stress », ton neutre), qui chute au moment de la prise puis remonte progressivement. Bouton unique <b>« Comparer au non-fumeur »</b> : ligne de repère horizontale, toujours au-dessus du creux le plus bas atteint — pour montrer que le fumeur ne fait que revenir à un niveau que le non-fumeur a en permanence. Un encadré « lecture en 2 temps » explique le graphique ; annotation du délai chute → remontée. Ton non culpabilisant, aucune donnée chiffrée réelle.</p>
+  <div class="dv-opts">
+
+    <!-- 9a -->
+    <div class="dv-opt" id="9a">
+      <div class="dv-olabel"><a class="dv-oid" href="#9a">9a</a><b>Le Miroir</b> — un seul graphe, la ligne du non-fumeur apparaît au clic</div>
+      <div class="dv-card" style="width:640px">
+        <div style="width:640px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:26px 30px 30px;font-family:'Work Sans',sans-serif;color:oklch(24% 0.02 50)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+            <div style="font-family:'Source Serif 4',serif;font-weight:600;font-size:24px">Le piège du soulagement</div>
+            <div style="font-size:12px;font-weight:600;color:oklch(48% 0.08 230);border:1.5px solid oklch(48% 0.08 230 / .35);border-radius:8px;padding:6px 12px">↩ Accueil</div>
+          </div>
+          <div style="font-size:14px;opacity:.65;margin-bottom:14px;max-width:56ch">Cliquez sur la frise pour « fumer une cigarette » et observez la tension liée au manque. Elle chute au moment de la prise… puis remonte.</div>
+
+          <div style="background:oklch(65% 0.13 80 / .14);border-left:4px solid oklch(65% 0.13 80);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:12.5px;line-height:1.5"><b>Lecture en 2 temps :</b> 1) la chute brutale = le soulagement ressenti. 2) la remontée progressive = le retour du manque, plus vite qu'on ne le croit. Ce n'est pas un plaisir gagné : c'est un retour à zéro, temporaire.</div>
+
+          <div style="background:#fff;border-radius:14px;padding:20px 22px;box-shadow:0 1px 3px rgba(60,40,20,.08)">
+            <svg viewBox="0 0 640 220" style="display:block;width:100%;height:auto">
+              <line x1="20" y1="60" x2="620" y2="60" stroke="oklch(58% 0.09 145)" stroke-width="2.5" stroke-dasharray="6 5"/>
+              <text x="24" y="52" font-family="Work Sans" font-weight="800" font-size="12" fill="oklch(38% 0.09 145)">Niveau d'un non-fumeur</text>
+
+              <path d="M20,150 C60,150 70,58 100,58 C160,58 180,175 220,175 C260,175 280,58 320,58 C380,58 400,178 440,178 C480,178 500,58 540,58 C580,58 600,150 620,150" fill="none" stroke="oklch(55% 0.15 30)" stroke-width="4" stroke-linecap="round"/>
+
+              <circle cx="100" cy="58" r="6" fill="oklch(55% 0.15 30)"/>
+              <text x="100" y="40" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="11" fill="oklch(45% 0.15 30)">🚬 soulagement</text>
+              <line x1="220" y1="175" x2="320" y2="58" stroke="rgba(40,30,20,.3)" stroke-width="1.5" stroke-dasharray="3 3"/>
+              <text x="270" y="205" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="11" fill="rgba(40,30,20,.55)">le manque revient</text>
+
+              <circle cx="320" cy="58" r="6" fill="oklch(55% 0.15 30)"/>
+              <text x="440" y="196" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="11" fill="oklch(45% 0.15 30)">tension au plus haut</text>
+              <circle cx="540" cy="58" r="6" fill="oklch(55% 0.15 30)"/>
+
+              <text x="20" y="212" font-family="Work Sans" font-weight="600" font-size="11" fill="rgba(40,30,20,.5)">Matin</text>
+              <text x="580" y="212" font-family="Work Sans" font-weight="600" font-size="11" fill="rgba(40,30,20,.5)">Soir</text>
+            </svg>
+            <div style="display:flex;gap:10px;justify-content:center;margin-top:6px">
+              <div style="display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600"><span style="width:16px;height:3px;background:oklch(55% 0.15 30)"></span>Tension liée au manque</div>
+              <div style="display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;opacity:.7"><span style="width:16px;height:2px;border-top:2px dashed oklch(58% 0.09 145)"></span>Non-fumeur</div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:center;margin-top:14px">
+            <div style="display:inline-flex;align-items:center;background:#fff;border:2px solid oklch(58% 0.09 145);color:oklch(38% 0.09 145);font-weight:700;font-size:14px;border-radius:10px;padding:11px 20px">Comparer au non-fumeur ✓</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9b -->
+    <div class="dv-opt" id="9b">
+      <div class="dv-olabel"><a class="dv-oid" href="#9b">9b</a><b>Avant / Après</b> — deux instantanés côte à côte plutôt qu'une courbe continue</div>
+      <div class="dv-card" style="width:640px">
+        <div style="width:640px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:26px 30px 30px;font-family:'Work Sans',sans-serif;color:oklch(24% 0.02 50)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+            <div style="font-family:'Source Serif 4',serif;font-weight:600;font-size:24px">Le piège du soulagement</div>
+            <div style="font-size:12px;font-weight:600;color:oklch(48% 0.08 230);border:1.5px solid oklch(48% 0.08 230 / .35);border-radius:8px;padding:6px 12px">↩ Accueil</div>
+          </div>
+          <div style="font-size:14px;opacity:.65;margin-bottom:16px;max-width:56ch">Trois moments d'une même cigarette : ce qu'on ressent juste avant, juste après, et un peu plus tard.</div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px">
+            <div style="background:#fff;border-radius:14px;padding:18px 14px;box-shadow:0 1px 3px rgba(60,40,20,.08);text-align:center">
+              <div style="font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:oklch(45% 0.15 30);margin-bottom:12px">Juste avant</div>
+              <svg viewBox="0 0 100 90" style="display:block;width:100%;height:auto;margin-bottom:8px"><rect x="10" y="18" width="18" height="62" rx="4" fill="oklch(55% 0.15 30 / .8)"/><line x1="0" y1="30" x2="100" y2="30" stroke="oklch(58% 0.09 145)" stroke-width="2" stroke-dasharray="4 4"/></svg>
+              <div style="font-size:12.5px;line-height:1.4">Tension haute : l'envie de fumer, le manque qui presse</div>
+            </div>
+            <div style="background:#fff;border-radius:14px;padding:18px 14px;box-shadow:0 1px 3px rgba(60,40,20,.08);text-align:center">
+              <div style="font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:oklch(38% 0.09 145);margin-bottom:12px">Juste après 🚬</div>
+              <svg viewBox="0 0 100 90" style="display:block;width:100%;height:auto;margin-bottom:8px"><rect x="10" y="66" width="18" height="14" rx="4" fill="oklch(58% 0.09 145)"/><line x1="0" y1="30" x2="100" y2="30" stroke="oklch(58% 0.09 145)" stroke-width="2" stroke-dasharray="4 4"/></svg>
+              <div style="font-size:12.5px;line-height:1.4">Chute brutale : c'est le soulagement — retour au niveau du non-fumeur</div>
+            </div>
+            <div style="background:#fff;border-radius:14px;padding:18px 14px;box-shadow:0 1px 3px rgba(60,40,20,.08);text-align:center">
+              <div style="font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:rgba(40,30,20,.55);margin-bottom:12px">Un peu plus tard</div>
+              <svg viewBox="0 0 100 90" style="display:block;width:100%;height:auto;margin-bottom:8px"><rect x="10" y="40" width="18" height="40" rx="4" fill="oklch(55% 0.15 30 / .55)"/><line x1="0" y1="30" x2="100" y2="30" stroke="oklch(58% 0.09 145)" stroke-width="2" stroke-dasharray="4 4"/></svg>
+              <div style="font-size:12.5px;line-height:1.4">La tension remonte déjà, plus vite qu'on ne l'imagine</div>
+            </div>
+          </div>
+
+          <div style="background:oklch(65% 0.13 80 / .14);border-left:4px solid oklch(65% 0.13 80);border-radius:10px;padding:14px 16px;font-size:13px;line-height:1.5"><b>Ce n'est pas un plaisir gagné :</b> la ligne pointillée — le niveau d'un non-fumeur — reste la même sur les 3 instants. Fumer ne fait qu'y ramener, pour un temps.</div>
+          <div style="display:flex;justify-content:center;margin-top:14px">
+            <div style="display:inline-flex;align-items:center;background:oklch(48% 0.08 230);color:#fff;font-weight:700;font-size:14px;border-radius:10px;padding:11px 20px">Rejouer un autre moment de la journée</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9c -->
+    <div class="dv-opt" id="9c">
+      <div class="dv-olabel"><a class="dv-oid" href="#9c">9c</a><b>La Frise partagée</b> — même mécanique que le module Nicotine, courbe de tension inversée, révélée en 2 temps</div>
+      <div class="dv-card" style="width:640px">
+
+        <div class="scr-lbl">1 · avant clic — courbe seule, pas de repère non-fumeur</div>
+        <div style="width:640px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:26px 30px 20px;font-family:'Work Sans',sans-serif;color:oklch(24% 0.02 50)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+            <div style="font-family:'Source Serif 4',serif;font-weight:600;font-size:24px">Le piège du soulagement</div>
+            <div style="font-size:12px;font-weight:600;color:oklch(48% 0.08 230);border:1.5px solid oklch(48% 0.08 230 / .35);border-radius:8px;padding:6px 12px">↩ Accueil</div>
+          </div>
+          <div style="font-size:14px;opacity:.65;margin-bottom:14px;max-width:56ch">Déposez une cigarette sur la frise. La tension liée au manque chute au moment précis — c'est le soulagement — puis remonte progressivement.</div>
+
+          <div style="background:#fff;border-radius:14px;padding:20px 22px 16px;box-shadow:0 1px 3px rgba(60,40,20,.08)">
+            <svg viewBox="0 0 640 210" style="display:block;width:100%;height:auto">
+              <text x="20" y="26" font-family="Work Sans" font-weight="700" font-size="11" fill="rgba(40,30,20,.45)">tension ↑</text>
+
+              <path d="M20,100 C60,100 100,40 140,40 C140,80 140,130 140,170 C220,170 340,40 420,40 C420,80 420,130 420,170 C500,170 560,90 620,90" fill="none" stroke="oklch(55% 0.15 30)" stroke-width="4" stroke-linecap="round"/>
+
+              <g>
+                <circle cx="140" cy="188" r="13" fill="oklch(55% 0.15 30)"/>
+                <text x="140" y="192.5" text-anchor="middle" font-size="12" fill="#fff">🚬</text>
+              </g>
+              <g>
+                <circle cx="420" cy="188" r="13" fill="oklch(55% 0.15 30)"/>
+                <text x="420" y="192.5" text-anchor="middle" font-size="12" fill="#fff">🚬</text>
+              </g>
+
+              <line x1="140" y1="30" x2="420" y2="30" stroke="rgba(40,30,20,.4)" stroke-width="1.5"/>
+              <line x1="140" y1="24" x2="140" y2="36" stroke="rgba(40,30,20,.4)" stroke-width="1.5"/>
+              <line x1="420" y1="24" x2="420" y2="36" stroke="rgba(40,30,20,.4)" stroke-width="1.5"/>
+              <text x="280" y="18" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="11" fill="rgba(40,30,20,.6)">le manque revient plus vite qu'on ne le croit</text>
+            </svg>
+          </div>
+
+          <div style="display:flex;justify-content:center;margin-top:14px">
+            <div style="display:inline-flex;align-items:center;background:#fff;border:2px solid oklch(58% 0.09 145);color:oklch(38% 0.09 145);font-weight:700;font-size:14px;border-radius:10px;padding:11px 20px">Comparer au niveau d'un non-fumeur</div>
+          </div>
+        </div>
+
+        <div class="scr-lbl">2 · après clic sur le bouton — ligne repère révélée, sous le creux le plus bas</div>
+        <div style="width:640px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:20px 30px 30px;font-family:'Work Sans',sans-serif;color:oklch(24% 0.02 50)">
+          <div style="background:#fff;border-radius:14px;padding:20px 22px 16px;box-shadow:0 1px 3px rgba(60,40,20,.08)">
+            <svg viewBox="0 0 640 210" style="display:block;width:100%;height:auto">
+              <text x="20" y="26" font-family="Work Sans" font-weight="700" font-size="11" fill="rgba(40,30,20,.45)">tension ↑</text>
+
+              <path d="M20,100 C60,100 100,40 140,40 C140,80 140,130 140,170 C220,170 340,40 420,40 C420,80 420,130 420,170 C500,170 560,90 620,90" fill="none" stroke="oklch(55% 0.15 30)" stroke-width="4" stroke-linecap="round"/>
+
+              <line x1="20" y1="188" x2="620" y2="188" stroke="oklch(58% 0.09 145)" stroke-width="2.5" stroke-dasharray="6 5"/>
+              <text x="24" y="203" font-family="Work Sans" font-weight="800" font-size="12" fill="oklch(38% 0.09 145)">Niveau d'un non-fumeur — jamais en tension</text>
+
+              <g>
+                <circle cx="140" cy="170" r="9" fill="none" stroke="oklch(55% 0.15 30)" stroke-width="2"/>
+              </g>
+              <g>
+                <circle cx="420" cy="170" r="9" fill="none" stroke="oklch(55% 0.15 30)" stroke-width="2"/>
+              </g>
+              <line x1="140" y1="170" x2="140" y2="188" stroke="rgba(40,30,20,.35)" stroke-width="1.5" stroke-dasharray="3 3"/>
+              <line x1="420" y1="170" x2="420" y2="188" stroke="rgba(40,30,20,.35)" stroke-width="1.5" stroke-dasharray="3 3"/>
+            </svg>
+          </div>
+
+          <div style="background:oklch(65% 0.13 80 / .14);border-left:4px solid oklch(65% 0.13 80);border-radius:10px;padding:12px 16px;margin-top:14px;font-size:12.5px;line-height:1.5"><b>Lecture en 2 temps :</b> la chute au clic = soulagement ressenti. La remontée qui suit = retour du manque. Même au plus bas de sa tension, le fumeur reste au-dessus du niveau qu'un non-fumeur a en permanence — ce n'est pas un plaisir gagné, juste un retour incomplet à la normale.</div>
+          <div style="display:flex;justify-content:center;margin-top:14px">
+            <div style="display:inline-flex;align-items:center;background:oklch(58% 0.09 145 / .16);border:2px solid oklch(58% 0.09 145);color:oklch(38% 0.09 145);font-weight:700;font-size:14px;border-radius:10px;padding:11px 20px">Comparer au niveau d'un non-fumeur ✓</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+  <p class="dv-next">Essayez : « pars de <a class="dv-oid" href="#9c">9c</a> avec l'encadré de lecture de <a class="dv-oid" href="#9a">9a</a> » · « construis <a class="dv-oid" href="#9c">9c</a> en interactif dans l'app, comme le module Nicotine » · « autres pistes »</p>
+</section>
+<section class="dv-turn" id="t8">
+  <div class="dv-thd"><a class="dv-tid" href="#t8">8</a><span class="dv-tname">Module « La nicotine n'est pas le toxique » — 3 métaphores pour la scène de hotspots</span></div>
+  <p class="dv-sub">Scène illustrée avec points cliquables (goudrons, monoxyde de carbone, particules fines, nicotine…) + bascule à deux états <b>« Ce qui rend malade »</b> / <b>« Ce qui crée la dépendance »</b> : le groupe actif reste net, l'autre s'atténue sans disparaître. Double encodage non-couleur (icône ⚠️/🧠 + libellé de rôle en gras). Clic sur un point → étiquette ancrée près du point. Message clé : la nicotine crée la dépendance mais n'est qu'1 substance parmi ~4000 — ce sont les autres, issues de la combustion, qui rendent malade.</p>
+  <div class="dv-opts">
+
+    <!-- 8a -->
+    <div class="dv-opt" id="8a">
+      <div class="dv-olabel"><a class="dv-oid" href="#8a">8a</a><b>Le halo</b> — la nicotine au centre, les toxiques en orbite autour</div>
+      <div class="dv-card" style="width:640px">
+
+        <div class="scr-lbl">1 · état neutre, aucun point sélectionné</div>
+        <div style="width:640px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:26px 30px 8px;font-family:'Work Sans',sans-serif;color:oklch(24% 0.02 50)">
+          <div style="font-family:'Source Serif 4',serif;font-weight:600;font-size:24px;margin-bottom:4px">La nicotine n'est pas le toxique</div>
+          <div style="font-size:14px;opacity:.65;margin-bottom:16px;max-width:56ch">Cliquez un point pour en savoir plus. Basculez la vue pour distinguer ce qui rend malade de ce qui crée la dépendance.</div>
+          <div style="display:flex;gap:8px;margin-bottom:18px">
+            <div style="background:#fff;color:rgba(40,30,20,.55);font-weight:800;font-size:13px;border-radius:999px;padding:9px 18px;box-shadow:0 1px 3px rgba(60,40,20,.08)">Ce qui rend malade</div>
+            <div style="background:#fff;color:rgba(40,30,20,.55);font-weight:800;font-size:13px;border-radius:999px;padding:9px 18px;box-shadow:0 1px 3px rgba(60,40,20,.08)">Ce qui crée la dépendance</div>
+          </div>
+          <div style="background:#fff;border-radius:16px;padding:14px;box-shadow:0 1px 3px rgba(60,40,20,.08)">
+            <svg viewBox="0 0 600 330" style="display:block;width:100%;height:auto">
+              <line x1="300" y1="165" x2="300" y2="55" stroke="rgba(40,30,20,.18)" stroke-width="2" stroke-dasharray="3 4"/>
+              <line x1="300" y1="165" x2="185" y2="230" stroke="rgba(40,30,20,.18)" stroke-width="2" stroke-dasharray="3 4"/>
+              <line x1="300" y1="165" x2="415" y2="230" stroke="rgba(40,30,20,.18)" stroke-width="2" stroke-dasharray="3 4"/>
+              <line x1="300" y1="165" x2="470" y2="110" stroke="rgba(40,30,20,.18)" stroke-width="2" stroke-dasharray="3 4"/>
+
+              <circle cx="300" cy="55" r="30" fill="oklch(55% 0.15 30 / .16)" stroke="oklch(55% 0.15 30)" stroke-width="2"/>
+              <text x="300" y="60" text-anchor="middle" font-size="20">⚠️</text>
+              <text x="300" y="98" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="13">Goudrons</text>
+
+              <circle cx="185" cy="230" r="30" fill="oklch(55% 0.15 30 / .16)" stroke="oklch(55% 0.15 30)" stroke-width="2"/>
+              <text x="185" y="235" text-anchor="middle" font-size="20">⚠️</text>
+              <text x="185" y="273" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="12.5">Monoxyde de carbone</text>
+
+              <circle cx="415" cy="230" r="30" fill="oklch(55% 0.15 30 / .16)" stroke="oklch(55% 0.15 30)" stroke-width="2"/>
+              <text x="415" y="235" text-anchor="middle" font-size="20">⚠️</text>
+              <text x="415" y="273" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="13">Particules fines</text>
+
+              <circle cx="470" cy="110" r="26" fill="oklch(55% 0.15 30 / .16)" stroke="oklch(55% 0.15 30)" stroke-width="2"/>
+              <text x="470" y="115" text-anchor="middle" font-size="17">⚠️</text>
+              <text x="470" y="146" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="12">+ 4000 autres</text>
+
+              <circle cx="300" cy="165" r="42" fill="oklch(48% 0.08 230 / .18)" stroke="oklch(48% 0.08 230)" stroke-width="2.5"/>
+              <text x="300" y="171" text-anchor="middle" font-size="24">🧠</text>
+              <text x="300" y="222" text-anchor="middle" font-family="Work Sans" font-weight="800" font-size="14" fill="oklch(38% 0.08 230)">Nicotine</text>
+            </svg>
+          </div>
+        </div>
+
+        <div class="scr-lbl" style="border-top:1px solid rgba(60,40,20,.08)">2 · bascule « Ce qui rend malade » + clic sur « Goudrons »</div>
+        <div style="width:640px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:18px 30px 26px">
+          <div style="display:flex;gap:8px;margin-bottom:18px">
+            <div style="background:oklch(55% 0.15 30);color:#fff;font-weight:800;font-size:13px;border-radius:999px;padding:9px 18px">⚠️ Ce qui rend malade</div>
+            <div style="background:#fff;color:rgba(40,30,20,.35);font-weight:800;font-size:13px;border-radius:999px;padding:9px 18px;box-shadow:0 1px 3px rgba(60,40,20,.08)">Ce qui crée la dépendance</div>
+          </div>
+          <div style="background:#fff;border-radius:16px;padding:14px;box-shadow:0 1px 3px rgba(60,40,20,.08);position:relative">
+            <svg viewBox="0 0 600 330" style="display:block;width:100%;height:auto">
+              <line x1="300" y1="165" x2="300" y2="55" stroke="oklch(55% 0.15 30 / .4)" stroke-width="2"/>
+              <line x1="300" y1="165" x2="185" y2="230" stroke="oklch(55% 0.15 30 / .4)" stroke-width="2"/>
+              <line x1="300" y1="165" x2="415" y2="230" stroke="oklch(55% 0.15 30 / .4)" stroke-width="2"/>
+              <line x1="300" y1="165" x2="470" y2="110" stroke="oklch(55% 0.15 30 / .4)" stroke-width="2"/>
+
+              <circle cx="300" cy="55" r="34" fill="oklch(55% 0.15 30 / .22)" stroke="oklch(55% 0.15 30)" stroke-width="3.5"/>
+              <text x="300" y="61" text-anchor="middle" font-size="22">⚠️</text>
+              <text x="300" y="102" text-anchor="middle" font-family="Work Sans" font-weight="800" font-size="14">Goudrons</text>
+
+              <circle cx="185" cy="230" r="30" fill="oklch(55% 0.15 30 / .16)" stroke="oklch(55% 0.15 30)" stroke-width="2.5"/>
+              <text x="185" y="235" text-anchor="middle" font-size="20">⚠️</text>
+              <text x="185" y="273" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="12.5">Monoxyde de carbone</text>
+
+              <circle cx="415" cy="230" r="30" fill="oklch(55% 0.15 30 / .16)" stroke="oklch(55% 0.15 30)" stroke-width="2.5"/>
+              <text x="415" y="235" text-anchor="middle" font-size="20">⚠️</text>
+              <text x="415" y="273" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="13">Particules fines</text>
+
+              <circle cx="470" cy="110" r="26" fill="oklch(55% 0.15 30 / .16)" stroke="oklch(55% 0.15 30)" stroke-width="2.5"/>
+              <text x="470" y="115" text-anchor="middle" font-size="17">⚠️</text>
+              <text x="470" y="146" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="12">+ 4000 autres</text>
+
+              <circle cx="300" cy="165" r="38" fill="oklch(48% 0.08 230 / .08)" stroke="oklch(48% 0.08 230 / .35)" stroke-width="2"/>
+              <text x="300" y="171" text-anchor="middle" font-size="22" opacity=".4">🧠</text>
+              <text x="300" y="218" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="13" fill="rgba(40,30,20,.4)">Nicotine</text>
+            </svg>
+            <div style="position:absolute;left:52%;top:8px;width:220px;background:#fff;border-radius:12px;box-shadow:0 8px 24px rgba(40,30,20,.2);padding:14px 16px;border-left:4px solid oklch(55% 0.15 30)">
+              <div style="font-weight:800;font-size:13.5px;margin-bottom:4px">⚠️ Goudrons</div>
+              <div style="font-size:12.5px;line-height:1.5;opacity:.8">Se déposent dans les poumons — la principale cause des cancers liés au tabac. Absents des substituts et de la vapoteuse.</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:14px;margin-top:14px;font-size:12.5px;line-height:1.5;opacity:.75">
+            <div style="flex:1"><b>⚠️ Rend malade</b> — vient de la combustion. Disparaît avec substituts/vapoteuse.</div>
+            <div style="flex:1"><b>🧠 Crée la dépendance</b> — la nicotine seule. Pas anodine, mais ne cause pas les maladies du tabac.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8b -->
+    <div class="dv-opt" id="8b">
+      <div class="dv-olabel"><a class="dv-oid" href="#8b">8b</a><b>La coupe transversale</b> — pins ancrés sur un schéma de cigarette</div>
+      <div class="dv-card" style="width:640px">
+
+        <div class="scr-lbl">1 · schéma de la cigarette, pins neutres</div>
+        <div style="width:640px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:26px 30px 8px;font-family:'Work Sans',sans-serif;color:oklch(24% 0.02 50)">
+          <div style="font-family:'Source Serif 4',serif;font-weight:600;font-size:24px;margin-bottom:4px">La nicotine n'est pas le toxique</div>
+          <div style="font-size:14px;opacity:.65;margin-bottom:16px;max-width:56ch">Chaque repère pointe l'origine réelle d'une substance. Basculez la vue pour voir qui rend malade et qui crée la dépendance.</div>
+          <div style="display:flex;gap:8px;margin-bottom:22px">
+            <div style="background:#fff;color:rgba(40,30,20,.55);font-weight:800;font-size:13px;border-radius:999px;padding:9px 18px;box-shadow:0 1px 3px rgba(60,40,20,.08)">Ce qui rend malade</div>
+            <div style="background:#fff;color:rgba(40,30,20,.55);font-weight:800;font-size:13px;border-radius:999px;padding:9px 18px;box-shadow:0 1px 3px rgba(60,40,20,.08)">Ce qui crée la dépendance</div>
+          </div>
+          <div style="background:#fff;border-radius:16px;padding:30px 20px 20px;box-shadow:0 1px 3px rgba(60,40,20,.08)">
+            <svg viewBox="0 0 600 200" style="display:block;width:100%;height:auto">
+              <rect x="60" y="110" width="330" height="34" rx="6" fill="oklch(88% 0.02 75)" stroke="rgba(40,30,20,.25)" stroke-width="1.5"/>
+              <rect x="390" y="110" width="120" height="34" rx="6" fill="oklch(78% 0.05 60)" stroke="rgba(40,30,20,.25)" stroke-width="1.5"/>
+              <circle cx="55" cy="127" r="16" fill="oklch(60% 0.16 45)"/>
+
+              <line x1="80" y1="110" x2="80" y2="60" stroke="rgba(40,30,20,.3)" stroke-width="2"/>
+              <circle cx="80" cy="52" r="20" fill="oklch(55% 0.15 30 / .18)" stroke="oklch(55% 0.15 30)" stroke-width="2"/>
+              <text x="80" y="57" text-anchor="middle" font-size="14">⚠️</text>
+              <text x="80" y="24" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="12.5">Goudrons</text>
+
+              <line x1="160" y1="110" x2="160" y2="60" stroke="rgba(40,30,20,.3)" stroke-width="2"/>
+              <circle cx="160" cy="52" r="20" fill="oklch(55% 0.15 30 / .18)" stroke="oklch(55% 0.15 30)" stroke-width="2"/>
+              <text x="160" y="57" text-anchor="middle" font-size="14">⚠️</text>
+              <text x="185" y="24" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="12.5">Monoxyde de carbone</text>
+
+              <line x1="260" y1="110" x2="260" y2="60" stroke="rgba(40,30,20,.3)" stroke-width="2"/>
+              <circle cx="260" cy="52" r="20" fill="oklch(55% 0.15 30 / .18)" stroke="oklch(55% 0.15 30)" stroke-width="2"/>
+              <text x="260" y="57" text-anchor="middle" font-size="14">⚠️</text>
+              <text x="260" y="24" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="12.5">Particules fines</text>
+
+              <line x1="440" y1="110" x2="440" y2="60" stroke="rgba(40,30,20,.3)" stroke-width="2"/>
+              <circle cx="440" cy="52" r="22" fill="oklch(48% 0.08 230 / .18)" stroke="oklch(48% 0.08 230)" stroke-width="2.5"/>
+              <text x="440" y="58" text-anchor="middle" font-size="16">🧠</text>
+              <text x="440" y="24" text-anchor="middle" font-family="Work Sans" font-weight="800" font-size="13" fill="oklch(38% 0.08 230)">Nicotine</text>
+
+              <text x="220" y="185" text-anchor="middle" font-family="Work Sans" font-weight="600" font-size="12" fill="rgba(40,30,20,.45)">Combustion (papier + tabac)</text>
+              <text x="450" y="185" text-anchor="middle" font-family="Work Sans" font-weight="600" font-size="12" fill="rgba(40,30,20,.45)">Filtre</text>
+            </svg>
+          </div>
+        </div>
+
+        <div class="scr-lbl" style="border-top:1px solid rgba(60,40,20,.08)">2 · bascule « Ce qui crée la dépendance » + clic sur « Nicotine »</div>
+        <div style="width:640px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:18px 30px 26px">
+          <div style="display:flex;gap:8px;margin-bottom:22px">
+            <div style="background:#fff;color:rgba(40,30,20,.35);font-weight:800;font-size:13px;border-radius:999px;padding:9px 18px;box-shadow:0 1px 3px rgba(60,40,20,.08)">Ce qui rend malade</div>
+            <div style="background:oklch(48% 0.08 230);color:#fff;font-weight:800;font-size:13px;border-radius:999px;padding:9px 18px">🧠 Ce qui crée la dépendance</div>
+          </div>
+          <div style="background:#fff;border-radius:16px;padding:30px 20px 20px;box-shadow:0 1px 3px rgba(60,40,20,.08);position:relative">
+            <svg viewBox="0 0 600 200" style="display:block;width:100%;height:auto">
+              <rect x="60" y="110" width="330" height="34" rx="6" fill="oklch(90% 0.015 75)" stroke="rgba(40,30,20,.15)" stroke-width="1.5" opacity=".5"/>
+              <rect x="390" y="110" width="120" height="34" rx="6" fill="oklch(78% 0.05 60)" stroke="rgba(40,30,20,.25)" stroke-width="1.5"/>
+              <circle cx="55" cy="127" r="16" fill="oklch(60% 0.16 45)" opacity=".4"/>
+
+              <line x1="80" y1="110" x2="80" y2="60" stroke="rgba(40,30,20,.12)" stroke-width="2"/>
+              <circle cx="80" cy="52" r="18" fill="oklch(55% 0.15 30 / .08)" stroke="oklch(55% 0.15 30 / .3)" stroke-width="2"/>
+              <text x="80" y="57" text-anchor="middle" font-size="13" opacity=".35">⚠️</text>
+              <text x="80" y="24" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="12" fill="rgba(40,30,20,.35)">Goudrons</text>
+
+              <line x1="160" y1="110" x2="160" y2="60" stroke="rgba(40,30,20,.12)" stroke-width="2"/>
+              <circle cx="160" cy="52" r="18" fill="oklch(55% 0.15 30 / .08)" stroke="oklch(55% 0.15 30 / .3)" stroke-width="2"/>
+              <text x="160" y="57" text-anchor="middle" font-size="13" opacity=".35">⚠️</text>
+              <text x="185" y="24" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="12" fill="rgba(40,30,20,.35)">Monoxyde de carbone</text>
+
+              <line x1="260" y1="110" x2="260" y2="60" stroke="rgba(40,30,20,.12)" stroke-width="2"/>
+              <circle cx="260" cy="52" r="18" fill="oklch(55% 0.15 30 / .08)" stroke="oklch(55% 0.15 30 / .3)" stroke-width="2"/>
+              <text x="260" y="57" text-anchor="middle" font-size="13" opacity=".35">⚠️</text>
+              <text x="260" y="24" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="12" fill="rgba(40,30,20,.35)">Particules fines</text>
+
+              <line x1="440" y1="110" x2="440" y2="60" stroke="oklch(48% 0.08 230 / .5)" stroke-width="2.5"/>
+              <circle cx="440" cy="52" r="26" fill="oklch(48% 0.08 230 / .22)" stroke="oklch(48% 0.08 230)" stroke-width="3.5"/>
+              <text x="440" y="59" text-anchor="middle" font-size="19">🧠</text>
+              <text x="440" y="20" text-anchor="middle" font-family="Work Sans" font-weight="800" font-size="14" fill="oklch(38% 0.08 230)">Nicotine</text>
+            </svg>
+            <div style="position:absolute;right:6%;top:75px;width:230px;background:#fff;border-radius:12px;box-shadow:0 8px 24px rgba(40,30,20,.2);padding:14px 16px;border-left:4px solid oklch(48% 0.08 230)">
+              <div style="font-weight:800;font-size:13.5px;margin-bottom:4px">🧠 Nicotine</div>
+              <div style="font-size:12.5px;line-height:1.5;opacity:.8">Agit en quelques secondes sur le cerveau, entretient l'envie. Pas anodine — mais absente des maladies liées au tabac. Les substituts la délivrent sans combustion.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8c -->
+    <div class="dv-opt" id="8c">
+      <div class="dv-olabel"><a class="dv-oid" href="#8c">8c</a><b>Le tri</b> — un nuage mêlé se sépare physiquement en 2 groupes au clic</div>
+      <div class="dv-card" style="width:640px">
+
+        <div class="scr-lbl">1 · avant bascule — tout est mêlé, une seule question posée</div>
+        <div style="width:640px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:26px 30px 8px;font-family:'Work Sans',sans-serif;color:oklch(24% 0.02 50)">
+          <div style="font-family:'Source Serif 4',serif;font-weight:600;font-size:24px;margin-bottom:4px">La nicotine n'est pas le toxique</div>
+          <div style="font-size:14px;opacity:.65;margin-bottom:18px;max-width:56ch">La fumée du tabac contient des milliers de substances mêlées. Touchez une question pour les trier.</div>
+          <div style="background:#fff;border-radius:16px;padding:26px 20px;box-shadow:0 1px 3px rgba(60,40,20,.08)">
+            <svg viewBox="0 0 600 170" style="display:block;width:100%;height:auto">
+              <circle cx="230" cy="85" r="26" fill="rgba(40,30,20,.08)" stroke="rgba(40,30,20,.3)" stroke-width="1.5"/>
+              <text x="230" y="90" text-anchor="middle" font-size="16">?</text>
+              <text x="230" y="128" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="12">Goudrons</text>
+
+              <circle cx="300" cy="45" r="22" fill="rgba(40,30,20,.08)" stroke="rgba(40,30,20,.3)" stroke-width="1.5"/>
+              <text x="300" y="50" text-anchor="middle" font-size="14">?</text>
+              <text x="300" y="80" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="12">Nicotine</text>
+
+              <circle cx="340" cy="110" r="24" fill="rgba(40,30,20,.08)" stroke="rgba(40,30,20,.3)" stroke-width="1.5"/>
+              <text x="340" y="115" text-anchor="middle" font-size="15">?</text>
+              <text x="340" y="150" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="12">Monoxyde de carbone</text>
+
+              <circle cx="390" cy="55" r="20" fill="rgba(40,30,20,.08)" stroke="rgba(40,30,20,.3)" stroke-width="1.5"/>
+              <text x="390" y="60" text-anchor="middle" font-size="13">?</text>
+              <text x="390" y="88" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="12">Particules fines</text>
+
+              <circle cx="270" cy="125" r="18" fill="rgba(40,30,20,.08)" stroke="rgba(40,30,20,.3)" stroke-width="1.5"/>
+              <text x="270" y="129" text-anchor="middle" font-size="12">?</text>
+              <text x="270" y="158" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="11.5">+ 4000 autres</text>
+            </svg>
+          </div>
+          <div style="display:flex;gap:12px;justify-content:center;margin-top:18px">
+            <div style="background:oklch(55% 0.15 30 / .12);border:2px solid oklch(55% 0.15 30);color:oklch(45% 0.15 30);font-weight:700;font-size:14px;border-radius:12px;padding:12px 22px">⚠️ Qu'est-ce qui rend malade ?</div>
+            <div style="background:oklch(48% 0.08 230 / .1);border:2px solid oklch(48% 0.08 230);color:oklch(38% 0.08 230);font-weight:700;font-size:14px;border-radius:12px;padding:12px 22px">🧠 Qu'est-ce qui crée la dépendance ?</div>
+          </div>
+        </div>
+
+        <div class="scr-lbl" style="border-top:1px solid rgba(60,40,20,.08)">2 · après clic sur « Qu'est-ce qui rend malade ? » — les points migrent en 2 groupes</div>
+        <div style="width:640px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:18px 30px 26px">
+          <div style="background:#fff;border-radius:16px;padding:26px 20px;box-shadow:0 1px 3px rgba(60,40,20,.08);position:relative">
+            <svg viewBox="0 0 600 170" style="display:block;width:100%;height:auto">
+              <rect x="20" y="14" width="330" height="146" rx="14" fill="oklch(55% 0.15 30 / .06)"/>
+              <text x="185" y="32" text-anchor="middle" font-family="Work Sans" font-weight="800" font-size="13" fill="oklch(45% 0.15 30)">⚠️ REND MALADE — vient de la combustion</text>
+
+              <circle cx="90" cy="95" r="26" fill="oklch(55% 0.15 30 / .18)" stroke="oklch(55% 0.15 30)" stroke-width="2.5"/>
+              <text x="90" y="101" text-anchor="middle" font-size="16">⚠️</text>
+              <text x="90" y="135" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="12">Goudrons</text>
+
+              <circle cx="185" cy="80" r="24" fill="oklch(55% 0.15 30 / .18)" stroke="oklch(55% 0.15 30)" stroke-width="2.5"/>
+              <text x="185" y="85" text-anchor="middle" font-size="15">⚠️</text>
+              <text x="185" y="118" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="11.5">Monoxyde de carbone</text>
+
+              <circle cx="275" cy="98" r="22" fill="oklch(55% 0.15 30 / .18)" stroke="oklch(55% 0.15 30)" stroke-width="2.5"/>
+              <text x="275" y="103" text-anchor="middle" font-size="14">⚠️</text>
+              <text x="275" y="134" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="12">Particules fines</text>
+
+              <circle cx="185" cy="140" r="18" fill="oklch(55% 0.15 30 / .18)" stroke="oklch(55% 0.15 30)" stroke-width="2"/>
+              <text x="185" y="144" text-anchor="middle" font-size="11">⚠️</text>
+
+              <rect x="370" y="14" width="210" height="146" rx="14" fill="oklch(48% 0.08 230 / .05)"/>
+              <text x="475" y="32" text-anchor="middle" font-family="Work Sans" font-weight="800" font-size="13" fill="oklch(38% 0.08 230)">🧠 DÉPENDANCE</text>
+              <circle cx="475" cy="95" r="30" fill="oklch(48% 0.08 230 / .12)" stroke="oklch(48% 0.08 230 / .4)" stroke-width="2" stroke-dasharray="4 4"/>
+              <text x="475" y="101" text-anchor="middle" font-size="18" opacity=".5">🧠</text>
+              <text x="475" y="140" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="12" fill="rgba(40,30,20,.45)">Nicotine</text>
+            </svg>
+            <div style="position:absolute;left:8%;top:10px;width:210px;background:#fff;border-radius:12px;box-shadow:0 8px 24px rgba(40,30,20,.2);padding:12px 14px;border-left:4px solid oklch(55% 0.15 30)">
+              <div style="font-weight:800;font-size:13px;margin-bottom:3px">⚠️ Goudrons</div>
+              <div style="font-size:12px;line-height:1.45;opacity:.8">Cancérigènes, se déposent dans les poumons. Disparaissent sans combustion.</div>
+            </div>
+          </div>
+          <div style="text-align:center;font-size:12.5px;opacity:.5;font-weight:600;margin-top:12px">Un seul point, la nicotine, reste dans l'autre groupe : c'est elle qui entretient l'envie.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <p class="dv-next">Essayez : « pars de <a class="dv-oid" href="#8a">8a</a> mais avec les libellés de <a class="dv-oid" href="#8c">8c</a> » · « ajoute une 4<sup>e</sup> substance » · « construis <a class="dv-oid" href="#8a">8a</a> en interactif dans l'app »</p>
+</section>
+<section class="dv-turn" id="t7">
+  <div class="dv-thd"><a class="dv-tid" href="#t7">7</a><span class="dv-tname">Module « Gérer le craving » — variante de 6a : les 4D recouvrent la vague</span></div>
+  <p class="dv-sub">Reprend la vague de <a class="dv-oid" href="#6a">6a</a>, mais les cartes 4D s'empilent physiquement par-dessus la courbe à mesure qu'on avance, jusqu'à la masquer complètement — l'idée : on n'a plus besoin de regarder l'envie redescendre, on est occupé à agir. Exception : l'étape « Détendre » a un contenu visuel fonctionnel (la respiration guidée), qui reste donc visible, posée au-dessus de la pile plutôt que cachée.</p>
+  <div class="dv-opts">
+
+    <!-- 7a -->
+    <div class="dv-opt" id="7a">
+      <div class="dv-olabel"><a class="dv-oid" href="#7a">7a</a><b>La Vague recouverte</b> — pile de cartes qui masque progressivement la courbe</div>
+      <div class="dv-card" style="width:640px">
+
+        <div class="scr-lbl">1 · vague seule, aucun D activé</div>
+        <div style="width:640px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:22px 30px 26px;font-family:'Work Sans',sans-serif;color:oklch(24% 0.02 50)">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px">
+            <div style="font-weight:700;font-size:15px">La vague est en train de redescendre</div>
+            <div style="font-family:'Source Serif 4',serif;font-weight:600;font-size:22px;color:oklch(65% 0.13 80)">3:40</div>
+          </div>
+          <div style="background:#fff;border-radius:16px;padding:20px 22px;box-shadow:0 1px 3px rgba(60,40,20,.08);position:relative;height:170px">
+            <svg viewBox="0 0 580 130" style="display:block;width:100%;height:auto">
+              <path d="M10,110 C90,110 120,20 190,20 C280,20 300,95 400,100 C470,103 500,108 570,110" fill="none" stroke="rgba(40,30,20,.18)" stroke-width="4" stroke-linecap="round"/>
+              <path d="M10,110 C50,110 70,40 100,25" fill="none" stroke="oklch(65% 0.13 80)" stroke-width="5" stroke-linecap="round"/>
+              <circle cx="100" cy="25" r="7" fill="oklch(65% 0.13 80)"/>
+            </svg>
+            <div style="display:flex;gap:8px;justify-content:center;margin-top:8px">
+              <div style="width:60px;height:30px;border-radius:8px;background:oklch(65% 0.13 80 / .14);border:1.5px solid oklch(65% 0.13 80);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:oklch(38% 0.13 80)">Différer</div>
+              <div style="width:70px;height:30px;border-radius:8px;background:#fff;box-shadow:0 1px 3px rgba(60,40,20,.1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;opacity:.65">Détourner</div>
+              <div style="width:70px;height:30px;border-radius:8px;background:#fff;box-shadow:0 1px 3px rgba(60,40,20,.1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;opacity:.65">Détendre</div>
+              <div style="width:50px;height:30px;border-radius:8px;background:#fff;box-shadow:0 1px 3px rgba(60,40,20,.1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;opacity:.65">D'eau</div>
+            </div>
+          </div>
+          <div style="text-align:center;font-size:12px;opacity:.45;font-weight:600;margin-top:8px">Touchez un D pour agir — il viendra couvrir la vague</div>
+        </div>
+
+        <div class="scr-lbl" style="border-top:1px solid rgba(60,40,20,.08)">2 · « Différer » activé — 1 carte recouvre le haut de la courbe</div>
+        <div style="width:640px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:22px 30px 26px">
+          <div style="background:#fff;border-radius:16px;padding:20px 22px;box-shadow:0 1px 3px rgba(60,40,20,.08);position:relative;height:170px;overflow:hidden">
+            <svg viewBox="0 0 580 130" style="display:block;width:100%;height:auto;position:absolute;top:20px;left:22px;right:22px;opacity:.9">
+              <path d="M10,110 C90,110 120,20 190,20 C280,20 300,95 400,100 C470,103 500,108 570,110" fill="none" stroke="rgba(40,30,20,.16)" stroke-width="4" stroke-linecap="round"/>
+              <path d="M10,110 C60,110 90,55 130,35" fill="none" stroke="oklch(65% 0.13 80)" stroke-width="5" stroke-linecap="round"/>
+              <circle cx="130" cy="35" r="7" fill="oklch(65% 0.13 80)"/>
+            </svg>
+            <div style="position:absolute;left:50%;transform:translateX(-50%);top:8px;width:250px;background:oklch(65% 0.13 80);color:#fff;border-radius:12px;padding:16px 18px;box-shadow:0 10px 24px rgba(58,51,44,.28)">
+              <div style="font-weight:800;font-size:14.5px;margin-bottom:5px">Différer</div>
+              <div style="font-size:12.5px;line-height:1.5;opacity:.95">Attendez encore un peu — l'envie ne fait que monter avant de redescendre.</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
+            <div style="width:60px;height:30px;border-radius:8px;background:oklch(65% 0.13 80);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800">✓ Différer</div>
+            <div style="width:70px;height:30px;border-radius:8px;background:#fff;box-shadow:0 1px 3px rgba(60,40,20,.1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">Détourner</div>
+            <div style="width:70px;height:30px;border-radius:8px;background:#fff;box-shadow:0 1px 3px rgba(60,40,20,.1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;opacity:.65">Détendre</div>
+            <div style="width:50px;height:30px;border-radius:8px;background:#fff;box-shadow:0 1px 3px rgba(60,40,20,.1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;opacity:.65">D'eau</div>
+          </div>
+        </div>
+
+        <div class="scr-lbl" style="border-top:1px solid rgba(60,40,20,.08)">3 · « Différer » + « Détourner » — la vague est presque entièrement cachée</div>
+        <div style="width:640px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:22px 30px 26px">
+          <div style="background:#fff;border-radius:16px;padding:20px 22px;box-shadow:0 1px 3px rgba(60,40,20,.08);position:relative;height:190px;overflow:hidden">
+            <svg viewBox="0 0 580 130" style="display:block;width:100%;height:auto;position:absolute;top:20px;left:22px;right:22px;opacity:.5">
+              <path d="M10,110 C90,110 120,20 190,20 C280,20 300,95 400,100 C470,103 500,108 570,110" fill="none" stroke="rgba(40,30,20,.12)" stroke-width="4" stroke-linecap="round"/>
+            </svg>
+            <div style="position:absolute;left:50%;transform:translateX(-50%) scale(.96);top:2px;width:230px;background:oklch(65% 0.13 80 / .55);color:#fff;border-radius:12px;padding:12px 18px;filter:blur(.2px)">
+              <div style="font-weight:800;font-size:13px">Différer</div>
+            </div>
+            <div style="position:absolute;left:50%;transform:translateX(-50%);top:30px;width:260px;background:oklch(48% 0.08 230);color:#fff;border-radius:12px;padding:18px 20px;box-shadow:0 10px 24px rgba(58,51,44,.3)">
+              <div style="font-weight:800;font-size:14.5px;margin-bottom:5px">Détourner l'attention</div>
+              <div style="font-size:12.5px;line-height:1.5;opacity:.95;margin-bottom:10px">Occupez vos mains ou votre tête quelques minutes.</div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <div style="background:rgba(255,255,255,.2);border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700">Marcher un peu</div>
+                <div style="background:rgba(255,255,255,.2);border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700">Appeler quelqu'un</div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
+            <div style="width:60px;height:30px;border-radius:8px;background:oklch(65% 0.13 80);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800">✓</div>
+            <div style="width:70px;height:30px;border-radius:8px;background:oklch(48% 0.08 230);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800">✓ Détourner</div>
+            <div style="width:70px;height:30px;border-radius:8px;background:#fff;box-shadow:0 1px 3px rgba(60,40,20,.1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;opacity:.65">Détendre</div>
+            <div style="width:50px;height:30px;border-radius:8px;background:#fff;box-shadow:0 1px 3px rgba(60,40,20,.1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;opacity:.65">D'eau</div>
+          </div>
+        </div>
+
+        <div class="scr-lbl" style="border-top:1px solid rgba(60,40,20,.08)">4 · « Détendre » — la vague disparaît, la respiration reste visible au premier plan</div>
+        <div style="width:640px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:22px 30px 30px">
+          <div style="background:#fff;border-radius:16px;padding:20px 22px;box-shadow:0 1px 3px rgba(60,40,20,.08);position:relative;height:210px;overflow:hidden;display:flex;align-items:center;justify-content:center">
+            <div style="position:absolute;left:50%;transform:translateX(-50%) scale(.94);top:4px;width:210px;background:oklch(65% 0.13 80 / .4);border-radius:12px;padding:10px 18px;text-align:center"><div style="font-weight:800;font-size:12px;color:#fff">Différer</div></div>
+            <div style="position:absolute;left:50%;transform:translateX(-50%) scale(.97);top:24px;width:230px;background:oklch(48% 0.08 230 / .5);border-radius:12px;padding:10px 18px;text-align:center"><div style="font-weight:800;font-size:12px;color:#fff">Détourner</div></div>
+            <div style="position:relative;z-index:2;background:oklch(58% 0.09 145);color:#fff;border-radius:16px;padding:22px 26px;box-shadow:0 14px 30px rgba(58,51,44,.32);text-align:center;width:270px">
+              <div style="font-weight:800;font-size:15px;margin-bottom:12px">Se détendre — respirez</div>
+              <svg width="76" height="76" viewBox="0 0 76 76" style="margin:0 auto">
+                <circle cx="38" cy="38" r="26" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.7)" stroke-width="2"/>
+                <circle cx="38" cy="38" r="14" fill="rgba(255,255,255,.95)"/>
+              </svg>
+              <div style="font-size:12.5px;font-weight:600;opacity:.9;margin-top:10px">Inspirez… 4 secondes</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
+            <div style="width:60px;height:30px;border-radius:8px;background:oklch(65% 0.13 80);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800">✓</div>
+            <div style="width:70px;height:30px;border-radius:8px;background:oklch(48% 0.08 230);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800">✓</div>
+            <div style="width:70px;height:30px;border-radius:8px;background:oklch(58% 0.09 145);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800">● Détendre</div>
+            <div style="width:50px;height:30px;border-radius:8px;background:#fff;box-shadow:0 1px 3px rgba(60,40,20,.1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;opacity:.65">D'eau</div>
+          </div>
+          <div style="text-align:center;font-size:12px;opacity:.45;font-weight:600;margin-top:10px">La courbe est masquée ; le cercle de respiration, lui, reste au premier plan tant qu'il est actif.</div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+  <p class="dv-next">Essayez : « ajuste le rythme d'empilement de <a class="dv-oid" href="#7a">7a</a> » · « construis <a class="dv-oid" href="#7a">7a</a> en interactif dans l'app » · « autres variantes »</p>
+</section>
+<section class="dv-turn" id="t6">
+  <div class="dv-thd"><a class="dv-tid" href="#t6">6</a><span class="dv-tname">Module « Gérer le craving (4D) » — 3 pistes visuelles</span></div>
+  <p class="dv-sub">Même chrome que le module retenu (2a). Idée centrale du brief : l'envie de fumer (craving) est une vague — elle monte, atteint un pic, puis redescend d'elle-même en quelques minutes, même sans fumer. La méthode des 4D aide à tenir pendant ce délai : <b>Différer</b> (attendre quelques minutes), se <b>Détourner</b> (penser/faire à autre chose), se <b>Détendre</b> (respirer), boire un verre <b>D'eau</b>. Chaque piste montre l'écran de repos et l'écran « vague en cours » (minuteur actif).</p>
+  <div class="dv-opts">
+
+    <!-- 6a -->
+    <div class="dv-opt" id="6a">
+      <div class="dv-olabel"><a class="dv-oid" href="#6a">6a</a><b>La Vague</b> — graphe d'intensité + minuteur, 4D en cartes sous la courbe</div>
+      <div class="dv-card" style="width:640px">
+        <div class="scr-lbl">REPOS</div>
+        <div style="width:640px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:26px 30px 30px;font-family:'Work Sans',sans-serif;color:oklch(24% 0.02 50)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+            <div style="font-family:'Source Serif 4',serif;font-weight:600;font-size:23px">Gérer le craving</div>
+            <div style="font-size:12px;font-weight:600;color:oklch(48% 0.08 230);border:1.5px solid oklch(48% 0.08 230 / .35);border-radius:8px;padding:6px 12px">↩ Accueil</div>
+          </div>
+          <div style="font-size:13.5px;opacity:.6;margin-bottom:20px;max-width:56ch">L'envie de fumer est une vague : elle monte, puis redescend d'elle-même — même sans cigarette.</div>
+          <div style="background:#fff;border-radius:14px;padding:22px 24px;box-shadow:0 1px 3px rgba(60,40,20,.08);text-align:center">
+            <div style="font-weight:600;font-size:15px;margin-bottom:14px">Une envie arrive ?</div>
+            <div style="display:inline-flex;align-items:center;background:oklch(65% 0.13 80);color:#fff;font-weight:700;font-size:15px;border-radius:12px;padding:14px 28px">Je ressens un craving</div>
+            <div style="font-size:12.5px;opacity:.5;font-weight:600;margin-top:12px">Ça dure en général 3 à 5 minutes</div>
+          </div>
+        </div>
+        <div class="scr-lbl" style="border-top:1px solid rgba(60,40,20,.08)">VAGUE EN COURS</div>
+        <div style="width:640px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:22px 30px 30px">
+          <div style="background:#fff;border-radius:16px;padding:22px 24px;box-shadow:0 1px 3px rgba(60,40,20,.08)">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px">
+              <div style="font-weight:700;font-size:15px">La vague est en train de redescendre</div>
+              <div style="font-family:'Source Serif 4',serif;font-weight:600;font-size:22px;color:oklch(65% 0.13 80)">2:14</div>
+            </div>
+            <svg viewBox="0 0 580 130" style="display:block;width:100%;height:auto;margin-bottom:6px">
+              <path d="M10,110 C90,110 120,20 190,20 C280,20 300,95 400,100 C470,103 500,108 570,110" fill="none" stroke="rgba(40,30,20,.18)" stroke-width="4" stroke-linecap="round"/>
+              <path d="M10,110 C90,110 120,20 190,20 C260,20 275,70 300,80" fill="none" stroke="oklch(65% 0.13 80)" stroke-width="5" stroke-linecap="round"/>
+              <circle cx="300" cy="80" r="7" fill="oklch(65% 0.13 80)"/>
+            </svg>
+            <div style="display:flex;justify-content:space-between;font-size:11.5px;opacity:.45;font-weight:600;margin-bottom:18px"><span>Début</span><span>Pic</span><span>Ça redescend</span></div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+              <div style="background:oklch(65% 0.13 80 / .16);border:2px solid oklch(65% 0.13 80);border-radius:11px;padding:12px 8px;text-align:center">
+                <div style="font-weight:800;font-size:13px;color:oklch(38% 0.13 80)">Différer</div>
+                <div style="font-size:11px;opacity:.6;margin-top:3px;line-height:1.3">Attendre, ça passe</div>
+              </div>
+              <div style="background:#fff;border-radius:11px;padding:12px 8px;text-align:center;box-shadow:0 1px 3px rgba(60,40,20,.08)">
+                <div style="font-weight:700;font-size:13px;opacity:.75">Détourner</div>
+                <div style="font-size:11px;opacity:.5;margin-top:3px;line-height:1.3">Occuper ses mains</div>
+              </div>
+              <div style="background:#fff;border-radius:11px;padding:12px 8px;text-align:center;box-shadow:0 1px 3px rgba(60,40,20,.08)">
+                <div style="font-weight:700;font-size:13px;opacity:.75">Détendre</div>
+                <div style="font-size:11px;opacity:.5;margin-top:3px;line-height:1.3">Respirer lentement</div>
+              </div>
+              <div style="background:#fff;border-radius:11px;padding:12px 8px;text-align:center;box-shadow:0 1px 3px rgba(60,40,20,.08)">
+                <div style="font-weight:700;font-size:13px;opacity:.75">D'eau</div>
+                <div style="font-size:11px;opacity:.5;margin-top:3px;line-height:1.3">Un verre à boire</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6b -->
+    <div class="dv-opt" id="6b">
+      <div class="dv-olabel"><a class="dv-oid" href="#6b">6b</a><b>Le Guide en 4 temps</b> — un D à la fois, plein écran, respiration guidée</div>
+      <div class="dv-card" style="width:520px">
+        <div class="scr-lbl">REPOS</div>
+        <div style="width:520px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:26px 30px 30px;font-family:'Work Sans',sans-serif;color:oklch(24% 0.02 50);text-align:center">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;text-align:left">
+            <div style="font-family:'Source Serif 4',serif;font-weight:600;font-size:21px">Gérer le craving</div>
+            <div style="font-size:12px;font-weight:600;color:oklch(48% 0.08 230);border:1.5px solid oklch(48% 0.08 230 / .35);border-radius:8px;padding:6px 12px">↩ Accueil</div>
+          </div>
+          <div style="font-size:14px;opacity:.65;margin-bottom:22px;max-width:38ch;margin-left:auto;margin-right:auto">La vague redescend toujours, en général en 3 à 5 minutes.</div>
+          <div style="display:inline-flex;align-items:center;background:oklch(65% 0.13 80);color:#fff;font-weight:700;font-size:15px;border-radius:14px;padding:16px 30px">Commencer les 4D</div>
+        </div>
+        <div class="scr-lbl" style="border-top:1px solid rgba(60,40,20,.08)">ÉTAPE 3/4 · Se détendre</div>
+        <div style="width:520px;box-sizing:border-box;background:oklch(48% 0.08 230);padding:34px 30px 30px;font-family:'Work Sans',sans-serif;color:#fff;text-align:center">
+          <div style="display:flex;justify-content:center;gap:6px;margin-bottom:22px">
+            <span style="width:24px;height:5px;border-radius:3px;background:rgba(255,255,255,.4)"></span>
+            <span style="width:24px;height:5px;border-radius:3px;background:rgba(255,255,255,.4)"></span>
+            <span style="width:24px;height:5px;border-radius:3px;background:#fff"></span>
+            <span style="width:24px;height:5px;border-radius:3px;background:rgba(255,255,255,.3)"></span>
+          </div>
+          <div style="font-weight:700;font-size:19px;margin-bottom:22px">Respirez avec le cercle</div>
+          <svg width="140" height="140" viewBox="0 0 140 140" style="margin:0 auto">
+            <circle cx="70" cy="70" r="46" fill="rgba(255,255,255,.16)" stroke="rgba(255,255,255,.6)" stroke-width="2.5"/>
+            <circle cx="70" cy="70" r="26" fill="rgba(255,255,255,.9)"/>
+          </svg>
+          <div style="font-size:14px;font-weight:600;opacity:.9;margin-top:16px">Inspirez… 4 secondes</div>
+          <div style="display:inline-flex;margin-top:26px;color:rgba(255,255,255,.8);font-weight:600;font-size:13px;border:1.5px solid rgba(255,255,255,.5);border-radius:10px;padding:10px 20px">Étape suivante →</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6c -->
+    <div class="dv-opt" id="6c">
+      <div class="dv-olabel"><a class="dv-oid" href="#6c">6c</a><b>Le Minimal</b> — gros chrono, checklist 4D, cohérent avec 4c / 3c</div>
+      <div class="dv-card" style="width:560px">
+        <div class="scr-lbl">REPOS</div>
+        <div style="width:560px;box-sizing:border-box;background:#fff;padding:30px 34px 20px;font-family:'Work Sans',sans-serif;color:oklch(24% 0.02 50)">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px">
+            <div style="font-weight:600;font-size:21px">Gérer le craving</div>
+            <div style="font-size:13px;font-weight:600;opacity:.5">← Retour</div>
+          </div>
+          <div style="font-size:13.5px;opacity:.6;max-width:44ch">Une envie ne dure jamais très longtemps.</div>
+        </div>
+        <div class="scr-lbl">EN BAS D'ÉCRAN · déclencheur</div>
+        <div style="width:560px;box-sizing:border-box;background:#fff;padding:0 34px 26px">
+          <div style="display:flex;align-items:center;justify-content:center;background:oklch(24% 0.02 50);color:#fff;font-weight:700;font-size:14px;border-radius:12px;padding:14px">J'ai une envie maintenant</div>
+        </div>
+        <div class="scr-lbl" style="border-top:1px solid rgba(60,40,20,.08)">VAGUE EN COURS</div>
+        <div style="width:560px;box-sizing:border-box;background:#fff;padding:28px 34px 32px;text-align:center">
+          <div style="font-family:'Source Serif 4',serif;font-weight:600;font-size:52px;line-height:1;margin-bottom:6px">2:14</div>
+          <div style="font-size:12.5px;opacity:.5;font-weight:600;margin-bottom:24px">La vague redescend — tenez encore un peu</div>
+          <div style="display:flex;flex-direction:column;gap:0;text-align:left;max-width:360px;margin:0 auto">
+            <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(60,40,20,.08)">
+              <span style="width:20px;height:20px;border-radius:50%;background:oklch(24% 0.02 50);flex:none;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px">✓</span>
+              <span style="font-size:14px;font-weight:600">Différer — j'attends</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(60,40,20,.08);opacity:.45">
+              <span style="width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(40,30,20,.35);flex:none"></span>
+              <span style="font-size:14px;font-weight:600">Me détourner — autre chose</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(60,40,20,.08);opacity:.45">
+              <span style="width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(40,30,20,.35);flex:none"></span>
+              <span style="font-size:14px;font-weight:600">Me détendre — respirer</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:12px 0;opacity:.45">
+              <span style="width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(40,30,20,.35);flex:none"></span>
+              <span style="font-size:14px;font-weight:600">D'eau — un verre</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <p class="dv-next">Essayez : « pars de <a class="dv-oid" href="#6a">6a</a> mais avec le chrono géant de <a class="dv-oid" href="#6c">6c</a> » · « construis <a class="dv-oid" href="#6b">6b</a> en interactif dans l'app » · « autres pistes »</p>
+</section>
+<section class="dv-turn" id="t5">
+  <div class="dv-thd"><a class="dv-tid" href="#t5">5</a><span class="dv-tname">Module « Utilisation des substituts &amp; titration du patch » — 3 pistes visuelles</span></div>
+  <p class="dv-sub">Même chrome que le module retenu (2a). Contenu du brief : Partie A — 7 cartes cliquables (patch, gomme, pastille, comprimé sublingual, spray buccal, inhaleur, vapoteuse) → bonnes pratiques / erreurs fréquentes (2 formes en repli « fiche en cours »). Partie B — titration du patch en quarts (pas de mg), 2 retours utilisateur (envie persiste / signes de surdosage), bouton « + ¼ (tous les 3 jours) » conditionnel, bannière rouge explicite en cas de surdosage, bloc Jour/Nuit. Chaque piste montre les deux parties empilées.</p>
+  <div class="dv-opts">
+
+    <!-- 5a -->
+    <div class="dv-opt" id="5a">
+      <div class="dv-olabel"><a class="dv-oid" href="#5a">5a</a><b>Le Classeur</b> — cartes-formes en grille, fiche déroulée en dessous</div>
+      <div class="dv-card" style="width:720px">
+        <div style="width:720px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:26px 30px 20px;font-family:'Work Sans',sans-serif;color:oklch(24% 0.02 50)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+            <div style="font-family:'Source Serif 4',serif;font-weight:600;font-size:23px">Utilisation des substituts &amp; titration du patch</div>
+            <div style="font-size:12px;font-weight:600;color:oklch(48% 0.08 230);border:1.5px solid oklch(48% 0.08 230 / .35);border-radius:8px;padding:6px 12px">↩ Accueil</div>
+          </div>
+          <div style="font-size:13.5px;opacity:.6;margin-bottom:18px;max-width:60ch">Choisissez une forme pour voir les bonnes pratiques. Aucun calcul de dose ici : fiez-vous à votre ressenti.</div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:8px">
+            <div style="background:oklch(58% 0.09 145 / .16);border:2px solid oklch(58% 0.09 145);border-radius:12px;padding:12px 6px;text-align:center">
+              <div style="width:30px;height:30px;border-radius:8px;background:oklch(58% 0.09 145);margin:0 auto 6px"></div>
+              <div style="font-size:11px;font-weight:700;line-height:1.2">Patch</div>
+            </div>
+            <div style="background:#fff;border-radius:12px;padding:12px 6px;text-align:center;box-shadow:0 1px 3px rgba(60,40,20,.08)">
+              <div style="width:30px;height:30px;border-radius:8px;background:rgba(40,30,20,.14);margin:0 auto 6px"></div>
+              <div style="font-size:11px;font-weight:700;line-height:1.2;opacity:.7">Gomme</div>
+            </div>
+            <div style="background:#fff;border-radius:12px;padding:12px 6px;text-align:center;box-shadow:0 1px 3px rgba(60,40,20,.08)">
+              <div style="width:30px;height:30px;border-radius:8px;background:rgba(40,30,20,.14);margin:0 auto 6px"></div>
+              <div style="font-size:11px;font-weight:700;line-height:1.2;opacity:.7">Pastille</div>
+            </div>
+            <div style="background:#fff;border-radius:12px;padding:12px 6px;text-align:center;box-shadow:0 1px 3px rgba(60,40,20,.08)">
+              <div style="width:30px;height:30px;border-radius:8px;background:rgba(40,30,20,.14);margin:0 auto 6px"></div>
+              <div style="font-size:11px;font-weight:700;line-height:1.2;opacity:.7">Comprimé sublingual</div>
+            </div>
+            <div style="background:#fff;border-radius:12px;padding:12px 6px;text-align:center;box-shadow:0 1px 3px rgba(60,40,20,.08)">
+              <div style="width:30px;height:30px;border-radius:8px;background:rgba(40,30,20,.14);margin:0 auto 6px"></div>
+              <div style="font-size:11px;font-weight:700;line-height:1.2;opacity:.7">Spray buccal</div>
+            </div>
+            <div style="background:#fff;border-radius:12px;padding:12px 6px;text-align:center;box-shadow:0 1px 3px rgba(60,40,20,.08);opacity:.55">
+              <div style="width:30px;height:30px;border-radius:8px;background:rgba(40,30,20,.14);margin:0 auto 6px"></div>
+              <div style="font-size:11px;font-weight:700;line-height:1.2">Inhaleur</div>
+            </div>
+            <div style="background:#fff;border-radius:12px;padding:12px 6px;text-align:center;box-shadow:0 1px 3px rgba(60,40,20,.08);opacity:.55">
+              <div style="width:30px;height:30px;border-radius:8px;background:rgba(40,30,20,.14);margin:0 auto 6px"></div>
+              <div style="font-size:11px;font-weight:700;line-height:1.2">Vapoteuse</div>
+            </div>
+          </div>
+        </div>
+        <div class="scr-lbl">FICHE · Patch</div>
+        <div style="width:720px;box-sizing:border-box;background:#fff;padding:18px 30px 26px">
+          <div style="display:flex;gap:14px">
+            <div style="flex:1;background:oklch(58% 0.09 145 / .1);border-radius:12px;padding:16px 18px;border-left:5px solid oklch(58% 0.09 145)">
+              <div style="font-weight:700;font-size:13.5px;margin-bottom:8px;color:oklch(38% 0.09 145)">Bonnes pratiques</div>
+              <div style="font-size:13px;line-height:1.6">Coller sur peau propre, sèche, sans poils. Changer de zone chaque jour. Appliquer le matin, à heure régulière.</div>
+            </div>
+            <div style="flex:1;background:oklch(55% 0.15 30 / .1);border-radius:12px;padding:16px 18px;border-left:5px solid oklch(55% 0.15 30)">
+              <div style="font-weight:700;font-size:13.5px;margin-bottom:8px;color:oklch(45% 0.15 30)">Erreurs fréquentes</div>
+              <div style="font-size:13px;line-height:1.6">Recoller sur la même zone. Le garder sur une peau irritée. L'oublier plusieurs jours de suite.</div>
+            </div>
+          </div>
+        </div>
+        <div class="scr-lbl" style="border-top:1px solid rgba(60,40,20,.08)">TITRATION · méthode</div>
+        <div style="width:720px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:20px 30px 26px">
+          <div style="background:#fff;border-radius:14px;padding:22px 24px;box-shadow:0 1px 3px rgba(60,40,20,.08)">
+            <div style="display:flex;gap:22px;align-items:center;margin-bottom:16px">
+              <svg width="88" height="110" viewBox="0 0 88 110">
+                <rect x="2" y="2" width="84" height="106" rx="14" fill="none" stroke="oklch(58% 0.09 145)" stroke-width="3"/>
+                <line x1="44" y1="2" x2="44" y2="108" stroke="oklch(58% 0.09 145)" stroke-width="2"/>
+                <line x1="2" y1="55" x2="86" y2="55" stroke="oklch(58% 0.09 145)" stroke-width="2"/>
+                <rect x="4" y="4" width="38" height="49" rx="10" fill="oklch(58% 0.09 145)"/>
+                <rect x="46" y="4" width="38" height="49" rx="10" fill="oklch(58% 0.09 145)"/>
+                <rect x="4" y="57" width="38" height="49" rx="10" fill="oklch(58% 0.09 145)"/>
+              </svg>
+              <div style="flex:1">
+                <div style="font-weight:600;font-size:15px;margin-bottom:10px">3 quarts actifs — expérimentez, fiez-vous à votre ressenti</div>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <div style="display:flex;align-items:center;justify-content:space-between;background:oklch(97% 0.015 75);border-radius:9px;padding:9px 14px">
+                    <span style="font-size:13px;font-weight:600">L'envie de fumer persiste</span>
+                    <div style="width:38px;height:22px;border-radius:11px;background:oklch(58% 0.09 145);position:relative"><div style="position:absolute;right:2px;top:2px;width:18px;height:18px;border-radius:50%;background:#fff"></div></div>
+                  </div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;background:oklch(97% 0.015 75);border-radius:9px;padding:9px 14px">
+                    <span style="font-size:13px;font-weight:600">Signes de surdosage</span>
+                    <div style="width:38px;height:22px;border-radius:11px;background:rgba(40,30,20,.18);position:relative"><div style="position:absolute;left:2px;top:2px;width:18px;height:18px;border-radius:50%;background:#fff"></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:center;background:oklch(58% 0.09 145);color:#fff;font-weight:700;font-size:14px;border-radius:10px;padding:12px;margin-bottom:8px">+ ¼ de patch (tous les 3 jours)</div>
+            <div style="font-size:12px;opacity:.5;text-align:center;margin-bottom:16px">Actif car l'envie persiste et aucun signe de surdosage</div>
+            <div style="display:flex;gap:12px">
+              <div style="flex:1;background:oklch(65% 0.13 80 / .12);border-radius:12px;padding:14px;text-align:center">
+                <div style="font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;opacity:.6;margin-bottom:8px">Jour</div>
+                <svg width="50" height="62" viewBox="0 0 50 62"><rect x="2" y="2" width="46" height="58" rx="8" fill="none" stroke="oklch(65% 0.13 80)" stroke-width="2"/><line x1="25" y1="2" x2="25" y2="60" stroke="oklch(65% 0.13 80)" stroke-width="1.5"/><line x1="2" y1="31" x2="48" y2="31" stroke="oklch(65% 0.13 80)" stroke-width="1.5"/><rect x="4" y="4" width="19" height="25" fill="oklch(65% 0.13 80)"/><rect x="27" y="4" width="19" height="25" fill="oklch(65% 0.13 80)"/><rect x="4" y="33" width="19" height="25" fill="oklch(65% 0.13 80)"/></svg>
+              </div>
+              <div style="flex:1;background:oklch(48% 0.08 230 / .1);border-radius:12px;padding:14px;text-align:center">
+                <div style="font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;opacity:.6;margin-bottom:8px">Nuit</div>
+                <svg width="50" height="62" viewBox="0 0 50 62"><rect x="2" y="2" width="46" height="58" rx="8" fill="none" stroke="oklch(48% 0.08 230)" stroke-width="2"/><line x1="25" y1="2" x2="25" y2="60" stroke="oklch(48% 0.08 230)" stroke-width="1.5"/><line x1="2" y1="31" x2="48" y2="31" stroke="oklch(48% 0.08 230)" stroke-width="1.5"/><rect x="4" y="4" width="19" height="25" fill="oklch(48% 0.08 230)"/></svg>
+                <div style="font-size:11px;opacity:.5;margin-top:6px">Dose allégée si sommeil perturbé</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="scr-lbl" style="border-top:1px solid rgba(60,40,20,.08)">TITRATION · état surdosage</div>
+        <div style="width:720px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:0 30px 26px">
+          <div style="background:oklch(55% 0.15 30);color:#fff;border-radius:14px;padding:18px 20px">
+            <div style="font-weight:800;font-size:14.5px;margin-bottom:6px">⚠ Signes de surdosage signalés</div>
+            <div style="font-size:13px;line-height:1.6;opacity:.95">Nausées, écœurement, céphalées, palpitations, rêves intenses. Revenez au dosage précédent et parlez-en à votre soignant.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5b -->
+    <div class="dv-opt" id="5b">
+      <div class="dv-olabel"><a class="dv-oid" href="#5b">5b</a><b>Le Duo</b> — colonne formes à gauche, fiche + titration à droite</div>
+      <div class="dv-card" style="width:760px">
+        <div style="width:760px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:26px 30px 12px;font-family:'Work Sans',sans-serif;color:oklch(24% 0.02 50)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+            <div style="font-family:'Source Serif 4',serif;font-weight:600;font-size:23px">Utilisation des substituts &amp; titration du patch</div>
+            <div style="font-size:12px;font-weight:600;color:oklch(48% 0.08 230);border:1.5px solid oklch(48% 0.08 230 / .35);border-radius:8px;padding:6px 12px">↩ Accueil</div>
+          </div>
+        </div>
+        <div class="scr-lbl">ÉCRAN · fiche par forme</div>
+        <div style="width:760px;box-sizing:border-box;background:#fff;padding:18px 30px 26px;display:flex;gap:18px">
+          <div style="width:190px;flex:none;display:flex;flex-direction:column;gap:6px">
+            <div style="background:oklch(58% 0.09 145);color:#fff;border-radius:9px;padding:11px 14px;font-weight:700;font-size:13.5px">Patch (24h/16h)</div>
+            <div style="border-radius:9px;padding:11px 14px;font-weight:600;font-size:13.5px;opacity:.65">Gomme</div>
+            <div style="border-radius:9px;padding:11px 14px;font-weight:600;font-size:13.5px;opacity:.65">Pastille</div>
+            <div style="border-radius:9px;padding:11px 14px;font-weight:600;font-size:13.5px;opacity:.65">Comprimé sublingual</div>
+            <div style="border-radius:9px;padding:11px 14px;font-weight:600;font-size:13.5px;opacity:.65">Spray buccal</div>
+            <div style="border-radius:9px;padding:11px 14px;font-weight:600;font-size:13.5px;opacity:.4">Inhaleur</div>
+            <div style="border-radius:9px;padding:11px 14px;font-weight:600;font-size:13.5px;opacity:.4">Vapoteuse</div>
+          </div>
+          <div style="flex:1;background:oklch(97% 0.015 75);border-radius:14px;padding:20px 22px">
+            <div style="font-weight:700;font-size:16px;margin-bottom:14px">Patch (24h/16h)</div>
+            <div style="background:#fff;border-radius:10px;padding:14px 16px;margin-bottom:10px;box-shadow:0 1px 3px rgba(60,40,20,.06)">
+              <div style="font-weight:700;font-size:12.5px;color:oklch(38% 0.09 145);margin-bottom:6px">✓ Bonnes pratiques</div>
+              <div style="font-size:13px;line-height:1.55">Peau propre et sèche, zone différente chaque jour, pose le matin à heure régulière.</div>
+            </div>
+            <div style="background:#fff;border-radius:10px;padding:14px 16px;box-shadow:0 1px 3px rgba(60,40,20,.06)">
+              <div style="font-weight:700;font-size:12.5px;color:oklch(45% 0.15 30);margin-bottom:6px">✕ Erreurs fréquentes</div>
+              <div style="font-size:13px;line-height:1.55">Même zone répétée, peau irritée, oublis répétés.</div>
+            </div>
+          </div>
+        </div>
+        <div class="scr-lbl" style="border-top:1px solid rgba(60,40,20,.08)">ÉCRAN · titration (repli inhaleur/vapoteuse ci-dessous)</div>
+        <div style="width:760px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:8px 30px 12px">
+          <div style="background:#fff;border-radius:10px;padding:12px 16px;font-size:12.5px;line-height:1.5;opacity:.7;border:1.5px dashed rgba(40,30,20,.2)">Inhaleur / Vapoteuse — Fiche en cours de rédaction. À voir avec votre soignant.</div>
+        </div>
+        <div style="width:760px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:8px 30px 26px">
+          <div style="background:#fff;border-radius:14px;padding:22px 24px;box-shadow:0 1px 3px rgba(60,40,20,.08);display:flex;gap:26px;align-items:center">
+            <svg width="70" height="88" viewBox="0 0 70 88">
+              <rect x="2" y="2" width="66" height="84" rx="12" fill="none" stroke="oklch(58% 0.09 145)" stroke-width="2.5"/>
+              <line x1="35" y1="2" x2="35" y2="86" stroke="oklch(58% 0.09 145)" stroke-width="1.5"/>
+              <line x1="2" y1="44" x2="68" y2="44" stroke="oklch(58% 0.09 145)" stroke-width="1.5"/>
+              <rect x="4" y="4" width="30" height="39" fill="oklch(58% 0.09 145)"/>
+              <rect x="36" y="4" width="30" height="39" fill="oklch(58% 0.09 145)"/>
+            </svg>
+            <div style="flex:1">
+              <div style="display:flex;gap:10px;margin-bottom:12px">
+                <div style="flex:1;background:oklch(58% 0.09 145 / .14);border-radius:9px;padding:9px 12px;text-align:center;font-size:12.5px;font-weight:700">Envie persiste : <span style="color:oklch(38% 0.09 145)">Oui</span></div>
+                <div style="flex:1;background:rgba(40,30,20,.06);border-radius:9px;padding:9px 12px;text-align:center;font-size:12.5px;font-weight:700;opacity:.6">Surdosage : Non</div>
+              </div>
+              <div style="background:oklch(58% 0.09 145);color:#fff;font-weight:700;font-size:13.5px;border-radius:9px;padding:11px;text-align:center">+ ¼ (tous les 3 jours)</div>
+            </div>
+          </div>
+          <div style="margin-top:12px;font-size:12.5px;text-align:center;opacity:.5;font-weight:600">Expérimentez, fiez-vous à votre ressenti — pas de calcul de dose.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5c -->
+    <div class="dv-opt" id="5c">
+      <div class="dv-olabel"><a class="dv-oid" href="#5c">5c</a><b>Le Guide pas-à-pas</b> — minimal, liste dépliable + jauge circulaire (cohérent avec la motivation 4a)</div>
+      <div class="dv-card" style="width:640px">
+        <div style="width:640px;box-sizing:border-box;background:#fff;padding:30px 34px 14px;font-family:'Work Sans',sans-serif;color:oklch(24% 0.02 50)">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px">
+            <div style="font-weight:600;font-size:21px">Substituts &amp; titration du patch</div>
+            <div style="font-size:13px;font-weight:600;opacity:.5">← Retour</div>
+          </div>
+          <div style="font-size:13.5px;opacity:.6;max-width:52ch">Dépliez une forme pour ses bonnes pratiques.</div>
+        </div>
+        <div class="scr-lbl">LISTE · formes (repliable)</div>
+        <div style="width:640px;box-sizing:border-box;background:#fff;padding:14px 34px 24px">
+          <div style="display:flex;flex-direction:column">
+            <div style="border-bottom:1px solid rgba(60,40,20,.1)">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0"><span style="font-size:14.5px;font-weight:700">Patch (24h/16h)</span><span style="font-size:13px;opacity:.4">▾</span></div>
+              <div style="display:flex;gap:12px;padding:0 0 16px">
+                <div style="flex:1;font-size:12.5px;line-height:1.55"><b style="color:oklch(38% 0.09 145)">Bonnes pratiques</b><br>Peau propre et sèche, zone différente chaque jour.</div>
+                <div style="flex:1;font-size:12.5px;line-height:1.55"><b style="color:oklch(45% 0.15 30)">Erreurs</b><br>Même zone répétée, peau irritée.</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid rgba(60,40,20,.08);opacity:.6"><span style="font-size:14.5px;font-weight:600">Gomme</span><span style="font-size:13px;opacity:.4">▸</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid rgba(60,40,20,.08);opacity:.6"><span style="font-size:14.5px;font-weight:600">Pastille</span><span style="font-size:13px;opacity:.4">▸</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid rgba(60,40,20,.08);opacity:.6"><span style="font-size:14.5px;font-weight:600">Comprimé sublingual</span><span style="font-size:13px;opacity:.4">▸</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid rgba(60,40,20,.08);opacity:.6"><span style="font-size:14.5px;font-weight:600">Spray buccal</span><span style="font-size:13px;opacity:.4">▸</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid rgba(60,40,20,.08);opacity:.35"><span style="font-size:14.5px;font-weight:600">Inhaleur</span><span style="font-size:12px">fiche à venir</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;opacity:.35"><span style="font-size:14.5px;font-weight:600">Vapoteuse</span><span style="font-size:12px">fiche à venir</span></div>
+          </div>
+        </div>
+        <div class="scr-lbl" style="border-top:1px solid rgba(60,40,20,.08)">TITRATION · vue jauge</div>
+        <div style="width:640px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:22px 34px 30px;text-align:center">
+          <svg width="150" height="150" viewBox="0 0 120 120" style="margin:0 auto">
+            <circle cx="60" cy="60" r="48" fill="none" stroke="oklch(90% 0.02 145)" stroke-width="12"/>
+            <circle cx="60" cy="60" r="48" fill="none" stroke="oklch(58% 0.09 145)" stroke-width="12" stroke-linecap="round" stroke-dasharray="226.2 75.4" transform="rotate(-90 60 60)"/>
+            <text x="60" y="68" text-anchor="middle" font-family="Work Sans" font-weight="800" font-size="26" fill="oklch(38% 0.09 145)">¾</text>
+          </svg>
+          <div style="font-size:12.5px;opacity:.5;font-weight:600;margin:8px 0 20px">Expérimentez, fiez-vous à votre ressenti</div>
+          <div style="display:flex;gap:10px;max-width:420px;margin:0 auto 16px">
+            <div style="flex:1;background:#fff;border-radius:10px;padding:12px;font-size:13px;font-weight:700;box-shadow:0 1px 3px rgba(60,40,20,.08)">Envie persiste <span style="display:block;font-size:11px;font-weight:600;opacity:.5;margin-top:3px">activé</span></div>
+            <div style="flex:1;background:#fff;border-radius:10px;padding:12px;font-size:13px;font-weight:700;box-shadow:0 1px 3px rgba(60,40,20,.08);opacity:.5">Surdosage <span style="display:block;font-size:11px;font-weight:600;opacity:.5;margin-top:3px">non signalé</span></div>
+          </div>
+          <div style="display:inline-flex;align-items:center;background:oklch(58% 0.09 145);color:#fff;font-weight:700;font-size:13.5px;border-radius:10px;padding:12px 22px">+ ¼ de patch (dans 3 jours)</div>
+          <div style="display:flex;gap:10px;max-width:420px;margin:20px auto 0">
+            <div style="flex:1;background:oklch(65% 0.13 80 / .12);border-radius:10px;padding:12px;font-size:12.5px;font-weight:700">☀ Jour — dose habituelle</div>
+            <div style="flex:1;background:oklch(48% 0.08 230 / .1);border-radius:10px;padding:12px;font-size:12.5px;font-weight:700">☾ Nuit — allégée si besoin</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <p class="dv-next">Essayez : « pars de <a class="dv-oid" href="#5a">5a</a> mais avec la jauge circulaire de <a class="dv-oid" href="#5c">5c</a> » · « construis <a class="dv-oid" href="#5b">5b</a> en interactif dans l'app » · « autres pistes »</p>
+</section>
+<section class="dv-turn" id="t4">
+  <div class="dv-thd"><a class="dv-tid" href="#t4">4</a><span class="dv-tname">Module « Explorer ma motivation » — 3 pistes visuelles</span></div>
+  <p class="dv-sub">Même chrome que le module retenu (2a). Contenu du brief : 2 onglets — « Où en êtes-vous ? » (2 curseurs 0–10 avec relance non culpabilisante) et « Mes raisons » (tableau blanc + réserve de cartes-raisons, glisser-déposer). Pas de balance avantages/inconvénients. Chaque piste ci-dessous montre les deux onglets empilés, dans un traitement visuel différent.</p>
+  <div class="dv-opts">
+
+    <!-- 4a -->
+    <div class="dv-opt" id="4a">
+      <div class="dv-olabel"><a class="dv-oid" href="#4a">4a</a><b>Le Carnet</b> — chaleureux, cohérent avec 2a, papier ligné doux</div>
+      <div class="dv-card" style="width:680px">
+        <div style="width:680px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:26px 30px 12px;font-family:'Work Sans',sans-serif;color:oklch(24% 0.02 50)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+            <div style="font-family:'Source Serif 4',serif;font-weight:600;font-size:24px">Explorer ma motivation</div>
+            <div style="font-size:12px;font-weight:600;color:oklch(48% 0.08 230);border:1.5px solid oklch(48% 0.08 230 / .35);border-radius:8px;padding:6px 12px">↩ Accueil</div>
+          </div>
+          <div style="font-size:13.5px;opacity:.6;margin-bottom:16px;max-width:56ch">À votre rythme, sans jugement. Pas de liste avantages/inconvénients ici.</div>
+          <div style="display:inline-flex;background:#fff;border-radius:11px;padding:4px;box-shadow:0 1px 3px rgba(60,40,20,.08)">
+            <div style="background:oklch(48% 0.08 230 / .14);color:oklch(38% 0.08 230);font-weight:700;font-size:13px;border-radius:8px;padding:9px 18px">Où en êtes-vous ?</div>
+            <div style="color:rgba(40,30,20,.45);font-weight:700;font-size:13px;padding:9px 18px">Mes raisons</div>
+          </div>
+        </div>
+        <div class="scr-lbl">ONGLET · Où en êtes-vous ?</div>
+        <div style="width:680px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:16px 30px 26px">
+          <div style="background:#fff;border-radius:14px;padding:22px 24px;box-shadow:0 1px 3px rgba(60,40,20,.08);margin-bottom:14px">
+            <div style="font-weight:600;font-size:15px;margin-bottom:14px">À quel point est-ce important pour vous d'arrêter ?</div>
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px">
+              <div style="position:relative;flex:1;height:10px;border-radius:6px;background:oklch(94% 0.02 40)">
+                <div style="position:absolute;left:0;top:0;bottom:0;width:70%;border-radius:6px;background:oklch(58% 0.09 145)"></div>
+                <div style="position:absolute;left:70%;top:50%;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;background:#fff;border:4px solid oklch(58% 0.09 145);box-shadow:0 2px 6px rgba(58,51,44,.25)"></div>
+              </div>
+              <div style="font-family:'Source Serif 4',serif;font-weight:600;font-size:26px;width:32px;text-align:center">7</div>
+            </div>
+            <div style="background:oklch(58% 0.09 145 / .1);border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.5">Qu'est-ce qui aiderait à passer à <b>8</b> ?</div>
+          </div>
+          <div style="background:#fff;border-radius:14px;padding:22px 24px;box-shadow:0 1px 3px rgba(60,40,20,.08)">
+            <div style="font-weight:600;font-size:15px;margin-bottom:14px">À quel point vous sentez-vous capable ?</div>
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px">
+              <div style="position:relative;flex:1;height:10px;border-radius:6px;background:oklch(94% 0.02 40)">
+                <div style="position:absolute;left:0;top:0;bottom:0;width:45%;border-radius:6px;background:oklch(48% 0.08 230)"></div>
+                <div style="position:absolute;left:45%;top:50%;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;background:#fff;border:4px solid oklch(48% 0.08 230);box-shadow:0 2px 6px rgba(58,51,44,.25)"></div>
+              </div>
+              <div style="font-family:'Source Serif 4',serif;font-weight:600;font-size:26px;width:32px;text-align:center">4</div>
+            </div>
+            <div style="background:oklch(48% 0.08 230 / .1);border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.5">Pourquoi pas <b>3</b> plutôt que 4 ?</div>
+          </div>
+        </div>
+        <div class="scr-lbl" style="border-top:1px solid rgba(60,40,20,.08)">ONGLET · Mes raisons</div>
+        <div style="width:680px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:16px 30px 26px">
+          <div style="background:#fff;border-radius:14px;padding:20px;box-shadow:0 1px 3px rgba(60,40,20,.08);background-image:linear-gradient(rgba(58,51,44,.06) 1px,transparent 1px);background-size:100% 28px;min-height:150px;position:relative;margin-bottom:14px">
+            <div style="position:absolute;left:24px;top:20px;background:oklch(55% 0.13 30 / .16);border:1.5px solid oklch(55% 0.13 30);border-radius:10px;padding:10px 16px;font-weight:700;font-size:13.5px;transform:rotate(-1.5deg)">Ma santé</div>
+            <div style="position:absolute;left:210px;top:56px;background:oklch(58% 0.09 145 / .16);border:1.5px solid oklch(58% 0.09 145);border-radius:10px;padding:10px 16px;font-weight:700;font-size:13.5px;transform:rotate(1deg)">Mes proches</div>
+            <div style="position:absolute;left:400px;top:14px;background:oklch(65% 0.13 80 / .2);border:1.5px solid oklch(65% 0.13 80);border-radius:10px;padding:10px 16px;font-weight:700;font-size:13.5px;transform:rotate(-1deg)">Ma liberté</div>
+          </div>
+          <div style="font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;opacity:.45;margin-bottom:8px">Réserve · glissez vers le tableau</div>
+          <div style="display:flex;gap:9px;flex-wrap:wrap">
+            <div style="background:#fff;border-radius:9px;padding:9px 14px;font-size:13px;font-weight:600;box-shadow:0 1px 3px rgba(60,40,20,.08)">Argent économisé</div>
+            <div style="background:#fff;border-radius:9px;padding:9px 14px;font-size:13px;font-weight:600;box-shadow:0 1px 3px rgba(60,40,20,.08)">Goût / odorat</div>
+            <div style="background:#fff;border-radius:9px;padding:9px 14px;font-size:13px;font-weight:600;box-shadow:0 1px 3px rgba(60,40,20,.08)">Souffle / forme</div>
+            <div style="border-radius:9px;padding:9px 14px;font-size:13px;font-weight:700;color:oklch(48% 0.08 230);border:1.5px dashed oklch(48% 0.08 230 / .5)">+ une raison</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4b -->
+    <div class="dv-opt" id="4b">
+      <div class="dv-olabel"><a class="dv-oid" href="#4b">4b</a><b>Le Post-it</b> — franc et coloré, cartes façon notes autocollantes</div>
+      <div class="dv-card" style="width:680px">
+        <div style="width:680px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:26px 30px 12px;font-family:'Work Sans',sans-serif;color:oklch(24% 0.02 50)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+            <div style="font-weight:800;font-size:23px">Explorer ma motivation</div>
+            <div style="font-size:12px;font-weight:700;color:#fff;background:oklch(48% 0.08 230);border-radius:8px;padding:7px 14px">↩ Accueil</div>
+          </div>
+          <div style="font-size:13.5px;opacity:.6;margin-bottom:16px;max-width:56ch">Faites le point à votre rythme.</div>
+          <div style="display:flex;gap:8px">
+            <div style="background:oklch(48% 0.08 230);color:#fff;font-weight:800;font-size:13px;border-radius:999px;padding:9px 20px">Où en êtes-vous ?</div>
+            <div style="background:#fff;color:rgba(40,30,20,.5);font-weight:800;font-size:13px;border-radius:999px;padding:9px 20px">Mes raisons</div>
+          </div>
+        </div>
+        <div class="scr-lbl">ONGLET · Où en êtes-vous ?</div>
+        <div style="width:680px;box-sizing:border-box;background:#fff;padding:20px 30px 26px;display:flex;gap:14px">
+          <div style="flex:1;background:oklch(58% 0.09 145 / .12);border-radius:16px;padding:20px;text-align:center">
+            <div style="font-weight:700;font-size:13.5px;line-height:1.3;margin-bottom:14px;min-height:34px">Importance d'arrêter</div>
+            <svg width="120" height="120" viewBox="0 0 120 120" style="margin:0 auto">
+              <circle cx="60" cy="60" r="48" fill="none" stroke="oklch(90% 0.02 145)" stroke-width="12"/>
+              <circle cx="60" cy="60" r="48" fill="none" stroke="oklch(58% 0.09 145)" stroke-width="12" stroke-linecap="round" stroke-dasharray="301.6" stroke-dashoffset="90.5" transform="rotate(-90 60 60)"/>
+              <text x="60" y="70" text-anchor="middle" font-family="Work Sans" font-weight="800" font-size="34" fill="oklch(38% 0.09 145)">7</text>
+            </svg>
+            <div style="background:#fff;border-radius:9px;padding:10px 12px;font-size:12.5px;margin-top:12px;line-height:1.4">Qu'est-ce qui aiderait à passer à <b>8</b> ?</div>
+          </div>
+          <div style="flex:1;background:oklch(48% 0.08 230 / .1);border-radius:16px;padding:20px;text-align:center">
+            <div style="font-weight:700;font-size:13.5px;line-height:1.3;margin-bottom:14px;min-height:34px">Confiance en soi</div>
+            <svg width="120" height="120" viewBox="0 0 120 120" style="margin:0 auto">
+              <circle cx="60" cy="60" r="48" fill="none" stroke="oklch(92% 0.02 230)" stroke-width="12"/>
+              <circle cx="60" cy="60" r="48" fill="none" stroke="oklch(48% 0.08 230)" stroke-width="12" stroke-linecap="round" stroke-dasharray="301.6" stroke-dashoffset="180.9" transform="rotate(-90 60 60)"/>
+              <text x="60" y="70" text-anchor="middle" font-family="Work Sans" font-weight="800" font-size="34" fill="oklch(35% 0.08 230)">4</text>
+            </svg>
+            <div style="background:#fff;border-radius:9px;padding:10px 12px;font-size:12.5px;margin-top:12px;line-height:1.4">Pourquoi pas <b>3</b> plutôt que 4 ?</div>
+          </div>
+        </div>
+        <div class="scr-lbl" style="border-top:1px solid rgba(60,40,20,.08)">ONGLET · Mes raisons</div>
+        <div style="width:680px;box-sizing:border-box;background:#fbf7f0;padding:20px 30px 26px">
+          <div style="background:#fff;border-radius:14px;padding:22px;min-height:140px;position:relative;box-shadow:0 1px 3px rgba(60,40,20,.08);margin-bottom:14px">
+            <div style="position:absolute;left:20px;top:18px;width:110px;background:oklch(65% 0.15 30);color:#fff;border-radius:6px;padding:14px 12px;font-weight:800;font-size:13.5px;box-shadow:0 6px 14px rgba(58,51,44,.2);transform:rotate(-3deg)">Ma santé</div>
+            <div style="position:absolute;left:170px;top:50px;width:110px;background:oklch(62% 0.10 145);color:#fff;border-radius:6px;padding:14px 12px;font-weight:800;font-size:13.5px;box-shadow:0 6px 14px rgba(58,51,44,.2);transform:rotate(2deg)">Mes proches</div>
+            <div style="position:absolute;left:340px;top:10px;width:110px;background:oklch(62% 0.13 80);color:#3A332C;border-radius:6px;padding:14px 12px;font-weight:800;font-size:13.5px;box-shadow:0 6px 14px rgba(58,51,44,.2);transform:rotate(-2deg)">Ma liberté</div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <div style="background:#fff;border:2px dashed rgba(40,30,20,.2);border-radius:8px;padding:10px 14px;font-size:13px;font-weight:700">Argent économisé</div>
+            <div style="background:#fff;border:2px dashed rgba(40,30,20,.2);border-radius:8px;padding:10px 14px;font-size:13px;font-weight:700">Goût / odorat</div>
+            <div style="background:#fff;border:2px dashed rgba(40,30,20,.2);border-radius:8px;padding:10px 14px;font-size:13px;font-weight:700">Souffle / forme</div>
+            <div style="background:oklch(48% 0.08 230);color:#fff;border-radius:8px;padding:10px 16px;font-size:13px;font-weight:800">+ une raison</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4c -->
+    <div class="dv-opt" id="4c">
+      <div class="dv-olabel"><a class="dv-oid" href="#4c">4c</a><b>Le Minimal</b> — très épuré, curseurs fins, raisons en grille rangée</div>
+      <div class="dv-card" style="width:680px">
+        <div style="width:680px;box-sizing:border-box;background:#fff;padding:30px 34px 14px;font-family:'Work Sans',sans-serif;color:oklch(24% 0.02 50)">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:20px">
+            <div style="font-weight:600;font-size:21px">Explorer ma motivation</div>
+            <div style="font-size:13px;font-weight:600;opacity:.5">← Retour</div>
+          </div>
+          <div style="display:flex;gap:26px;border-bottom:1px solid rgba(60,40,20,.1)">
+            <div style="font-size:13.5px;font-weight:700;padding-bottom:10px;border-bottom:2.5px solid oklch(24% 0.02 50)">Où en êtes-vous ?</div>
+            <div style="font-size:13.5px;font-weight:600;padding-bottom:10px;opacity:.4">Mes raisons</div>
+          </div>
+        </div>
+        <div class="scr-lbl">ONGLET · Où en êtes-vous ?</div>
+        <div style="width:680px;box-sizing:border-box;background:#fff;padding:22px 34px 30px">
+          <div style="margin-bottom:26px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">
+              <div style="font-size:14.5px;font-weight:600">À quel point est-ce important pour vous d'arrêter ?</div>
+              <div style="font-size:15px;font-weight:700">7 / 10</div>
+            </div>
+            <div style="position:relative;height:3px;background:rgba(60,40,20,.12);border-radius:2px">
+              <div style="position:absolute;left:0;top:0;bottom:0;width:70%;background:oklch(24% 0.02 50);border-radius:2px"></div>
+              <div style="position:absolute;left:70%;top:50%;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:oklch(24% 0.02 50)"></div>
+            </div>
+            <div style="font-size:12.5px;opacity:.55;margin-top:10px">Qu'est-ce qui aiderait à passer à 8 ?</div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">
+              <div style="font-size:14.5px;font-weight:600">À quel point vous sentez-vous capable ?</div>
+              <div style="font-size:15px;font-weight:700">4 / 10</div>
+            </div>
+            <div style="position:relative;height:3px;background:rgba(60,40,20,.12);border-radius:2px">
+              <div style="position:absolute;left:0;top:0;bottom:0;width:40%;background:oklch(24% 0.02 50);border-radius:2px"></div>
+              <div style="position:absolute;left:40%;top:50%;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:oklch(24% 0.02 50)"></div>
+            </div>
+            <div style="font-size:12.5px;opacity:.55;margin-top:10px">Pourquoi pas 3 plutôt que 4 ?</div>
+          </div>
+        </div>
+        <div class="scr-lbl" style="border-top:1px solid rgba(60,40,20,.08)">ONGLET · Mes raisons</div>
+        <div style="width:680px;box-sizing:border-box;background:#fff;padding:22px 34px 30px">
+          <div style="font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.4;margin-bottom:10px">Activées</div>
+          <div style="display:flex;flex-direction:column;gap:0;margin-bottom:18px">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(60,40,20,.08)"><span style="font-size:14px;font-weight:600">Ma santé</span><span style="opacity:.3;font-size:13px">glisser pour retirer</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(60,40,20,.08)"><span style="font-size:14px;font-weight:600">Mes proches</span><span style="opacity:.3;font-size:13px">glisser pour retirer</span></div>
+          </div>
+          <div style="font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.4;margin-bottom:10px">Réserve</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 20px">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(60,40,20,.08)"><span style="font-size:14px;font-weight:600;opacity:.7">Argent économisé</span><span style="opacity:.3">→</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(60,40,20,.08)"><span style="font-size:14px;font-weight:600;opacity:.7">Ma liberté</span><span style="opacity:.3">→</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(60,40,20,.08)"><span style="font-size:14px;font-weight:600;opacity:.7">Goût / odorat</span><span style="opacity:.3">→</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(60,40,20,.08)"><span style="font-size:14px;font-weight:600;opacity:.7">Souffle / forme</span><span style="opacity:.3">→</span></div>
+          </div>
+          <div style="margin-top:14px;font-size:13px;font-weight:700;color:oklch(48% 0.08 230)">+ une raison</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <p class="dv-next">Essayez : « pars de <a class="dv-oid" href="#4a">4a</a> mais avec les curseurs circulaires de <a class="dv-oid" href="#4b">4b</a> » · « construis <a class="dv-oid" href="#4c">4c</a> en interactif dans l'app » · « autres pistes »</p>
+</section>
+<section class="dv-turn" id="t3">
+  <div class="dv-thd"><a class="dv-tid" href="#t3">3</a><span class="dv-tname">Module « La nicotine : cinétique &amp; seuils » — 3 pistes visuelles</span></div>
+  <p class="dv-sub">Même chrome que le module retenu (2a) : fond oklch(97% .015 75), carte blanche, Source Serif 4 pour les titres. L'idée centrale : le taux de nicotine monte vite puis redescend sous un « seuil de manque » — le patch lisse cette courbe, la cigarette la fait osciller. Chaque piste change la façon de montrer cette mécanique.</p>
+  <div class="dv-opts">
+
+    <!-- 3a -->
+    <div class="dv-opt" id="3a">
+      <div class="dv-olabel"><a class="dv-oid" href="#3a">3a</a><b>La Courbe annotée</b> — graphe unique, bascule cigarette / patch</div>
+      <div class="dv-card" style="width:640px">
+        <div style="width:640px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:26px 30px 30px;font-family:'Work Sans',sans-serif;color:oklch(24% 0.02 50)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+            <div style="font-family:'Source Serif 4',serif;font-weight:600;font-size:24px">La nicotine : cinétique &amp; seuils</div>
+            <div style="font-size:12px;font-weight:600;color:oklch(48% 0.08 230);border:1.5px solid oklch(48% 0.08 230 / .35);border-radius:8px;padding:6px 12px">↩ Accueil</div>
+          </div>
+          <div style="font-size:14px;opacity:.65;margin-bottom:18px;max-width:56ch">Le taux de nicotine dans le sang monte vite après une cigarette, puis redescend. Sous un certain seuil, le manque réapparaît.</div>
+
+          <div style="background:#fff;border-radius:14px;padding:20px 22px;box-shadow:0 1px 3px rgba(60,40,20,.08)">
+            <div style="display:flex;justify-content:center;margin-bottom:14px">
+              <div style="display:inline-flex;background:oklch(97% 0.015 75);border-radius:10px;padding:4px">
+                <div style="background:#fff;color:oklch(55% 0.15 30);font-weight:700;font-size:13px;border-radius:8px;padding:8px 18px;box-shadow:0 1px 3px rgba(60,40,20,.12)">Cigarette</div>
+                <div style="color:rgba(40,30,20,.5);font-weight:700;font-size:13px;padding:8px 18px">Patch</div>
+              </div>
+            </div>
+
+            <svg viewBox="0 0 640 220" style="display:block;width:100%;height:auto">
+              <line x1="20" y1="140" x2="620" y2="140" stroke="rgba(40,30,20,.35)" stroke-width="1.5" stroke-dasharray="5 5"/>
+              <text x="20" y="132" font-family="Work Sans" font-weight="700" font-size="12" fill="rgba(40,30,20,.55)">Seuil de manque</text>
+              <path d="M20,190 L20,220 L620,220 L620,180 C600,180 580,30 560,30 C540,30 520,120 500,120 C480,120 460,30 440,30 C420,30 400,115 380,115 C360,115 340,30 320,30 C300,30 280,110 260,110 C240,110 220,30 200,30 C180,30 160,100 140,100 C120,100 100,30 80,30 C60,30 40,190 20,190 Z" fill="oklch(55% 0.15 30 / .12)"/>
+              <path d="M20,190 C40,190 60,30 80,30 C100,30 120,100 140,100 C160,100 180,30 200,30 C220,30 240,110 260,110 C280,110 300,30 320,30 C340,30 360,115 380,115 C400,115 420,30 440,30 C460,30 480,120 500,120 C520,120 540,30 560,30 C580,30 600,180 620,180" fill="none" stroke="oklch(55% 0.15 30)" stroke-width="4" stroke-linecap="round"/>
+              <circle cx="80" cy="30" r="5" fill="oklch(55% 0.15 30)"/>
+              <circle cx="200" cy="30" r="5" fill="oklch(55% 0.15 30)"/>
+              <circle cx="320" cy="30" r="5" fill="oklch(55% 0.15 30)"/>
+              <circle cx="440" cy="30" r="5" fill="oklch(55% 0.15 30)"/>
+              <circle cx="560" cy="30" r="5" fill="oklch(55% 0.15 30)"/>
+              <text x="20" y="212" font-family="Work Sans" font-weight="600" font-size="12" fill="rgba(40,30,20,.5)">7h</text>
+              <text x="590" y="212" font-family="Work Sans" font-weight="600" font-size="12" fill="rgba(40,30,20,.5)">23h</text>
+            </svg>
+
+            <div style="display:flex;gap:10px;justify-content:center;margin-top:6px">
+              <div style="display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600"><span style="width:11px;height:11px;border-radius:50%;background:oklch(55% 0.15 30)"></span>Taux de nicotine</div>
+              <div style="display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;opacity:.6"><span style="width:16px;height:2px;background:rgba(40,30,20,.5)"></span>Seuil de manque</div>
+            </div>
+          </div>
+
+          <div style="background:oklch(55% 0.15 30 / .1);border-radius:12px;padding:14px 18px;margin-top:16px;font-size:13.5px;line-height:1.5">Chaque pic est suivi d'une chute sous le seuil : c'est le début du manque, qui pousse à refumer. Le patch, lui, maintient un taux stable au-dessus du seuil toute la journée.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3b -->
+    <div class="dv-opt" id="3b">
+      <div class="dv-olabel"><a class="dv-oid" href="#3b">3b</a><b>La Chronologie</b> — journée en frise, pics comme repères horaires</div>
+      <div class="dv-card" style="width:640px">
+        <div style="width:640px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:26px 30px 30px;font-family:'Work Sans',sans-serif;color:oklch(24% 0.02 50)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+            <div style="font-family:'Source Serif 4',serif;font-weight:600;font-size:24px">La nicotine : cinétique &amp; seuils</div>
+            <div style="font-size:12px;font-weight:600;color:oklch(48% 0.08 230);border:1.5px solid oklch(48% 0.08 230 / .35);border-radius:8px;padding:6px 12px">↩ Accueil</div>
+          </div>
+          <div style="font-size:14px;opacity:.65;margin-bottom:20px;max-width:56ch">Une journée type de fumeur : chaque cigarette fait remonter le taux au-dessus du seuil, pour un temps limité.</div>
+
+          <div style="background:#fff;border-radius:14px;padding:22px 24px 18px;box-shadow:0 1px 3px rgba(60,40,20,.08)">
+            <div style="position:relative;height:130px;margin:0 4px">
+              <div style="position:absolute;left:0;right:0;top:34px;border-top:2px dashed rgba(40,30,20,.3)"></div>
+              <div style="position:absolute;left:0;top:14px;font-size:11px;font-weight:700;color:rgba(40,30,20,.5)">Seuil de manque</div>
+
+              <div style="position:absolute;left:2%;top:70px;display:flex;flex-direction:column;align-items:center;width:70px">
+                <div style="width:38px;height:38px;border-radius:50%;background:oklch(55% 0.15 30);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px">🚬</div>
+                <div style="font-size:11px;font-weight:700;margin-top:6px">7h</div>
+              </div>
+              <div style="position:absolute;left:19%;top:0px;display:flex;flex-direction:column;align-items:center;width:70px">
+                <div style="width:10px;height:10px;border-radius:50%;background:oklch(55% 0.15 30);margin-bottom:6px"></div>
+                <div style="font-size:11px;opacity:.55">taux haut</div>
+              </div>
+              <div style="position:absolute;left:32%;top:55px;display:flex;flex-direction:column;align-items:center;width:70px">
+                <div style="width:38px;height:38px;border-radius:50%;background:oklch(55% 0.15 30);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px">🚬</div>
+                <div style="font-size:11px;font-weight:700;margin-top:6px">10h</div>
+              </div>
+              <div style="position:absolute;left:49%;top:0px;display:flex;flex-direction:column;align-items:center;width:70px">
+                <div style="width:10px;height:10px;border-radius:50%;background:oklch(55% 0.15 30);margin-bottom:6px"></div>
+              </div>
+              <div style="position:absolute;left:62%;top:60px;display:flex;flex-direction:column;align-items:center;width:70px">
+                <div style="width:38px;height:38px;border-radius:50%;background:oklch(55% 0.15 30);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px">🚬</div>
+                <div style="font-size:11px;font-weight:700;margin-top:6px">14h</div>
+              </div>
+              <div style="position:absolute;left:82%;top:0px;display:flex;flex-direction:column;align-items:center;width:70px">
+                <div style="width:10px;height:10px;border-radius:50%;background:oklch(55% 0.15 30);margin-bottom:6px"></div>
+              </div>
+              <div style="position:absolute;left:88%;top:78px;display:flex;flex-direction:column;align-items:center;width:70px">
+                <div style="width:38px;height:38px;border-radius:50%;background:rgba(40,30,20,.12);color:oklch(55% 0.15 30);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800">!</div>
+                <div style="font-size:11px;font-weight:700;margin-top:6px">Manque</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:12px;margin-top:14px">
+            <div style="flex:1;background:oklch(55% 0.15 30 / .1);border-radius:12px;padding:14px 16px;font-size:13px;line-height:1.5"><b style="display:block;margin-bottom:3px">Sans substitut</b>Le taux redescend sous le seuil entre deux cigarettes : le manque revient plusieurs fois par jour.</div>
+            <div style="flex:1;background:oklch(58% 0.09 145 / .14);border-radius:12px;padding:14px 16px;font-size:13px;line-height:1.5"><b style="display:block;margin-bottom:3px">Avec patch</b>Le taux reste stable au-dessus du seuil : plus de pic, plus de creux.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3c -->
+    <div class="dv-opt" id="3c">
+      <div class="dv-olabel"><a class="dv-oid" href="#3c">3c</a><b>Le Comparateur</b> — deux courbes empilées, lecture directe</div>
+      <div class="dv-card" style="width:640px">
+        <div style="width:640px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:26px 30px 30px;font-family:'Work Sans',sans-serif;color:oklch(24% 0.02 50)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+            <div style="font-family:'Source Serif 4',serif;font-weight:600;font-size:24px">La nicotine : cinétique &amp; seuils</div>
+            <div style="font-size:12px;font-weight:600;color:oklch(48% 0.08 230);border:1.5px solid oklch(48% 0.08 230 / .35);border-radius:8px;padding:6px 12px">↩ Accueil</div>
+          </div>
+          <div style="font-size:14px;opacity:.65;margin-bottom:16px;max-width:56ch">Même journée, deux façons d'apporter la nicotine — comparez les deux courbes.</div>
+
+          <div style="background:#fff;border-radius:14px;padding:18px 22px;box-shadow:0 1px 3px rgba(60,40,20,.08);margin-bottom:12px">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="width:11px;height:11px;border-radius:50%;background:oklch(55% 0.15 30)"></span><span style="font-weight:700;font-size:14px">Cigarettes</span></div>
+            <svg viewBox="0 0 620 90" style="display:block;width:100%;height:auto">
+              <line x1="10" y1="55" x2="610" y2="55" stroke="rgba(40,30,20,.35)" stroke-width="1.5" stroke-dasharray="5 5"/>
+              <path d="M10,80 C30,80 50,10 70,10 C90,10 110,45 130,45 C150,45 170,10 190,10 C210,10 230,48 250,48 C270,48 290,10 310,10 C330,10 350,50 370,50 C390,50 410,10 430,10 C450,10 470,52 490,52 C510,52 530,10 550,10 C570,10 590,80 610,80" fill="none" stroke="oklch(55% 0.15 30)" stroke-width="3.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+
+          <div style="background:#fff;border-radius:14px;padding:18px 22px;box-shadow:0 1px 3px rgba(60,40,20,.08)">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="width:11px;height:11px;border-radius:50%;background:oklch(58% 0.09 145)"></span><span style="font-weight:700;font-size:14px">Patch</span></div>
+            <svg viewBox="0 0 620 90" style="display:block;width:100%;height:auto">
+              <line x1="10" y1="55" x2="610" y2="55" stroke="rgba(40,30,20,.35)" stroke-width="1.5" stroke-dasharray="5 5"/>
+              <path d="M10,35 C110,30 130,40 230,36 C330,32 350,40 430,36 C510,32 550,38 610,34" fill="none" stroke="oklch(58% 0.09 145)" stroke-width="3.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+
+          <div style="text-align:center;font-size:12.5px;font-weight:600;color:rgba(40,30,20,.5);margin-top:8px">7h — — — — — — — — — — — — — — — 23h</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <p class="dv-next">Essayez : « pars de <a class="dv-oid" href="#3a">3a</a> mais avec la frise horaire de <a class="dv-oid" href="#3b">3b</a> » · « construis <a class="dv-oid" href="#3c">3c</a> en interactif dans l'app » · « autres pistes »</p>
+</section>
+<section class="dv-turn" id="t2">
+  <div class="dv-thd"><a class="dv-tid" href="#t2">2</a><span class="dv-tname">Refonte UI — d'après la description fonctionnelle réelle (7 modules, soignant + patient)</span></div>
+  <p class="dv-sub">Écran d'accueil (grille des 7 modules, 3 familles) + module « Les composantes de l'addiction » (Venn 3 cercles). Sobre, lisible à 1 m, non infantilisant, non culpabilisant, cibles ≥ 44 px. Palette chaleureuse conservée ; tokens sémantiques confort/toxique/vigilance/navigation ré-interprétés dedans.</p>
+  <div class="dv-opts">
+
+    <!-- 2a -->
+    <div class="dv-opt" id="2a">
+      <div class="dv-olabel"><a class="dv-oid" href="#2a">2a</a><b>Le Carnet clinique</b> — serif chaleureux, éditorial, feutré</div>
+      <div class="dv-card" style="width:720px">
+        <div class="scr-lbl">ACCUEIL</div>
+        <div style="width:720px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:30px 34px 34px;font-family:'Work Sans',sans-serif;color:oklch(24% 0.02 50)">
+          <div style="font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:oklch(48% 0.08 230);font-weight:700;margin-bottom:8px">Programme ETP · Sevrage tabagique</div>
+          <div style="font-family:'Source Serif 4',serif;font-weight:600;font-size:28px;margin-bottom:22px">Votre accompagnement</div>
+
+          <div style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:oklch(24% 0.02 50 / .45);margin-bottom:10px">Comprendre</div>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px">
+            <div style="background:#fff;border-radius:12px;padding:16px 18px;display:flex;gap:12px;align-items:flex-start;box-shadow:0 1px 3px rgba(60,40,20,.08)">
+              <div style="width:34px;height:34px;border-radius:9px;background:oklch(58% 0.09 145 / .16);flex:none;display:flex;align-items:center;justify-content:center"><span style="width:9px;height:9px;border-radius:50%;background:oklch(58% 0.09 145)"></span></div>
+              <div><div style="font-weight:600;font-size:14.5px;margin-bottom:3px">Les composantes de l'addiction</div><div style="font-size:12.5px;opacity:.6;line-height:1.4">3 dimensions imbriquées</div></div>
+            </div>
+            <div style="background:#fff;border-radius:12px;padding:16px 18px;display:flex;gap:12px;align-items:flex-start;box-shadow:0 1px 3px rgba(60,40,20,.08)">
+              <div style="width:34px;height:34px;border-radius:9px;background:oklch(48% 0.08 230 / .14);flex:none;display:flex;align-items:center;justify-content:center"><span style="width:9px;height:9px;border-radius:50%;background:oklch(48% 0.08 230)"></span></div>
+              <div><div style="font-weight:600;font-size:14.5px;margin-bottom:3px">La nicotine : cinétique &amp; seuils</div><div style="font-size:12.5px;opacity:.6;line-height:1.4">Pourquoi le manque revient</div></div>
+            </div>
+            <div style="background:#fff;border-radius:12px;padding:16px 18px;display:flex;gap:12px;align-items:flex-start;box-shadow:0 1px 3px rgba(60,40,20,.08)">
+              <div style="width:34px;height:34px;border-radius:9px;background:oklch(65% 0.13 80 / .18);flex:none;display:flex;align-items:center;justify-content:center"><span style="width:9px;height:9px;border-radius:50%;background:oklch(65% 0.13 80)"></span></div>
+              <div><div style="font-weight:600;font-size:14.5px;margin-bottom:3px">La nicotine n'est pas le toxique</div><div style="font-size:12.5px;opacity:.6;line-height:1.4">Combustion vs. dépendance</div></div>
+            </div>
+            <div style="background:#fff;border-radius:12px;padding:16px 18px;display:flex;gap:12px;align-items:flex-start;box-shadow:0 1px 3px rgba(60,40,20,.08)">
+              <div style="width:34px;height:34px;border-radius:9px;background:oklch(55% 0.15 30 / .14);flex:none;display:flex;align-items:center;justify-content:center"><span style="width:9px;height:9px;border-radius:50%;background:oklch(55% 0.15 30)"></span></div>
+              <div><div style="font-weight:600;font-size:14.5px;margin-bottom:3px">Le piège du soulagement</div><div style="font-size:12.5px;opacity:.6;line-height:1.4">L'effet yo-yo, sans culpabiliser</div></div>
+            </div>
+          </div>
+
+          <div style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:oklch(24% 0.02 50 / .45);margin-bottom:10px">Agir</div>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px">
+            <div style="background:#fff;border-radius:12px;padding:16px 18px;display:flex;gap:12px;align-items:flex-start;box-shadow:0 1px 3px rgba(60,40,20,.08)">
+              <div style="width:34px;height:34px;border-radius:9px;background:oklch(58% 0.09 145 / .16);flex:none;display:flex;align-items:center;justify-content:center"><span style="width:9px;height:9px;border-radius:50%;background:oklch(58% 0.09 145)"></span></div>
+              <div><div style="font-weight:600;font-size:14.5px;margin-bottom:3px">Substituts &amp; titration du patch</div><div style="font-size:12.5px;opacity:.6;line-height:1.4">Bonnes pratiques par forme</div></div>
+            </div>
+            <div style="background:#fff;border-radius:12px;padding:16px 18px;display:flex;gap:12px;align-items:flex-start;box-shadow:0 1px 3px rgba(60,40,20,.08)">
+              <div style="width:34px;height:34px;border-radius:9px;background:oklch(65% 0.13 80 / .18);flex:none;display:flex;align-items:center;justify-content:center"><span style="width:9px;height:9px;border-radius:50%;background:oklch(65% 0.13 80)"></span></div>
+              <div><div style="font-weight:600;font-size:14.5px;margin-bottom:3px">Gérer le craving (4D)</div><div style="font-size:12.5px;opacity:.6;line-height:1.4">La vague qui monte et redescend</div></div>
+            </div>
+          </div>
+
+          <div style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:oklch(24% 0.02 50 / .45);margin-bottom:10px">Se motiver</div>
+          <div style="background:#fff;border-radius:12px;padding:16px 18px;display:flex;gap:12px;align-items:flex-start;box-shadow:0 1px 3px rgba(60,40,20,.08);max-width:calc(50% - 6px)">
+            <div style="width:34px;height:34px;border-radius:9px;background:oklch(48% 0.08 230 / .14);flex:none;display:flex;align-items:center;justify-content:center"><span style="width:9px;height:9px;border-radius:50%;background:oklch(48% 0.08 230)"></span></div>
+            <div><div style="font-weight:600;font-size:14.5px;margin-bottom:3px">Explorer ma motivation</div><div style="font-size:12.5px;opacity:.6;line-height:1.4">À votre rythme, sans jugement</div></div>
+          </div>
+        </div>
+
+        <div class="scr-lbl" style="border-top:1px solid rgba(60,40,20,.08)">MODULE · Les composantes de l'addiction</div>
+        <div style="width:720px;box-sizing:border-box;background:#fff;padding:26px 34px 32px;font-family:'Work Sans',sans-serif;color:oklch(24% 0.02 50)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+            <div style="font-family:'Source Serif 4',serif;font-weight:600;font-size:21px">Les trois dimensions de l'addiction</div>
+            <div style="font-size:12px;font-weight:600;color:oklch(48% 0.08 230);border:1.5px solid oklch(48% 0.08 230 / .35);border-radius:8px;padding:6px 12px">↩ Accueil</div>
+          </div>
+          <div style="display:flex;gap:24px;align-items:center">
+            <svg width="300" height="230" viewBox="0 0 300 230">
+              <circle cx="115" cy="85" r="70" fill="oklch(65% 0.13 80 / .28)" stroke="oklch(65% 0.13 80)" stroke-width="4"/>
+              <circle cx="185" cy="85" r="70" fill="oklch(48% 0.08 230 / .22)" stroke="oklch(48% 0.08 230)" stroke-width="2.5"/>
+              <circle cx="150" cy="145" r="70" fill="oklch(58% 0.09 145 / .22)" stroke="oklch(58% 0.09 145)" stroke-width="2.5"/>
+              <rect x="24" y="72" width="72" height="22" rx="6" fill="rgba(255,255,255,.82)"/>
+              <text x="60" y="88" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="15" fill="oklch(35% 0.1 80)">Physique</text>
+              <rect x="204" y="30" width="68" height="22" rx="6" fill="rgba(255,255,255,.82)"/>
+              <text x="238" y="46" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="15" fill="oklch(38% 0.08 230)">Psycho.</text>
+              <rect x="112" y="196" width="80" height="22" rx="6" fill="rgba(255,255,255,.82)"/>
+              <text x="152" y="212" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="15" fill="oklch(38% 0.09 145)">Comport.</text>
+            </svg>
+            <div style="flex:1;background:oklch(97% 0.015 75);border-radius:12px;padding:18px 20px;border-left:5px solid oklch(65% 0.13 80)">
+              <div style="font-weight:700;font-size:15px;margin-bottom:8px;color:oklch(38% 0.11 80)">Dimension Physique</div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px">
+                <span style="background:oklch(65% 0.13 80 / .18);border-radius:999px;padding:5px 11px;font-size:12.5px;font-weight:600">Manque</span>
+                <span style="background:oklch(65% 0.13 80 / .18);border-radius:999px;padding:5px 11px;font-size:12.5px;font-weight:600">Irritabilité</span>
+                <span style="background:oklch(65% 0.13 80 / .18);border-radius:999px;padding:5px 11px;font-size:12.5px;font-weight:600">Sommeil</span>
+              </div>
+              <div style="font-size:13px;line-height:1.5;opacity:.8">Substituts adaptés pour combler le manque, sans fumer.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2b -->
+    <div class="dv-opt" id="2b">
+      <div class="dv-olabel"><a class="dv-oid" href="#2b">2b</a><b>Le Modulaire</b> — bandes-familles, sans-serif affirmé</div>
+      <div class="dv-card" style="width:720px">
+        <div class="scr-lbl">ACCUEIL</div>
+        <div style="width:720px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:0 0 20px;font-family:'Work Sans',sans-serif;color:oklch(24% 0.02 50)">
+          <div style="padding:26px 34px 18px">
+            <div style="font-family:'Work Sans',sans-serif;font-weight:800;font-size:26px">Mon accompagnement</div>
+            <div style="font-size:13px;opacity:.6;margin-top:2px">Sevrage tabagique · navigation libre, à votre rythme</div>
+          </div>
+
+          <div style="padding:14px 34px;background:oklch(58% 0.09 145 / .14)">
+            <div style="font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:oklch(38% 0.09 145);margin-bottom:10px">Comprendre</div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+              <div style="background:#fff;border-radius:10px;padding:12px 12px;min-height:78px"><div style="font-weight:700;font-size:13px;line-height:1.3">Les composantes de l'addiction</div></div>
+              <div style="background:#fff;border-radius:10px;padding:12px 12px;min-height:78px"><div style="font-weight:700;font-size:13px;line-height:1.3">Nicotine : cinétique &amp; seuils</div></div>
+              <div style="background:#fff;border-radius:10px;padding:12px 12px;min-height:78px"><div style="font-weight:700;font-size:13px;line-height:1.3">La nicotine n'est pas le toxique</div></div>
+              <div style="background:#fff;border-radius:10px;padding:12px 12px;min-height:78px"><div style="font-weight:700;font-size:13px;line-height:1.3">Le piège du soulagement</div></div>
+            </div>
+          </div>
+
+          <div style="padding:14px 34px;background:oklch(65% 0.13 80 / .16)">
+            <div style="font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:oklch(38% 0.13 80);margin-bottom:10px">Agir</div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+              <div style="background:#fff;border-radius:10px;padding:12px 12px;min-height:64px"><div style="font-weight:700;font-size:13px;line-height:1.3">Substituts &amp; titration du patch</div></div>
+              <div style="background:#fff;border-radius:10px;padding:12px 12px;min-height:64px"><div style="font-weight:700;font-size:13px;line-height:1.3">Gérer le craving (4D)</div></div>
+            </div>
+          </div>
+
+          <div style="padding:14px 34px;background:oklch(48% 0.08 230 / .12)">
+            <div style="font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:oklch(34% 0.08 230);margin-bottom:10px">Se motiver</div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+              <div style="background:#fff;border-radius:10px;padding:12px 12px;min-height:64px"><div style="font-weight:700;font-size:13px;line-height:1.3">Explorer ma motivation</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="scr-lbl" style="border-top:1px solid rgba(60,40,20,.08)">MODULE · Les composantes de l'addiction</div>
+        <div style="width:720px;box-sizing:border-box;background:#fff;padding:26px 34px 32px;font-family:'Work Sans',sans-serif;color:oklch(24% 0.02 50)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+            <div style="font-weight:800;font-size:22px">Les trois dimensions de l'addiction</div>
+            <div style="font-size:12px;font-weight:700;color:#fff;background:oklch(48% 0.08 230);border-radius:8px;padding:7px 14px">↩ Accueil</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">
+            <div style="background:oklch(65% 0.13 80);color:#fff;border-radius:12px;padding:16px;text-align:center;font-weight:800;font-size:15px">Physique</div>
+            <div style="background:oklch(48% 0.08 230);color:#fff;border-radius:12px;padding:16px;text-align:center;font-weight:800;font-size:15px;opacity:.55">Psychologique</div>
+            <div style="background:oklch(58% 0.09 145);color:#fff;border-radius:12px;padding:16px;text-align:center;font-weight:800;font-size:15px;opacity:.55">Comportementale</div>
+          </div>
+          <div style="background:oklch(97% 0.015 75);border-radius:12px;padding:18px 20px;display:flex;gap:24px">
+            <div style="flex:1">
+              <div style="font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;opacity:.5;margin-bottom:8px">Signes possibles</div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px">
+                <span style="background:oklch(65% 0.13 80 / .22);border-radius:999px;padding:5px 11px;font-size:12.5px;font-weight:600">Manque</span>
+                <span style="background:oklch(65% 0.13 80 / .22);border-radius:999px;padding:5px 11px;font-size:12.5px;font-weight:600">Irritabilité</span>
+                <span style="background:oklch(65% 0.13 80 / .22);border-radius:999px;padding:5px 11px;font-size:12.5px;font-weight:600">Sommeil</span>
+              </div>
+            </div>
+            <div style="flex:1">
+              <div style="font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;opacity:.5;margin-bottom:8px">Pistes à explorer</div>
+              <div style="font-size:13px;line-height:1.5">Substituts adaptés pour combler le manque, sans fumer.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2c -->
+    <div class="dv-opt" id="2c">
+      <div class="dv-olabel"><a class="dv-oid" href="#2c">2c</a><b>Les Repères doux</b> — minimal clinique, très aéré</div>
+      <div class="dv-card" style="width:720px">
+        <div class="scr-lbl">ACCUEIL</div>
+        <div style="width:720px;box-sizing:border-box;background:#fff;padding:32px 36px;font-family:'Work Sans',sans-serif;color:oklch(24% 0.02 50)">
+          <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:oklch(24% 0.02 50 / .4);font-weight:600;margin-bottom:6px">Sevrage tabagique</div>
+          <div style="font-weight:600;font-size:24px;margin-bottom:24px">Par où commencer ?</div>
+
+          <div style="display:flex;flex-direction:column;gap:0">
+            <div style="font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:oklch(58% 0.09 145);padding:10px 0 8px;border-top:1px solid rgba(60,40,20,.1)">Comprendre</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 20px">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(60,40,20,.08)"><span style="font-size:14px;font-weight:600">Les composantes de l'addiction</span><span style="opacity:.3">→</span></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(60,40,20,.08)"><span style="font-size:14px;font-weight:600">Nicotine : cinétique &amp; seuils</span><span style="opacity:.3">→</span></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(60,40,20,.08)"><span style="font-size:14px;font-weight:600">La nicotine n'est pas le toxique</span><span style="opacity:.3">→</span></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(60,40,20,.08)"><span style="font-size:14px;font-weight:600">Le piège du soulagement</span><span style="opacity:.3">→</span></div>
+            </div>
+            <div style="font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:oklch(55% 0.15 30);padding:14px 0 8px;border-top:1px solid rgba(60,40,20,.1)">Agir</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 20px">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(60,40,20,.08)"><span style="font-size:14px;font-weight:600">Substituts &amp; titration du patch</span><span style="opacity:.3">→</span></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(60,40,20,.08)"><span style="font-size:14px;font-weight:600">Gérer le craving (4D)</span><span style="opacity:.3">→</span></div>
+            </div>
+            <div style="font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:oklch(48% 0.08 230);padding:14px 0 8px;border-top:1px solid rgba(60,40,20,.1)">Se motiver</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(60,40,20,.08);max-width:calc(50% - 10px)"><span style="font-size:14px;font-weight:600">Explorer ma motivation</span><span style="opacity:.3">→</span></div>
+          </div>
+        </div>
+
+        <div class="scr-lbl" style="border-top:1px solid rgba(60,40,20,.08)">MODULE · Les composantes de l'addiction</div>
+        <div style="width:720px;box-sizing:border-box;background:oklch(97% 0.015 75);padding:28px 36px 34px;font-family:'Work Sans',sans-serif;color:oklch(24% 0.02 50)">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:20px">
+            <div style="font-weight:600;font-size:20px">Les trois dimensions de l'addiction</div>
+            <div style="font-size:13px;font-weight:600;opacity:.5">← Retour</div>
+          </div>
+          <svg width="360" height="230" viewBox="0 0 360 230" style="display:block;margin:0 auto 16px">
+            <circle cx="140" cy="90" r="78" fill="none" stroke="oklch(65% 0.13 80)" stroke-width="2.5"/>
+            <circle cx="220" cy="90" r="78" fill="none" stroke="oklch(48% 0.08 230)" stroke-width="2.5"/>
+            <circle cx="180" cy="155" r="78" fill="none" stroke="oklch(58% 0.09 145)" stroke-width="4"/>
+            <text x="112" y="60" font-family="Work Sans" font-weight="600" font-size="14" fill="oklch(38% 0.1 80)">Physique</text>
+            <text x="222" y="55" font-family="Work Sans" font-weight="600" font-size="14" fill="oklch(38% 0.08 230)">Psychologique</text>
+            <text x="152" y="200" font-family="Work Sans" font-weight="700" font-size="14" fill="oklch(34% 0.09 145)">Comportementale</text>
+          </svg>
+          <div style="text-align:center;font-size:13px;line-height:1.6;max-width:420px;margin:0 auto">
+            <b>Comportementale</b> — café-clope, après les repas, en pause… Repérer les automatismes pour les rompre, progressivement.
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <p class="dv-next">Essayez : « pars de <a class="dv-oid" href="#2a">2a</a> mais avec les bandes-familles de <a class="dv-oid" href="#2b">2b</a> » · « construis l'accueil complet et le module Nicotine en <a class="dv-oid" href="#2c">2c</a> » · « autres directions »</p>
+</section>
+<section class="dv-turn" id="t1">
+  <div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">ETP Tabac — 3 directions visuelles</span></div>
+  <p class="dv-sub">Écran d'accueil (choix du module par le soignant) + un écran interactif (exercice patient), pour chaque direction.</p>
+  <div class="dv-opts">
+
+    <!-- 1a -->
+    <div class="dv-opt" id="1a">
+      <div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a><b>Le Sentier</b> — parcours en chemin, vert sauge dominant</div>
+      <div class="dv-card">
+        <div class="scr-lbl">ACCUEIL</div>
+        <div class="scr" style="background:#F4EEE2;padding:28px 32px 32px;font-family:'Work Sans',sans-serif;color:#3A332C">
+          <div style="font-family:'Baloo 2',sans-serif;font-weight:700;font-size:26px;margin-bottom:4px">Mon chemin sans tabac</div>
+          <div style="font-size:13px;color:rgba(58,51,44,.55);margin-bottom:26px">Séance du 5 juillet · Patient : M. Rossi</div>
+          <div style="position:relative;height:150px">
+            <svg width="536" height="60" viewBox="0 0 536 60" style="position:absolute;top:44px;left:0" fill="none">
+              <path d="M20 40 Q 150 -10 268 40 T 516 40" stroke="oklch(62% 0.09 145)" stroke-width="4" stroke-dasharray="2 14" stroke-linecap="round"/>
+            </svg>
+            <div style="position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;gap:8px;width:110px">
+              <div style="width:64px;height:64px;border-radius:50%;background:oklch(62% 0.10 145);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Baloo 2',sans-serif;font-size:22px;font-weight:700;box-shadow:0 6px 14px rgba(58,51,44,.2)">1</div>
+              <div style="font-size:12px;font-weight:600;text-align:center">Ma relation<br>au tabac</div>
+            </div>
+            <div style="position:absolute;left:140px;top:70px;display:flex;flex-direction:column;align-items:center;gap:8px;width:110px">
+              <div style="width:64px;height:64px;border-radius:50%;background:oklch(62% 0.10 40);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Baloo 2',sans-serif;font-size:22px;font-weight:700;box-shadow:0 6px 14px rgba(58,51,44,.2)">2</div>
+              <div style="font-size:12px;font-weight:600;text-align:center">Mes<br>motivations</div>
+            </div>
+            <div style="position:absolute;left:290px;top:0px;display:flex;flex-direction:column;align-items:center;gap:8px;width:110px">
+              <div style="width:64px;height:64px;border-radius:50%;background:#fff;border:3px solid rgba(58,51,44,.18);color:rgba(58,51,44,.4);display:flex;align-items:center;justify-content:center;font-family:'Baloo 2',sans-serif;font-size:22px;font-weight:700">3</div>
+              <div style="font-size:12px;font-weight:600;text-align:center;color:rgba(58,51,44,.5)">Mes<br>stratégies</div>
+            </div>
+            <div style="position:absolute;left:426px;top:70px;display:flex;flex-direction:column;align-items:center;gap:8px;width:110px">
+              <div style="width:64px;height:64px;border-radius:50%;background:#fff;border:3px solid rgba(58,51,44,.18);color:rgba(58,51,44,.4);display:flex;align-items:center;justify-content:center;font-family:'Baloo 2',sans-serif;font-size:22px;font-weight:700">4</div>
+              <div style="font-size:12px;font-weight:600;text-align:center;color:rgba(58,51,44,.5)">Mon plan<br>d'action</div>
+            </div>
+          </div>
+        </div>
+        <div class="scr-lbl" style="border-top:1px solid rgba(58,51,44,.08)">ÉCRAN INTERACTIF · exercice patient</div>
+        <div class="scr" style="background:#fff;padding:24px 32px 30px;font-family:'Work Sans',sans-serif;color:#3A332C">
+          <div style="font-family:'Baloo 2',sans-serif;font-weight:700;font-size:19px;margin-bottom:16px">Qu'est-ce qui vous motive le plus aujourd'hui ?</div>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
+            <div style="background:oklch(96% 0.02 145);border:2px solid oklch(62% 0.10 145);border-radius:12px;padding:16px;font-weight:600;font-size:14px;display:flex;align-items:center;gap:10px"><span style="width:10px;height:10px;border-radius:50%;background:oklch(62% 0.10 145)"></span>Ma santé</div>
+            <div style="background:#F4EEE2;border:2px solid transparent;border-radius:12px;padding:16px;font-weight:600;font-size:14px;color:rgba(58,51,44,.65)">Ma famille</div>
+            <div style="background:#F4EEE2;border:2px solid transparent;border-radius:12px;padding:16px;font-weight:600;font-size:14px;color:rgba(58,51,44,.65)">Le budget</div>
+            <div style="background:#F4EEE2;border:2px solid transparent;border-radius:12px;padding:16px;font-weight:600;font-size:14px;color:rgba(58,51,44,.65)">L'odorat / le goût</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1b -->
+    <div class="dv-opt" id="1b">
+      <div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a><b>Le Carnet</b> — chaleureux, éditorial, terracotta dominant</div>
+      <div class="dv-card">
+        <div class="scr-lbl">ACCUEIL</div>
+        <div class="scr" style="background:oklch(97% 0.015 40);padding:30px 32px;font-family:'Work Sans',sans-serif;color:#3A332C">
+          <div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:oklch(52% 0.11 40);font-weight:600;margin-bottom:6px">Programme d'éducation thérapeutique</div>
+          <div style="font-family:'Baloo 2',sans-serif;font-weight:700;font-size:27px;margin-bottom:22px">Mon carnet sans tabac</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;gap:14px;background:#fff;border-radius:12px;padding:14px 18px;box-shadow:0 3px 10px rgba(58,51,44,.08)">
+              <div style="width:36px;height:36px;border-radius:9px;background:oklch(62% 0.10 40);flex:none"></div>
+              <div style="flex:1"><div style="font-weight:600;font-size:14.5px">Ma relation au tabac</div><div style="font-size:12px;color:rgba(58,51,44,.5)">Terminé</div></div>
+              <div style="color:oklch(52% 0.11 40);font-size:18px">✓</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;background:#fff;border-radius:12px;padding:14px 18px;box-shadow:0 3px 10px rgba(58,51,44,.08);border:2px solid oklch(62% 0.10 40)">
+              <div style="width:36px;height:36px;border-radius:9px;background:oklch(62% 0.10 90);flex:none"></div>
+              <div style="flex:1"><div style="font-weight:600;font-size:14.5px">Mes motivations</div><div style="font-size:12px;color:rgba(58,51,44,.5)">En cours</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;background:#fff;border-radius:12px;padding:14px 18px;opacity:.55">
+              <div style="width:36px;height:36px;border-radius:9px;background:oklch(62% 0.10 145);flex:none"></div>
+              <div style="flex:1"><div style="font-weight:600;font-size:14.5px">Mes stratégies</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="scr-lbl" style="border-top:1px solid rgba(58,51,44,.08)">ÉCRAN INTERACTIF · exercice patient</div>
+        <div class="scr" style="background:#fff;padding:26px 32px 30px;font-family:'Work Sans',sans-serif;color:#3A332C">
+          <div style="font-family:'Baloo 2',sans-serif;font-weight:700;font-size:19px;margin-bottom:6px">Combien de cigarettes par jour, en moyenne ?</div>
+          <div style="font-size:13px;color:rgba(58,51,44,.55);margin-bottom:22px">Déplacez le curseur avec le patient</div>
+          <div style="position:relative;height:8px;border-radius:5px;background:oklch(94% 0.02 40);margin:0 4px 14px">
+            <div style="position:absolute;left:0;top:0;bottom:0;width:38%;border-radius:5px;background:oklch(62% 0.10 40)"></div>
+            <div style="position:absolute;left:38%;top:50%;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;background:#fff;border:4px solid oklch(62% 0.10 40);box-shadow:0 2px 6px rgba(58,51,44,.25)"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(58,51,44,.45);margin-bottom:20px"><span>0</span><span>20</span><span>40+</span></div>
+          <div style="background:oklch(97% 0.015 90);border-radius:12px;padding:14px 16px;font-size:13.5px;line-height:1.5">≈ 15 cigarettes/jour · soit environ <b>5 475/an</b>. On y reviendra à l'étape budget.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1c -->
+    <div class="dv-opt" id="1c">
+      <div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a><b>Le Plateau</b> — jeu éducatif, couleurs franches</div>
+      <div class="dv-card">
+        <div class="scr-lbl">ACCUEIL</div>
+        <div class="scr" style="background:#3A332C;padding:28px 32px;font-family:'Work Sans',sans-serif;color:#fff">
+          <div style="font-family:'Baloo 2',sans-serif;font-weight:800;font-size:26px;margin-bottom:20px">Mon défi sans tabac 🚭</div>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px">
+            <div style="background:oklch(62% 0.10 40);border-radius:16px;padding:18px;position:relative">
+              <div style="font-family:'Baloo 2',sans-serif;font-size:28px;font-weight:800;opacity:.85">1</div>
+              <div style="font-weight:700;font-size:14px;margin-top:4px">Ma relation au tabac</div>
+            </div>
+            <div style="background:oklch(62% 0.10 145);border-radius:16px;padding:18px">
+              <div style="font-family:'Baloo 2',sans-serif;font-size:28px;font-weight:800;opacity:.85">2</div>
+              <div style="font-weight:700;font-size:14px;margin-top:4px">Mes motivations</div>
+            </div>
+            <div style="background:oklch(62% 0.10 90);border-radius:16px;padding:18px">
+              <div style="font-family:'Baloo 2',sans-serif;font-size:28px;font-weight:800;opacity:.85">3</div>
+              <div style="font-weight:700;font-size:14px;margin-top:4px;color:#3A332C">Mes stratégies</div>
+            </div>
+            <div style="background:rgba(255,255,255,.1);border-radius:16px;padding:18px;border:2px dashed rgba(255,255,255,.25)">
+              <div style="font-family:'Baloo 2',sans-serif;font-size:28px;font-weight:800;opacity:.5">4</div>
+              <div style="font-weight:700;font-size:14px;margin-top:4px;opacity:.6">Mon plan d'action</div>
+            </div>
+          </div>
+        </div>
+        <div class="scr-lbl" style="border-top:1px solid rgba(58,51,44,.08)">ÉCRAN INTERACTIF · exercice patient</div>
+        <div class="scr" style="background:#FBF7F0;padding:26px 32px 30px;font-family:'Work Sans',sans-serif;color:#3A332C">
+          <div style="font-family:'Baloo 2',sans-serif;font-weight:800;font-size:19px;margin-bottom:16px">Vrai ou faux : "Arrêter d'un coup, c'est plus dur"</div>
+          <div style="display:flex;gap:14px">
+            <div style="flex:1;background:oklch(62% 0.10 145);color:#fff;border-radius:14px;padding:22px;text-align:center;font-family:'Baloo 2',sans-serif;font-weight:800;font-size:17px">VRAI</div>
+            <div style="flex:1;background:oklch(62% 0.10 40);color:#fff;border-radius:14px;padding:22px;text-align:center;font-family:'Baloo 2',sans-serif;font-weight:800;font-size:17px">FAUX</div>
+          </div>
+          <div style="margin-top:16px;font-size:12.5px;color:rgba(58,51,44,.55)">Le soignant lit la question à voix haute, le patient touche sa réponse.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <p class="dv-next">Essayez : « je préfère <a class="dv-oid" href="#1b">1b</a> mais avec les couleurs franches de <a class="dv-oid" href="#1c">1c</a> » · « construis le parcours complet à partir de <a class="dv-oid" href="#1a">1a</a> » · « autres directions »</p>
+</section>
+
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!-- @dsCard group="Module Addiction" -->
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Addiction — Variante B (Onglets pleine largeur)</title>
+<style>
+  :root {
+    --color-bg: #f9f4ea;
+    --color-surface: #ffffff;
+    --color-text: #1a1a1a;
+    --color-accent: #1d6fa5;
+    --color-warn: #c4451c;
+
+    --color-confort: #1f7a4d;
+    --color-confort-soft: #e3f3e8;
+    --color-toxique: #b3261e;
+    --color-toxique-soft: #fbe4e2;
+    --color-vigilance: #9c6500;
+    --color-vigilance-soft: #fbeed1;
+    --color-nav: var(--color-accent);
+    --color-nav-soft: #dfedf6;
+
+    --radius: 12px;
+    --font-size-base: 18px;
+    --font-size-lead: 20px;
+    --font-size-small: 16px;
+    --target-min: 44px;
+
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 40px;
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    font-size: var(--font-size-base);
+    line-height: 1.4;
+  }
+
+  .page {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: var(--space-xl) var(--space-lg) var(--space-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .page-header { display: flex; flex-direction: column; gap: var(--space-xs); }
+  .tag {
+    display: inline-flex;
+    align-self: flex-start;
+    padding: 3px 12px;
+    border-radius: 999px;
+    background: var(--color-nav-soft);
+    color: var(--color-nav);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  h1 { margin: var(--space-xs) 0 0; font-size: 34px; font-weight: 800; letter-spacing: -0.01em; }
+  .intro { margin: var(--space-xs) 0 0; font-size: var(--font-size-lead); max-width: 68ch; opacity: 0.85; }
+
+  /* ── Onglets géants ──────────────────────────────────────────────────── */
+  .tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
+  }
+  .tab {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    min-height: 96px;
+    padding: var(--space-md) var(--space-lg);
+    border-radius: var(--radius);
+    border: 3px solid var(--tab-color);
+    background: var(--color-surface);
+    cursor: pointer;
+    font-family: inherit;
+    text-align: left;
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+  .tab:hover { transform: translateY(-2px); }
+  .tab:focus-visible { outline: 3px solid var(--color-text); outline-offset: 2px; }
+  .tab.is-active {
+    background: var(--tab-color);
+  }
+  .tab-dot {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--tab-color);
+    flex-shrink: 0;
+    border: 2px solid var(--color-surface);
+    box-shadow: 0 0 0 2px var(--tab-color);
+  }
+  .tab.is-active .tab-dot { background: var(--color-surface); box-shadow: 0 0 0 2px var(--color-surface); }
+  .tab-texts { display: flex; flex-direction: column; gap: 2px; }
+  .tab-label { font-size: 21px; font-weight: 800; color: var(--tab-color); }
+  .tab.is-active .tab-label { color: var(--color-surface); }
+  .tab-sub { font-size: 14px; opacity: 0.65; }
+  .tab.is-active .tab-sub { color: var(--color-surface); opacity: 0.9; }
+
+  /* ── Vis-à-vis pleine largeur ────────────────────────────────────────── */
+  .face-a-face {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-lg);
+    align-items: stretch;
+  }
+  .panel-block {
+    background: var(--color-surface);
+    border-radius: var(--radius);
+    border-top: 8px solid var(--pillar-color);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+  .block-title {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--pillar-color);
+  }
+
+  .symptom-grid { display: flex; flex-wrap: wrap; gap: var(--space-sm); margin: 0; padding: 0; list-style: none; }
+  .symptom-grid li {
+    padding: 0.5rem 0.9rem;
+    background: var(--pillar-color-soft);
+    border-radius: 999px;
+    font-size: var(--font-size-small);
+    font-weight: 700;
+  }
+
+  .actions-col { display: flex; flex-direction: column; gap: var(--space-md); }
+  .action-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+    background: var(--pillar-color-soft);
+    border-radius: calc(var(--radius) * 0.6);
+  }
+  .action-text { margin: 0; font-size: var(--font-size-small); line-height: 1.5; }
+  .nav-btn {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    min-height: var(--target-min);
+    padding: var(--space-sm) var(--space-md);
+    background: var(--color-nav);
+    color: var(--color-surface);
+    border: none;
+    border-radius: calc(var(--radius) * 0.6);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    align-self: flex-start;
+    font-family: inherit;
+  }
+  .nav-btn:hover, .nav-btn:focus-visible { opacity: 0.85; }
+  .nav-hint { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 500; opacity: 0.85; }
+  .nav-hint svg { width: 13px; height: 13px; }
+
+  /* ── Bandeau Venn miniature (rappel conceptuel) ─────────────────────── */
+  .mini-venn-strip {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+    background: var(--color-surface);
+    border-radius: var(--radius);
+    padding: var(--space-md) var(--space-lg);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  }
+  .mini-venn { width: 150px; height: 115px; flex-shrink: 0; }
+  .mini-venn circle { fill-opacity: 0.85; stroke-width: 2; transition: opacity 0.15s ease, stroke-width 0.15s ease; }
+  .mini-venn .dim { opacity: 0.4; }
+  .mini-venn .dim.is-active { opacity: 1; stroke-width: 3.5; }
+  .mini-caption { margin: 0; font-size: var(--font-size-small); opacity: 0.75; font-style: italic; }
+
+  @media (max-width: 900px) {
+    .tabs { grid-template-columns: 1fr; }
+    .face-a-face { grid-template-columns: 1fr; }
+    .mini-venn-strip { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="page-header">
+    <span class="tag">Module 1 · Comprendre l'addiction</span>
+    <h1>Les trois dimensions de l'addiction au tabac</h1>
+    <p class="intro">L'addiction au tabac a trois dimensions imbriquées et interdépendantes. Choisissez une dimension pour voir ses signes et les pistes à explorer.</p>
+  </header>
+
+  <div class="tabs" id="tabs"></div>
+
+  <div class="face-a-face">
+    <section class="panel-block" id="panelSignes"></section>
+    <section class="panel-block" id="panelPistes"></section>
+  </div>
+
+  <div class="mini-venn-strip">
+    <svg class="mini-venn" viewBox="0 0 600 460" role="img" aria-label="Les trois dimensions se chevauchent">
+      <circle class="dim" data-pilier="physique" cx="210" cy="160" r="130" fill="#fbeed1" stroke="#9c6500" />
+      <circle class="dim" data-pilier="psychologique" cx="390" cy="160" r="130" fill="#dfedf6" stroke="#1d6fa5" />
+      <circle class="dim" data-pilier="comportementale" cx="300" cy="300" r="130" fill="#e3f3e8" stroke="#1f7a4d" />
+    </svg>
+    <p class="mini-caption">Ces dimensions s'alimentent entre elles : le geste (comportementale) déclenche le manque (physique), qui active l'envie (psychologique).</p>
+  </div>
+</div>
+
+<script>
+  var ARROW_RIGHT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>';
+
+  var PILLARS = {
+    physique: {
+      label: 'Physique',
+      color: '#9c6500',
+      colorSoft: '#fbeed1',
+      sub: 'Manque, irritabilité, sommeil…',
+      exemples: ['Manque', 'Irritabilité', 'Nervosité', 'Troubles de la concentration', 'Troubles du sommeil', 'Fringales', 'Craving'],
+      outils: [
+        { text: 'Substituts adaptés pour combler le manque sans fumer.', nav: 'Voir les substituts' },
+        { text: 'Comprendre la cinétique de la nicotine et les seuils pour mieux anticiper.', nav: 'Comprendre la nicotine' }
+      ]
+    },
+    psychologique: {
+      label: 'Psychologique',
+      color: '#1d6fa5',
+      colorSoft: '#dfedf6',
+      sub: 'Stress, ennui, plaisir…',
+      exemples: ['Stress', 'Anxiété', 'Ennui', 'Plaisir et récompense', 'Stimulation', '"Anti-déprime"'],
+      outils: [
+        { text: 'Gestion du stress et respiration pour apaiser sans fumer.' },
+        { text: "Trouver des alternatives de plaisir et s'occuper l'esprit.", nav: 'Techniques anti-craving' }
+      ]
+    },
+    comportementale: {
+      label: 'Comportementale',
+      color: '#1f7a4d',
+      colorSoft: '#e3f3e8',
+      sub: 'Café-clope, habitudes, rituels…',
+      exemples: ['Café-clope', 'Après les repas', 'En pause', 'En voiture', 'Avec le téléphone', 'En social', "Avec l'alcool"],
+      outils: [
+        { text: 'Repérer les automatismes et les associations pour les rompre progressivement.' },
+        { text: 'Modifier les routines et les contextes favorables à la cigarette.', nav: 'Gérer le craving' }
+      ]
+    }
+  };
+  var ORDER = ['physique', 'psychologique', 'comportementale'];
+
+  var tabsEl = document.getElementById('tabs');
+  var panelSignes = document.getElementById('panelSignes');
+  var panelPistes = document.getElementById('panelPistes');
+  var active = 'physique';
+
+  function renderTabs() {
+    tabsEl.innerHTML = ORDER.map(function (key) {
+      var d = PILLARS[key];
+      var isActive = key === active;
+      return '<button type="button" class="tab' + (isActive ? ' is-active' : '') + '" style="--tab-color:' + d.color + ';" data-pilier="' + key + '" aria-pressed="' + isActive + '">' +
+        '<span class="tab-dot"></span>' +
+        '<span class="tab-texts"><span class="tab-label">' + d.label + '</span><span class="tab-sub">' + d.sub + '</span></span>' +
+        '</button>';
+    }).join('');
+    tabsEl.querySelectorAll('.tab').forEach(function (btn) {
+      btn.addEventListener('click', function () { setActive(btn.getAttribute('data-pilier')); });
+    });
+  }
+
+  function renderPanels() {
+    var d = PILLARS[active];
+    panelSignes.style.setProperty('--pillar-color', d.color);
+    panelSignes.style.setProperty('--pillar-color-soft', d.colorSoft);
+    panelSignes.innerHTML =
+      '<p class="block-title">Signes possibles — ' + d.label + '</p>' +
+      '<ul class="symptom-grid">' + d.exemples.map(function (e) { return '<li>' + e + '</li>'; }).join('') + '</ul>';
+
+    panelPistes.style.setProperty('--pillar-color', d.color);
+    panelPistes.style.setProperty('--pillar-color-soft', d.colorSoft);
+    var outils = d.outils.map(function (o) {
+      var navBtn = o.nav
+        ? '<button type="button" class="nav-btn" title="Navigation désactivée dans la maquette"><span>' + o.nav + '</span><span class="nav-hint">' + ARROW_RIGHT + 'autre module</span></button>'
+        : '';
+      return '<div class="action-card"><p class="action-text">' + o.text + '</p>' + navBtn + '</div>';
+    }).join('');
+    panelPistes.innerHTML = '<p class="block-title">Pistes à explorer — ' + d.label + '</p><div class="actions-col">' + outils + '</div>';
+  }
+
+  function renderMiniVenn() {
+    document.querySelectorAll('.mini-venn .dim').forEach(function (c) {
+      c.classList.toggle('is-active', c.getAttribute('data-pilier') === active);
+    });
+  }
+
+  function setActive(key) {
+    active = key;
+    renderTabs();
+    renderPanels();
+    renderMiniVenn();
+  }
+
+  setActive('physique');
+</script>
+</body>
+</html>

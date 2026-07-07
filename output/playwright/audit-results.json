@@ -1,0 +1,160 @@
+{
+  "url": "http://localhost:5173/",
+  "title": "ETP interactif",
+  "console": [],
+  "pageErrors": [],
+  "checks": {
+    "homeText": "Sevrage tabagique\nLes composantes de l'addiction\nComprendre que l'addiction au tabac a 3 dimensions imbriquées, chacune avec ses leviers.\nLa nicotine : cinétique & seuils\nVisualiser pourquoi on fume « pour ne pas être en manque » et comment les substituts maintiennent la nicotinémie dans la zone confortable.\nUtilisation des substituts & titration du patch\nBonnes pratiques par forme et démystifier le dosage, en autonomisant la personne.\nLa nicotine n'est pas le toxique\nLever le frein n°1 à l'usag",
+    "frameworkOverlay": 0
+  },
+  "interactions": {
+    "addiction": {
+      "activePillar": "true",
+      "toolsVisible": true
+    },
+    "nicotine": {
+      "pathChangedAfterCigarette": true,
+      "curveStroke": "rgb(29, 111, 165)",
+      "comfortFill": "rgb(29, 111, 165)"
+    },
+    "substituts": {
+      "initialPatchLabel": "Dose de jour — 1/4",
+      "finalPatchLabel": "Dose de jour — 4/4",
+      "addQuarterDisabledAtEnd": true
+    },
+    "toxique": {
+      "nicotineDetailVisible": true,
+      "imageCount": 0
+    },
+    "soulagement": {
+      "pathChanged": true,
+      "svgPathCount": 1,
+      "mentionsStress": false
+    },
+    "craving": {
+      "phase": "Pic de l'envie",
+      "distraireOpen": true,
+      "curvePathCount": 1,
+      "maskingOverlayCount": 0
+    }
+  },
+  "responsive": {
+    "homeDesktop": {
+      "horizontalOverflow": false,
+      "viewportWidth": 1440,
+      "documentWidth": 1440,
+      "undersizedButtons": []
+    },
+    "lastDesktopModule": {
+      "horizontalOverflow": false,
+      "viewportWidth": 1440,
+      "documentWidth": 1440,
+      "undersizedButtons": [
+        {
+          "text": "",
+          "width": 36,
+          "height": 36
+        },
+        {
+          "text": "Rejouer",
+          "width": 95,
+          "height": 37
+        },
+        {
+          "text": "Démarrer la respiration",
+          "width": 172,
+          "height": 26
+        }
+      ]
+    },
+    "nicotineMobile": {
+      "horizontalOverflow": false,
+      "viewportWidth": 390,
+      "documentWidth": 390,
+      "undersizedButtons": [
+        {
+          "text": "",
+          "width": 36,
+          "height": 36
+        },
+        {
+          "text": "Fumer une cigarette",
+          "width": 193,
+          "height": 37
+        },
+        {
+          "text": "Substitut ponctuel",
+          "width": 175,
+          "height": 37
+        },
+        {
+          "text": "Vapoteuse",
+          "width": 117,
+          "height": 37
+        },
+        {
+          "text": "Réinitialiser",
+          "width": 125,
+          "height": 37
+        }
+      ]
+    },
+    "substitutsMobile": {
+      "horizontalOverflow": false,
+      "viewportWidth": 390,
+      "documentWidth": 390,
+      "undersizedButtons": [
+        {
+          "text": "",
+          "width": 36,
+          "height": 36
+        },
+        {
+          "text": "Patch (24 h / 16 h)",
+          "width": 177,
+          "height": 40
+        },
+        {
+          "text": "Gomme",
+          "width": 97,
+          "height": 40
+        },
+        {
+          "text": "Pastille",
+          "width": 91,
+          "height": 40
+        },
+        {
+          "text": "Comprimé sublingual",
+          "width": 197,
+          "height": 40
+        },
+        {
+          "text": "Inhaleur",
+          "width": 98,
+          "height": 40
+        },
+        {
+          "text": "Spray buccal",
+          "width": 135,
+          "height": 40
+        },
+        {
+          "text": "Vapoteuse",
+          "width": 117,
+          "height": 40
+        },
+        {
+          "text": "+ ¼ (à J+2-3)",
+          "width": 140,
+          "height": 37
+        },
+        {
+          "text": "Surdosage → revenir en arrière",
+          "width": 284,
+          "height": 37
+        }
+      ]
+    }
+  }
+}
