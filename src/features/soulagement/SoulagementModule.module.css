@@ -4,166 +4,81 @@
   gap: var(--space-md);
 }
 
-.consigne2temps {
+.intro {
   margin: 0;
-  padding-left: 0;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
+  font-size: 0.95em;
+  color: var(--color-text-soft);
+  max-width: 64ch;
+}
+
+.calloutText {
+  font-size: 0.85em;
+  line-height: 1.5;
+}
+
+.graphCard {
   background: var(--color-surface);
-  border-left: 4px solid var(--color-vigilance);
-  border-radius: var(--radius);
-  padding: var(--space-sm) var(--space-md);
-  font-size: 1em;
-}
-
-.consigne2temps li {
-  line-height: 1.4;
-}
-
-.gestes {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-sm);
-}
-
-.gesteBtn {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-  min-height: var(--target-min);
-  padding: var(--space-sm) var(--space-md);
-  border: none;
-  border-radius: var(--radius);
-  background: var(--color-accent);
-  color: var(--color-surface);
-  font-size: 1em;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.gesteBtn:hover,
-.gesteBtn:focus-visible {
-  opacity: 0.85;
-}
-
-.graphHeader {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-sm);
-}
-
-.btn,
-.btnActive {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-  min-height: var(--target-min);
-  padding: var(--space-sm) var(--space-md);
-  border: none;
-  border-radius: var(--radius);
-  font-size: 1em;
-  cursor: pointer;
-}
-
-.btn {
-  background: var(--color-surface);
-  color: var(--color-text);
-}
-
-.btn:hover,
-.btn:focus-visible {
-  opacity: 0.85;
-}
-
-.btnActive {
-  background: var(--color-accent);
-  color: var(--color-surface);
-}
-
-.reset {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-  min-height: var(--target-min);
-  padding: var(--space-xs) var(--space-sm);
-  border: 2px solid var(--color-warn);
-  border-radius: var(--radius);
-  background: transparent;
-  color: var(--color-warn);
-  font-size: 0.9em;
-  cursor: pointer;
-}
-
-.reset:hover,
-.reset:focus-visible {
-  background: var(--color-toxique-soft);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-1);
+  padding: var(--space-lg) var(--space-lg) var(--space-sm);
 }
 
 .graph {
   display: block;
   width: 100%;
-  max-width: 720px;
   height: auto;
-  max-height: 46vh;
-  margin-inline: auto;
-  background: var(--color-surface);
-  border-radius: var(--radius);
+  cursor: crosshair;
 }
 
-.courbeNicotine {
-  fill: none;
-  stroke: var(--color-text);
-  stroke-width: 2;
-  stroke-dasharray: 5 5;
-  opacity: 0.45;
-}
-
-.labelNicotine {
+.axisTitle {
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 700;
   font-size: 12px;
-  fill: var(--color-text);
-  opacity: 0.6;
+  fill: var(--color-text-faint);
 }
 
-.courbeStress {
+.courbeTension {
   fill: none;
-  stroke: var(--color-vigilance);
-  stroke-width: 3;
+  stroke: var(--color-toxique);
+  stroke-width: 4;
   stroke-linecap: round;
-}
-
-.labelStress {
-  font-size: 12px;
-  font-weight: 600;
-  fill: var(--color-text);
 }
 
 .repereNonFumeur {
   stroke: var(--color-confort);
-  stroke-width: 1.5;
-  stroke-dasharray: 6 6;
-  opacity: 0.7;
+  stroke-width: 2.5;
+  stroke-dasharray: 6 5;
 }
 
 .labelRepere {
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 800;
   font-size: 12px;
-  fill: var(--color-confort);
-}
-
-.labelAnnotation {
-  font-size: 12px;
-  font-style: italic;
-  fill: var(--color-vigilance);
+  fill: var(--color-confort-strong);
 }
 
 .axisLine {
-  stroke: var(--color-text);
+  stroke: var(--color-line);
   stroke-width: 1;
-  opacity: 0.25;
+}
+
+.hourLabel {
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  fill: var(--color-text-soft);
+}
+
+.marker {
+  cursor: pointer;
+}
+
+.markerCircle {
+  fill: var(--color-toxique);
+}
+
+.markerIcon {
+  color: #fff;
 }
 
 .delaiAnnotation line {
@@ -179,8 +94,12 @@
   opacity: 0.85;
 }
 
-.pictogramme {
-  color: var(--color-text);
+.hint {
+  margin: 2px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-faint);
+  text-align: center;
 }
 
 .mention {
@@ -188,6 +107,14 @@
   font-size: 0.85em;
   opacity: 0.6;
   font-style: italic;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
 }
 
 .legende {

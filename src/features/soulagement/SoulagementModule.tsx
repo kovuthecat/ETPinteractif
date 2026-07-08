@@ -1,211 +1,209 @@
-import { useMemo, useState } from 'react';
-import { ArrowLeftRight, Cigarette, RotateCcw } from 'lucide-react';
+import { useMemo, useState, type CSSProperties, type MouseEvent } from 'react';
+import { Cigarette } from 'lucide-react';
 import type { ModuleProps } from '../types';
-import {
-  sampleCurve,
-  sampleStress,
-  toSvgPath,
-  STRESS_BASAL_NON_FUMEUR,
-  type CurveEvent,
-} from '../../lib/nicotineCurve';
+import { sampleTension, toSvgPath, TENSION_NONSMOKER, TENSION_TAU, TIME_MAX } from '../../lib/nicotineCurve';
 import styles from './SoulagementModule.module.css';
 
 const WIDTH = 600;
-const HEIGHT = 280;
-const AXIS_GAP = 28;
+const HEIGHT = 200;
+const AXIS_GAP = 36;
 const VIEW_HEIGHT = HEIGHT + AXIS_GAP;
-const N = 120;
+const N = 200;
+const MARKER_RADIUS = 11;
+const MARKER_Y = HEIGHT + 14;
+const HOUR_MARKS = [0, 6, 12, 18, 24];
 
-const FIRST_EVENT_T = 0.08;
-const EVENT_STEP = 0.12;
-const MAX_EVENT_T = 0.92;
+function timeToX(t: number): number {
+  return (t / TIME_MAX) * WIDTH;
+}
 
-/** Nombre de pas après le creux pour matérialiser le « délai avant remontée ». */
-const DELAY_STEPS = 12;
-
-function nextEventTime(events: CurveEvent[]): number {
-  return Math.min(MAX_EVENT_T, FIRST_EVENT_T + events.length * EVENT_STEP);
+function levelToY(level: number): number {
+  return HEIGHT - (level / 100) * HEIGHT;
 }
 
 export default function SoulagementModule(_: ModuleProps) {
-  const [events, setEvents] = useState<CurveEvent[]>([]);
+  const [cigTimes, setCigTimes] = useState<number[]>([]);
   const [compare, setCompare] = useState(false);
 
-  const nicotineYs = useMemo(() => sampleCurve({ patch: false, events, n: N }), [events]);
-  const stressYs = useMemo(() => sampleStress({ fumeur: true, events, n: N }), [events]);
-
-  const nicotinePath = useMemo(() => toSvgPath(nicotineYs, WIDTH, HEIGHT), [nicotineYs]);
-  const stressPath = useMemo(() => toSvgPath(stressYs, WIDTH, HEIGHT), [stressYs]);
+  const tensionValues = useMemo(() => sampleTension({ cigTimes, n: N }), [cigTimes]);
+  const tensionPath = useMemo(
+    () => toSvgPath(tensionValues, { width: WIDTH, height: HEIGHT }),
+    [tensionValues],
+  );
 
   const troughIndex = useMemo(() => {
-    if (events.length === 0 || stressYs.length === 0) return null;
+    if (cigTimes.length === 0) return null;
     let idx = 0;
-    for (let i = 1; i < stressYs.length; i++) {
-      if (stressYs[i] < stressYs[idx]) idx = i;
+    for (let i = 1; i < tensionValues.length; i++) {
+      if (tensionValues[i] < tensionValues[idx]) idx = i;
     }
     return idx;
-  }, [events.length, stressYs]);
+  }, [cigTimes.length, tensionValues]);
 
-  const annotation =
-    troughIndex !== null
-      ? { x: (troughIndex / (N - 1)) * WIDTH, y: (1 - stressYs[troughIndex]) * HEIGHT }
-      : null;
-
-  /** Annotation du délai : intervalle horizontal entre le creux et le point de remontée. */
+  /** Annotation du délai chute → remontée : fenêtre d'environ une constante de temps TENSION_TAU. */
   const delayAnnotation = useMemo(() => {
     if (troughIndex === null) return null;
-    const x1 = (troughIndex / (N - 1)) * WIDTH;
-    const riseIndex = Math.min(troughIndex + DELAY_STEPS, N - 1);
-    const x2 = (riseIndex / (N - 1)) * WIDTH;
-    const y = (1 - stressYs[troughIndex]) * HEIGHT + 22;
-    return { x1, x2, y };
-  }, [troughIndex, stressYs]);
+    const deltaIndex = Math.round((TENSION_TAU / TIME_MAX) * N);
+    const riseIndex = Math.min(troughIndex + deltaIndex, N);
+    return {
+      x1: (troughIndex / N) * WIDTH,
+      x2: (riseIndex / N) * WIDTH,
+      y: levelToY(tensionValues[troughIndex]) + 20,
+    };
+  }, [troughIndex, tensionValues]);
 
-  const compareY = (1 - STRESS_BASAL_NON_FUMEUR) * HEIGHT;
-  const stressLabelY = Math.max(14, (1 - stressYs[0]) * HEIGHT - 10);
-  const nicotineLabelY = Math.max(14, (1 - nicotineYs[0]) * HEIGHT - 6);
+  const nonSmokerY = levelToY(TENSION_NONSMOKER);
 
-  function fumerCigarette() {
-    setEvents((prev) => [...prev, { kind: 'cigarette', t: nextEventTime(prev) }]);
+  function addCigaretteAtClick(event: MouseEvent<SVGSVGElement>) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const ratio = (event.clientX - rect.left) / rect.width;
+    const t = (Math.round(Math.min(1, Math.max(0, ratio)) * TIME_MAX * 4) / 4) as number;
+    setCigTimes((prev) => [...prev, t]);
+  }
+
+  function removeCigaretteAt(index: number, event: MouseEvent<SVGGElement>) {
+    event.stopPropagation();
+    setCigTimes((prev) => prev.filter((_, i) => i !== index));
   }
 
   function reset() {
-    setEvents([]);
+    setCigTimes([]);
   }
 
   return (
     <div className={styles.module}>
-      <div className={styles.gestes}>
-        <button type="button" className={styles.gesteBtn} onClick={fumerCigarette}>
-          <Cigarette size={18} aria-hidden="true" />
-          Fumer une cigarette
-        </button>
+      <p className={styles.intro}>
+        Cliquez sur la frise pour « fumer une cigarette » : observez la tension liée au manque
+        chuter au creux, puis remonter. Cliquez sur un repère pour le retirer.
+      </p>
+
+      <div className={`callout ${styles.calloutText}`}>
+        <b>Lecture en 2 temps :</b> la chute au clic, c&apos;est le soulagement ressenti. La
+        remontée qui suit, c&apos;est le retour du manque — plus vite qu&apos;on ne le croit. Ce
+        n&apos;est pas un plaisir gagné : c&apos;est un retour à zéro, temporaire.
       </div>
 
-      <ol className={styles.consigne2temps} aria-label="Consigne de lecture du graphe">
-        <li>
-          <strong>1)</strong> La cigarette fait <strong>chuter</strong> la tension du manque —
-          regardez le creux de la courbe.
-        </li>
-        <li>
-          <strong>2)</strong> Puis la tension <strong>remonte</strong>, un peu plus haut qu&apos;avant
-          → on refume. C&apos;est le piège.
-        </li>
-      </ol>
+      <div className={styles.graphCard}>
+        <svg
+          className={styles.graph}
+          viewBox={`0 0 ${WIDTH} ${VIEW_HEIGHT}`}
+          aria-label="Schéma illustratif : cliquer sur la frise dépose une cigarette et fait chuter puis remonter la tension liée au manque. Cliquer sur un repère le retire. Comparer au non-fumeur superpose le niveau stable d'un non-fumeur, toujours sous le point le plus bas atteint par le fumeur."
+          onClick={addCigaretteAtClick}
+        >
+          <text x={4} y={14} className={styles.axisTitle}>
+            tension liée au manque ↑
+          </text>
 
-      <div className={styles.graphHeader}>
+          <path d={tensionPath} className={styles.courbeTension} />
+
+          {compare && (
+            <>
+              <line
+                x1={0}
+                y1={nonSmokerY}
+                x2={WIDTH}
+                y2={nonSmokerY}
+                className={styles.repereNonFumeur}
+              />
+              <text x={4} y={nonSmokerY - 8} className={styles.labelRepere}>
+                Niveau d&apos;un non-fumeur
+              </text>
+            </>
+          )}
+
+          {delayAnnotation && (
+            <g className={styles.delaiAnnotation}>
+              <line
+                x1={delayAnnotation.x1}
+                y1={delayAnnotation.y}
+                x2={delayAnnotation.x2}
+                y2={delayAnnotation.y}
+              />
+              <line
+                x1={delayAnnotation.x1}
+                y1={delayAnnotation.y - 4}
+                x2={delayAnnotation.x1}
+                y2={delayAnnotation.y + 4}
+              />
+              <line
+                x1={delayAnnotation.x2}
+                y1={delayAnnotation.y - 4}
+                x2={delayAnnotation.x2}
+                y2={delayAnnotation.y + 4}
+              />
+              <text
+                x={(delayAnnotation.x1 + delayAnnotation.x2) / 2}
+                y={delayAnnotation.y + 14}
+                textAnchor="middle"
+              >
+                puis ça remonte…
+              </text>
+            </g>
+          )}
+
+          <line x1={0} y1={HEIGHT} x2={WIDTH} y2={HEIGHT} className={styles.axisLine} />
+
+          {cigTimes.map((t, i) => (
+            <g
+              key={i}
+              transform={`translate(${timeToX(t)}, ${MARKER_Y})`}
+              className={styles.marker}
+              onClick={(event) => removeCigaretteAt(i, event)}
+            >
+              <circle r={MARKER_RADIUS} className={styles.markerCircle} />
+              <Cigarette size={14} x={-7} y={-7} className={styles.markerIcon} aria-hidden="true" />
+            </g>
+          ))}
+
+          {HOUR_MARKS.map((h) => (
+            <text
+              key={h}
+              x={timeToX(h)}
+              y={VIEW_HEIGHT - 6}
+              textAnchor={h === 0 ? 'start' : h === 24 ? 'end' : 'middle'}
+              className={styles.hourLabel}
+            >
+              {h}h
+            </text>
+          ))}
+        </svg>
+        <p className={styles.hint}>
+          Cliquez sur la frise pour ajouter une cigarette · cliquez un repère pour le retirer
+        </p>
+      </div>
+
+      <p className={styles.mention}>
+        Schéma illustratif — pas une mesure clinique de la tension du manque.
+      </p>
+
+      <div className={styles.controls}>
         <button
           type="button"
-          className={compare ? styles.btnActive : styles.btn}
+          className={`btn ${compare ? 'btn--primary activeDoubled' : 'btn--ghost'}`}
+          style={compare ? ({ '--active-color': 'var(--color-confort)' } as CSSProperties) : undefined}
           aria-pressed={compare}
           onClick={() => setCompare((c) => !c)}
         >
-          <ArrowLeftRight size={16} aria-hidden="true" />
           Comparer au non-fumeur
         </button>
-        <button type="button" className={styles.reset} onClick={reset}>
-          <RotateCcw size={16} aria-hidden="true" />
-          Réinitialiser
-        </button>
+        {cigTimes.length > 0 && (
+          <button type="button" className="btn btn--tertiary" onClick={reset}>
+            Réinitialiser
+          </button>
+        )}
       </div>
-
-      <svg
-        className={styles.graph}
-        viewBox={`0 0 ${WIDTH} ${VIEW_HEIGHT}`}
-        role="img"
-        aria-label="Schéma illustratif : cliquer sur fumer une cigarette dépose une prise sur la frise et fait chuter puis remonter la tension liée au manque. Le bouton comparer superpose le niveau de tension stable du non-fumeur, toujours en dessous du plus bas niveau atteint par le fumeur."
-      >
-        {events.length > 0 && (
-          <>
-            <path d={nicotinePath} className={styles.courbeNicotine} />
-            <text x={8} y={nicotineLabelY} className={styles.labelNicotine}>
-              Nicotine (repère, pointillé)
-            </text>
-          </>
-        )}
-
-        {compare && (
-          <>
-            <line x1={0} y1={compareY} x2={WIDTH} y2={compareY} className={styles.repereNonFumeur} />
-            <text x={8} y={compareY - 8} className={styles.labelRepere}>
-              Repère : tension du non-fumeur (stable)
-            </text>
-          </>
-        )}
-
-        <path d={stressPath} className={styles.courbeStress} />
-        <text x={8} y={stressLabelY} className={styles.labelStress}>
-          Tension liée au manque (trait plein)
-        </text>
-
-        {annotation && (
-          <text
-            x={annotation.x}
-            y={Math.max(14, annotation.y - 12)}
-            textAnchor="middle"
-            className={styles.labelAnnotation}
-          >
-            soulagement du manque
-          </text>
-        )}
-
-        {delayAnnotation && (
-          <g className={styles.delaiAnnotation}>
-            {/* Segment horizontal matérialisant le délai chute → remontée */}
-            <line
-              x1={delayAnnotation.x1}
-              y1={delayAnnotation.y}
-              x2={delayAnnotation.x2}
-              y2={delayAnnotation.y}
-            />
-            {/* Tirets verticaux aux extrémités */}
-            <line
-              x1={delayAnnotation.x1}
-              y1={delayAnnotation.y - 4}
-              x2={delayAnnotation.x1}
-              y2={delayAnnotation.y + 4}
-            />
-            <line
-              x1={delayAnnotation.x2}
-              y1={delayAnnotation.y - 4}
-              x2={delayAnnotation.x2}
-              y2={delayAnnotation.y + 4}
-            />
-            <text
-              x={(delayAnnotation.x1 + delayAnnotation.x2) / 2}
-              y={delayAnnotation.y + 14}
-              textAnchor="middle"
-            >
-              puis ça remonte…
-            </text>
-          </g>
-        )}
-
-        <line x1={0} y1={HEIGHT + 4} x2={WIDTH} y2={HEIGHT + 4} className={styles.axisLine} />
-        {events.map((event, i) => {
-          const x = Math.min(WIDTH - 18, Math.max(0, event.t * WIDTH - 9));
-          return (
-            <g key={i} transform={`translate(${x}, ${HEIGHT + 8})`} className={styles.pictogramme}>
-              <Cigarette size={18} aria-hidden="true" />
-            </g>
-          );
-        })}
-      </svg>
-      <p className={styles.mention}>
-        Schéma illustratif — pas une mesure clinique de la tension du manque ni de la nicotinémie.
-      </p>
 
       <div className={styles.legende}>
         <p>
-          Chaque cigarette fait <strong>chuter la tension du manque</strong> un court instant — c&apos;est
-          le <strong>soulagement du manque</strong> qu&apos;elle a elle-même créé. La tension remonte
-          ensuite à mesure que la nicotine redescend, jusqu&apos;à la cigarette suivante.
+          Chaque cigarette fait <strong>chuter la tension liée au manque</strong> un court instant
+          — c&apos;est le soulagement qu&apos;elle a elle-même créé. La tension remonte ensuite,
+          jusqu&apos;à la cigarette suivante.
         </p>
         {compare && (
           <p>
-            Même au plus bas, la tension liée au manque du fumeur reste{' '}
-            <strong>au-dessus du niveau stable d&apos;un non-fumeur</strong> : la cigarette ne fait
-            que ramener vers un « normal » qu&apos;elle a elle-même déplacé.
+            Même au plus bas, la tension du fumeur reste{' '}
+            <strong>au-dessus du niveau stable d&apos;un non-fumeur</strong> : la cigarette ne
+            fait que ramener vers un « normal » qu&apos;elle a elle-même déplacé.
           </p>
         )}
       </div>
