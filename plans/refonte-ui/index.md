@@ -26,7 +26,7 @@ lisibilité ~1 m, couleur jamais seule).
 
 | Session | Tâches | Titre | Modèle | Effort | Dépend de | Zone modifiée | Statut |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| [S1](S1.md) | T1-T3 | Socle : fonts + tokens `oklch` + primitives globales | Sonnet | high | — | `public/fonts/`, `src/styles/`, `index.html` | [ ] |
+| [S1](S1.md) | T1-T3 | Socle : fonts + tokens `oklch` + primitives globales | Sonnet | high | — | `public/fonts/`, `src/styles/`, `index.html` | [x] |
 | [S10](S10.md) | T-S10 | **Réécrire la logique des courbes** (lib + tests) — modèle 0–100 / 24 h (handoff) | Sonnet | high | — | `src/lib/nicotineCurve.ts`(+test) | [ ] |
 | [S2](S2.md) | T4 | Chrome : accueil + coquille + carte + Sources | Sonnet | medium | S1 | `src/components/` | [ ] |
 | [S3](S3.md) | T5 | Restyle — Addiction | Sonnet | medium | S1 | `src/features/addiction/` | [ ] |

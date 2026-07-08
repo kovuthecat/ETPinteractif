@@ -634,3 +634,24 @@ Contrôle automatisé Playwright ciblé à 1440 × 900 sur les états Physique, 
 - [x] Le panneau d'action complet reste dans le premier écran à 1440 × 900.
 - [x] Le lien vers un autre module reçoit le focus clavier.
 - [ ] Validation humaine : absence de chevauchement visuel à 1440 × 900, 1366 × 768, zoom 125 % et 150 %.
+
+## S1 — Refonte UI : socle (fonts + tokens oklch + primitives globales)
+
+Session bloquante de `plans/refonte-ui/` (T1-T3, cf. `docs/DESIGN_REFONTE.md` §2-§5). Aucun module (S2-S9) touché — uniquement `public/fonts/`, `src/styles/tokens.css`, `src/styles/global.css`, `index.html`. `tsc -b` + `vite build` + `vitest run` (20 tests) verts après chaque tâche (3 commits : T1, T2, T3).
+
+### T1 — Polices auto-hébergées
+- [ ] Titres (h1/h2/h3) rendus en Source Serif 4 (serif), texte courant en Work Sans (sans).
+- [ ] Accents FR nets (é è à ê ç), pas de fallback système visible (comparer à `maquettes/reference/snapshot.html`).
+- [ ] Onglet réseau du navigateur : aucune requête vers `fonts.googleapis.com`/`fonts.gstatic.com` (100 % local `/fonts/*.woff2`).
+- [ ] Pas de flash de police invisible prolongé (`font-display: swap` actif).
+
+### T2 — Palette oklch
+- [ ] Fond de page crème chaud (`--color-bg`), plus proche du « papier » que l'ancien beige.
+- [ ] Cartes/panneaux blancs avec ombre brune douce (pas de gris froid).
+- [ ] Couleurs sémantiques (vert confort / rouge toxique / ambre vigilance / bleu nav) toujours distinctes et cohérentes avec l'ancienne palette (mêmes rôles).
+- [ ] Aucune régression visuelle dans les modules existants (tokens = mêmes noms, valeurs seulement changées).
+
+### T3 — Primitives UI globales
+- [ ] Aspect général « papier chaud » : rayons généreux, ombres brunes douces (comparer à la maquette).
+- [ ] Classes `.btn`/`.chip`/`.card`/`.callout`/`.alert` non encore utilisées par les modules (S2-S9 les câbleront) — pas de régression attendue à ce stade, juste vérifier que rien ne casse visuellement dans l'app actuelle.
+- [ ] `prefers-reduced-motion` et cibles ≥ 44 px toujours respectés (inchangés).
