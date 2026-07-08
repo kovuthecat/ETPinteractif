@@ -1,251 +1,91 @@
-import React, { useEffect, useId, useRef, useState } from 'react';
-import type {
-  DragEvent as ReactDragEvent,
-  PointerEvent as ReactPointerEvent,
-  KeyboardEvent as ReactKeyboardEvent,
-} from 'react';
-import { GripVertical, Plus } from 'lucide-react';
+import { useRef, useState } from 'react';
+import type { KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from 'react';
+import { Plus } from 'lucide-react';
 import type { ModuleProps } from '../types';
+import Dial from './Dial';
 import styles from './MotivationModule.module.css';
 
-const MARGIN = 10;
-const NUDGE_STEP = 4;
+const MOVE_THRESHOLD = 4;
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
 }
 
-interface Carte {
-  id: string;
-  texte: string;
+interface CarteReserve {
+  id: number;
+  label: string;
+}
+
+interface CarteBoard {
+  id: number;
+  label: string;
   detail: string;
+  color: string;
   x: number;
   y: number;
-  placed: boolean;
 }
 
-const SEED_CARTES: Omit<Carte, 'detail' | 'placed'>[] = [
-  { id: 'sante', texte: 'Ma santé', x: 20, y: 22 },
-  { id: 'argent', texte: "L'argent économisé", x: 50, y: 16 },
-  { id: 'gout', texte: "Retrouver le goût et l'odorat", x: 80, y: 24 },
-  { id: 'souffle', texte: 'Le souffle, la forme physique', x: 24, y: 62 },
-  { id: 'proches', texte: 'Mes proches', x: 52, y: 70 },
-  { id: 'liberte', texte: 'Ne plus dépendre de la cigarette', x: 80, y: 60 },
+const MOTIVATION_COLORS = [
+  'oklch(55% 0.15 30)',
+  'oklch(58% 0.09 145)',
+  'oklch(62% 0.13 80)',
+  'oklch(48% 0.08 230)',
 ];
 
-function relanceImportance(valeur: number): { bas?: string; haut?: string } {
-  return {
-    bas: valeur > 0 ? `Pourquoi pas ${valeur - 1} plutôt que ${valeur} ?` : undefined,
-    haut:
-      valeur < 10 ? `Qu'est-ce qui aiderait à passer à ${valeur + 1} ?` : undefined,
-  };
-}
+const MOTIVATION_SEED = [
+  'Ma santé',
+  'Mes proches',
+  'Le budget',
+  "Le goût / l'odorat",
+  'Mon souffle / ma forme',
+  'Ma liberté',
+];
 
-function relanceConfiance(valeur: number): { bas?: string; haut?: string } {
+function relance(valeur: number): { bas?: string; haut?: string } {
   return {
     bas: valeur > 0 ? `Pourquoi pas ${valeur - 1} plutôt que ${valeur} ?` : undefined,
-    haut:
-      valeur < 10
-        ? `Qu'est-ce qui vous ferait gagner un point de confiance ?`
-        : undefined,
+    haut: valeur < 10 ? `Qu'est-ce qui aiderait à passer à ${valeur + 1} ?` : undefined,
   };
 }
 
 type Onglet = 'echelles' | 'raisons';
+type Etape = 0 | 1 | 2;
 
 export default function MotivationModule(_: ModuleProps) {
-  const importanceId = useId();
-  const confianceId = useId();
-  const containerRef = useRef<HTMLDivElement>(null);
-  const inputRefs = useRef<Map<string, HTMLInputElement>>(new Map());
+  const boardRef = useRef<HTMLDivElement>(null);
+  const dragRef = useRef<{ id: number; startX: number; startY: number; moved: boolean } | null>(null);
 
   const [onglet, setOnglet] = useState<Onglet>('echelles');
+  const [etape, setEtape] = useState<Etape>(0);
   const [importance, setImportance] = useState(5);
   const [confiance, setConfiance] = useState(5);
+  const [importanceTouched, setImportanceTouched] = useState(false);
+  const [confianceTouched, setConfianceTouched] = useState(false);
 
-  const [cartes, setCartes] = useState<Carte[]>(() =>
-    SEED_CARTES.map((c) => ({ ...c, detail: '', placed: false })),
+  const [raisonsReserve, setRaisonsReserve] = useState<CarteReserve[]>(() =>
+    MOTIVATION_SEED.map((label, i) => ({ id: i + 1, label })),
   );
-  const [dragId, setDragId] = useState<string | null>(null);
-  const [focusId, setFocusId] = useState<string | null>(null);
+  const [raisonsBoard, setRaisonsBoard] = useState<CarteBoard[]>([]);
+  const [editingCardId, setEditingCardId] = useState<number | null>(null);
+  const nextCardId = useRef(MOTIVATION_SEED.length + 1);
 
-  // Pour le drag HTML5 inter-zones, on stocke l'id en état React
-  // (plus fiable que dataTransfer seul sur tous les navigateurs)
-  const html5DragId = useRef<string | null>(null);
+  const importanceRelance = relance(importance);
+  const confianceRelance = relance(confiance);
 
-  // Surbrillance drop zones
-  const [whiteboardOver, setWhiteboardOver] = useState(false);
-  const [reserveOver, setReserveOver] = useState(false);
-
-  // Pour le drag pointer intra-tableau (repositionnement)
-  const dragOffset = useRef({ dx: 0, dy: 0 });
-
-  useEffect(() => {
-    if (!focusId) return;
-    inputRefs.current.get(focusId)?.focus();
-    setFocusId(null);
-  }, [focusId]);
-
-  const importanceRelance = relanceImportance(importance);
-  const confianceRelance = relanceConfiance(confiance);
-
-  function updateCarte(id: string, patch: Partial<Carte>) {
-    setCartes((prev) => prev.map((c) => (c.id === id ? { ...c, ...patch } : c)));
+  function handleImportanceChange(v: number) {
+    setImportance(v);
+    setImportanceTouched(true);
   }
 
-  function pointerPct(e: ReactPointerEvent) {
-    const rect = containerRef.current?.getBoundingClientRect();
-    if (!rect) return { x: 0, y: 0 };
-    return {
-      x: ((e.clientX - rect.left) / rect.width) * 100,
-      y: ((e.clientY - rect.top) / rect.height) * 100,
-    };
+  function handleConfianceChange(v: number) {
+    setConfiance(v);
+    setConfianceTouched(true);
   }
 
-  // ── Drag intra-tableau (repositionnement des cartes placées) ────────────────
-  function handlePointerDown(e: ReactPointerEvent<HTMLButtonElement>, id: string) {
-    const carte = cartes.find((c) => c.id === id);
-    if (!carte) return;
-    const p = pointerPct(e);
-    dragOffset.current = { dx: carte.x - p.x, dy: carte.y - p.y };
-    setDragId(id);
-    e.currentTarget.setPointerCapture(e.pointerId);
-  }
-
-  function handlePointerMove(e: ReactPointerEvent<HTMLButtonElement>, id: string) {
-    if (dragId !== id) return;
-    const p = pointerPct(e);
-    updateCarte(id, {
-      x: clamp(p.x + dragOffset.current.dx, MARGIN, 100 - MARGIN),
-      y: clamp(p.y + dragOffset.current.dy, MARGIN, 100 - MARGIN),
-    });
-  }
-
-  function handlePointerUp(e: ReactPointerEvent<HTMLButtonElement>, id: string) {
-    if (dragId !== id) return;
-    const rect = containerRef.current?.getBoundingClientRect();
-    const dansLeTableau =
-      !!rect &&
-      e.clientX >= rect.left &&
-      e.clientX <= rect.right &&
-      e.clientY >= rect.top &&
-      e.clientY <= rect.bottom;
-    if (!dansLeTableau) updateCarte(id, { placed: false });
-    setDragId(null);
-  }
-
-  // ── Nudge clavier + Suppr pour retirer (cartes placées) ────────────────────
-  function handleKeyDown(e: ReactKeyboardEvent<HTMLButtonElement>, id: string) {
-    const deltas: Record<string, { dx: number; dy: number }> = {
-      ArrowUp: { dx: 0, dy: -NUDGE_STEP },
-      ArrowDown: { dx: 0, dy: NUDGE_STEP },
-      ArrowLeft: { dx: -NUDGE_STEP, dy: 0 },
-      ArrowRight: { dx: NUDGE_STEP, dy: 0 },
-    };
-    const delta = deltas[e.key];
-    if (delta) {
-      e.preventDefault();
-      const carte = cartes.find((c) => c.id === id);
-      if (!carte) return;
-      updateCarte(id, {
-        x: clamp(carte.x + delta.dx, MARGIN, 100 - MARGIN),
-        y: clamp(carte.y + delta.dy, MARGIN, 100 - MARGIN),
-      });
-      return;
-    }
-    if (e.key === 'Delete' || e.key === 'Backspace') {
-      e.preventDefault();
-      updateCarte(id, { placed: false });
-    }
-  }
-
-  // ── Clavier pour cartes de réserve (Entrée/Espace = placer) ────────────────
-  function handleReserveKeyDown(e: ReactKeyboardEvent<HTMLDivElement>, id: string) {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      const n = cartes.filter((c) => c.placed).length;
-      const x = clamp(20 + ((n * 17) % 60), MARGIN, 100 - MARGIN);
-      const y = clamp(20 + ((n * 29) % 60), MARGIN, 100 - MARGIN);
-      updateCarte(id, { placed: true, x, y });
-    }
-  }
-
-  // ── Drag HTML5 depuis la réserve ────────────────────────────────────────────
-  function handleDragStart(e: ReactDragEvent<HTMLDivElement>, id: string) {
-    html5DragId.current = id;
-    try {
-      e.dataTransfer.setData('text/plain', id);
-      e.dataTransfer.effectAllowed = 'move';
-    } catch {
-      // dataTransfer non disponible dans certains contextes (tests)
-    }
-  }
-
-  function handleDragEnd() {
-    html5DragId.current = null;
-  }
-
-  // ── Drop sur le tableau ─────────────────────────────────────────────────────
-  function handleWhiteboardDragOver(e: ReactDragEvent<HTMLDivElement>) {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    setWhiteboardOver(true);
-  }
-
-  function handleWhiteboardDragLeave(e: ReactDragEvent<HTMLDivElement>) {
-    // Ne pas désactiver si la souris entre dans un enfant
-    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
-      setWhiteboardOver(false);
-    }
-  }
-
-  function handleWhiteboardDrop(e: ReactDragEvent<HTMLDivElement>) {
-    e.preventDefault();
-    setWhiteboardOver(false);
-    const id = html5DragId.current ?? e.dataTransfer.getData('text/plain');
-    if (!id) return;
-    html5DragId.current = null;
-
-    const rect = containerRef.current?.getBoundingClientRect();
-    if (!rect) {
-      updateCarte(id, { placed: true });
-      return;
-    }
-    const x = clamp(((e.clientX - rect.left) / rect.width) * 100, MARGIN, 100 - MARGIN);
-    const y = clamp(((e.clientY - rect.top) / rect.height) * 100, MARGIN, 100 - MARGIN);
-    updateCarte(id, { placed: true, x, y });
-  }
-
-  // ── Drop sur la réserve (retour) ────────────────────────────────────────────
-  function handleReserveDragOver(e: ReactDragEvent<HTMLDivElement>) {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    setReserveOver(true);
-  }
-
-  function handleReserveDragLeave(e: ReactDragEvent<HTMLDivElement>) {
-    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
-      setReserveOver(false);
-    }
-  }
-
-  function handleReserveDrop(e: ReactDragEvent<HTMLDivElement>) {
-    e.preventDefault();
-    setReserveOver(false);
-    const id = html5DragId.current ?? e.dataTransfer.getData('text/plain');
-    if (!id) return;
-    html5DragId.current = null;
-    updateCarte(id, { placed: false });
-  }
-
-  // ── Ajout carte ─────────────────────────────────────────────────────────────
-  function ajouterCarte() {
-    const id = `carte-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
-    const n = cartes.length;
-    const x = clamp(20 + ((n * 17) % 60), MARGIN, 100 - MARGIN);
-    const y = clamp(20 + ((n * 29) % 60), MARGIN, 100 - MARGIN);
-    setCartes((prev) => [...prev, { id, texte: '', detail: '', x, y, placed: false }]);
-    setFocusId(id);
+  function restartSteps() {
+    setEtape(0);
+    setImportanceTouched(false);
+    setConfianceTouched(false);
   }
 
   const onglets: { id: Onglet; label: string }[] = [
@@ -260,8 +100,92 @@ export default function MotivationModule(_: ModuleProps) {
     setOnglet(onglets[nextIndex].id);
   }
 
+  // ── Réserve → tableau ────────────────────────────────────────────────────
+  function boardGridPosition(index: number): { x: number; y: number } {
+    const col = index % 3;
+    const row = Math.floor(index / 3);
+    return { x: 18 + col * 32, y: 20 + row * 30 };
+  }
+
+  function addToBoard(reserveId: number) {
+    const item = raisonsReserve.find((r) => r.id === reserveId);
+    if (!item) return;
+    const { x, y } = boardGridPosition(raisonsBoard.length);
+    const id = nextCardId.current;
+    nextCardId.current += 1;
+    setRaisonsBoard((prev) => [
+      ...prev,
+      { id, label: item.label, detail: '', color: MOTIVATION_COLORS[id % MOTIVATION_COLORS.length], x, y },
+    ]);
+    setRaisonsReserve((prev) => prev.filter((r) => r.id !== reserveId));
+  }
+
+  function addFreeCard() {
+    const { x, y } = boardGridPosition(raisonsBoard.length);
+    const id = nextCardId.current;
+    nextCardId.current += 1;
+    setRaisonsBoard((prev) => [
+      ...prev,
+      { id, label: 'Nouvelle raison', detail: '', color: MOTIVATION_COLORS[id % MOTIVATION_COLORS.length], x, y },
+    ]);
+    setEditingCardId(id);
+  }
+
+  function updateCardField(id: number, field: 'label' | 'detail', value: string) {
+    setRaisonsBoard((prev) => prev.map((c) => (c.id === id ? { ...c, [field]: value } : c)));
+  }
+
+  function deleteCard(id: number) {
+    setRaisonsBoard((prev) => prev.filter((c) => c.id !== id));
+    setEditingCardId((current) => (current === id ? null : current));
+  }
+
+  function toggleEditing(id: number) {
+    setEditingCardId((current) => (current === id ? null : id));
+  }
+
+  // ── Repositionnement au pointeur + clic sans déplacement = édition ──────
+  function handleCardPointerDown(e: ReactPointerEvent<HTMLButtonElement>, id: number) {
+    dragRef.current = { id, startX: e.clientX, startY: e.clientY, moved: false };
+    e.currentTarget.setPointerCapture(e.pointerId);
+  }
+
+  function handleCardPointerMove(e: ReactPointerEvent<HTMLButtonElement>, id: number) {
+    const drag = dragRef.current;
+    if (!drag || drag.id !== id) return;
+    if (Math.abs(e.clientX - drag.startX) > MOVE_THRESHOLD || Math.abs(e.clientY - drag.startY) > MOVE_THRESHOLD) {
+      drag.moved = true;
+    }
+    const rect = boardRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const x = clamp(((e.clientX - rect.left) / rect.width) * 100, 4, 92);
+    const y = clamp(((e.clientY - rect.top) / rect.height) * 100, 6, 86);
+    setRaisonsBoard((prev) => prev.map((c) => (c.id === id ? { ...c, x, y } : c)));
+  }
+
+  function handleCardPointerUp(id: number) {
+    const drag = dragRef.current;
+    dragRef.current = null;
+    if (drag && drag.id === id && !drag.moved) {
+      toggleEditing(id);
+    }
+  }
+
+  function handleCardPointerCancel() {
+    dragRef.current = null;
+  }
+
+  function handleCardKeyDown(e: ReactKeyboardEvent<HTMLButtonElement>, id: number) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggleEditing(id);
+    }
+  }
+
   return (
     <div className={styles.module}>
+      <p className={styles.subtitle}>À votre rythme, sans jugement. Pas de liste avantages/inconvénients ici.</p>
+
       <div className={styles.tabs} role="tablist" aria-label="Étapes du module Motivation">
         {onglets.map((o, index) => (
           <button
@@ -288,64 +212,90 @@ export default function MotivationModule(_: ModuleProps) {
         hidden={onglet !== 'echelles'}
         className={styles.section}
       >
-        <h2 className={styles.sectionTitle}>Où en êtes-vous ?</h2>
-        <p className={styles.sousTitre}>
-          Deux échelles pour faire le point, à votre rythme — il n'y a pas de bonne réponse.
-        </p>
+        {etape === 0 && (
+          <div className={`${styles.stepPanel} ${styles.stepPanelImportance}`}>
+            <p className={styles.stepLabel}>Question 1 sur 2</p>
+            <p className={styles.stepQuestion}>À quel point est-ce important pour vous d'arrêter ?</p>
+            <Dial
+              value={importance}
+              onChange={handleImportanceChange}
+              label="Importance d'arrêter, de 0 à 10"
+              color="var(--color-confort)"
+              trackColor="var(--color-confort-soft)"
+            />
+            <p className={styles.stepHint}>Faites glisser autour du cercle</p>
+            {importanceTouched && (
+              <>
+                <div className={styles.relanceStack} aria-live="polite">
+                  {importanceRelance.bas && <p className={styles.relanceBubble}>{importanceRelance.bas}</p>}
+                  {importanceRelance.haut && <p className={styles.relanceBubble}>{importanceRelance.haut}</p>}
+                </div>
+                <button
+                  type="button"
+                  className={`${styles.stepButton} ${styles.stepButtonImportance}`}
+                  onClick={() => setEtape(1)}
+                >
+                  Suivant →
+                </button>
+              </>
+            )}
+          </div>
+        )}
 
-        <div className={styles.echelle}>
-          <label className={styles.echelleLabel} htmlFor={importanceId}>
-            À quel point est-ce important pour vous d'arrêter ?
-          </label>
-          <input
-            id={importanceId}
-            type="range"
-            min={0}
-            max={10}
-            step={1}
-            value={importance}
-            onChange={(e) => setImportance(Number(e.target.value))}
-            className={styles.slider}
-          />
-          <div className={styles.sliderBornes} aria-hidden="true">
-            <span>0</span>
-            <span>10</span>
+        {etape === 1 && (
+          <div className={`${styles.stepPanel} ${styles.stepPanelConfiance}`}>
+            <p className={styles.stepLabel}>Question 2 sur 2</p>
+            <p className={styles.stepQuestion}>À quel point vous sentez-vous capable / confiant(e) ?</p>
+            <Dial
+              value={confiance}
+              onChange={handleConfianceChange}
+              label="Confiance en sa capacité d'arrêter, de 0 à 10"
+              color="var(--color-nav)"
+              trackColor="var(--color-nav-soft)"
+            />
+            <p className={styles.stepHint}>Faites glisser autour du cercle</p>
+            {confianceTouched && (
+              <>
+                <div className={styles.relanceStack} aria-live="polite">
+                  {confianceRelance.bas && <p className={styles.relanceBubble}>{confianceRelance.bas}</p>}
+                  {confianceRelance.haut && <p className={styles.relanceBubble}>{confianceRelance.haut}</p>}
+                </div>
+                <button
+                  type="button"
+                  className={`${styles.stepButton} ${styles.stepButtonConfiance}`}
+                  onClick={() => setEtape(2)}
+                >
+                  Terminer →
+                </button>
+              </>
+            )}
           </div>
-          <p className={styles.echelleValeur} aria-live="polite">
-            {importance} / 10
-          </p>
-          <div className={styles.relance} aria-live="polite">
-            {importanceRelance.bas && <p>{importanceRelance.bas}</p>}
-            {importanceRelance.haut && <p>{importanceRelance.haut}</p>}
-          </div>
-        </div>
+        )}
 
-        <div className={styles.echelle}>
-          <label className={styles.echelleLabel} htmlFor={confianceId}>
-            À quel point vous sentez-vous capable / confiant(e) ?
-          </label>
-          <input
-            id={confianceId}
-            type="range"
-            min={0}
-            max={10}
-            step={1}
-            value={confiance}
-            onChange={(e) => setConfiance(Number(e.target.value))}
-            className={styles.slider}
-          />
-          <div className={styles.sliderBornes} aria-hidden="true">
-            <span>0</span>
-            <span>10</span>
+        {etape === 2 && (
+          <div className={`${styles.stepPanel} ${styles.stepPanelDone}`}>
+            <p className={styles.doneTitle}>Merci d'avoir pris ce temps.</p>
+            <div className={styles.recapRow}>
+              <div className={`${styles.recapCard} ${styles.recapCardImportance}`}>
+                <p className={styles.recapLabel}>Importance</p>
+                <p className={`${styles.recapValue} ${styles.recapValueImportance}`}>
+                  {importance}
+                  <span className={styles.recapUnit}>/10</span>
+                </p>
+              </div>
+              <div className={`${styles.recapCard} ${styles.recapCardConfiance}`}>
+                <p className={styles.recapLabel}>Confiance</p>
+                <p className={`${styles.recapValue} ${styles.recapValueConfiance}`}>
+                  {confiance}
+                  <span className={styles.recapUnit}>/10</span>
+                </p>
+              </div>
+            </div>
+            <button type="button" className={styles.restartBtn} onClick={restartSteps}>
+              ↺ Revoir mes réponses
+            </button>
           </div>
-          <p className={styles.echelleValeur} aria-live="polite">
-            {confiance} / 10
-          </p>
-          <div className={styles.relance} aria-live="polite">
-            {confianceRelance.bas && <p>{confianceRelance.bas}</p>}
-            {confianceRelance.haut && <p>{confianceRelance.haut}</p>}
-          </div>
-        </div>
+        )}
       </section>
 
       <section
@@ -355,124 +305,75 @@ export default function MotivationModule(_: ModuleProps) {
         hidden={onglet !== 'raisons'}
         className={styles.section}
       >
-        <h2 className={styles.sectionTitle}>Mes raisons</h2>
-        <p className={styles.sousTitre}>
-          Piochez dans la réserve les raisons qui comptent pour vous et glissez-les sur le tableau
-          (ou appuyez sur Entrée/Espace pour placer la carte sélectionnée).
-        </p>
-
-        <div
-          className={
-            reserveOver
-              ? `${styles.reserveBloc} ${styles.reserveBlocOver}`
-              : styles.reserveBloc
-          }
-          onDragOver={handleReserveDragOver}
-          onDragLeave={handleReserveDragLeave}
-          onDrop={handleReserveDrop}
-        >
-          <h3 className={styles.reserveTitre}>Réserve</h3>
-          <div className={styles.reserve}>
-            {cartes
-              .filter((carte) => !carte.placed)
-              .map((carte) => (
-                <div
-                  key={carte.id}
-                  className={styles.carteReserve}
-                  draggable
-                  tabIndex={0}
-                  role="button"
-                  aria-label={`Carte « ${carte.texte || 'sans titre'} » — glisser vers le tableau ou Entrée/Espace pour placer`}
-                  onDragStart={(e) => handleDragStart(e, carte.id)}
-                  onDragEnd={handleDragEnd}
-                  onKeyDown={(e) => handleReserveKeyDown(e, carte.id)}
-                >
+        <div ref={boardRef} className={styles.board}>
+          {raisonsBoard.length === 0 && (
+            <p className={styles.boardEmpty}>
+              Cliquez sur une raison dans la réserve pour l'ajouter au tableau, ou créez-en une nouvelle.
+            </p>
+          )}
+          {raisonsBoard.map((carte) => (
+            <div
+              key={carte.id}
+              className={styles.boardCardWrap}
+              style={{ '--carte-x': `${carte.x}%`, '--carte-y': `${carte.y}%` } as React.CSSProperties}
+            >
+              {editingCardId === carte.id ? (
+                <div className={styles.boardCardEditing} style={{ borderColor: carte.color }}>
                   <input
-                    ref={(el) => {
-                      if (el) inputRefs.current.set(carte.id, el);
-                      else inputRefs.current.delete(carte.id);
-                    }}
-                    className={styles.carteInputReserve}
-                    value={carte.texte}
-                    onChange={(e) => updateCarte(carte.id, { texte: e.target.value })}
-                    placeholder="Une raison…"
+                    className={styles.cardLabelInput}
+                    value={carte.label}
+                    onChange={(e) => updateCardField(carte.id, 'label', e.target.value)}
                     aria-label="Texte de la raison"
-                    // Empêcher le drag de l'input de capturer l'événement
-                    onDragStart={(e) => e.stopPropagation()}
                   />
+                  <textarea
+                    className={styles.cardDetailInput}
+                    value={carte.detail}
+                    onChange={(e) => updateCardField(carte.id, 'detail', e.target.value)}
+                    placeholder="Précisez si besoin…"
+                    aria-label="Détail personnel"
+                    rows={2}
+                  />
+                  <div className={styles.cardEditFooter}>
+                    <button type="button" className={styles.cardDeleteBtn} onClick={() => deleteCard(carte.id)}>
+                      Supprimer
+                    </button>
+                    <button type="button" className={styles.cardOkBtn} onClick={() => setEditingCardId(null)}>
+                      OK
+                    </button>
+                  </div>
                 </div>
-              ))}
-            {cartes.filter((carte) => !carte.placed).length === 0 && (
-              <p className={styles.reserveVide}>Toutes les cartes sont sur le tableau.</p>
-            )}
-          </div>
+              ) : (
+                <button
+                  type="button"
+                  className={styles.boardCard}
+                  style={{ background: carte.color }}
+                  onPointerDown={(e) => handleCardPointerDown(e, carte.id)}
+                  onPointerMove={(e) => handleCardPointerMove(e, carte.id)}
+                  onPointerUp={() => handleCardPointerUp(carte.id)}
+                  onPointerCancel={handleCardPointerCancel}
+                  onKeyDown={(e) => handleCardKeyDown(e, carte.id)}
+                  aria-label={`${carte.label}${carte.detail ? ` — ${carte.detail}` : ''} — glisser pour repositionner, Entrée pour modifier`}
+                >
+                  {carte.label}
+                  {carte.detail && <span className={styles.boardCardDetail}>{carte.detail}</span>}
+                </button>
+              )}
+            </div>
+          ))}
         </div>
 
-        <div
-          className={
-            whiteboardOver
-              ? `${styles.whiteboard} ${styles.whiteboardOver}`
-              : styles.whiteboard
-          }
-          ref={containerRef}
-          onDragOver={handleWhiteboardDragOver}
-          onDragLeave={handleWhiteboardDragLeave}
-          onDrop={handleWhiteboardDrop}
-        >
-          {cartes
-            .filter((carte) => carte.placed)
-            .map((carte) => (
-              <div
-                key={carte.id}
-                className={styles.carte}
-                style={
-                  {
-                    '--carte-x': `${carte.x}%`,
-                    '--carte-y': `${carte.y}%`,
-                  } as React.CSSProperties
-                }
-              >
-                <div className={styles.carteHeader}>
-                  <button
-                    type="button"
-                    className={styles.poignee}
-                    onPointerDown={(e) => handlePointerDown(e, carte.id)}
-                    onPointerMove={(e) => handlePointerMove(e, carte.id)}
-                    onPointerUp={(e) => handlePointerUp(e, carte.id)}
-                    onPointerCancel={() => setDragId((current) => (current === carte.id ? null : current))}
-                    onKeyDown={(e) => handleKeyDown(e, carte.id)}
-                    aria-label={`Déplacer « ${carte.texte || 'sans titre'} » (flèches ou glisser) · Suppr ou ← Retour arrière pour renvoyer à la réserve`}
-                  >
-                    <GripVertical size={18} aria-hidden="true" />
-                  </button>
-                </div>
-                <input
-                  ref={(el) => {
-                    if (el) inputRefs.current.set(carte.id, el);
-                    else inputRefs.current.delete(carte.id);
-                  }}
-                  className={styles.carteInput}
-                  value={carte.texte}
-                  onChange={(e) => updateCarte(carte.id, { texte: e.target.value })}
-                  placeholder="Une raison…"
-                  aria-label="Texte de la raison"
-                />
-                <textarea
-                  className={styles.carteDetail}
-                  value={carte.detail}
-                  onChange={(e) => updateCarte(carte.id, { detail: e.target.value })}
-                  placeholder="+ un détail (optionnel)"
-                  aria-label="Détail personnel"
-                  rows={2}
-                />
-              </div>
-            ))}
+        <p className={styles.reserveLabel}>Réserve · cliquez pour ajouter au tableau</p>
+        <div className={styles.reserveRow}>
+          {raisonsReserve.map((r) => (
+            <button key={r.id} type="button" className={styles.reserveCard} onClick={() => addToBoard(r.id)}>
+              {r.label}
+            </button>
+          ))}
+          <button type="button" className={`btn btn--primary ${styles.addCardBtn}`} onClick={addFreeCard}>
+            <Plus size={16} aria-hidden="true" />
+            une raison
+          </button>
         </div>
-
-        <button type="button" className={styles.btnAjouter} onClick={ajouterCarte}>
-          <Plus size={18} aria-hidden="true" />
-          Une raison
-        </button>
       </section>
     </div>
   );

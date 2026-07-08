@@ -152,22 +152,28 @@ export default function SubstitutsModule(_: ModuleProps) {
   }
 
   const formeData = selectedForme ? FORMES_DATA[selectedForme] : null;
+  const showTechnique = !!formeData && !formeData.enRedaction && selectedForme !== 'patch';
 
   return (
     <div className={styles.module}>
       <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>Bonnes pratiques par forme</h2>
-        <p className={styles.formeConsigne}>Sélectionnez une forme pour afficher les conseils d'utilisation.</p>
-        <div className={styles.chips}>
+        <p className={styles.intro}>
+          Choisissez une forme pour ses bonnes pratiques. Pour la titration du patch, aucun calcul de dose : on
+          avance par quarts, selon le ressenti.
+        </p>
+        <div className={styles.formeGrid}>
           {(Object.keys(FORMES_DATA) as FormeId[]).map((forme) => (
             <button
               key={forme}
               type="button"
-              className={`${styles.chip} ${selectedForme === forme ? styles.chipActive : ''}`}
+              className={`${styles.formeCard} ${selectedForme === forme ? styles.formeCardActive : ''} ${
+                FORMES_DATA[forme].enRedaction ? styles.formeCardMuted : ''
+              }`}
               onClick={() => setSelectedForme(forme)}
               aria-pressed={selectedForme === forme}
             >
-              {FORMES_DATA[forme].label}
+              <span className={styles.formeDot} aria-hidden="true" />
+              <span className={styles.formeLabel}>{FORMES_DATA[forme].label}</span>
             </button>
           ))}
         </div>
@@ -175,20 +181,20 @@ export default function SubstitutsModule(_: ModuleProps) {
         {formeData && (
           formeData.enRedaction ? (
             <div className={styles.panelRedaction}>
-              <p>Fiche en cours de rédaction — à voir avec votre soignant.</p>
+              <p>Fiche « {formeData.label} » en cours de rédaction — à voir avec votre soignant.</p>
             </div>
           ) : (
             <div className={styles.panels}>
-              <div className={styles.panel}>
-                <h3 className={styles.panelTitle}>{formeData.label} — bonnes pratiques</h3>
+              <div className={`${styles.panel} ${styles.panelBonnes}`}>
+                <h3 className={styles.panelTitle}>Bonnes pratiques — {formeData.label}</h3>
                 <ul className={styles.panelList}>
                   {formeData.bonnesPratiques.map((item, idx) => (
                     <li key={idx}>{item}</li>
                   ))}
                 </ul>
               </div>
-              <div className={styles.panel}>
-                <h3 className={styles.panelTitle}>{formeData.label} — erreurs fréquentes</h3>
+              <div className={`${styles.panel} ${styles.panelErreurs}`}>
+                <h3 className={styles.panelTitle}>Erreurs fréquentes</h3>
                 <ul className={styles.panelList}>
                   {formeData.erreurs.map((item, idx) => (
                     <li key={idx}>{item}</li>
@@ -200,121 +206,137 @@ export default function SubstitutsModule(_: ModuleProps) {
         )}
       </section>
 
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>Méthode de titration du patch</h2>
-
-        <div className={styles.stateCards}>
-          <label className={`${styles.stateCard} ${envie ? styles.stateCardActive : ''}`}>
-            <input
-              type="checkbox"
-              className={styles.stateInput}
-              checked={envie}
-              onChange={(e) => setEnvie(e.target.checked)}
-            />
-            <Flame size={20} aria-hidden="true" />
-            <span>Envie de fumer persiste</span>
-          </label>
-          <label
-            className={`${styles.stateCard} ${styles.stateCardWarn} ${surdosage ? styles.stateCardActive : ''}`}
-          >
-            <input
-              type="checkbox"
-              className={styles.stateInput}
-              checked={surdosage}
-              onChange={(e) => setSurdosage(e.target.checked)}
-            />
-            <AlertTriangle size={20} aria-hidden="true" />
-            <span>Signes de surdosage</span>
-          </label>
-          <label className={`${styles.stateCard} ${jourNuit ? styles.stateCardActive : ''}`}>
-            <input
-              type="checkbox"
-              className={styles.stateInput}
-              checked={jourNuit}
-              onChange={(e) => setJourNuit(e.target.checked)}
-            />
-            <Moon size={20} aria-hidden="true" />
-            <span>Distinguer jour / nuit</span>
-          </label>
-        </div>
-
-        {surdosage && (
-          <div className={styles.alertBanner} role="alert">
-            <AlertTriangle size={22} aria-hidden="true" />
-            <p className={styles.alertText}>
-              Signes de surdosage (impression d'avoir trop fumé, nausées, vertiges, palpitations) — revenez à la dose précédente : c'est la dose dont vous avez besoin.
-            </p>
-            <button
-              type="button"
-              className={styles.btnWarn}
-              onClick={retirerQuart}
-              disabled={quartsJour === 0}
-            >
-              Revenir en arrière (− ¼)
-            </button>
+      {showTechnique && formeData && !formeData.enRedaction && (
+        <section className={styles.section}>
+          <p className={styles.sectionEyebrow}>Technique de prise — {formeData.label}</p>
+          <div className={styles.techniqueCard}>
+            <div className={styles.techniquePlaceholder}>
+              <span className={styles.techniqueLabel}>
+                illustration · technique de prise « {formeData.label} »
+              </span>
+            </div>
           </div>
-        )}
+        </section>
+      )}
 
-        <div className={styles.doseGroups}>
-          <div className={styles.doseGroup}>
-            <p className={styles.doseGroupTitle}>
-              <Sun size={18} aria-hidden="true" />
-              Dose de jour
-            </p>
-            <PatchQuarts quarts={quartsJour} label="Jour" />
-            <div className={styles.doseControls}>
+      <section className={styles.section}>
+        <p className={styles.sectionEyebrow}>Méthode de titration du patch</p>
+
+        <div className={styles.titrationCard}>
+          <div className={styles.stateCards}>
+            <label className={`${styles.stateCard} ${envie ? styles.stateCardActive : ''}`}>
+              <input
+                type="checkbox"
+                className={styles.stateInput}
+                checked={envie}
+                onChange={(e) => setEnvie(e.target.checked)}
+              />
+              <Flame size={20} aria-hidden="true" />
+              <span>Envie de fumer persiste</span>
+            </label>
+            <label
+              className={`${styles.stateCard} ${styles.stateCardWarn} ${surdosage ? styles.stateCardActive : ''}`}
+            >
+              <input
+                type="checkbox"
+                className={styles.stateInput}
+                checked={surdosage}
+                onChange={(e) => setSurdosage(e.target.checked)}
+              />
+              <AlertTriangle size={20} aria-hidden="true" />
+              <span>Signes de surdosage</span>
+            </label>
+            <label className={`${styles.stateCard} ${jourNuit ? styles.stateCardActive : ''}`}>
+              <input
+                type="checkbox"
+                className={styles.stateInput}
+                checked={jourNuit}
+                onChange={(e) => setJourNuit(e.target.checked)}
+              />
+              <Moon size={20} aria-hidden="true" />
+              <span>Distinguer jour / nuit</span>
+            </label>
+          </div>
+
+          {surdosage && (
+            <div className={`${styles.alertBanner} alert`} role="alert">
+              <AlertTriangle size={22} aria-hidden="true" />
+              <p className={styles.alertText}>
+                Signes de surdosage (impression d'avoir trop fumé, nausées, vertiges, palpitations) — revenez à la
+                dose précédente : c'est la dose dont vous avez besoin.
+              </p>
               <button
                 type="button"
-                className={styles.btn}
-                onClick={ajouterQuart}
-                disabled={!envie || surdosage}
-              >
-                + ¼ (tous les 3 jours)
-              </button>
-              <button
-                type="button"
-                className={styles.btnNeutral}
+                className={styles.btnWarn}
                 onClick={retirerQuart}
                 disabled={quartsJour === 0}
               >
-                − ¼
+                Revenir en arrière (− ¼)
               </button>
             </div>
-            <p className={styles.titrationAide}>
-              Augmentez d'¼ tous les 3 jours tant que l'envie persiste (&gt;3 cig/j), sans signe de surdosage.
-            </p>
-          </div>
+          )}
 
-          {jourNuit && (
+          <div className={styles.doseGroups}>
             <div className={styles.doseGroup}>
               <p className={styles.doseGroupTitle}>
-                <Moon size={18} aria-hidden="true" />
-                Dose de nuit
+                <Sun size={18} aria-hidden="true" />
+                Dose de jour
               </p>
-              <PatchQuarts quarts={quartsNuitAffiche} label="Nuit" />
+              <PatchQuarts quarts={quartsJour} label="Jour" />
               <div className={styles.doseControls}>
                 <button
                   type="button"
-                  className={styles.btnNeutral}
-                  onClick={() => setQuartsNuit((q) => Math.max(0, q - 1))}
-                  disabled={quartsNuitAffiche === 0}
+                  className={styles.btn}
+                  onClick={ajouterQuart}
+                  disabled={!envie || surdosage}
                 >
-                  − ¼
+                  + ¼ (tous les 3 jours)
                 </button>
                 <button
                   type="button"
-                  className={styles.btn}
-                  onClick={() => setQuartsNuit((q) => Math.min(quartsJour, q + 1))}
-                  disabled={quartsNuitAffiche >= quartsJour}
+                  className={styles.btnNeutral}
+                  onClick={retirerQuart}
+                  disabled={quartsJour === 0}
                 >
-                  + ¼
+                  − ¼
                 </button>
               </div>
+              <p className={styles.titrationAide}>
+                Augmentez d'¼ tous les 3 jours tant que l'envie persiste (&gt;3 cig/j), sans signe de surdosage.
+              </p>
             </div>
-          )}
-        </div>
 
-        <p className={styles.message}>Expérimentez, fiez-vous à votre ressenti.</p>
+            {jourNuit && (
+              <div className={styles.doseGroup}>
+                <p className={styles.doseGroupTitle}>
+                  <Moon size={18} aria-hidden="true" />
+                  Dose de nuit
+                </p>
+                <PatchQuarts quarts={quartsNuitAffiche} label="Nuit" />
+                <div className={styles.doseControls}>
+                  <button
+                    type="button"
+                    className={styles.btnNeutral}
+                    onClick={() => setQuartsNuit((q) => Math.max(0, q - 1))}
+                    disabled={quartsNuitAffiche === 0}
+                  >
+                    − ¼
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.btn}
+                    onClick={() => setQuartsNuit((q) => Math.min(quartsJour, q + 1))}
+                    disabled={quartsNuitAffiche >= quartsJour}
+                  >
+                    + ¼
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <p className={styles.message}>Expérimentez, fiez-vous à votre ressenti.</p>
+        </div>
       </section>
     </div>
   );

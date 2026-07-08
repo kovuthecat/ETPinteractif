@@ -114,61 +114,75 @@ export default function AddictionModule({ onNavigate }: ModuleProps) {
       </p>
 
       <div className={`${styles.explorer} ${data ? styles.explorerActive : ''}`}>
-        <div className={styles.vennWrap}>
-          <svg
-            className={styles.venn}
-            viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
-            role="img"
-            aria-label="Trois cercles qui se chevauchent : physique, psychologique et comportementale"
-          >
-            {renderOrder.map((pilier) => {
+        <div className={`${styles.vennCard} card`}>
+          <div className={styles.vennWrap}>
+            <svg
+              className={styles.venn}
+              viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
+              role="img"
+              aria-label="Trois cercles qui se chevauchent : physique, psychologique et comportementale"
+            >
+              {renderOrder.map((pilier) => {
+                const p = PILLARS_DATA[pilier];
+                const isSelected = selected === pilier;
+                return (
+                  <g
+                    key={pilier}
+                    className={isSelected ? styles.circleGroupActive : styles.circleGroup}
+                    style={pillarVars(p)}
+                  >
+                    <circle cx={p.cx} cy={p.cy} r={R} className={styles.circleShape} />
+                    <rect x={p.cx - 90} y={p.cy - 26} width={180} height={28} rx={6} className={styles.circleLabelBg} />
+                    <text x={p.cx} y={p.cy - 6} textAnchor="middle" className={styles.circleLabel}>{p.label}</text>
+                    {selected !== pilier && (
+                      <text x={p.cx} y={p.cy + 16} textAnchor="middle" className={styles.circleKeywords}>
+                        {p.exemples.slice(0, 2).join(' · ')}
+                      </text>
+                    )}
+                  </g>
+                );
+              })}
+            </svg>
+
+            {ORDER.map((pilier) => {
               const p = PILLARS_DATA[pilier];
               const isSelected = selected === pilier;
               return (
-                <g
+                <button
                   key={pilier}
-                  className={isSelected ? styles.circleGroupActive : styles.circleGroup}
-                  style={pillarVars(p)}
-                >
-                  <circle cx={p.cx} cy={p.cy} r={R} className={styles.circleShape} />
-                  <rect x={p.cx - 90} y={p.cy - 26} width={180} height={28} rx={6} className={styles.circleLabelBg} />
-                  <text x={p.cx} y={p.cy - 6} textAnchor="middle" className={styles.circleLabel}>{p.label}</text>
-                  {selected !== pilier && (
-                    <text x={p.cx} y={p.cy + 16} textAnchor="middle" className={styles.circleKeywords}>
-                      {p.exemples.slice(0, 2).join(' · ')}
-                    </text>
-                  )}
-                </g>
+                  type="button"
+                  className={styles.hitArea}
+                  style={{
+                    left: `${(p.cx / VIEW_W) * 100}%`,
+                    top: `${(p.cy / VIEW_H) * 100}%`,
+                    width: `${((R * 2) / VIEW_W) * 100}%`,
+                    height: `${((R * 2) / VIEW_H) * 100}%`,
+                  }}
+                  aria-pressed={isSelected}
+                  aria-label={`Dimension ${p.label}${isSelected ? ' (sélectionnée)' : ''}`}
+                  onClick={() => toggle(pilier)}
+                />
               );
             })}
-          </svg>
+          </div>
 
-          <p className={styles.centerCaption}>Ces dimensions s'alimentent entre elles</p>
+          <div className={styles.legend}>
+            {ORDER.map((pilier) => {
+              const p = PILLARS_DATA[pilier];
+              return (
+                <span key={pilier} className={styles.legendItem} style={pillarVars(p)}>
+                  <span className={styles.legendDot} aria-hidden="true" />
+                  {p.label}
+                </span>
+              );
+            })}
+          </div>
 
-          {ORDER.map((pilier) => {
-            const p = PILLARS_DATA[pilier];
-            const isSelected = selected === pilier;
-            return (
-              <button
-                key={pilier}
-                type="button"
-                className={styles.hitArea}
-                style={{
-                  left: `${(p.cx / VIEW_W) * 100}%`,
-                  top: `${(p.cy / VIEW_H) * 100}%`,
-                  width: `${((R * 2) / VIEW_W) * 100}%`,
-                  height: `${((R * 2) / VIEW_H) * 100}%`,
-                }}
-                aria-pressed={isSelected}
-                aria-label={`Dimension ${p.label}${isSelected ? ' (sélectionnée)' : ''}`}
-                onClick={() => toggle(pilier)}
-              />
-            );
-          })}
+          {!data && <p className={styles.emptyCaption}>Ces dimensions s'alimentent entre elles.</p>}
         </div>
 
         {data && (
-          <aside className={styles.actionsPanel} style={pillarVars(data)} aria-live="polite">
+          <aside className={`${styles.actionsPanel} card`} style={pillarVars(data)} aria-live="polite">
             <p className={styles.actionsTitle}>
               <span className={styles.actionsDot} aria-hidden="true" />
               Dimension {data.label}
@@ -185,12 +199,13 @@ export default function AddictionModule({ onNavigate }: ModuleProps) {
                 <div key={outil.text} className={styles.actionCard}>
                   <p className={styles.actionText}>{outil.text}</p>
                   {outil.navigation && (
-                    <button type="button" className={styles.navBtn} onClick={() => onNavigate(outil.navigation!.id)}>
+                    <button
+                      type="button"
+                      className={`btn btn--ghost ${styles.navBtn}`}
+                      onClick={() => onNavigate(outil.navigation!.id)}
+                    >
                       <span>{outil.navigation.label}</span>
-                      <span className={styles.navHint}>
-                        <ArrowRight size={14} aria-hidden="true" />
-                        autre module
-                      </span>
+                      <ArrowRight size={14} aria-hidden="true" />
                     </button>
                   )}
                 </div>

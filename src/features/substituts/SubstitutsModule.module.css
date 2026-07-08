@@ -10,43 +10,80 @@
   gap: var(--space-md);
 }
 
-.sectionTitle {
+.sectionEyebrow {
   margin: 0;
-  font-size: 1.2em;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
 }
 
-.chips {
-  display: flex;
-  flex-wrap: wrap;
+.intro {
+  max-width: 820px;
+  margin: 0;
+  color: var(--color-text-soft);
+  font-size: var(--font-size-lead, 1.1rem);
+  line-height: 1.55;
+}
+
+.formeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
   gap: var(--space-sm);
 }
 
-.chip,
-.chipActive {
-  padding: var(--space-sm) var(--space-md);
-  border-radius: var(--radius);
-  font-size: 0.95em;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.chip {
+.formeCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--target-min);
+  padding: var(--space-sm) 6px;
   background: var(--color-surface);
-  color: var(--color-text);
   border: 2px solid transparent;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-1);
+  color: var(--color-text);
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
-.chip:hover,
-.chip:focus-visible {
-  opacity: 0.85;
-  border-color: var(--color-accent);
+.formeCard:hover,
+.formeCard:focus-visible {
+  border-color: var(--color-confort);
 }
 
-.chipActive {
-  background: var(--color-accent);
-  color: var(--color-surface);
-  border: 2px solid var(--color-accent);
+.formeCardMuted {
+  opacity: 0.55;
+}
+
+.formeCardActive {
+  background: var(--color-confort-soft);
+  border-color: var(--color-confort);
+  box-shadow: none;
+  opacity: 1;
+}
+
+.formeDot {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-sm);
+  background: var(--color-line);
+}
+
+.formeCardActive .formeDot {
+  background: var(--color-confort);
+}
+
+.formeLabel {
+  font-size: 12px;
+  line-height: 1.2;
 }
 
 .panels {
@@ -60,13 +97,32 @@
   flex-direction: column;
   gap: var(--space-sm);
   padding: var(--space-md);
-  background: var(--color-surface);
   border-radius: var(--radius);
+  border-left: 5px solid transparent;
+}
+
+.panelBonnes {
+  background: var(--color-confort-soft);
+  border-left-color: var(--color-confort);
+}
+
+.panelErreurs {
+  background: var(--color-toxique-soft);
+  border-left-color: var(--color-toxique);
 }
 
 .panelTitle {
   margin: 0;
-  font-size: 1em;
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.panelBonnes .panelTitle {
+  color: var(--color-confort-strong);
+}
+
+.panelErreurs .panelTitle {
+  color: var(--color-toxique);
 }
 
 .panelList {
@@ -79,16 +135,70 @@
 }
 
 .panelList li {
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.panelRedaction {
+  padding: var(--space-md);
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  border: 1.5px dashed var(--color-line);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--color-text-soft);
+}
+
+.panelRedaction p {
+  margin: 0;
+}
+
+.techniqueCard {
+  padding: var(--space-md);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-1);
+}
+
+.techniquePlaceholder {
+  width: 100%;
+  aspect-ratio: 16 / 7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+  background: repeating-linear-gradient(
+    135deg,
+    var(--color-confort-soft) 0 14px,
+    rgba(0, 0, 0, 0) 14px 28px
+  );
+}
+
+.techniqueLabel {
   padding: var(--space-sm) var(--space-md);
-  background: rgba(0, 0, 0, 0.02);
-  border-radius: calc(var(--radius) * 0.5);
-  border-left: 4px solid var(--color-accent);
+  background: var(--color-surface-glass);
+  border-radius: var(--radius-sm);
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-confort-strong);
+}
+
+.titrationCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-1);
 }
 
 .stateCards {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-sm);
+  justify-content: center;
 }
 
 .stateCard {
@@ -100,15 +210,17 @@
   padding: var(--space-sm) var(--space-md);
   border-radius: var(--radius);
   background: var(--color-surface);
+  box-shadow: var(--shadow-1);
   border: 2px solid transparent;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 700;
+  font-size: 14px;
   transition: all 0.15s ease;
 }
 
 .stateCard:hover,
 .stateCard:focus-within {
-  border-color: var(--color-nav);
+  border-color: var(--color-vigilance);
 }
 
 .stateInput {
@@ -122,6 +234,7 @@
   background: var(--color-vigilance-soft);
   border-color: var(--color-vigilance);
   color: var(--color-vigilance);
+  box-shadow: none;
 }
 
 .stateCardWarn.stateCardActive {
@@ -135,10 +248,6 @@
   align-items: center;
   flex-wrap: wrap;
   gap: var(--space-sm) var(--space-md);
-  padding: var(--space-md);
-  background: var(--color-toxique-soft);
-  border: 2px solid var(--color-toxique);
-  border-radius: var(--radius);
   color: var(--color-toxique);
 }
 
@@ -152,6 +261,9 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-lg);
+  justify-content: center;
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--color-line);
 }
 
 .doseGroup {
@@ -160,8 +272,6 @@
   align-items: center;
   gap: var(--space-sm);
   padding: var(--space-md);
-  background: var(--color-surface);
-  border-radius: var(--radius);
   flex: 1 1 220px;
 }
 
@@ -170,7 +280,8 @@
   align-items: center;
   gap: var(--space-xs);
   margin: 0;
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 13.5px;
 }
 
 .doseControls {
@@ -201,12 +312,12 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(2, 1fr);
-  width: 64px;
-  height: 64px;
+  width: 56px;
+  height: 56px;
   gap: 2px;
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   overflow: hidden;
-  border: 2px solid var(--color-nav);
+  border: 2px solid var(--color-confort);
 }
 
 .quartFilled,
@@ -215,11 +326,11 @@
 }
 
 .quartFilled {
-  background: var(--color-nav);
+  background: var(--color-confort);
 }
 
 .quartEmpty {
-  background: var(--color-bg);
+  background: var(--color-surface);
 }
 
 .patchLabel {
@@ -232,27 +343,33 @@
 }
 
 .patchLabelMain {
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .patchLabelDetail {
-  font-size: var(--font-size-small);
-  opacity: 0.7;
+  font-size: 13px;
+  color: var(--color-text-soft);
 }
 
 .btn,
 .btnNeutral,
 .btnWarn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--target-min);
   padding: var(--space-sm) var(--space-md);
   border-radius: var(--radius);
-  font-size: 1em;
+  font-weight: 700;
+  font-size: 14px;
   cursor: pointer;
+  box-sizing: border-box;
 }
 
 .btn,
 .btnWarn {
   border: none;
-  color: var(--color-surface);
+  color: #fff;
 }
 
 .btn {
@@ -261,8 +378,9 @@
 
 .btnNeutral {
   background: var(--color-surface);
-  color: var(--color-nav);
-  border: 2px solid var(--color-nav);
+  color: var(--color-text);
+  border: 2px solid var(--color-line);
+  box-shadow: var(--shadow-1);
 }
 
 .btnWarn {
@@ -287,34 +405,16 @@
 
 .message {
   margin: 0;
-  font-size: 0.95em;
-  font-style: italic;
-  opacity: 0.8;
-}
-
-.formeConsigne {
-  margin: 0;
-  font-size: 0.95em;
-  opacity: 0.7;
-}
-
-.panelRedaction {
-  padding: var(--space-md);
-  background: var(--color-surface);
-  border-radius: var(--radius);
-  border-left: 4px solid var(--color-nav);
-  font-style: italic;
-  opacity: 0.75;
-}
-
-.panelRedaction p {
-  margin: 0;
+  text-align: center;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--color-text-soft);
 }
 
 .titrationAide {
   margin: 0;
-  font-size: 0.9em;
-  opacity: 0.75;
+  font-size: 12.5px;
+  color: var(--color-text-soft);
   font-style: italic;
   text-align: center;
   max-width: 28ch;

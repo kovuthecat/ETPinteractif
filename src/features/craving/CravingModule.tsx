@@ -1,328 +1,236 @@
 import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
-import type { LucideIcon } from 'lucide-react';
-import { FastForward, GlassWater, Hourglass, Sparkles, Wind } from 'lucide-react';
 import type { ModuleProps } from '../types';
 import styles from './CravingModule.module.css';
 
-const WIDTH = 600;
-const HEIGHT = 200;
-const N = 120;
-const PEAK = 0.3;
-const RISE_WIDTH = 0.12;
-const FALL_WIDTH = 0.32;
-const DURATION_MS = 30000;
-const GORGEES_TOTAL = 3;
+const CRAVING_DURATION = 180;
 
-type Phase = 'idle' | 'monte' | 'pic' | 'redescend' | 'passe';
+type Phase = 'idle' | 'active' | 'done';
+type DKey = 'differer' | 'detourner' | 'detendre' | 'eau';
 
-function bellValue(x: number): number {
-  const width = x <= PEAK ? RISE_WIDTH : FALL_WIDTH;
-  return Math.exp(-((x - PEAK) ** 2) / (2 * width ** 2));
-}
+const D_ORDER: DKey[] = ['differer', 'detourner', 'detendre', 'eau'];
 
-function buildBellPath(width: number, height: number): string {
-  const points = Array.from({ length: N }, (_, i) => {
-    const x = i / (N - 1);
-    const y = bellValue(x);
-    return `${x * width},${(1 - y) * height}`;
-  });
-  const [first, ...rest] = points;
-  return `M${first} L${rest.join(' ')}`;
-}
-
-function buildAreaPath(width: number, height: number): string {
-  return `${BELL_PATH} L${width},${height} L0,${height} Z`;
-}
-
-const BELL_PATH = buildBellPath(WIDTH, HEIGHT);
-const AREA_PATH = buildAreaPath(WIDTH, HEIGHT);
-const PEAK_X = PEAK * WIDTH;
-const PEAK_X_PERCENT = (PEAK_X / WIDTH) * 100;
-const AXIS_Y = HEIGHT - 2;
-
-const PIC_OPACITY_BY_COUNT = [1, 0.55, 0.35, 0.2, 0.1];
-
-function picOpacity(activeCount: number): number {
-  return PIC_OPACITY_BY_COUNT[Math.min(activeCount, PIC_OPACITY_BY_COUNT.length - 1)];
-}
-
-function getPhase(progress: number, running: boolean): Phase {
-  if (!running && progress === 0) return 'idle';
-  if (!running && progress >= 1) return 'passe';
-  if (progress < PEAK - 0.03) return 'monte';
-  if (progress <= PEAK + 0.05) return 'pic';
-  return 'redescend';
-}
-
-const PHASE_LABEL: Record<Phase, string> = {
-  idle: 'En attente — déclenchez la vague.',
-  monte: 'Ça monte…',
-  pic: "Pic de l'envie",
-  redescend: 'Ça redescend…',
-  passe: "C'est passé.",
+const D_INFO: Record<DKey, { titre: string; corps: string; couleur: string; couleurSoft: string }> = {
+  differer: {
+    titre: 'Différer',
+    corps: "Attendez encore un peu — l'envie ne fait que monter avant de redescendre.",
+    couleur: 'var(--color-vigilance)',
+    couleurSoft: 'var(--color-vigilance-soft)',
+  },
+  detourner: {
+    titre: "Détourner l'attention",
+    corps: "Occupez vos mains ou votre tête quelques minutes : marchez un peu, appelez quelqu'un.",
+    couleur: 'var(--color-nav)',
+    couleurSoft: 'var(--color-nav-soft)',
+  },
+  detendre: {
+    titre: 'Se détendre — respirez',
+    corps: 'Suivez le cercle : inspirez en le regardant grandir, expirez quand il se resserre.',
+    couleur: 'var(--color-confort)',
+    couleurSoft: 'var(--color-confort-soft)',
+  },
+  eau: {
+    titre: "D'eau",
+    corps: "Buvez un verre d'eau, lentement, en petites gorgées.",
+    couleur: 'oklch(55% 0.10 200)',
+    couleurSoft: 'oklch(55% 0.10 200 / .16)',
+  },
 };
 
-type DKey = 'differer' | 'distraire' | 'decontracter' | 'eau';
+interface Point {
+  x: number;
+  y: number;
+}
 
-const D_CARDS: { key: DKey; titre: string; conseil: string; Icon: LucideIcon }[] = [
-  {
-    key: 'differer',
-    titre: 'Différer',
-    conseil: "Attendez que la vague passe : ça ne dure que quelques minutes.",
-    Icon: Hourglass,
-  },
-  {
-    key: 'distraire',
-    titre: 'Distraire',
-    conseil: 'Faites autre chose, occupez vos mains et votre esprit.',
-    Icon: Sparkles,
-  },
-  {
-    key: 'decontracter',
-    titre: 'Décontracter',
-    conseil: 'Respiration lente : inspirez 4 secondes, expirez 6 secondes.',
-    Icon: Wind,
-  },
-  {
-    key: 'eau',
-    titre: "De l'eau",
-    conseil: "Buvez un grand verre d'eau, lentement.",
-    Icon: GlassWater,
-  },
+interface CubicSegment {
+  p0: Point;
+  c1: Point;
+  c2: Point;
+  p1: Point;
+}
+
+const WAVE_SEGMENTS: CubicSegment[] = [
+  { p0: { x: 10, y: 110 }, c1: { x: 90, y: 110 }, c2: { x: 120, y: 20 }, p1: { x: 190, y: 20 } },
+  { p0: { x: 190, y: 20 }, c1: { x: 280, y: 20 }, c2: { x: 300, y: 95 }, p1: { x: 400, y: 100 } },
+  { p0: { x: 400, y: 100 }, c1: { x: 470, y: 103 }, c2: { x: 500, y: 108 }, p1: { x: 570, y: 110 } },
 ];
 
-const ACTIVE_STYLE = { '--active-color': 'var(--color-confort)' } as CSSProperties;
+const WAVE_BG_PATH =
+  'M10,110 C90,110 120,20 190,20 C280,20 300,95 400,100 C470,103 500,108 570,110';
+
+function cubicPoint(seg: CubicSegment, t: number): Point {
+  const mt = 1 - t;
+  return {
+    x: mt * mt * mt * seg.p0.x + 3 * mt * mt * t * seg.c1.x + 3 * mt * t * t * seg.c2.x + t * t * t * seg.p1.x,
+    y: mt * mt * mt * seg.p0.y + 3 * mt * mt * t * seg.c1.y + 3 * mt * t * t * seg.c2.y + t * t * t * seg.p1.y,
+  };
+}
+
+function wavePoint(progress: number): Point {
+  const p = Math.max(0, Math.min(1, progress));
+  const scaled = p * WAVE_SEGMENTS.length;
+  let idx = Math.floor(scaled);
+  if (idx >= WAVE_SEGMENTS.length) idx = WAVE_SEGMENTS.length - 1;
+  const localT = Math.min(1, scaled - idx);
+  return cubicPoint(WAVE_SEGMENTS[idx], localT);
+}
+
+function wavePathUpTo(progress: number): string {
+  const steps = 40;
+  const count = Math.max(1, Math.round(steps * Math.max(0.02, progress)));
+  let d = '';
+  for (let i = 0; i <= count; i++) {
+    const p = (i / count) * progress;
+    const pt = wavePoint(p);
+    d += (i === 0 ? 'M' : ' L') + pt.x.toFixed(1) + ',' + pt.y.toFixed(1);
+  }
+  return d;
+}
+
+function formatClock(seconds: number): string {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m}:${String(s).padStart(2, '0')}`;
+}
 
 export default function CravingModule(_: ModuleProps) {
-  const [progress, setProgress] = useState(0);
-  const [running, setRunning] = useState(false);
-  const [activeTools, setActiveTools] = useState<Set<DKey>>(new Set());
-  const [respirationActive, setRespirationActive] = useState(false);
-  const [gorgees, setGorgees] = useState(0);
-  // Vrai si "Différer" a été activé pendant que la vague était en cours,
-  // afin d'afficher "C'est passé." uniquement lorsque la vague se termine réellement.
-  const [differActifPendantCourse, setDifferActifPendantCourse] = useState(false);
-  const rafRef = useRef<number | null>(null);
-  const startRef = useRef<number | null>(null);
+  const [phase, setPhase] = useState<Phase>('idle');
+  const [timeLeft, setTimeLeft] = useState(CRAVING_DURATION);
+  const [activeDs, setActiveDs] = useState<Set<DKey>>(new Set());
+  const intervalRef = useRef<number | null>(null);
 
   useEffect(() => {
     return () => {
-      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+      if (intervalRef.current !== null) clearInterval(intervalRef.current);
     };
   }, []);
 
-  // Quand "Différer" est activé et que la vague est en cours → mémoriser pour "C'est passé."
-  useEffect(() => {
-    if (running && activeTools.has('differer')) {
-      setDifferActifPendantCourse(true);
+  function start() {
+    if (intervalRef.current !== null) clearInterval(intervalRef.current);
+    setPhase('active');
+    setTimeLeft(CRAVING_DURATION);
+    setActiveDs(new Set());
+    intervalRef.current = window.setInterval(() => {
+      setTimeLeft((t) => {
+        const next = t - 1;
+        if (next <= 0) {
+          if (intervalRef.current !== null) clearInterval(intervalRef.current);
+          intervalRef.current = null;
+          setPhase('done');
+          return 0;
+        }
+        return next;
+      });
+    }, 1000);
+  }
+
+  function reset() {
+    if (intervalRef.current !== null) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
     }
-  }, [running, activeTools]);
-
-  function lancerVague() {
-    if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
-    startRef.current = null;
-    setProgress(0);
-    setRunning(true);
-    setDifferActifPendantCourse(false);
-
-    const step = (timestamp: number) => {
-      if (startRef.current === null) startRef.current = timestamp;
-      const elapsed = timestamp - startRef.current;
-      const p = Math.min(1, elapsed / DURATION_MS);
-      setProgress(p);
-      if (p < 1) {
-        rafRef.current = requestAnimationFrame(step);
-      } else {
-        setRunning(false);
-        rafRef.current = null;
-      }
-    };
-    rafRef.current = requestAnimationFrame(step);
+    setPhase('idle');
+    setTimeLeft(CRAVING_DURATION);
+    setActiveDs(new Set());
   }
 
-  function passerVague() {
-    if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
-    rafRef.current = null;
-    startRef.current = null;
-    setRunning(false);
-    setProgress(1);
-  }
-
-  function toggleTool(key: DKey) {
-    setActiveTools((prev) => {
+  function toggleD(id: DKey) {
+    setActiveDs((prev) => {
       const next = new Set(prev);
-      if (next.has(key)) {
-        next.delete(key);
-        if (key === 'decontracter') setRespirationActive(false);
-        if (key === 'eau') setGorgees(0);
-      } else {
-        next.add(key);
-      }
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
       return next;
     });
   }
 
-  const phase = getPhase(progress, running);
-  const dejaLancee = running || progress > 0;
-  const markerX = progress * WIDTH;
-  const markerY = (1 - bellValue(progress)) * HEIGHT;
-  const remainingS = Math.max(0, Math.ceil(((1 - progress) * DURATION_MS) / 1000));
-  const cartesActives = D_CARDS.filter((card) => activeTools.has(card.key));
-
-  const cartes = cartesActives.map((card) => (
-    <div key={card.key} className={styles.overlayCard}>
-      <p className={styles.overlayTitre}>
-        <card.Icon size={18} aria-hidden="true" />
-        {card.titre}
-      </p>
-      <p className={styles.overlayConseil}>{card.conseil}</p>
-
-      {card.key === 'differer' && (
-        <p className={styles.overlayDetail} aria-live="polite">
-          {running
-            ? remainingS > 0
-              ? `Encore ${remainingS} s…`
-              : "C'est passé."
-            : differActifPendantCourse && progress >= 1
-              ? "C'est passé."
-              : "Lancez la vague et différez pendant qu'elle monte."}
-        </p>
-      )}
-
-      {card.key === 'distraire' && (
-        <Sparkles size={26} className={styles.distraireIcon} aria-hidden="true" />
-      )}
-
-      {card.key === 'decontracter' && (
-        <div className={styles.respiration}>
-          <div
-            className={respirationActive ? `${styles.cercle} ${styles.cercleActif}` : styles.cercle}
-          />
-          <button
-            type="button"
-            className={styles.btnSmall}
-            onClick={() => setRespirationActive((a) => !a)}
-          >
-            {respirationActive ? 'Arrêter' : 'Démarrer'}
-          </button>
-        </div>
-      )}
-
-      {card.key === 'eau' && (
-        <div className={styles.eauWidget}>
-          <p className={styles.overlayDetail} aria-live="polite">
-            {gorgees === 0
-              ? 'Prenez le verre.'
-              : gorgees >= GORGEES_TOTAL
-                ? "C'est fait, bien joué."
-                : `Gorgée ${gorgees}/${GORGEES_TOTAL}…`}
-          </p>
-          <button
-            type="button"
-            className={styles.btnSmall}
-            onClick={() => setGorgees((g) => (g >= GORGEES_TOTAL ? 0 : g + 1))}
-          >
-            {gorgees >= GORGEES_TOTAL ? 'Recommencer' : 'Une gorgée'}
-          </button>
-        </div>
-      )}
-    </div>
-  ));
+  const progress = 1 - timeLeft / CRAVING_DURATION;
+  const dot = wavePoint(progress);
+  const wavePath = wavePathUpTo(progress);
 
   return (
     <div className={styles.module}>
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>La vague de l'envie</h2>
+      <p className={styles.intro}>
+        L'envie de fumer est une vague : elle monte, puis redescend d'elle-même — même sans
+        cigarette. Les 4D aident à tenir pendant ce temps.
+      </p>
 
-        <div className={styles.graphWrap}>
-          <svg
-            className={styles.graph}
-            viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
-            role="img"
-            aria-label="Schéma illustratif de la vague d'envie dans le temps"
-          >
-            <defs>
-              <linearGradient id="craving-aire" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="var(--color-accent)" stopOpacity="0.35" />
-                <stop offset="100%" stopColor="var(--color-accent)" stopOpacity="0" />
-              </linearGradient>
-            </defs>
-            <line x1={0} y1={AXIS_Y} x2={WIDTH} y2={AXIS_Y} className={styles.axe} />
-            <line x1={PEAK_X} y1={0} x2={PEAK_X} y2={AXIS_Y} className={styles.repereMax} />
-            <text x={PEAK_X} y={14} textAnchor="middle" className={styles.repereMaxLabel}>
-              pic
-            </text>
-            <path d={AREA_PATH} className={styles.aire} />
-            <path
-              d={BELL_PATH}
-              className={styles.courbe}
-              style={{ opacity: picOpacity(activeTools.size) }}
-            />
-            {dejaLancee && (
-              <g>
-                <circle cx={markerX} cy={markerY} r={13} className={styles.marqueurHalo} />
-                <circle cx={markerX} cy={markerY} r={7} className={styles.marqueur} />
-              </g>
-            )}
-          </svg>
-
-          {cartesActives.length > 0 && (
-            <div className={styles.overlayZone} style={{ left: `${PEAK_X_PERCENT}%` }}>
-              {cartes}
-            </div>
-          )}
-        </div>
-
-        <p className={styles.mention}>
-          Schéma illustratif — les ~30 secondes ici représentent quelques minutes réelles.
-        </p>
-
-        <p className={styles.phase} aria-live="polite">
-          {PHASE_LABEL[phase]}
-        </p>
-
-        <div className={styles.controls}>
-          <button type="button" className={styles.btn} onClick={lancerVague} disabled={running}>
-            {dejaLancee ? 'Rejouer' : 'Une envie arrive'}
+      {phase === 'idle' && (
+        <div className={`${styles.centerCard} card`}>
+          <p className={styles.centerTitle}>Une envie arrive ?</p>
+          <button type="button" className="btn btn--primary" onClick={start}>
+            Je ressens un craving
           </button>
-          <button
-            type="button"
-            className={styles.btnSecondary}
-            onClick={passerVague}
-            disabled={progress >= 1}
-          >
-            <FastForward size={18} aria-hidden="true" />
-            Passer 30 s
+          <p className={styles.centerHint}>Ça dure en général 3 à 5 minutes</p>
+        </div>
+      )}
+
+      {phase === 'active' && (
+        <div className={`${styles.activeCard} card`}>
+          <div className={styles.activeHeader}>
+            <p className={styles.activeTitle}>La vague est en train de redescendre</p>
+            <p className={styles.clock}>{formatClock(timeLeft)}</p>
+          </div>
+
+          <div className={styles.stage}>
+            <svg viewBox="0 0 580 130" preserveAspectRatio="xMidYMid meet" className={styles.svg}>
+              <path d={WAVE_BG_PATH} className={styles.waveBg} />
+              <path d={wavePath} className={styles.waveProgress} />
+              <circle cx={dot.x} cy={dot.y} r={13} className={styles.markerHalo} />
+              <circle cx={dot.x} cy={dot.y} r={7} className={styles.marker} />
+            </svg>
+          </div>
+
+          <div className={styles.dRow}>
+            {D_ORDER.map((id) => {
+              const info = D_INFO[id];
+              const active = activeDs.has(id);
+              const cardStyle = {
+                '--d-color': info.couleur,
+                '--d-soft': info.couleurSoft,
+                '--active-color': info.couleur,
+              } as CSSProperties;
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  className={`${styles.dCard} card${active ? ' activeDoubled' : ''}`}
+                  style={cardStyle}
+                  onClick={() => toggleD(id)}
+                  aria-pressed={active}
+                >
+                  <p className={styles.dTitre}>{info.titre}</p>
+                  <p className={styles.dCorps}>{info.corps}</p>
+                  {id === 'detendre' && active && (
+                    <div className={styles.respiration}>
+                      <svg viewBox="0 0 120 120" className={styles.respirationSvg} aria-hidden="true">
+                        <circle cx="60" cy="60" r="42" className={styles.respirationOutline} />
+                        <circle cx="60" cy="60" r="22" className={styles.respirationCercle} />
+                      </svg>
+                      <p className={styles.respirationHint}>
+                        Inspirez 5s en le regardant grandir, expirez 5s
+                      </p>
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+          <p className={styles.dHint}>Touchez un D pour agir — il aide à tenir pendant le pic de l'envie</p>
+        </div>
+      )}
+
+      {phase === 'done' && (
+        <div className={`${styles.centerCard} card`}>
+          <p className={styles.doneTitle}>La vague est passée.</p>
+          <p className={styles.doneText}>
+            Elle reviendra peut-être, un peu plus tard ou plus faible. À chaque fois, elle
+            redescend.
+          </p>
+          <button type="button" className="btn btn--primary" onClick={reset}>
+            Recommencer
           </button>
         </div>
-      </section>
-
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>Les 4 D</h2>
-        <p className={styles.sousTitre}>
-          Activez un ou plusieurs outils : ils viennent occuper le pic de la vague, qui continue
-          de redescendre derrière.
-        </p>
-        <div className={styles.toolsRow}>
-          {D_CARDS.map((card) => {
-            const isActive = activeTools.has(card.key);
-            return (
-              <button
-                key={card.key}
-                type="button"
-                className={isActive ? `${styles.toolBtn} activeDoubled` : styles.toolBtn}
-                style={isActive ? ACTIVE_STYLE : undefined}
-                onClick={() => toggleTool(card.key)}
-                aria-pressed={isActive}
-              >
-                <card.Icon size={20} aria-hidden="true" />
-                {card.titre}
-              </button>
-            );
-          })}
-        </div>
-      </section>
+      )}
 
       <p className={styles.aparte}>
         En parler — Tabac Info Service <strong>39 89</strong>.

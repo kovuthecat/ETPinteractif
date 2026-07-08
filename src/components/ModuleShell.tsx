@@ -14,8 +14,9 @@ export default function ModuleShell({ titre, sources, onBack, children }: Module
   return (
     <div className={styles.shell}>
       <header className={styles.header}>
-        <button type="button" className={styles.back} aria-label="Retour" onClick={onBack}>
-          <ArrowLeft size={24} />
+        <button type="button" className={styles.back} onClick={onBack}>
+          <ArrowLeft size={16} aria-hidden="true" />
+          Accueil
         </button>
         <h1 className={styles.titre}>{titre}</h1>
         <Sources items={sources} />

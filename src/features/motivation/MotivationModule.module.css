@@ -1,7 +1,14 @@
 .module {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xl);
+  gap: var(--space-lg);
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 15px;
+  opacity: 0.65;
+  max-width: 64ch;
 }
 
 .section {
@@ -17,307 +24,371 @@
 .tabs {
   display: flex;
   gap: var(--space-xs);
-  border-bottom: 2px solid var(--color-nav-soft);
 }
 
 .tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   min-height: 44px;
-  padding: var(--space-sm) var(--space-md);
+  padding: 9px 20px;
   border: none;
-  border-bottom: 3px solid transparent;
-  background: transparent;
-  color: var(--color-text);
-  font-size: 1em;
-  font-weight: 600;
-  opacity: 0.7;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text-soft);
+  font-size: 13px;
+  font-weight: 800;
+  box-shadow: var(--shadow-1);
   cursor: pointer;
 }
 
-.tab:hover,
 .tab:focus-visible {
-  opacity: 1;
-}
-
-.tab:focus-visible {
-  outline: 3px solid var(--color-confort);
+  outline: 3px solid var(--color-nav);
   outline-offset: 2px;
 }
 
 .tabActive {
-  opacity: 1;
-  color: var(--color-confort);
-  border-bottom-color: var(--color-confort);
+  background: var(--color-nav);
+  color: #fff;
+  box-shadow: none;
 }
 
-.sectionTitle {
-  margin: 0;
-  font-size: 1.2em;
-}
+/* ── Étapes Question 1/2 + synthèse ─────────────────────────────────────── */
 
-.sousTitre {
-  margin: 0;
-  font-size: var(--font-size-small);
-  opacity: 0.8;
-}
-
-.echelle {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-  padding: var(--space-md);
-  background: var(--color-surface);
-  border-radius: var(--radius);
-}
-
-.echelleLabel {
-  font-weight: 600;
-}
-
-.slider {
+.stepPanel {
+  align-self: center;
   width: 100%;
-  accent-color: var(--color-confort);
-  cursor: pointer;
-  padding-block: var(--space-sm);
-  /* Piste épaisse — Firefox */
-  height: 8px;
+  max-width: 480px;
+  margin: var(--space-md) auto 0;
+  padding: 40px 32px;
+  border-radius: 20px;
+  text-align: center;
+  box-sizing: border-box;
 }
 
-/* Piste épaisse — Chrome/Safari/Edge */
-.slider::-webkit-slider-runnable-track {
-  height: 8px;
-  border-radius: 4px;
-  background: color-mix(in srgb, var(--color-confort) 30%, transparent);
+.stepPanelImportance {
+  background: var(--color-confort-soft);
 }
 
-/* Pouce large — Chrome/Safari/Edge */
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--color-confort);
-  margin-top: -10px; /* centrage vertical par rapport à la piste de 8 px */
-  cursor: pointer;
+.stepPanelConfiance {
+  background: var(--color-nav-soft);
 }
 
-/* Piste épaisse — Firefox */
-.slider::-moz-range-track {
-  height: 8px;
-  border-radius: 4px;
-  background: color-mix(in srgb, var(--color-confort) 30%, transparent);
-}
-
-/* Pouce large — Firefox */
-.slider::-moz-range-thumb {
-  width: 28px;
-  height: 28px;
-  border: none;
-  border-radius: 50%;
-  background: var(--color-confort);
-  cursor: pointer;
-}
-
-.sliderBornes {
-  display: flex;
-  justify-content: space-between;
-  margin-top: calc(-1 * var(--space-xs));
-  font-size: var(--font-size-small);
-  opacity: 0.6;
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-.echelleValeur {
-  margin: 0;
-  font-size: 1.1em;
-  font-weight: 600;
-  color: var(--color-confort);
-}
-
-.relance {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-  min-height: 1.4em;
-}
-
-.relance p {
-  margin: 0;
-  font-size: var(--font-size-small);
-  font-style: italic;
-  opacity: 0.75;
-}
-
-.reserveBloc {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-  padding: var(--space-md);
+.stepPanelDone {
   background: var(--color-surface);
-  border: 2px solid transparent;
-  border-radius: var(--radius);
-  transition: border-color 0.15s, background 0.15s;
+  border: 1px solid var(--color-line);
+  box-shadow: var(--shadow-1);
 }
 
-.reserveBlocOver {
-  border-color: var(--color-confort);
-  background: var(--color-confort-soft);
+.stepLabel {
+  margin: 0 0 14px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
 }
 
-.reserveTitre {
-  margin: 0;
-  font-size: 1em;
-  opacity: 0.8;
+.stepQuestion {
+  margin: 0 0 26px;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.3;
 }
 
-.reserve {
+.stepHint {
+  margin: 10px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-faint);
+}
+
+.relanceStack {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-sm);
-}
-
-.reserveVide {
-  margin: 0;
-  font-size: var(--font-size-small);
-  font-style: italic;
-  opacity: 0.7;
-}
-
-.carteReserve {
-  display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: var(--space-xs);
-  padding: var(--space-xs) var(--space-sm);
-  min-height: 44px;
-  background: var(--color-confort-soft);
-  border: 2px solid var(--color-confort);
-  border-radius: var(--radius);
-  cursor: grab;
+  margin-top: 22px;
 }
 
-.carteReserve:active {
-  cursor: grabbing;
+.relanceBubble {
+  margin: 0;
+  padding: 12px 14px;
+  background: var(--color-surface);
+  border-radius: 9px;
+  font-size: 13px;
+  line-height: 1.4;
 }
 
-.carteReserve:focus-visible {
-  outline: 3px solid var(--color-confort);
+.stepButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 24px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.stepButton:focus-visible {
+  outline: 3px solid var(--color-text);
   outline-offset: 2px;
 }
 
-.carteInputReserve {
-  width: 220px;
-  padding: var(--space-xs) var(--space-sm);
-  border: 1px solid var(--color-confort);
-  border-radius: var(--radius);
-  background: var(--color-surface);
-  color: var(--color-text);
-  font-size: 1em;
-  font-weight: 600;
-  /* L'input ne doit pas capturer le curseur grab de la carte */
-  cursor: text;
+.stepButtonImportance {
+  background: var(--color-confort);
 }
 
-.whiteboard {
+.stepButtonConfiance {
+  background: var(--color-nav);
+}
+
+.doneTitle {
+  margin: 0 0 22px;
+  font-family: 'Source Serif 4', serif;
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.recapRow {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 8px;
+}
+
+.recapCard {
+  flex: 1;
+  max-width: 180px;
+  padding: 16px;
+  border-radius: 14px;
+}
+
+.recapCardImportance {
+  background: var(--color-confort-soft);
+}
+
+.recapCardConfiance {
+  background: var(--color-nav-soft);
+}
+
+.recapLabel {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0.6;
+}
+
+.recapValue {
+  margin: 0;
+  font-family: 'Source Serif 4', serif;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.recapValueImportance {
+  color: var(--color-confort-strong);
+}
+
+.recapValueConfiance {
+  color: var(--color-nav);
+}
+
+.recapUnit {
+  margin-left: 2px;
+  font-size: 15px;
+  opacity: 0.5;
+}
+
+.restartBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 22px;
+  background: none;
+  border: none;
+  color: var(--color-text-soft);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ── Onglet « Mes raisons » : tableau + réserve ─────────────────────────── */
+
+.board {
   position: relative;
   min-height: min(40vh, 360px);
+  padding: 20px;
   background: var(--color-surface);
-  border: 2px dashed var(--color-nav-soft);
-  border-radius: var(--radius);
-  overflow: hidden;
-  transition: border-color 0.15s, background 0.15s;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-1);
 }
 
-.whiteboardOver {
-  border-color: var(--color-confort);
-  border-style: solid;
-  background: color-mix(in srgb, var(--color-confort-soft) 60%, var(--color-surface));
+.boardEmpty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0.4;
 }
 
-.carte {
+.boardCardWrap {
   position: absolute;
   left: var(--carte-x, 50%);
   top: var(--carte-y, 50%);
   transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: var(--space-xs);
-  min-width: 220px;
-  max-width: 280px;
-  width: max-content;
-  padding: var(--space-sm);
-  background: var(--color-confort-soft);
-  border: 2px solid var(--color-confort);
-  border-radius: var(--radius);
+  width: 180px;
 }
 
-.carteHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-xs);
-}
-
-.poignee {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 44px;
-  min-height: 44px;
-  background: transparent;
+.boardCard {
+  display: block;
+  width: 100%;
+  padding: 14px 12px;
   border: none;
-  color: var(--color-confort);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 800;
+  line-height: 1.3;
+  text-align: left;
+  box-shadow: 0 6px 14px rgba(58, 51, 44, 0.2);
   cursor: grab;
   touch-action: none;
 }
 
-.poignee:active {
+.boardCard:active {
   cursor: grabbing;
 }
 
-.poignee:focus-visible {
-  outline: 3px solid var(--color-confort);
+.boardCard:focus-visible {
+  outline: 3px solid #fff;
   outline-offset: 2px;
 }
 
-.carteInput {
+.boardCardDetail {
+  display: block;
+  margin-top: 5px;
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1.35;
+  opacity: 0.9;
+}
+
+.boardCardEditing {
+  padding: 12px;
+  background: var(--color-surface);
+  border: 2px solid transparent;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(58, 51, 44, 0.22);
+}
+
+.cardLabelInput {
   width: 100%;
-  padding: var(--space-xs) var(--space-sm);
-  border: 1px solid var(--color-confort);
-  border-radius: var(--radius);
-  background: var(--color-surface);
+  margin-bottom: 6px;
+  padding: 4px 0;
+  border: none;
+  border-bottom: 1px solid var(--color-line);
+  background: transparent;
   color: var(--color-text);
-  font-size: 1em;
-  font-weight: 600;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 13.5px;
+  font-weight: 800;
+  box-sizing: border-box;
 }
 
-.carteDetail {
-  padding: var(--space-xs) var(--space-sm);
-  border: 1px solid transparent;
-  border-radius: var(--radius);
+.cardLabelInput:focus-visible {
+  outline: 2px solid var(--color-nav);
+}
+
+.cardDetailInput {
+  width: 100%;
+  padding: 6px;
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
   background: var(--color-surface);
   color: var(--color-text);
-  font-size: var(--font-size-small);
+  font-family: 'Work Sans', sans-serif;
+  font-size: 12.5px;
   resize: none;
+  box-sizing: border-box;
 }
 
-.btnAjouter {
+.cardEditFooter {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+.cardDeleteBtn,
+.cardOkBtn {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-xs);
-  align-self: flex-start;
-  padding: var(--space-sm) var(--space-md);
-  border: 2px solid var(--color-confort);
-  border-radius: var(--radius);
-  background: transparent;
-  color: var(--color-confort);
-  font-size: 1em;
-  font-weight: 600;
+  background: none;
+  border: none;
+  padding: 0 4px;
+  font-size: 12px;
+  font-weight: 700;
   cursor: pointer;
 }
 
-.btnAjouter:hover,
-.btnAjouter:focus-visible {
-  background: var(--color-confort-soft);
+.cardDeleteBtn {
+  color: var(--color-toxique);
+}
+
+.cardOkBtn {
+  color: var(--color-nav);
+}
+
+.reserveLabel {
+  margin: var(--space-sm) 0 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+}
+
+.reserveRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.reserveCard {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 14px;
+  background: var(--color-surface);
+  border: 2px dashed var(--color-line);
+  border-radius: 8px;
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.reserveCard:hover,
+.reserveCard:focus-visible {
+  border-color: var(--color-nav);
+  outline: none;
+}
+
+.reserveCard:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
+}
+
+.addCardBtn {
+  gap: 6px;
 }

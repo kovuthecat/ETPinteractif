@@ -1,0 +1,16 @@
+.dial {
+  display: inline-flex;
+  margin: 0 auto;
+  cursor: grab;
+  touch-action: none;
+  border-radius: 50%;
+}
+
+.dial:active {
+  cursor: grabbing;
+}
+
+.dial:focus-visible {
+  outline: 3px solid var(--dial-color, var(--color-nav));
+  outline-offset: 4px;
+}

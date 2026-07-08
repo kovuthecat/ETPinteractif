@@ -1,360 +1,383 @@
-import { useId, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
-import { AlertTriangle, Bandage, CheckCircle2, Cigarette, Pill, RotateCcw, Wind, X } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, RotateCcw } from 'lucide-react';
 import type { ModuleProps } from '../types';
 import {
   sampleCurve,
   classifyZone,
-  THRESHOLD_LOW,
-  THRESHOLD_HIGH,
-  type CurveEvent,
-  type Zone,
+  toSvgPath,
+  TIME_MAX,
+  LEVEL_MAX,
+  ZONE_THRESHOLD_LOW,
+  ZONE_THRESHOLD_HIGH,
+  type NicotineEventType,
+  type NicotineZone,
 } from '../../lib/nicotineCurve';
 import styles from './NicotineModule.module.css';
 
-const WIDTH = 600;
-const HEIGHT = 280;
-const AXIS_GAP = 28;
-const VIEW_HEIGHT = HEIGHT + AXIS_GAP;
-const N = 120;
+// Repère du graphe (identique au handoff : viewBox 640×262, marges GX0/GX1/GY_TOP/GY_BOT).
+const VB_WIDTH = 640;
+const VB_HEIGHT = 262;
+const GX0 = 20;
+const GX1 = 620;
+const GY_TOP = 20;
+const GY_BOT = 220;
 
-const FIRST_EVENT_T = 0.08;
-const EVENT_STEP = 0.05;
-const MAX_EVENT_T = 0.92;
+type Marker = { id: number; type: NicotineEventType; time: number; dose?: number };
 
-const EVENTS_DEF: { kind: CurveEvent['kind']; label: string; Icon: LucideIcon }[] = [
-  { kind: 'cigarette', label: 'Fumer une cigarette', Icon: Cigarette },
-  { kind: 'ponctuel', label: 'Substitut ponctuel', Icon: Pill },
-  { kind: 'vapoteuse', label: 'Vapoteuse', Icon: Wind },
-  { kind: 'patch', label: 'Poser un patch', Icon: Bandage },
+const TOOLS: { type: NicotineEventType; label: string; colorVar: string; colorSoftVar: string }[] = [
+  { type: 'cigarette', label: 'Cigarette', colorVar: '--color-toxique', colorSoftVar: '--color-toxique-soft' },
+  { type: 'patch', label: 'Patch', colorVar: '--color-confort', colorSoftVar: '--color-confort-soft' },
+  { type: 'substitut', label: 'Substitut', colorVar: '--color-nav', colorSoftVar: '--color-nav-soft' },
 ];
 
-const ZONE_LABEL: Record<Zone, string> = {
-  manque: 'Manque',
-  confort: 'Confort',
-  haut: 'Trop haut',
+const TOOL_META = Object.fromEntries(TOOLS.map((t) => [t.type, t])) as Record<
+  NicotineEventType,
+  (typeof TOOLS)[number]
+>;
+
+const ZONE_META: Record<NicotineZone, { label: string; chipClass: string; fillClass: string; labelClass: string; Icon: LucideIcon }> = {
+  manque: {
+    label: 'Manque',
+    chipClass: 'chip--vigilance',
+    fillClass: 'zone-fill--vigilance',
+    labelClass: 'zone-label--vigilance',
+    Icon: AlertTriangle,
+  },
+  confort: {
+    label: 'Confort',
+    chipClass: 'chip--confort',
+    fillClass: 'zone-fill--confort',
+    labelClass: 'zone-label--confort',
+    Icon: CheckCircle2,
+  },
+  surdosage: {
+    label: 'Surdosage',
+    chipClass: 'chip--toxique',
+    fillClass: 'zone-fill--toxique',
+    labelClass: 'zone-label--toxique',
+    Icon: AlertTriangle,
+  },
 };
 
-const ZONE_ICON: Record<Zone, LucideIcon> = {
-  manque: AlertTriangle,
-  confort: CheckCircle2,
-  haut: AlertTriangle,
-};
-
-const ZONE_STROKE_CLASS: Record<Zone, string> = {
-  manque: styles.courbeToxique,
-  confort: styles.courbeConfort,
-  haut: styles.courbeToxique,
-};
-
-const ZONE_CHIP_CLASS: Record<Zone, string> = {
-  manque: styles.chipToxique,
-  confort: styles.chipConfort,
-  haut: styles.chipToxique,
-};
-
-const BAND_CLASS: Record<Zone, string> = {
-  manque: styles.bandToxique,
-  confort: styles.bandConfort,
-  haut: styles.bandToxique,
-};
-
-function nextEventTime(events: CurveEvent[]): number {
-  return Math.min(MAX_EVENT_T, FIRST_EVENT_T + events.length * EVENT_STEP);
+function timeToX(t: number): number {
+  return GX0 + (t / TIME_MAX) * (GX1 - GX0);
 }
 
-function segmentPath(points: string[]): string {
-  const [first, ...rest] = points;
-  return rest.length > 0 ? `M${first} L${rest.join(' ')}` : `M${first}`;
+function levelToY(level: number): number {
+  const clamped = Math.min(LEVEL_MAX, Math.max(0, level));
+  return GY_BOT - (clamped / LEVEL_MAX) * (GY_BOT - GY_TOP);
 }
 
-function areaPath(points: string[]): string {
-  if (points.length === 0) return '';
-  const x0 = points[0].split(',')[0];
-  const xLast = points[points.length - 1].split(',')[0];
-  return `M${x0},${HEIGHT} L${points.join(' L')} L${xLast},${HEIGHT} Z`;
+function formatDose(dose: number): string {
+  const n = Math.round(dose * 4);
+  if (n % 4 === 0) return `×${n / 4}`;
+  return `×${(n / 4).toFixed(2).replace(/0$/, '')}`;
 }
 
-function buildZoneSegments(ys: number[]): { zone: Zone; points: string[] }[] {
-  if (ys.length === 0) return [];
-  const point = (i: number) => {
-    const x = ys.length === 1 ? 0 : (i / (ys.length - 1)) * WIDTH;
-    return `${x},${(1 - ys[i]) * HEIGHT}`;
-  };
-  const segments: { zone: Zone; points: string[] }[] = [];
-  let zone = classifyZone(ys[0]);
-  let points = [point(0)];
-  for (let i = 1; i < ys.length; i++) {
-    const z = classifyZone(ys[i]);
-    if (z !== zone) {
-      points.push(point(i));
-      segments.push({ zone, points });
-      zone = z;
-      points = [point(i - 1), point(i)];
-    } else {
-      points.push(point(i));
+/** Grille de carrés (quarts de dose) pour un marqueur patch, positionnée autour de x. */
+function patchCells(x: number, dose: number, color: string) {
+  const cellSize = 9;
+  const cellGap = 1;
+  const squareGap = 4;
+  const squareSize = 2 * cellSize + cellGap;
+  const quarterUnits = Math.round(dose * 4);
+  const totalSquares = Math.max(1, Math.ceil(quarterUnits / 4));
+  const totalW = totalSquares * squareSize + (totalSquares - 1) * squareGap;
+  const startX = x - totalW / 2;
+  const baseY = 226;
+  const cells: { key: string; x: number; y: number; filled: boolean }[] = [];
+  for (let s = 0; s < totalSquares; s++) {
+    for (let p = 0; p < 4; p++) {
+      const idx = s * 4 + p;
+      const filled = idx < quarterUnits;
+      const row = Math.floor(p / 2);
+      const col = p % 2;
+      const cx = startX + s * (squareSize + squareGap) + col * (cellSize + cellGap);
+      const cy = baseY + row * (cellSize + cellGap);
+      cells.push({ key: `${s}-${p}`, x: cx, y: cy, filled });
     }
   }
-  segments.push({ zone, points });
-  return segments;
+  return { cells, cellSize, totalW, color };
 }
 
 export default function NicotineModule(_: ModuleProps) {
-  const gradId = useId();
-  const [events, setEvents] = useState<CurveEvent[]>([]);
-  // dropX : position en fraction [0,1] du repère fantôme pendant le drag ; null = pas de drag actif
-  const [dropX, setDropX] = useState<number | null>(null);
-  // dragKind : kind en cours de drag (ref pour éviter re-render au dragstart)
-  const dragKindRef = useRef<CurveEvent['kind'] | null>(null);
-  // Ref sur le SVG pour calculer les coordonnées relatives au drop
   const svgRef = useRef<SVGSVGElement>(null);
+  const nextId = useRef(0);
+  const [tool, setTool] = useState<NicotineEventType>('cigarette');
+  const [markers, setMarkers] = useState<Marker[]>([]);
 
-  const ys = useMemo(() => sampleCurve({ patch: false, events, n: N }), [events]);
-  const zoneSegments = useMemo(() => buildZoneSegments(ys), [ys]);
+  const events = useMemo(
+    () => markers.map(({ type, time, dose }) => ({ type, time, dose })),
+    [markers],
+  );
+  const curveLevels = useMemo(() => sampleCurve({ events }), [events]);
+  const curvePath = useMemo(
+    () => toSvgPath(curveLevels, { width: GX1 - GX0, height: GY_BOT - GY_TOP }),
+    [curveLevels],
+  );
+  const peakLevel = curveLevels.reduce((max, v) => Math.max(max, v), 0);
+  const peakZone = classifyZone(peakLevel);
+  const peakMeta = ZONE_META[peakZone];
+  const PeakIcon = peakMeta.Icon;
 
-  const peakIndex = ys.reduce((best, y, i) => (y > ys[best] ? i : best), 0);
-  const currentZone = classifyZone(ys[peakIndex]);
-  const ZoneIcon = ZONE_ICON[currentZone];
+  const yHigh = levelToY(ZONE_THRESHOLD_HIGH);
+  const yLow = levelToY(ZONE_THRESHOLD_LOW);
 
-  const lowY = (1 - THRESHOLD_LOW) * HEIGHT;
-  const highY = (1 - THRESHOLD_HIGH) * HEIGHT;
-
-  /** Fallback clavier/clic : ajoute au temps suivant automatique */
-  function addEvent(kind: CurveEvent['kind']) {
-    setEvents((prev) => [...prev, { kind, t: nextEventTime(prev) }]);
+  function timeFromClientX(clientX: number): number {
+    if (!svgRef.current) return 0;
+    const rect = svgRef.current.getBoundingClientRect();
+    const scaleX = VB_WIDTH / rect.width;
+    const vx = (clientX - rect.left) * scaleX;
+    let t = ((vx - GX0) / (GX1 - GX0)) * TIME_MAX;
+    t = Math.max(0, Math.min(TIME_MAX, t));
+    return Math.round(t * 4) / 4;
   }
 
-  /** Calcule t ∈ [FIRST_EVENT_T, MAX_EVENT_T] depuis clientX sur le SVG */
-  function tFromClientX(clientX: number): number {
-    if (!svgRef.current) return FIRST_EVENT_T;
-    const rect = svgRef.current.getBoundingClientRect();
-    const raw = (clientX - rect.left) / rect.width;
-    return Math.max(FIRST_EVENT_T, Math.min(MAX_EVENT_T, raw));
+  function handleGraphClick(e: React.MouseEvent<SVGSVGElement>) {
+    const time = timeFromClientX(e.clientX);
+    const dose = tool === 'patch' ? 1 : undefined;
+    setMarkers((prev) => [...prev, { id: nextId.current++, type: tool, time, dose }]);
+  }
+
+  function removeMarker(id: number, e: React.SyntheticEvent) {
+    e.stopPropagation();
+    setMarkers((prev) => prev.filter((m) => m.id !== id));
+  }
+
+  function removeMarkerKey(id: number, e: React.KeyboardEvent) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      e.stopPropagation();
+      setMarkers((prev) => prev.filter((m) => m.id !== id));
+    }
+  }
+
+  function adjustDose(id: number, delta: number, e: React.SyntheticEvent) {
+    e.stopPropagation();
+    setMarkers((prev) =>
+      prev.map((m) =>
+        m.id === id ? { ...m, dose: Math.max(0.25, Math.min(4, Math.round(((m.dose ?? 1) + delta) * 4) / 4)) } : m,
+      ),
+    );
   }
 
   function reset() {
-    setEvents([]);
+    setMarkers([]);
   }
-
-  function removeEvent(index: number) {
-    setEvents((prev) => prev.filter((_, i) => i !== index));
-  }
-
-  // ── Handlers drag sur les vignettes ──────────────────────────────────────
-  function handleDragStart(kind: CurveEvent['kind'], e: React.DragEvent) {
-    dragKindRef.current = kind;
-    // Données dans dataTransfer aussi pour robustesse cross-browser
-    e.dataTransfer.setData('text/plain', kind);
-    e.dataTransfer.effectAllowed = 'copy';
-  }
-
-  function handleDragEnd() {
-    dragKindRef.current = null;
-    setDropX(null);
-  }
-
-  // ── Handlers drop sur le calque ───────────────────────────────────────────
-  function handleDragOver(e: React.DragEvent) {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'copy';
-    const t = tFromClientX(e.clientX);
-    setDropX(t);
-  }
-
-  function handleDragLeave() {
-    setDropX(null);
-  }
-
-  function handleDrop(e: React.DragEvent) {
-    e.preventDefault();
-    const kind =
-      dragKindRef.current ??
-      ((e.dataTransfer.getData('text/plain') as CurveEvent['kind'] | '') || null);
-    if (!kind) return;
-    const t = tFromClientX(e.clientX);
-    setEvents((prev) => [...prev, { kind, t }]);
-    dragKindRef.current = null;
-    setDropX(null);
-  }
-
-  // Convertit t ∈ [0,1] en coordonnée X SVG pour la ligne fantôme
-  const dropSvgX = dropX !== null ? dropX * WIDTH : null;
 
   return (
     <div className={styles.module}>
       <p className={styles.consigne}>
-        Glissez une prise sur la frise pour la placer au moment voulu, ou cliquez pour l'ajouter à la suite.
+        Choisissez un outil, puis cliquez sur la frise pour placer un événement à cet instant. Observez comment
+        le taux de nicotine traverse les trois zones.
       </p>
 
-      <div className={styles.gestes}>
-        {EVENTS_DEF.map(({ kind, label, Icon }) => (
+      <div className={styles.toolbar}>
+        {TOOLS.map((t) => (
           <button
-            key={kind}
+            key={t.type}
             type="button"
-            className={styles.gesteBtn}
-            draggable
-            onDragStart={(e) => handleDragStart(kind, e)}
-            onDragEnd={handleDragEnd}
-            onClick={() => addEvent(kind)}
-            aria-label={`Glisser ${label.toLowerCase()} sur la frise, ou activer pour l'ajouter à la suite`}
+            className={`btn ${styles.toolBtn} ${tool === t.type ? styles.toolBtnActive : ''}`}
+            style={{ '--tool-color': `var(${t.colorVar})`, '--tool-color-soft': `var(${t.colorSoftVar})` } as React.CSSProperties}
+            aria-pressed={tool === t.type}
+            onClick={() => setTool(t.type)}
           >
-            <Icon size={18} aria-hidden="true" />
-            {label}
+            <span className={styles.toolDot} aria-hidden="true" />
+            {t.label}
           </button>
         ))}
-      </div>
-
-      <div className={styles.graphHeader}>
-        <p
-          className={`${styles.chip} ${ZONE_CHIP_CLASS[currentZone]}`}
-          aria-live="polite"
-          aria-label={`Pic atteint : ${ZONE_LABEL[currentZone]}`}
-        >
-          <ZoneIcon size={16} aria-hidden="true" />
-          Pic atteint : {ZONE_LABEL[currentZone]}
-        </p>
-
-        <div className={styles.playback}>
-          <button type="button" className={styles.reset} onClick={reset}>
+        {markers.length > 0 && (
+          <button type="button" className={`btn btn--tertiary ${styles.resetBtn}`} onClick={reset}>
             <RotateCcw size={16} aria-hidden="true" />
             Réinitialiser
           </button>
-        </div>
+        )}
       </div>
 
-      <svg
+      <div className={`card ${styles.graphCard}`}>
+        <svg
           ref={svgRef}
-          className={styles.graph}
-          viewBox={`0 0 ${WIDTH} ${VIEW_HEIGHT}`}
+          className={styles.graphSvg}
+          viewBox={`0 0 ${VB_WIDTH} ${VB_HEIGHT}`}
           role="img"
-          aria-label="Schéma illustratif du cumul de nicotinémie selon les prises ajoutées"
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
+          aria-label="Taux de nicotine sur 24 h selon les événements placés (échelle illustrative)"
+          onClick={handleGraphClick}
         >
-          <defs>
-            <linearGradient id={`${gradId}-confort`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" className={styles.stopConfortStart} />
-              <stop offset="100%" className={styles.stopEnd} />
-            </linearGradient>
-            <linearGradient id={`${gradId}-toxique`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" className={styles.stopToxiqueStart} />
-              <stop offset="100%" className={styles.stopEnd} />
-            </linearGradient>
-          </defs>
+          <rect x={GX0} y={GY_TOP} width={GX1 - GX0} height={yHigh - GY_TOP} className={ZONE_META.surdosage.fillClass} />
+          <rect x={GX0} y={yHigh} width={GX1 - GX0} height={yLow - yHigh} className={ZONE_META.confort.fillClass} />
+          <rect x={GX0} y={yLow} width={GX1 - GX0} height={GY_BOT - yLow} className={ZONE_META.manque.fillClass} />
 
-          <rect x={0} y={0} width={WIDTH} height={highY} className={BAND_CLASS.haut} />
-          <rect x={0} y={highY} width={WIDTH} height={lowY - highY} className={BAND_CLASS.confort} />
-          <rect x={0} y={lowY} width={WIDTH} height={HEIGHT - lowY} className={BAND_CLASS.manque} />
+          <line x1={GX0} y1={yHigh} x2={GX1} y2={yHigh} className={styles.seuil} />
+          <line x1={GX0} y1={yLow} x2={GX1} y2={yLow} className={styles.seuil} />
 
-          <line x1={0} y1={lowY} x2={WIDTH} y2={lowY} className={styles.seuil} />
-          <line x1={0} y1={highY} x2={WIDTH} y2={highY} className={styles.seuil} />
-          <text x={8} y={lowY + 16} className={styles.label}>
-            Seuil de manque
-          </text>
-          <text x={8} y={highY - 8} className={styles.label}>
-            Seuil de tolérance
-          </text>
-
-          {zoneSegments.map((seg, i) => (
-            <path
-              key={`aire-${i}`}
-              d={areaPath(seg.points)}
-              fill={`url(#${gradId}-${seg.zone === 'confort' ? 'confort' : 'toxique'})`}
-              stroke="none"
-            />
-          ))}
-          {zoneSegments.map((seg, i) => (
-            <path
-              key={`ligne-${i}`}
-              d={segmentPath(seg.points)}
-              className={`${styles.courbe} ${ZONE_STROKE_CLASS[seg.zone]}`}
-            />
-          ))}
-
-          <line x1={0} y1={HEIGHT + 4} x2={WIDTH} y2={HEIGHT + 4} className={styles.axisLine} />
-
-          {/* Ligne fantôme de dépôt pendant le drag */}
-          {dropSvgX !== null && (
+          {markers.map((m) => (
             <line
-              x1={dropSvgX}
-              y1={0}
-              x2={dropSvgX}
-              y2={VIEW_HEIGHT}
-              className={styles.dropLine}
+              key={`guide-${m.id}`}
+              x1={timeToX(m.time)}
+              y1={GY_TOP}
+              x2={timeToX(m.time)}
+              y2={222}
+              stroke={`var(${TOOL_META[m.type].colorVar})`}
+              className={styles.guideLine}
             />
-          )}
+          ))}
 
-          {events.map((event, i) => {
-            const def = EVENTS_DEF.find((d) => d.kind === event.kind);
-            const Icon = def?.Icon ?? Cigarette;
-            const x = Math.min(WIDTH - 22, Math.max(0, event.t * WIDTH - 11));
+          <g transform={`translate(${GX0},${GY_TOP})`}>
+            <path d={curvePath} className={styles.curve} />
+          </g>
+
+          <text x={28} y={41} className={`zone-label ${ZONE_META.surdosage.labelClass} ${styles.zoneLabel}`}>
+            SURDOSAGE
+          </text>
+          <text x={28} y={130} className={`zone-label ${ZONE_META.confort.labelClass} ${styles.zoneLabel}`}>
+            ZONE DE CONFORT
+          </text>
+          <text x={28} y={212} className={`zone-label ${ZONE_META.manque.labelClass} ${styles.zoneLabel}`}>
+            MANQUE
+          </text>
+
+          {markers.map((m) => {
+            const x = timeToX(m.time);
+            const meta = TOOL_META[m.type];
+            const color = `var(${meta.colorVar})`;
+            const label = m.type === 'cigarette' ? 'Cigarette' : m.type === 'patch' ? 'Patch' : 'Substitut';
+
+            if (m.type === 'patch') {
+              const { cells, cellSize, totalW } = patchCells(x, m.dose ?? 1, color);
+              const xMinus = x - totalW / 2 - 16;
+              const xPlus = x + totalW / 2 + 16;
+              const cellsHitWidth = Math.max(44, totalW + 8);
+              return (
+                <g key={m.id}>
+                  <text x={x} y={215} textAnchor="middle" className={styles.doseLabel} style={{ fill: color }}>
+                    {formatDose(m.dose ?? 1)}
+                  </text>
+                  <g
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Retirer : ${label} ${formatDose(m.dose ?? 1)} à ${m.time}h`}
+                    className={styles.marker}
+                    onClick={(e) => removeMarker(m.id, e)}
+                    onKeyDown={(e) => removeMarkerKey(m.id, e)}
+                  >
+                    <rect x={x - cellsHitWidth / 2} y={213} width={cellsHitWidth} height={44} fill="transparent" />
+                    {cells.map((cell) => (
+                      <rect
+                        key={cell.key}
+                        x={cell.x}
+                        y={cell.y}
+                        width={cellSize}
+                        height={cellSize}
+                        rx={1}
+                        fill={cell.filled ? color : '#ffffff'}
+                        stroke={color}
+                        strokeWidth={cell.filled ? 0 : 1.3}
+                      />
+                    ))}
+                  </g>
+                  <g
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Réduire la dose de ¼ (${label} à ${m.time}h)`}
+                    className={styles.doseBtn}
+                    onClick={(e) => adjustDose(m.id, -0.25, e)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        adjustDose(m.id, -0.25, e);
+                      }
+                    }}
+                  >
+                    <rect x={xMinus - 22} y={236 - 22} width={44} height={44} fill="transparent" />
+                    <circle cx={xMinus} cy={236} r={10} fill="#fff" stroke={color} strokeWidth={1.5} />
+                    <text x={xMinus} y={240} textAnchor="middle" className={styles.doseBtnGlyph} style={{ fill: color }}>
+                      −
+                    </text>
+                  </g>
+                  <g
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Augmenter la dose de ¼ (${label} à ${m.time}h)`}
+                    className={styles.doseBtn}
+                    onClick={(e) => adjustDose(m.id, 0.25, e)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        adjustDose(m.id, 0.25, e);
+                      }
+                    }}
+                  >
+                    <rect x={xPlus - 22} y={236 - 22} width={44} height={44} fill="transparent" />
+                    <circle cx={xPlus} cy={236} r={10} fill="#fff" stroke={color} strokeWidth={1.5} />
+                    <text x={xPlus} y={240} textAnchor="middle" className={styles.doseBtnGlyph} style={{ fill: color }}>
+                      +
+                    </text>
+                  </g>
+                </g>
+              );
+            }
+
             return (
-              <g key={i} transform={`translate(${x}, ${HEIGHT + 6})`}>
-                {/* Pictogramme de la prise */}
-                <g className={styles.pictogramme}>
-                  <Icon size={22} aria-hidden="true" />
-                </g>
-                {/* Bouton de retrait — cible ≥ 44 px via padding SVG */}
-                <g
-                  className={styles.pictoRetirer}
-                  role="button"
-                  tabIndex={0}
-                  aria-label={`Retirer : ${def?.label ?? event.kind}`}
-                  onClick={() => removeEvent(i)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      removeEvent(i);
-                    }
-                  }}
-                >
-                  {/* Zone cliquable invisible élargie */}
-                  <rect x={-11} y={-4} width={44} height={44} fill="transparent" />
-                  {/* Croix de retrait, petite, en haut à droite du picto */}
-                  <circle cx={20} cy={-2} r={7} className={styles.retirerCircle} />
-                  <X size={9} x={15.5} y={-6.5} className={styles.retirerX} aria-hidden="true" />
-                </g>
+              <g
+                key={m.id}
+                role="button"
+                tabIndex={0}
+                aria-label={`Retirer : ${label} à ${m.time}h`}
+                className={styles.marker}
+                onClick={(e) => removeMarker(m.id, e)}
+                onKeyDown={(e) => removeMarkerKey(m.id, e)}
+              >
+                <rect x={x - 22} y={236 - 22} width={44} height={44} fill="transparent" />
+                <circle cx={x} cy={236} r={13} fill={color} />
+                <text x={x} y={m.type === 'cigarette' ? 240.5 : 240} textAnchor="middle" className={styles.markerGlyph}>
+                  {m.type === 'cigarette' ? '🚬' : 'S'}
+                </text>
               </g>
             );
           })}
-      </svg>
 
-      {events.length > 0 && (
-        <ul className={styles.prisesList} aria-label="Prises ajoutées">
-          {events.map((event, i) => {
-            const def = EVENTS_DEF.find((d) => d.kind === event.kind);
-            return (
-              <li key={i} className={styles.prisesItem}>
-                {def?.label ?? event.kind}
-                <button
-                  type="button"
-                  className={styles.retirerBtn}
-                  onClick={() => removeEvent(i)}
-                  aria-label={`Retirer : ${def?.label ?? event.kind}`}
-                >
-                  <X size={12} aria-hidden="true" />
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      )}
+          <text x={GX0} y={256} className={styles.axisTick}>
+            0h
+          </text>
+          <text x={158} y={256} className={styles.axisTick}>
+            6h
+          </text>
+          <text x={311} y={256} className={styles.axisTick}>
+            12h
+          </text>
+          <text x={461} y={256} className={styles.axisTick}>
+            18h
+          </text>
+          <text x={605} y={256} className={styles.axisTick}>
+            24h
+          </text>
+        </svg>
+        <p className={styles.hint}>Cliquez sur un marqueur pour le retirer</p>
+      </div>
+
+      <p
+        className={`chip ${peakMeta.chipClass}`}
+        aria-live="polite"
+        aria-label={`Pic atteint : ${peakMeta.label}`}
+      >
+        <PeakIcon size={16} aria-hidden="true" />
+        Pic atteint : {peakMeta.label}
+      </p>
+
+      <div className={styles.legendRow}>
+        <div className={`card ${styles.legendCard}`}>
+          <b>Manque</b>Le taux est trop bas : l'envie de fumer revient.
+        </div>
+        <div className={`card ${styles.legendCard}`}>
+          <b>Zone de confort</b>Le besoin est comblé, sans excès.
+        </div>
+        <div className={`card ${styles.legendCard}`}>
+          <b>Surdosage</b>Trop de sources cumulées : nausées, palpitations possibles.
+        </div>
+      </div>
 
       <p className={styles.mention}>Schéma illustratif — pas une courbe pharmacocinétique réelle.</p>
-
-      <div className={styles.legende}>
-        <p>
-          <strong>Pic rapide</strong> = renforcement de la dépendance.
-        </p>
-        <p>
-          <strong>Chute sous le seuil de manque</strong> = sensation de craving.
-        </p>
-        <p>
-          <strong>Bon usage des substituts</strong> = rester dans la zone confortable, sans
-          combustion.
-        </p>
-      </div>
     </div>
   );
 }

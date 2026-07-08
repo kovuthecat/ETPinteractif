@@ -8,7 +8,7 @@
   max-width: 820px;
   margin: 0;
   color: var(--color-text);
-  font-size: var(--font-size-lead, 1.1rem);
+  font-size: var(--font-size-lead);
   line-height: 1.55;
 }
 
@@ -21,23 +21,26 @@
 
 .filtersLabel {
   margin-right: var(--space-xs);
-  color: var(--color-text-muted, var(--color-text));
-  font-size: var(--font-size-small, 1rem);
+  color: var(--color-text-soft);
+  font-size: var(--font-size-small);
   font-weight: 600;
 }
 
 .filterButton {
   display: inline-flex;
-  min-height: var(--target-min, 44px);
+  min-height: var(--target-min);
   align-items: center;
   gap: 0.55rem;
-  padding: 0.65rem 1rem;
-  border: 2px solid currentColor;
-  border-radius: 999px;
+  padding: 0.65rem 1.1rem;
+  border: none;
+  border-radius: var(--radius-pill);
   background: var(--color-surface);
+  box-shadow: var(--shadow-1);
+  color: var(--color-text-soft);
   font: inherit;
-  font-weight: 700;
+  font-weight: 800;
   cursor: pointer;
+  transition: background-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
 }
 
 .filterButton svg,
@@ -49,34 +52,34 @@
 .filterToxiques,
 .legendToxiques,
 .toxiques {
-  color: var(--color-toxique, #b4232d);
+  color: var(--color-toxique);
 }
 
 .filterDependance,
 .legendDependance,
 .dependance {
-  color: var(--color-confort, #24734b);
+  color: var(--color-nav);
 }
 
 .filterButton[aria-pressed='true'] {
-  outline: 3px solid currentColor;
-  outline-offset: 2px;
+  box-shadow: none;
+  color: #fff;
 }
 
 .filterToxiques[aria-pressed='true'] {
-  background: var(--color-toxique-soft, #fbe9e9);
+  background: var(--color-toxique);
 }
 
 .filterDependance[aria-pressed='true'] {
-  background: var(--color-confort-soft, #e6f4ec);
+  background: var(--color-nav);
 }
 
 .sceneShell {
   overflow: hidden;
-  border: 1px solid rgb(45 38 31 / 12%);
-  border-radius: calc(var(--radius) * 1.25);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
   background: var(--color-surface);
-  box-shadow: 0 18px 50px rgb(50 43 35 / 8%);
+  box-shadow: var(--shadow-1);
 }
 
 .legend {
@@ -85,8 +88,8 @@
   justify-content: center;
   gap: var(--space-sm) var(--space-lg);
   padding: 0.8rem var(--space-md);
-  border-bottom: 1px solid rgb(45 38 31 / 10%);
-  font-size: var(--font-size-small, 1rem);
+  border-bottom: 1px solid var(--color-line);
+  font-size: var(--font-size-small);
   font-weight: 800;
 }
 
@@ -117,7 +120,7 @@
 }
 
 .toxicArea {
-  fill: var(--color-toxique-soft, #fbe9e9);
+  fill: var(--color-toxique-soft);
   opacity: 0.68;
 }
 
@@ -127,13 +130,13 @@
 }
 
 .hatchLine {
-  stroke: var(--color-toxique, #b4232d);
+  stroke: var(--color-toxique);
   stroke-width: 3;
 }
 
 .nicotineArea {
-  fill: var(--color-confort-soft, #e6f4ec);
-  stroke: var(--color-confort, #24734b);
+  fill: var(--color-nav-soft);
+  stroke: var(--color-nav);
   stroke-width: 3;
   stroke-dasharray: 8 10;
 }
@@ -147,16 +150,16 @@
 }
 
 .connectorToxic {
-  stroke: var(--color-toxique, #b4232d);
+  stroke: var(--color-toxique);
 }
 
 .connectorNicotine {
-  stroke: var(--color-confort, #24734b);
+  stroke: var(--color-nav);
 }
 
 .smoke {
   fill: none;
-  stroke: var(--color-toxique, #b4232d);
+  stroke: var(--color-toxique);
   stroke-width: 18;
   stroke-linecap: round;
   opacity: 0.32;
@@ -174,7 +177,7 @@
 
 .cigarette .burningTip {
   fill: #493b35;
-  stroke: var(--color-toxique, #b4232d);
+  stroke: var(--color-toxique);
 }
 
 .ember {
@@ -186,13 +189,13 @@
 
 .nicotineMark {
   fill: var(--color-surface);
-  stroke: var(--color-confort, #24734b);
+  stroke: var(--color-nav);
   stroke-width: 5;
 }
 
 .nicotineMolecule {
   fill: none;
-  stroke: var(--color-confort, #24734b);
+  stroke: var(--color-nav);
   stroke-width: 4;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -213,17 +216,17 @@
   position: absolute;
   z-index: 2;
   display: flex;
-  min-height: var(--target-min, 44px);
+  min-height: var(--target-min);
   max-width: 190px;
   align-items: center;
   gap: 0.55rem;
   padding: 0.65rem 0.8rem;
   border: 2px solid currentColor;
-  border-radius: calc(var(--radius) * 0.75);
+  border-radius: var(--radius);
   background: var(--color-surface);
-  box-shadow: 0 7px 18px rgb(45 38 31 / 12%);
+  box-shadow: var(--shadow-1);
   font: inherit;
-  font-size: var(--font-size-small, 1rem);
+  font-size: var(--font-size-small);
   font-weight: 800;
   line-height: 1.15;
   text-align: left;
@@ -242,7 +245,7 @@
 .hotspot:focus-visible,
 .hotspotSelected {
   z-index: 4;
-  box-shadow: 0 10px 24px rgb(45 38 31 / 20%);
+  box-shadow: var(--shadow-2);
   transform: translate(-50%, -50%) scale(1.04);
 }
 
@@ -284,15 +287,15 @@
 .combustionLabel {
   top: 55%;
   left: 38%;
-  background: var(--color-toxique-soft, #fbe9e9);
-  color: var(--color-toxique, #b4232d);
+  background: var(--color-toxique-soft);
+  color: var(--color-toxique);
 }
 
 .nicotineLabel {
   top: 67%;
   left: 76%;
-  background: var(--color-confort-soft, #e6f4ec);
-  color: var(--color-confort, #24734b);
+  background: var(--color-nav-soft);
+  color: var(--color-nav);
 }
 
 .detailBubble {
@@ -306,9 +309,9 @@
   align-items: start;
   padding: 1rem;
   border: 2px solid currentColor;
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   background: var(--color-surface);
-  box-shadow: 0 16px 38px rgb(45 38 31 / 22%);
+  box-shadow: var(--shadow-3);
 }
 
 .detailBubble > svg {
@@ -330,7 +333,7 @@
 .detailContent p {
   margin: 0.25rem 0 0;
   color: var(--color-text);
-  font-size: var(--font-size-small, 1rem);
+  font-size: var(--font-size-small);
   line-height: 1.45;
 }
 
@@ -343,8 +346,8 @@
 
 .closeButton {
   display: inline-flex;
-  width: var(--target-min, 44px);
-  height: var(--target-min, 44px);
+  width: var(--target-min);
+  height: var(--target-min);
   align-items: center;
   justify-content: center;
   padding: 0;
@@ -358,11 +361,11 @@
 .takeaway {
   margin: 0;
   padding: var(--space-md);
-  border-left: 5px solid var(--color-confort, #24734b);
-  border-radius: calc(var(--radius) * 0.7);
-  background: var(--color-confort-soft, #e6f4ec);
+  border-left: 4px solid var(--color-confort);
+  border-radius: var(--radius-sm);
+  background: var(--color-confort-soft);
   color: var(--color-text);
-  font-size: var(--font-size-lead, 1.1rem);
+  font-size: var(--font-size-lead);
   line-height: 1.5;
 }
 
@@ -376,20 +379,20 @@
 
 .navigation span {
   margin-right: var(--space-xs);
-  color: var(--color-text-muted, var(--color-text));
+  color: var(--color-text-soft);
   font-weight: 700;
 }
 
 .navigation button {
   display: inline-flex;
-  min-height: var(--target-min, 44px);
+  min-height: var(--target-min);
   align-items: center;
   gap: 0.55rem;
   padding: 0.7rem 1rem;
-  border: 2px solid var(--color-nav, var(--color-accent));
-  border-radius: calc(var(--radius) * 0.6);
+  border: 1.5px solid var(--color-nav);
+  border-radius: var(--radius-sm);
   background: var(--color-surface);
-  color: var(--color-nav, var(--color-accent));
+  color: var(--color-nav);
   font: inherit;
   font-weight: 800;
   cursor: pointer;
@@ -397,7 +400,7 @@
 
 .navigation button:hover,
 .navigation button:focus-visible {
-  background: var(--color-nav-soft, #e9f2f8);
+  background: var(--color-nav-soft);
 }
 
 .navigation button svg {
