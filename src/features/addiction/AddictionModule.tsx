@@ -12,6 +12,9 @@ interface PilierData {
   colorSoft: string;
   cx: number;
   cy: number;
+  /** Décalage du libellé par rapport au centre du cercle, pour rester hors des zones de chevauchement. */
+  labelDx: number;
+  labelDy: number;
   exemples: string[];
   outils: { text: string; navigation?: { id: 'nicotine' | 'substituts' | 'craving'; label: string } }[];
 }
@@ -29,6 +32,8 @@ const PILLARS_DATA: Record<Pilier, PilierData> = {
     colorSoft: 'var(--color-vigilance-soft)',
     cx: 210,
     cy: 160,
+    labelDx: -34,
+    labelDy: -17,
     exemples: [
       'Manque',
       'Irritabilité',
@@ -55,6 +60,8 @@ const PILLARS_DATA: Record<Pilier, PilierData> = {
     colorSoft: 'var(--color-nav-soft)',
     cx: 390,
     cy: 160,
+    labelDx: 34,
+    labelDy: -17,
     exemples: ['Stress', 'Anxiété', 'Ennui', 'Plaisir et récompense', 'Stimulation', '"Anti-déprime"'],
     outils: [
       {
@@ -72,6 +79,8 @@ const PILLARS_DATA: Record<Pilier, PilierData> = {
     colorSoft: 'var(--color-confort-soft)',
     cx: 300,
     cy: 300,
+    labelDx: 0,
+    labelDy: 25,
     exemples: [
       'Café-clope',
       'Après les repas',
@@ -132,13 +141,9 @@ export default function AddictionModule({ onNavigate }: ModuleProps) {
                     style={pillarVars(p)}
                   >
                     <circle cx={p.cx} cy={p.cy} r={R} className={styles.circleShape} />
-                    <rect x={p.cx - 90} y={p.cy - 26} width={180} height={28} rx={6} className={styles.circleLabelBg} />
-                    <text x={p.cx} y={p.cy - 6} textAnchor="middle" className={styles.circleLabel}>{p.label}</text>
-                    {selected !== pilier && (
-                      <text x={p.cx} y={p.cy + 16} textAnchor="middle" className={styles.circleKeywords}>
-                        {p.exemples.slice(0, 2).join(' · ')}
-                      </text>
-                    )}
+                    <text x={p.cx + p.labelDx} y={p.cy + p.labelDy} textAnchor="middle" className={styles.circleLabel}>
+                      {p.label}
+                    </text>
                   </g>
                 );
               })}

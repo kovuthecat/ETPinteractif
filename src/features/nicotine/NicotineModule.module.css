@@ -47,11 +47,51 @@
   padding: 24px 26px 18px;
 }
 
+.graphWrap {
+  position: relative;
+}
+
 .graphSvg {
   display: block;
   width: 100%;
   height: auto;
   cursor: crosshair;
+}
+
+.zoneLabelHit {
+  cursor: help;
+  outline: none;
+}
+
+.zoneLabelHit:focus-visible rect {
+  outline: 2px solid var(--color-nav);
+}
+
+.zoneTooltip {
+  position: absolute;
+  z-index: 5;
+  min-width: 180px;
+  max-width: 240px;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-3);
+  pointer-events: none;
+}
+
+.zoneTooltipTitle {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.zoneTooltipList {
+  margin: 0;
+  padding-left: var(--space-md);
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--color-text-soft);
 }
 
 .seuil {
@@ -138,25 +178,6 @@
   font-weight: 600;
   opacity: 0.4;
   text-align: center;
-}
-
-.legendRow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-md);
-}
-
-.legendCard {
-  flex: 1;
-  min-width: 220px;
-  padding: 14px 16px;
-  font-size: 13.5px;
-  line-height: 1.5;
-}
-
-.legendCard b {
-  display: block;
-  margin-bottom: 3px;
 }
 
 .mention {

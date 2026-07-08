@@ -655,3 +655,21 @@ Session bloquante de `plans/refonte-ui/` (T1-T3, cf. `docs/DESIGN_REFONTE.md` §
 - [ ] Aspect général « papier chaud » : rayons généreux, ombres brunes douces (comparer à la maquette).
 - [ ] Classes `.btn`/`.chip`/`.card`/`.callout`/`.alert` non encore utilisées par les modules (S2-S9 les câbleront) — pas de régression attendue à ce stade, juste vérifier que rien ne casse visuellement dans l'app actuelle.
 - [ ] `prefers-reduced-motion` et cibles ≥ 44 px toujours respectés (inchangés).
+
+## Ajustements ponctuels — Venn addiction + tooltips nicotine (2026-07-08)
+
+### Module 1 : composantes de l'addiction (Venn)
+
+- [ ] Plus de sous-texte (« Manque · Irritabilité », etc.) sous les titres des 3 cercles.
+- [ ] Plus de fond clair (halo blanc) derrière les titres.
+- [ ] Chaque titre (Physique / Psychologique / Comportementale) est entièrement contenu dans son propre cercle, sans chevaucher les autres cercles ni sortir du sien — à vérifier à 1440×900 et sur mobile/tablette.
+- [ ] Le titre « Comportementale » (le plus long) reste lisible sans débordement.
+
+### Module 2 : nicotine — cinétique & seuils
+
+- [ ] Les 3 encarts « Manque / Zone de confort / Surdosage » sous le graphique ont disparu.
+- [ ] Survol du titre « SURDOSAGE » dans le graphique fait apparaître une pop-up avec les signes de surdosage (nausées, écœurement, céphalées, palpitations, rêves intenses).
+- [ ] Survol du titre « MANQUE » fait apparaître une pop-up avec les signes de manque (irritabilité, nervosité, troubles de concentration, troubles du sommeil, fringales, craving).
+- [ ] Les pop-up restent lisibles et ne débordent pas de la carte du graphique.
+- [ ] Focus clavier (Tab) sur les titres MANQUE/SURDOSAGE déclenche aussi la pop-up (accessibilité).
+- [ ] Aucune pop-up sur « ZONE DE CONFORT » (non demandée).

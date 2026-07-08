@@ -36,6 +36,19 @@ const TOOL_META = Object.fromEntries(TOOLS.map((t) => [t.type, t])) as Record<
   (typeof TOOLS)[number]
 >;
 
+type HoverZone = 'manque' | 'surdosage';
+
+const ZONE_TOOLTIP: Record<HoverZone, { title: string; signs: string[] }> = {
+  manque: {
+    title: 'Signes de manque',
+    signs: ['Irritabilité', 'Nervosité', 'Troubles de la concentration', 'Troubles du sommeil', 'Fringales', 'Craving'],
+  },
+  surdosage: {
+    title: 'Signes de surdosage',
+    signs: ['Nausées', 'Écœurement', 'Céphalées', 'Palpitations', 'Rêves intenses'],
+  },
+};
+
 const ZONE_META: Record<NicotineZone, { label: string; chipClass: string; fillClass: string; labelClass: string; Icon: LucideIcon }> = {
   manque: {
     label: 'Manque',
@@ -106,6 +119,7 @@ export default function NicotineModule(_: ModuleProps) {
   const nextId = useRef(0);
   const [tool, setTool] = useState<NicotineEventType>('cigarette');
   const [markers, setMarkers] = useState<Marker[]>([]);
+  const [hoverZone, setHoverZone] = useState<HoverZone | null>(null);
 
   const events = useMemo(
     () => markers.map(({ type, time, dose }) => ({ type, time, dose })),
@@ -196,6 +210,7 @@ export default function NicotineModule(_: ModuleProps) {
       </div>
 
       <div className={`card ${styles.graphCard}`}>
+        <div className={styles.graphWrap}>
         <svg
           ref={svgRef}
           className={styles.graphSvg}
@@ -227,15 +242,39 @@ export default function NicotineModule(_: ModuleProps) {
             <path d={curvePath} className={styles.curve} />
           </g>
 
-          <text x={28} y={41} className={`zone-label ${ZONE_META.surdosage.labelClass} ${styles.zoneLabel}`}>
-            SURDOSAGE
-          </text>
+          <g
+            className={styles.zoneLabelHit}
+            tabIndex={0}
+            role="button"
+            aria-label="Signes de surdosage"
+            onMouseEnter={() => setHoverZone('surdosage')}
+            onMouseLeave={() => setHoverZone(null)}
+            onFocus={() => setHoverZone('surdosage')}
+            onBlur={() => setHoverZone(null)}
+          >
+            <rect x={22} y={26} width={92} height={20} fill="transparent" />
+            <text x={28} y={41} className={`zone-label ${ZONE_META.surdosage.labelClass} ${styles.zoneLabel}`}>
+              SURDOSAGE
+            </text>
+          </g>
           <text x={28} y={130} className={`zone-label ${ZONE_META.confort.labelClass} ${styles.zoneLabel}`}>
             ZONE DE CONFORT
           </text>
-          <text x={28} y={212} className={`zone-label ${ZONE_META.manque.labelClass} ${styles.zoneLabel}`}>
-            MANQUE
-          </text>
+          <g
+            className={styles.zoneLabelHit}
+            tabIndex={0}
+            role="button"
+            aria-label="Signes de manque"
+            onMouseEnter={() => setHoverZone('manque')}
+            onMouseLeave={() => setHoverZone(null)}
+            onFocus={() => setHoverZone('manque')}
+            onBlur={() => setHoverZone(null)}
+          >
+            <rect x={22} y={197} width={72} height={20} fill="transparent" />
+            <text x={28} y={212} className={`zone-label ${ZONE_META.manque.labelClass} ${styles.zoneLabel}`}>
+              MANQUE
+            </text>
+          </g>
 
           {markers.map((m) => {
             const x = timeToX(m.time);
@@ -353,6 +392,24 @@ export default function NicotineModule(_: ModuleProps) {
             24h
           </text>
         </svg>
+        {hoverZone && (
+          <div
+            className={styles.zoneTooltip}
+            style={
+              hoverZone === 'surdosage'
+                ? { left: '4.4%', top: '15.6%', transform: 'translateY(8px)' }
+                : { left: '4.4%', top: '80.9%', transform: 'translateY(calc(-100% - 8px))' }
+            }
+          >
+            <p className={styles.zoneTooltipTitle}>{ZONE_TOOLTIP[hoverZone].title}</p>
+            <ul className={styles.zoneTooltipList}>
+              {ZONE_TOOLTIP[hoverZone].signs.map((sign) => (
+                <li key={sign}>{sign}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+        </div>
         <p className={styles.hint}>Cliquez sur un marqueur pour le retirer</p>
       </div>
 
@@ -364,18 +421,6 @@ export default function NicotineModule(_: ModuleProps) {
         <PeakIcon size={16} aria-hidden="true" />
         Pic atteint : {peakMeta.label}
       </p>
-
-      <div className={styles.legendRow}>
-        <div className={`card ${styles.legendCard}`}>
-          <b>Manque</b>Le taux est trop bas : l'envie de fumer revient.
-        </div>
-        <div className={`card ${styles.legendCard}`}>
-          <b>Zone de confort</b>Le besoin est comblé, sans excès.
-        </div>
-        <div className={`card ${styles.legendCard}`}>
-          <b>Surdosage</b>Trop de sources cumulées : nausées, palpitations possibles.
-        </div>
-      </div>
 
       <p className={styles.mention}>Schéma illustratif — pas une courbe pharmacocinétique réelle.</p>
     </div>

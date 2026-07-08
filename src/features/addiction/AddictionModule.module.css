@@ -46,27 +46,11 @@
   filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.2));
 }
 
-/* Halo de fond derrière le libellé SVG pour éviter la confusion lors du chevauchement */
-.circleLabelBg {
-  fill: rgba(255, 255, 255, 0.82);
-  stroke: none;
-}
-
-.circleGroupActive .circleLabelBg {
-  fill: rgba(255, 255, 255, 0.92);
-}
-
 .circleLabel {
   fill: var(--pillar-color);
   font-family: 'Work Sans', sans-serif;
   font-weight: 800;
   font-size: 24px;
-}
-
-.circleKeywords {
-  fill: var(--color-text);
-  opacity: 0.55;
-  font-size: 16px;
 }
 
 .legend {
