@@ -1,15 +1,17 @@
 /**
  * Module 6 — Suivi : fonctions pures du cadran de l'année + fiche calendrier.
  * Portage fidèle de la logique de la maquette
- * (`Module 6 - Suivi.dc.html` <script data-dc-script>), avec deux entorses voulues
+ * (`Module 6 - Suivi.dc.html` <script data-dc-script>), avec une entorse voulue
  * (cf. `plans/theme-diabete/S9.md` §Décision clé) :
  *   1. Le mois/l'année/le jour "courants" ne sont plus des constantes figées : ils sont
  *      calculés à l'affichage à partir d'une vraie `Date` (passée en paramètre par le
  *      composant), pour que l'aiguille pointe le jour réel.
- *   2. Le cadran est pré-peuplé au montage (rythme standard posé, cf. `initSuiviState`)
- *      au lieu de démarrer vide comme dans la maquette (`revealed` tout à `false`).
  * Tout le reste (angles, occurrences, snap, statuts, cycles longs) est repris tel quel.
  * Testable à l'œil nu (fonctions pures) — pas de suite de tests exigée par S9.md.
+ *
+ * Évolution S14 §B5 (revue visuelle 2026-07-09, inverse D9 décision clé n°2) : le cadran
+ * démarre **vide** au montage (comme la maquette), l'utilisateur le construit élément par
+ * élément — le pré-peuplement automatique est retiré, `initRevealedPrepeuple` a disparu.
  */
 
 export type ExamId =
@@ -179,16 +181,7 @@ export function initExamConfig(consultMonths: number[], currentMonth: number): R
   return out;
 }
 
-/** Cadran pré-peuplé au montage (D9 décision clé n°2) : tous les examens visibles d'emblée. */
-export function initRevealedPrepeuple(): Record<ExamId, boolean> {
-  const r = {} as Record<ExamId, boolean>;
-  EXAM_DEFS.forEach((d) => {
-    r[d.id] = true;
-  });
-  return r;
-}
-
-/** Cadran vide (utilisé par « Tout réinitialiser », geste explicite distinct du montage). */
+/** Cadran vide (montage initial, S14 §B5 — et « Tout réinitialiser », même geste). */
 export function initRevealedVide(): Record<ExamId, boolean> {
   const r = {} as Record<ExamId, boolean>;
   EXAM_DEFS.forEach((d) => {

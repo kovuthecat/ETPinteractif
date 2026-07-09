@@ -18,7 +18,6 @@ import {
   computeConsultMonths,
   defaultConsultStatus,
   initExamConfig,
-  initRevealedPrepeuple,
   initRevealedVide,
   nearestConsultMonth,
   examOccurrenceMonths,
@@ -68,9 +67,11 @@ type Action =
   | { type: 'RESET_REVEAL' };
 
 /**
- * État initial — cadran pré-peuplé au montage (D9 décision clé n°2, cf. S9.md) : rythme
- * standard posé (consultations tous les 3 mois + les 7 examens à leur fréquence par défaut),
- * l'utilisateur ajuste ensuite. Le mois courant réel (aiguille) est résolu une seule fois ici.
+ * État initial — cadran **vide** au montage (S14 §B5, inverse D9 décision clé n°2, cf.
+ * S9.md) : le rythme standard (consultations tous les 3 mois + les 7 examens à leur
+ * fréquence par défaut) reste calculé pour être prêt, mais rien n'est placé sur le cadran —
+ * le geste pédagogique est de le construire élément par élément. Le mois courant réel
+ * (aiguille) est résolu une seule fois ici.
  */
 function initSuiviState(currentMonth: number): SuiviState {
   const consultConfig: ConsultConfig = { interval: 3, startMonth: 0 };
@@ -79,9 +80,9 @@ function initSuiviState(currentMonth: number): SuiviState {
     temps: 'parcours',
     consultConfig,
     consultStatus: defaultConsultStatus(consultMonths, currentMonth),
-    consultRevealed: true,
+    consultRevealed: false,
     examConfig: initExamConfig(consultMonths, currentMonth),
-    revealed: initRevealedPrepeuple(),
+    revealed: initRevealedVide(),
     doorOpen: null,
   };
 }
@@ -142,7 +143,7 @@ function reducer(state: SuiviState, action: Action): SuiviState {
     case 'CLOSE_DOOR':
       return { ...state, doorOpen: null };
     case 'RESET_REVEAL':
-      return { ...state, consultRevealed: true, revealed: initRevealedVide() };
+      return { ...state, consultRevealed: false, revealed: initRevealedVide() };
     default:
       return state;
   }
