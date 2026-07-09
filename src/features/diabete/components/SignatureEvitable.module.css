@@ -1,0 +1,73 @@
+.badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 18px;
+  border-radius: var(--radius-lg);
+  background: var(--color-confort-soft);
+  border: 1.5px solid var(--color-confort);
+  outline: none;
+}
+
+.badge[role='button'] {
+  cursor: help;
+}
+
+.badge:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
+}
+
+.icon {
+  flex-shrink: 0;
+}
+
+.anneauExterieur {
+  fill: none;
+  stroke: var(--color-confort);
+  stroke-width: 2;
+}
+
+.anneauInterieur {
+  fill: none;
+  stroke: var(--color-confort);
+  stroke-width: 2;
+  stroke-dasharray: 3.5 4.5;
+  opacity: 0.8;
+}
+
+.coche {
+  fill: none;
+  stroke: var(--color-confort-strong);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.label {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--color-confort-strong);
+  text-transform: uppercase;
+}
+
+.detail {
+  position: absolute;
+  z-index: 5;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 220px;
+  max-width: 340px;
+  padding: 12px 16px;
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-3);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-text-soft);
+  text-transform: none;
+  font-weight: 400;
+  pointer-events: none;
+}

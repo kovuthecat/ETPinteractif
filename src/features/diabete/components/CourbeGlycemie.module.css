@@ -1,0 +1,139 @@
+.wrap {
+  position: relative;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.baseline {
+  stroke: var(--color-line);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 5;
+  pointer-events: none;
+}
+
+/* Trait épais, bouts ronds : identité fixée de LA COURBE (brief §1.2). */
+.courbePrincipale {
+  stroke: var(--color-text);
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.courbeFantome {
+  stroke: var(--color-text-soft);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 7 6;
+  pointer-events: none;
+}
+
+.courbeEstompee {
+  stroke: var(--color-text-faint);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.courbeHit {
+  cursor: help;
+  outline: none;
+}
+
+.courbeHitStroke {
+  stroke: transparent;
+  stroke-width: 20;
+  pointer-events: stroke;
+}
+
+.segment {
+  fill: transparent;
+  cursor: pointer;
+  outline: none;
+}
+
+.segment:hover,
+.segment:focus-visible {
+  fill: var(--color-nav-soft);
+}
+
+.marqueurBande {
+  fill: var(--marqueur-color, var(--color-nav));
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+.marqueurGuide {
+  stroke-width: 1.5;
+  stroke-dasharray: 3 3;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.marqueurBadge {
+  stroke: var(--color-surface);
+  stroke-width: 2;
+}
+
+.marqueurGlyph {
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 800;
+  font-size: 11px;
+  fill: var(--color-surface);
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.marqueurLabel {
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  fill: var(--color-text-soft);
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.axisTick {
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  fill: var(--color-text-faint);
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.legend {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  min-width: 140px;
+  padding: 10px 14px;
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-2);
+  pointer-events: none;
+}
+
+.legendTitle {
+  margin: 0 0 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-soft);
+}
+
+.legendValue {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text);
+}
