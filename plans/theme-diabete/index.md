@@ -40,6 +40,10 @@ ordres de grandeur qualitatifs. Chaque affirmation pédagogique du brief devient
 identité de courbe (brief §1.2), rendue par le composant partagé `CourbeGlycemie` (S3).
 ⚠️ Reste un **modèle pédagogique, pas un simulateur** : fidèle au *sens* des variations, mg/dL indicatifs
 au survol uniquement (SPEC §6.3).
+**Évolution 2026-07-09 (S14, demande Thibault)** : le repas n'est plus agrégé par heuristiques de
+familles + proximité à l'assiette-modèle, mais par la **composition réelle approximative** des aliments
+(CG, fibres, protéines, lipides — cf. `S14.md` §0.c). Ordre du féculent gradué (0→1), scénario nocturne
+`nuit_isolee` remplacé par `descend_hypo_matinale`.
 
 ## Sessions
 
@@ -58,6 +62,7 @@ au survol uniquement (SPEC §6.3).
 | [S11](S11.md) | D11 | Module 8 — Hypoglycémie (profil, 15/15, récupération/overshoot, carte) | Sonnet | medium | S1+S2+S3 | `src/features/diabete/hypoglycemie/` | [x] |
 | [S12](S12.md) | D12 | Module 9 — Insuline (courbe capteur, 3 situations, TIR vivant) | Sonnet | high | S1+S2+S3 | `src/features/diabete/insuline/` | [x] |
 | [S13](S13.md) | D13 | Consolidation : contexte + commits + audit Codex + push | Haiku (+Codex) | low | S4-S12 | `STATUS`/`TASKS`/`VALIDATION`/`PROJECT_MAP`/`DECISIONS`/`docs/diabete/` | [x] |
+| [S14](S14.md) | D14 | **Corrections bugs revue visuelle 2026-07-09** (7 bugs : M2 ×3, M3, M6, M8, M9 + lib courbe) | Sonnet | high | S13 | `lib/`, `alimentation/`, `activite/`, `suivi/`, `hypoglycemie/`, `insuline/`, `components/IllustrationSlot.*` | [x] |
 
 ## Ordonnancement
 

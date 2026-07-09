@@ -26,6 +26,8 @@
 - [ ] `prefers-reduced-motion` respecté (pas d'animation intempestive quand l'option OS est active).
 - [ ] **Zéro persistance** : recharger la page (reload) ramène à l'accueil, aucune sélection conservée.
 - [ ] Aucun débordement horizontal / hors-cadre sur écran large (≥ 1800 px), tablette et mobile.
+- [ ] **S14/B8** (diabète, `IllustrationSlot`) : plus aucun texte de placeholder (aliment, illustration
+      d'organe…) ne déborde de sa tuile, quelle que soit la taille — masqué sous ~56 px de côté.
 
 ## Sélection de thème + accueil
 
@@ -179,6 +181,35 @@
       survol **et** le focus clavier (Tab) ouvrent le panneau, qu'il ne bloque jamais le clic sur
       l'élément déclencheur, et qu'il reste dans le cadre à toutes tailles d'écran.
 
+## X8 — Fiche patch : marge « à colorier » + prise ponctuelle
+
+> Contexte : `plans/extensions-tabac/X8.md` (demande Thibault 2026-07-09, hors brief initial). Auto
+> (tsc/vite build/vitest 50 tests) déjà vert — ce qui suit est la passe humaine (écran + Ctrl+P).
+
+- [ ] Écran (module Substituts, section titration) : rendu **inchangé** par rapport à avant X8 — la
+      marge « à colorier » et le sélecteur de prise ponctuelle n'apparaissent que dans la fiche, pas
+      à l'écran.
+- [ ] Ouvrir la fiche (« Imprimer ma méthode ») avec une dose de jour quelconque (ex. 1 patch + ¼) :
+      bloc « Ma dose du moment » → grille **Jour** = quarts pleins en **vert** puis quarts **vides** en
+      plus, complétant le patch en cours **+ 1 patch entier vide** ; légende « Colorie ¼ de plus tous
+      les 3 jours si l'envie persiste, sans signe de surdosage. » sous la grille.
+- [ ] Si « Distinguer jour / nuit » est actif : la grille **Nuit** reste une simple photographie
+      (aucune marge vide ajoutée au-delà de la dose actuelle).
+- [ ] Sur la carte titration (avant le bouton « Imprimer ma méthode ») : bloc « Ajouter une prise
+      ponctuelle à ma fiche » avec « Aucune » + les 4 formes ponctuelles (gomme, pastille, sublingual,
+      spray) — **le patch n'est pas dans cette liste**. Sélection indépendante de la forme explorée
+      plus haut dans le module (« Choisissez une forme pour ses bonnes pratiques »).
+- [ ] Avec une forme ponctuelle sélectionnée, la fiche affiche un bloc « Ma prise ponctuelle — {forme} »
+      (placeholder d'illustration + liste des bonnes pratiques de cette forme) entre la dose et le
+      bandeau 39 89. Avec « Aucune », ce bloc est absent.
+- [ ] **Ctrl+P (aperçu avant impression)** : les quarts pleins s'impriment bien en **vert plein**
+      (pas de disparition de la couleur de fond) ; les quarts vides ont un **contour visible**
+      (pointillé) permettant de les colorier au stylo une fois imprimés.
+- [ ] La fiche tient sur **1 page A4**, y compris avec une prise ponctuelle sélectionnée et une dose de
+      jour élevée (2-3 patchs). Si ce n'est pas le cas, le signaler plutôt que de considérer que c'est
+      bloquant (cf. « Si bloqué » du plan X8, T3).
+- [ ] Aucune dose en mg n'apparaît nulle part sur la fiche.
+
 ---
 
 ## Questions de contenu en attente de Thibault (indépendantes du visuel)
@@ -217,18 +248,28 @@ Checklist (S4) :
 
 ### Module 2 — Alimentation (4 défis + synthèse, fiche)
 
-**Statut** : [ ] à valider par Thibault
+**Statut** : [ ] à valider par Thibault (revu en S14, 2026-07-09 — checklist détaillée par bug
+dans `plans/theme-diabete/S14.md` §Checklist visuelle)
 
-Checklist (S5) :
+Checklist (S5, toujours vraie) :
 - [ ] Ajouter protéines aplatit ET retarde visiblement le pic.
 - [ ] Féculent en dernier ≠ juste « plus petit » : le pic se décale.
 - [ ] Pastèque = pastille verte (CG) malgré l'idée reçue.
 - [ ] Fiche imprimable lisible ; aucun chiffre imposé hors survol.
 - [ ] Drag HTML5 natif + fallback clic fonctionnels sur toutes zones de dépôt.
 
+Checklist S14 (courbe par composition réelle + correctifs B1/B2/B3) :
+
+- [ ] Défi 1 : assiette **vide** au chargement (plus de cercle féculent central) ; on peut y
+      déposer plusieurs féculents et des fruits/laitiers ; chaque dépôt modifie la courbe.
+- [ ] Défi 3 : déplacer le féculent d'une bouchée à l'autre change la courbe de façon graduée
+      (pas juste « dernier vs pas dernier ») ; glisser un aliment du garde-manger sur une bouchée
+      la remplace ; la carte courbe ne déborde plus à 1366×768.
+- [ ] Défi 4 : chaque échange « +1 protéine / −1 féculent » abaisse le pic (plus d'inversion).
+
 ### Module 3 — Activité physique (rayonnement, jauge, timing)
 
-**Statut** : [ ] à valider par Thibault
+**Statut** : [ ] à valider par Thibault (B4 en S14, 2026-07-09)
 
 Checklist (S6) :
 - [ ] Temps ① : rayonnement (SVG nœuds/rayons) et clic « Sucre » passent au temps ②.
@@ -236,6 +277,8 @@ Checklist (S6) :
 - [ ] Temps ③ : Marche 15 min écrête le pic ; Marche 120 min intact, queue accélérée.
 - [ ] Fenêtre d'activité visible sur l'axe ; 6 micro-coupures distinctes de la marche.
 - [ ] Marqueurs `activite` lisibles sur l'axe de `CourbeGlycemie`.
+- [ ] **S14/B4** : survol/focus du badge « i » des 4 rayons → panneau entièrement lisible, y
+      compris ceux adjacents au cercle central (Sucre, Autonomie, Cœur, Tête) — plus masqué derrière.
 
 ### Module 4 — Risque cardiovasculaire (5 feux, artère, anatomie, fiche)
 
@@ -260,15 +303,19 @@ Checklist (S8) :
 
 ### Module 6 — Suivi (cadran année + fiche calendrier)
 
-**Statut** : [ ] à valider par Thibault
+**Statut** : [ ] à valider par Thibault (B5 en S14, 2026-07-09 — **inverse D9 n°2**, cf. `DECISIONS.md`)
 
-Checklist (S9) :
-- [ ] Cadran pré-peuplé au montage (consultations 3 mois, 7 examens à fréquences par défaut).
+Checklist (S9, mise à jour S14) :
+- [ ] **Cadran vide au montage** (aiguille + mois seuls) — plus de pré-peuplement automatique ;
+      chaque « Placer sur le cadran » ajoute l'élément un par un.
 - [ ] **Aucun rouge** (fait=vert, à programmer=ambre+horloge, à venir=beige, bisannuel+=grisé+badge).
 - [ ] Densité de repères = message (passer 3→6 mois retire visiblement des points).
 - [ ] Fiche A4 imprimable : check-list triée par mois, ✓/⏳, ligne « Date : __/__/____ ».
 - [ ] HbA1c se comporte comme examen « chaque consultation ».
 - [ ] Fréquences en constantes `// à revalider (Thibault — ADA/HAS-SFD)`.
+- [ ] **S14/B5** : à 1440 px de large, la rangée Consultations et chacun des 7 examens tiennent
+      chacun sur une seule ligne (repli 2 lignes max sous ~1100 px), tous visibles sans scroll
+      horizontal.
 
 ### Module 7 — Traitements (ordonnance ↔ silhouette)
 
@@ -284,7 +331,7 @@ Checklist (S10) :
 
 ### Module 8 — Hypoglycémie (15/15, récupération/overshoot, carte-réflexe)
 
-**Statut** : [ ] à valider par Thibault
+**Statut** : [ ] à valider par Thibault (B6 en S14, 2026-07-09)
 
 Checklist (S11) :
 - [ ] Sans patience (toggle overshoot) : courbe fantôme dépasse clairement bande cible.
@@ -292,15 +339,21 @@ Checklist (S11) :
 - [ ] Carte-réflexe (temps ③, écran + fiche) lisible à ~1 m : gros caractères, boucle 15/15 signalétique.
 - [ ] Rappel chocolat/gras visuellement distinct.
 - [ ] Rien sur hypo sévère/entourage/glucagon nulle part.
+- [ ] **S14/B6** : un seul temps (①②③) visible à la fois ; cliquer un onglet change bien l'écran
+      (les trois temps ne restent plus empilés).
 
 ### Module 9 — Insuline (traces capteur, TIR vivant, 3 situations)
 
-**Statut** : [ ] à valider par Thibault
+**Statut** : [ ] à valider par Thibault (B7 en S14, 2026-07-09)
 
-Checklist (S12) :
-- [ ] Tendance vs bruit discriminables d'un coup d'œil.
+Checklist (S12, mise à jour S14) :
+- [ ] Carte ① : **3 chips** — « Plusieurs nuits qui montent » · « Ça descend la nuit, bas au
+      réveil » · « Déjà haut après le repas, stable » (plus de chip « Une seule nuit isolée »).
+- [ ] « Ça descend la nuit » : les nuits descendent visiblement vers le bas de la bande, flèche
+      de tendance ↘, TIR dégradé côté « bas ».
 - [ ] Changer profil (jeune↔âgé) change le TIR à situation constante.
 - [ ] Aucun chiffre générique à l'écran (pas de mg/dL, pas de dose) — hoverLegend non activé.
 - [ ] Refrain de sécurité toujours visible (quel que soit l'onglet).
 - [ ] « Plonge bas » mène à hypo d'abord.
+- [ ] Raccord nuit → jour sans saut brutal visible sur la courbe, quel que soit le scénario.
 
