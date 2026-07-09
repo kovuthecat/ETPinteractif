@@ -1,0 +1,451 @@
+.module {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 15px;
+  opacity: 0.65;
+  max-width: 64ch;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.section[hidden] {
+  display: none;
+}
+
+.tabs {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 9px 20px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text-soft);
+  font-size: 13px;
+  font-weight: 800;
+  box-shadow: var(--shadow-1);
+  cursor: pointer;
+}
+
+.tab:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
+}
+
+.tabActive {
+  background: var(--color-nav);
+  color: #fff;
+  box-shadow: none;
+}
+
+/* ── Étapes Question 1/2 + synthèse ─────────────────────────────────────── */
+
+.stepPanel {
+  align-self: center;
+  width: 100%;
+  max-width: 480px;
+  margin: var(--space-md) auto 0;
+  padding: 40px 32px;
+  border-radius: 20px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.stepPanelImportance {
+  background: var(--color-confort-soft);
+}
+
+.stepPanelConfiance {
+  background: var(--color-nav-soft);
+}
+
+.stepPanelDone {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  box-shadow: var(--shadow-1);
+}
+
+.stepLabel {
+  margin: 0 0 14px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+}
+
+.stepQuestion {
+  margin: 0 0 26px;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.stepHint {
+  margin: 10px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-faint);
+}
+
+.relanceStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-top: 22px;
+}
+
+.relanceBubble {
+  margin: 0;
+  padding: 12px 14px;
+  background: var(--color-surface);
+  border-radius: 9px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.stepButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 24px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.stepButton:focus-visible {
+  outline: 3px solid var(--color-text);
+  outline-offset: 2px;
+}
+
+.stepButtonImportance {
+  background: var(--color-confort);
+}
+
+.stepButtonConfiance {
+  background: var(--color-nav);
+}
+
+.doneTitle {
+  margin: 0 0 22px;
+  font-family: 'Source Serif 4', serif;
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.recapRow {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 8px;
+}
+
+.recapCard {
+  flex: 1;
+  max-width: 180px;
+  padding: 16px;
+  border-radius: 14px;
+}
+
+.recapCardImportance {
+  background: var(--color-confort-soft);
+}
+
+.recapCardConfiance {
+  background: var(--color-nav-soft);
+}
+
+.recapLabel {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0.6;
+}
+
+.recapValue {
+  margin: 0;
+  font-family: 'Source Serif 4', serif;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.recapValueImportance {
+  color: var(--color-confort-strong);
+}
+
+.recapValueConfiance {
+  color: var(--color-nav);
+}
+
+.recapUnit {
+  margin-left: 2px;
+  font-size: 15px;
+  opacity: 0.5;
+}
+
+.restartBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 22px;
+  background: none;
+  border: none;
+  color: var(--color-text-soft);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ── Onglet « Mes raisons » : tableau + réserve ─────────────────────────── */
+
+.board {
+  position: relative;
+  min-height: min(40vh, 360px);
+  padding: 20px;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-1);
+}
+
+.boardEmpty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0.4;
+}
+
+.boardCardWrap {
+  position: absolute;
+  left: var(--carte-x, 50%);
+  top: var(--carte-y, 50%);
+  transform: translate(-50%, -50%);
+  width: 180px;
+}
+
+.boardCard {
+  display: block;
+  width: 100%;
+  padding: 14px 12px;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 800;
+  line-height: 1.3;
+  text-align: left;
+  box-shadow: 0 6px 14px rgba(58, 51, 44, 0.2);
+  cursor: grab;
+  touch-action: none;
+}
+
+.boardCard:active {
+  cursor: grabbing;
+}
+
+.boardCard:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
+
+.boardCardDetail {
+  display: block;
+  margin-top: 5px;
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1.35;
+  opacity: 0.9;
+}
+
+.boardCardEditing {
+  padding: 12px;
+  background: var(--color-surface);
+  border: 2px solid transparent;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(58, 51, 44, 0.22);
+}
+
+.cardLabelInput {
+  width: 100%;
+  margin-bottom: 6px;
+  padding: 4px 0;
+  border: none;
+  border-bottom: 1px solid var(--color-line);
+  background: transparent;
+  color: var(--color-text);
+  font-family: 'Work Sans', sans-serif;
+  font-size: 13.5px;
+  font-weight: 800;
+  box-sizing: border-box;
+}
+
+.cardLabelInput:focus-visible {
+  outline: 2px solid var(--color-nav);
+}
+
+.cardDetailInput {
+  width: 100%;
+  padding: 6px;
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: 'Work Sans', sans-serif;
+  font-size: 12.5px;
+  resize: none;
+  box-sizing: border-box;
+}
+
+.cardEditFooter {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+.cardDeleteBtn,
+.cardOkBtn {
+  display: inline-flex;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 0 4px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.cardDeleteBtn {
+  color: var(--color-toxique);
+}
+
+.cardOkBtn {
+  color: var(--color-nav);
+}
+
+.reserveLabel {
+  margin: var(--space-sm) 0 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+}
+
+.reserveRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.reserveCard {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 14px;
+  background: var(--color-surface);
+  border: 2px dashed var(--color-line);
+  border-radius: 8px;
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.reserveCard:hover,
+.reserveCard:focus-visible {
+  border-color: var(--color-nav);
+  outline: none;
+}
+
+.reserveCard:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
+}
+
+.addCardBtn {
+  gap: 6px;
+}
+
+.ficheButton {
+  align-self: flex-start;
+  margin-top: var(--space-md);
+}
+
+/* ── Contenu de la fiche « Mes raisons » ──────────────────────────────────── */
+
+.ficheRaisonsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ficheRaisonItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+}
+
+.ficheRaisonDot {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  margin-top: 5px;
+  border-radius: 50%;
+}
+
+.ficheRaisonLabel {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.ficheRaisonDetail {
+  margin: 3px 0 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--color-text-soft);
+}
+
+.ficheEchelles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  margin: 0;
+  font-size: 15px;
+}
+
+.ficheEchelleItem strong {
+  font-family: 'Source Serif 4', serif;
+  font-size: 18px;
+}

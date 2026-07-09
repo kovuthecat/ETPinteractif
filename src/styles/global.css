@@ -257,3 +257,132 @@ select {
     scroll-behavior: auto !important;
   }
 }
+
+/* --- Fil rouge (cf. plans/extensions-tabac/X6.md §T3) --- */
+
+/* Ligne de clôture des modules « Comprendre » : refrain du thème, serif italique discret. */
+.filrouge {
+  margin: 0;
+  padding-left: var(--space-md);
+  border-left: 2px solid var(--color-line);
+  color: var(--color-text-soft);
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-size: var(--font-size-lead);
+  line-height: 1.5;
+}
+
+/* --- Fiches (cf. plans/extensions-tabac/X1.md, FicheOverlay + impression) --- */
+
+@page {
+  size: A4 portrait;
+  margin: 14mm;
+}
+
+@media print {
+  #root {
+    display: none !important;
+  }
+
+  .fiche-overlay {
+    position: static;
+    background: none;
+    padding: 0;
+  }
+
+  .fiche-overlay .fiche-actions,
+  .fiche-overlay [data-no-print] {
+    display: none !important;
+  }
+
+  .fiche-sheet {
+    width: auto;
+    aspect-ratio: auto;
+    max-height: none;
+    overflow: visible;
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
+  }
+}
+
+/* Titre très grand (date du plan, titre de boucle) */
+.fiche-titre-xl {
+  margin: 0;
+  font-family: 'Source Serif 4', serif;
+  font-weight: 700;
+  font-size: 34px;
+  color: var(--color-text);
+}
+
+/* Section de fiche : filet supérieur fin + label eyebrow */
+.fiche-bloc {
+  margin-top: var(--space-lg);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-line);
+}
+
+.fiche-bloc:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.fiche-bloc-eyebrow {
+  display: block;
+  margin-bottom: var(--space-sm);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+}
+
+/* Variante « carte de crise » : corps large, interlignage aéré, pas numérotés */
+.fiche-signaletique {
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+.fiche-signaletique-etape {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+}
+
+.fiche-signaletique-num {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-pill);
+  background: var(--color-nav-soft);
+  color: var(--color-nav);
+  font: 700 16px 'Work Sans', sans-serif;
+}
+
+/* Bandeau de contact (Tabac Info Service 39 89) */
+.fiche-contact {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  background: var(--color-nav-soft);
+  border-radius: var(--radius);
+}
+
+.fiche-contact-numero {
+  font: 800 30px 'Work Sans', sans-serif;
+  color: var(--color-nav);
+}
+
+/* Fil rouge en pied de fiche (cf. plans/extensions-tabac/X6.md §T3) : texte simple, petite taille. */
+.fiche-filrouge {
+  margin: 0 0 var(--space-sm);
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--color-text-soft);
+}

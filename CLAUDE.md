@@ -36,13 +36,13 @@ npx tsc --noEmit
 ### À lire avant une tâche importante
 
 - `PROJECT_BRIEF.md` (objectif, périmètre, contraintes) · `DECISIONS.md` (décisions structurantes)
-- `PROJECT_MAP.md` (localisation des modules) · `docs/contenu-modules.md` (contenu médical, autorité du contenu)
+- `PROJECT_MAP.md` (localisation des modules) · contenu médical par thème, autorité du contenu : `docs/contenu-modules-tabac.md` (thème tabac, fichier unique) · `docs/diabete/` (thème diabète, un fichier par module + `00-global.md` pour la grammaire commune — évite un fichier unique démesuré)
 
 ### Invariants non négociables
 
 1. **Zéro donnée patient stockée** : aucune persistance (localStorage, cookies, base, réseau). Interaction éphémère.
 2. **Local-first / hors-ligne** : pas de dépendance réseau au runtime.
 3. **Pile runtime figée** : Vite + React + TypeScript, sans backend, **aucune dépendance runtime ajoutée**. *Exception* : devDependencies d'outillage/test (ex. Vitest) si listées dans le plan.
-4. **Multi-thèmes par conception** : ne pas coder « en dur » pour le tabac dans le moteur de module générique.
+4. **Multi-thèmes par conception** : le moteur générique (`src/components/`, `src/features/types.ts`, `src/features/registry.ts`) ne connaît aucun thème par son nom ; tout contenu spécifique (tabac, diabète…) vit sous `src/features/<theme>/`.
 5. **Exactitude médicale** : contenu sourcé (HAS, Tabac Info Service). En cas de doute clinique, signaler plutôt qu'inventer.
 6. **Support de consultation** : sobriété, gros éléments lisibles à ~1 m, interactivité (≠ diaporama).

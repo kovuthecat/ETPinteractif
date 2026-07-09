@@ -1,0 +1,156 @@
+.module {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.intro {
+  margin: 0;
+  max-width: 64ch;
+  color: var(--color-text-soft);
+  font-size: var(--font-size-lead, 1.1rem);
+  line-height: 1.55;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-lg);
+}
+
+.sectionLabel {
+  margin: 0;
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--color-text);
+}
+
+/* --- Section 1 · Ma date --- */
+
+.dateInput {
+  align-self: flex-start;
+  min-height: var(--target-min);
+  padding: 8px 14px;
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: 600 15px 'Work Sans', sans-serif;
+}
+
+.dateRappel {
+  margin: 0;
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 26px;
+  color: var(--color-text);
+}
+
+.dateVide {
+  margin: 0;
+  font-size: 14px;
+  font-style: italic;
+  color: var(--color-text-faint);
+}
+
+/* --- Chips (sections 2 à 5) --- */
+
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.chipRow button.chipBtn {
+  min-height: var(--target-min);
+  padding: 8px 14px;
+  border: none;
+  cursor: pointer;
+  font: 700 13px 'Work Sans', sans-serif;
+  transition: outline-color 0.15s ease;
+}
+
+.chipRow button.chipBtn:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
+}
+
+.chipInput {
+  min-height: var(--target-min);
+  padding: 8px 14px;
+  border: 1.5px dashed var(--color-line);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--color-text);
+  font: 600 13px 'Work Sans', sans-serif;
+  min-width: 130px;
+}
+
+.chipInput::placeholder {
+  color: var(--color-text-faint);
+}
+
+.renvoi {
+  margin: 0;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--color-text-soft);
+}
+
+/* --- Section 6 · Autour de moi (bloc fixe) --- */
+
+.autourList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  font-size: 15px;
+  color: var(--color-text-soft);
+}
+
+.autourList strong {
+  color: var(--color-nav);
+  font-size: 1.1em;
+}
+
+/* --- Bouton fiche --- */
+
+.ficheButtonRow {
+  display: flex;
+  justify-content: center;
+}
+
+/* --- Fiche --- */
+
+.ficheDateVide {
+  margin: 0;
+  font-size: 15px;
+  font-style: italic;
+  color: var(--color-text-faint);
+}
+
+.ficheList {
+  margin: 0;
+  padding-left: 1.2em;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--color-text);
+}
+
+@media (max-width: 600px) {
+  .section {
+    padding: var(--space-md);
+  }
+
+  .dateRappel {
+    font-size: 22px;
+  }
+}

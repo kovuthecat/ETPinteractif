@@ -1,0 +1,393 @@
+.module {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.intro {
+  max-width: 820px;
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-lead);
+  line-height: 1.55;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.filtersLabel {
+  margin-right: var(--space-xs);
+  color: var(--color-text-soft);
+  font-size: var(--font-size-small);
+  font-weight: 600;
+}
+
+.filterButton {
+  display: inline-flex;
+  min-height: var(--target-min);
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.65rem 1.1rem;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-1);
+  color: var(--color-text-soft);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
+}
+
+.filterButton svg,
+.legend svg {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.filterToxiques,
+.legendToxiques,
+.toxiques {
+  color: var(--color-toxique);
+}
+
+.filterDependance,
+.legendDependance,
+.dependance {
+  color: var(--color-nav);
+}
+
+.filterButton[aria-pressed='true'] {
+  box-shadow: none;
+  color: #fff;
+}
+
+.filterToxiques[aria-pressed='true'] {
+  background: var(--color-toxique);
+}
+
+.filterDependance[aria-pressed='true'] {
+  background: var(--color-nav);
+}
+
+.sceneShell {
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-1);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-sm) var(--space-lg);
+  padding: 0.8rem var(--space-md);
+  border-bottom: 1px solid var(--color-line);
+  font-size: var(--font-size-small);
+  font-weight: 800;
+}
+
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+/* Libellé de rôle non chromatique mis en gras dans la légende */
+.legendRole {
+  font-weight: 900;
+  margin-right: 0.15rem;
+}
+
+.scene {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1000 / 620;
+  isolation: isolate;
+}
+
+.illustration {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.toxicArea {
+  fill: var(--color-toxique-soft);
+  opacity: 0.68;
+}
+
+.hatchedArea {
+  fill: url('#toxicHatch');
+  opacity: 0.24;
+}
+
+.hatchLine {
+  stroke: var(--color-toxique);
+  stroke-width: 3;
+}
+
+.nicotineArea {
+  fill: var(--color-nav-soft);
+  stroke: var(--color-nav);
+  stroke-width: 3;
+  stroke-dasharray: 8 10;
+}
+
+.connectorToxic,
+.connectorNicotine {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 3 11;
+}
+
+.connectorToxic {
+  stroke: var(--color-toxique);
+}
+
+.connectorNicotine {
+  stroke: var(--color-nav);
+}
+
+.smoke {
+  fill: none;
+  stroke: var(--color-toxique);
+  stroke-width: 18;
+  stroke-linecap: round;
+  opacity: 0.32;
+}
+
+.cigarette rect {
+  fill: #fffdfa;
+  stroke: #806e5b;
+  stroke-width: 3;
+}
+
+.cigarette .filterTip {
+  fill: #d9aa69;
+}
+
+.cigarette .burningTip {
+  fill: #493b35;
+  stroke: var(--color-toxique);
+}
+
+.ember {
+  fill: none;
+  stroke: #ef7a32;
+  stroke-width: 7;
+  stroke-linecap: round;
+}
+
+.nicotineMark {
+  fill: var(--color-surface);
+  stroke: var(--color-nav);
+  stroke-width: 5;
+}
+
+.nicotineMolecule {
+  fill: none;
+  stroke: var(--color-nav);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.dimmed {
+  opacity: 0.38;
+  transition: opacity 180ms ease;
+}
+
+/* Atténuation légère pour les étiquettes de zone (encore plus lisibles que le SVG) */
+.dimmedLabel {
+  opacity: 0.48;
+  transition: opacity 180ms ease;
+}
+
+.hotspot {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  min-height: var(--target-min);
+  max-width: 190px;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.65rem 0.8rem;
+  border: 2px solid currentColor;
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-1);
+  font: inherit;
+  font-size: var(--font-size-small);
+  font-weight: 800;
+  line-height: 1.15;
+  text-align: left;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  transition: opacity 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+.hotspot svg {
+  width: 1.45rem;
+  height: 1.45rem;
+  flex: 0 0 auto;
+}
+
+.hotspot:hover,
+.hotspot:focus-visible,
+.hotspotSelected {
+  z-index: 4;
+  box-shadow: var(--shadow-2);
+  transform: translate(-50%, -50%) scale(1.04);
+}
+
+.hotspotSelected {
+  outline: 4px solid currentColor;
+  outline-offset: 3px;
+}
+
+.hotspotDimmed {
+  opacity: 0.42;
+}
+
+.hotspotDimmed:hover,
+.hotspotDimmed:focus-visible {
+  opacity: 0.72;
+}
+
+.sceneLabel {
+  position: absolute;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  transition: opacity 180ms ease;
+}
+
+.sceneLabel svg {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+}
+
+.combustionLabel {
+  top: 55%;
+  left: 38%;
+  background: var(--color-toxique-soft);
+  color: var(--color-toxique);
+}
+
+.nicotineLabel {
+  top: 67%;
+  left: 76%;
+  background: var(--color-nav-soft);
+  color: var(--color-nav);
+}
+
+.detailBubble {
+  position: absolute;
+  z-index: 6;
+  display: grid;
+  width: min(360px, 44%);
+  max-width: calc(100% - var(--space-md) * 2);
+  grid-template-columns: auto 1fr auto;
+  gap: 0.8rem;
+  align-items: start;
+  padding: 1rem;
+  border: 2px solid currentColor;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-3);
+}
+
+.detailBubble > svg {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+
+.detailContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.22rem;
+}
+
+.detailContent strong {
+  color: var(--color-text);
+  font-size: 1.05rem;
+}
+
+.detailContent p {
+  margin: 0.25rem 0 0;
+  color: var(--color-text);
+  font-size: var(--font-size-small);
+  line-height: 1.45;
+}
+
+.detailEyebrow {
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.closeButton {
+  display: inline-flex;
+  width: var(--target-min);
+  height: var(--target-min);
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  /* Sous 900px : le pop-up quitte l'ancrage au point cliqué pour un bandeau
+     bas pleine largeur — il ne peut alors jamais recouvrir un hotspot ni déborder. */
+  .detailBubble {
+    top: auto !important;
+    right: var(--space-md) !important;
+    bottom: var(--space-md) !important;
+    left: var(--space-md) !important;
+    width: auto !important;
+    max-width: none;
+    margin: 0 !important;
+  }
+  .hotspot { max-width: 165px; }
+}
+
+@media (max-width: 620px) {
+  .filters { align-items: stretch; }
+  .filtersLabel { flex-basis: 100%; }
+  .filterButton { flex: 1 1 210px; justify-content: center; }
+  .legend { align-items: flex-start; flex-direction: column; }
+  .hotspot { max-width: 145px; padding: 0.55rem 0.65rem; font-size: 0.9rem; }
+  .hotspot svg { width: 1.2rem; height: 1.2rem; }
+  .detailBubble { bottom: 0.75rem !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dimmed,
+  .dimmedLabel,
+  .hotspot,
+  .sceneLabel {
+    transition: none;
+  }
+}

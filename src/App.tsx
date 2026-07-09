@@ -1,18 +1,30 @@
 import { useState } from 'react';
-import { MODULES } from './features/registry';
-import type { ModuleId } from './features/types';
+import { THEMES } from './features/registry';
+import type { ModuleId, ThemeId } from './features/types';
+import ThemeSelector from './components/ThemeSelector';
 import Home from './components/Home';
 import ModuleShell from './components/ModuleShell';
 
-type View = 'home' | ModuleId;
+type View =
+  | { type: 'themes' }
+  | { type: 'home'; themeId: ThemeId }
+  | { type: 'module'; themeId: ThemeId; moduleId: ModuleId };
+
+const initialView: View =
+  THEMES.length > 1 ? { type: 'themes' } : { type: 'home', themeId: THEMES[0].id };
 
 function App() {
-  const [history, setHistory] = useState<View[]>(['home']);
+  const [history, setHistory] = useState<View[]>([initialView]);
 
   const currentView = history[history.length - 1];
 
-  const navigateTo = (id: ModuleId) => {
-    setHistory([...history, id]);
+  const navigateToTheme = (themeId: ThemeId) => {
+    setHistory([...history, { type: 'home', themeId }]);
+  };
+
+  const navigateToModule = (moduleId: ModuleId) => {
+    if (currentView.type === 'themes') return;
+    setHistory([...history, { type: 'module', themeId: currentView.themeId, moduleId }]);
   };
 
   const handleBack = () => {
@@ -21,17 +33,24 @@ function App() {
     }
   };
 
-  if (currentView === 'home') {
-    return <Home onNavigate={navigateTo} />;
+  if (currentView.type === 'themes') {
+    return <ThemeSelector themes={THEMES} onNavigate={navigateToTheme} />;
   }
 
-  const module = MODULES.find((m) => m.id === currentView);
+  const theme = THEMES.find((t) => t.id === currentView.themeId);
+  if (!theme) return null;
+
+  if (currentView.type === 'home') {
+    return <Home theme={theme} onNavigate={navigateToModule} />;
+  }
+
+  const module = theme.modules.find((m) => m.id === currentView.moduleId);
   if (!module) return null;
 
   const { Component, titre, sources } = module;
   return (
     <ModuleShell titre={titre} sources={sources} onBack={handleBack}>
-      <Component onNavigate={navigateTo} />
+      <Component onNavigate={navigateToModule} />
     </ModuleShell>
   );
 }

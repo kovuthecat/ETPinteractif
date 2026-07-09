@@ -1,0 +1,93 @@
+Module 6 — Traitements du diabète de type 2
+
+6.1 — Objectifs du traitement et individualisation des cibles d'HbA1c
+
+L'objectif glycémique doit être individualisé selon le profil du patient. L'ADA Standards of Care 2026 recommande une cible d'HbA1c < 7 % (53 mmol/mol) pour la majorité des adultes non enceintes, sans hypoglycémie sévère. [1] Cette cible repose sur les données fondatrices de l'UKPDS (DT2 nouvellement diagnostiqué) et du DCCT (DT1), qui ont démontré qu'une réduction de 10 % de l'HbA1c est associée à une diminution de 44 % du risque de progression de la rétinopathie. [2] Le suivi à long terme de l'UKPDS a confirmé un bénéfice persistant sur les complications microvasculaires et une réduction du risque d'infarctus du myocarde et de mortalité toutes causes, même après la perte des différences glycémiques entre les groupes (« effet mémoire métabolique »). [3]
+
+Le consensus ADA/EASD 2022 précise que la cible doit être modulée selon plusieurs facteurs : [4]
+
+    Cible plus stricte (< 6,5 %) : patient jeune, diabète récent, faible risque d'hypoglycémie, espérance de vie longue. [1]
+
+    Cible plus souple (< 8 %, voire 8,5 %) : sujet âgé, comorbidités sévères, espérance de vie limitée, fragilité, antécédents d'hypoglycémie sévère, neuropathie autonome. [1][5]
+
+L'étude Steno-2 a montré qu'une approche multifactorielle intensive (glycémie, pression artérielle, lipides, antiagrégation) réduit de 53 % les événements cardiovasculaires composites chez les patients DT2 avec albuminurie, avec un bénéfice maintenu à 13 ans de suivi. [6]
+
+Messages-clés pour le patient :
+
+    L'objectif de sucre dans le sang est fixé « sur mesure » avec le médecin, en fonction de l'âge, de l'ancienneté du diabète et de l'état de santé général.
+
+    Pour la plupart des adultes, l'objectif est une HbA1c en dessous de 7 %, mais ce chiffre peut être plus bas ou plus haut selon la situation.
+
+    Atteindre et maintenir cet objectif réduit le risque de complications aux yeux, aux reins et aux nerfs.
+
+    Le traitement du diabète ne se limite pas au sucre : il faut aussi contrôler la tension artérielle et le cholestérol.
+
+6.2 — Les mesures hygiéno-diététiques : socle du traitement
+
+Toutes les recommandations internationales placent les modifications du mode de vie (alimentation, activité physique, gestion du poids) comme fondement du traitement, à initier dès le diagnostic et à maintenir tout au long de la maladie. [4] Le consensus ADA/EASD 2022 recommande : [4]
+
+    Activité physique : ≥ 150 min/semaine d'activité aérobie d'intensité modérée à vigoureuse, complétée par 2 à 3 séances de renforcement musculaire par semaine. Interrompre les périodes de sédentarité par des pauses actives de 5 minutes toutes les heures. [7]
+
+    Alimentation : il n'existe pas de régime unique recommandé ; la thérapie nutritionnelle médicale (MNT) doit être personnalisée selon les préférences et le contexte culturel du patient. [4]
+
+    Perte de poids : un objectif d'au moins 5 % du poids corporel est raisonnable et cliniquement bénéfique chez les patients en surpoids ou obèses. [4]
+
+L'essai Look AHEAD a montré qu'une intervention intensive sur le mode de vie permet une perte de poids durable, une meilleure rémission du diabète et un meilleur contrôle glycémique avec moins de médicaments, bien qu'aucun bénéfice sur les événements cardiovasculaires n'ait été démontré. [8-9]
+
+Messages-clés pour le patient :
+
+    L'alimentation équilibrée et l'activité physique sont le premier traitement du diabète, avant même les médicaments.
+
+    Bouger au moins 30 minutes par jour, 5 jours par semaine, aide à mieux contrôler le sucre dans le sang.
+
+    Perdre même 5 % de son poids (par exemple 4 kg pour une personne de 80 kg) améliore nettement le diabète.
+
+    Il n'y a pas de « régime interdit » : l'important est de trouver une alimentation saine, variée et tenable sur le long terme.
+
+6.3 — Principales classes d'antidiabétiques : comparaison synthétique
+
+Le tableau suivant résume les caractéristiques des principales classes, d'après les ADA Standards of Care 2026, le consensus ADA/EASD 2022 et la revue JAMA 2025 : [10-13]
+Classe	Mécanisme simplifié	Baisse d'HbA1c	Effet sur le poids	Risque d'hypoglycémie	Principaux effets indésirables	Réf.
+Metformine	Réduit la production de sucre par le foie, améliore la sensibilité à l'insuline	1,0–2,0 %	Neutre (légère perte possible)	Non	Troubles digestifs (diarrhée, nausées), carence en vitamine B12 ; CI si DFG < 30	[1-2]
+Inhibiteurs SGLT2 (empagliflozine, dapagliflozine, canagliflozine)	Empêchent la réabsorption du sucre par le rein → élimination dans les urines	0,5–1,0 %	Perte modérée	Non	Infections génitales mycosiques, infections urinaires, risque rare d'acidocétose euglycémique ; suspendre si déshydratation	[1-3]
+Agonistes du GLP-1 (sémaglutide, liraglutide, dulaglutide)	Stimulent la sécrétion d'insuline de façon glucose-dépendante, ralentissent la vidange gastrique, réduisent l'appétit	1,0–2,5 %	Perte intermédiaire à importante	Non	Nausées, vomissements, diarrhée ; CI si ATCD personnel/familial de cancer médullaire de la thyroïde	[2-3]
+Inhibiteurs de la DPP-4 (sitagliptine, linagliptine)	Augmentent les hormones incrétines → stimulation glucose-dépendante de l'insuline	< 0,5–0,7 %	Neutre	Non	Bien tolérés ; rhinopharyngite, céphalées ; ne pas associer aux agonistes du GLP-1	[1-3]
+Sulfamides hypoglycémiants (gliclazide, glimépiride)	Stimulent directement la sécrétion d'insuline par le pancréas (indépendamment du glucose)	1,0–2,0 %	Prise de poids	Oui	Hypoglycémie (surtout glibenclamide), prise de poids	[1-2, 4]
+Insuline (basale : glargine, dégludec ; rapide : lispro, asparte)	Remplace l'insuline manquante ; favorise l'entrée du sucre dans les cellules	1,5–2,5 %+	Prise de poids	Oui	Hypoglycémie, prise de poids, nécessité d'injections et d'autosurveillance	[2-3]
+
+L'essai GRADE a comparé 4 traitements ajoutés à la metformine sur 5 ans : la glargine et le liraglutide étaient modestement plus efficaces pour maintenir l'HbA1c < 7 %, tandis que la sitagliptine était la moins efficace. Les hypoglycémies sévères étaient significativement plus fréquentes sous glargine et glimépiride. [10]
+
+6.4 — Bénéfices cardiovasculaires et rénaux démontrés
+
+Deux classes ont démontré des bénéfices au-delà du contrôle glycémique, dans de grands essais randomisés contrôlés contre placebo :
+
+Inhibiteurs SGLT2 :
+
+    EMPA-REG OUTCOME (empagliflozine, n = 7 020, suivi médian 3,1 ans) : réduction de 14 % du MACE (HR 0,86 ; IC95 % 0,74–0,99), réduction de 38 % de la mortalité cardiovasculaire (HR 0,62), et de 35 % des hospitalisations pour insuffisance cardiaque (HR 0,65). [15][15]
+
+    CREDENCE (canagliflozine, n = 4 401, suivi médian 2,6 ans) : essai spécifiquement conçu pour les critères rénaux chez des patients DT2 avec néphropathie albuminurique. Réduction de 30 % du critère rénal composite (doublement de la créatinine, insuffisance rénale terminale, décès rénal ou CV ; HR 0,70 ; IC95 % 0,59–0,82) et de 32 % de l'insuffisance rénale terminale. [16]
+
+    Une méta-analyse de 6 essais (46 969 participants) confirme une réduction du MACE (HR 0,90), des hospitalisations pour insuffisance cardiaque et de la progression de la maladie rénale. [13]
+
+Agonistes du GLP-1 :
+
+    LEADER (liraglutide, n = 9 340, suivi médian 3,8 ans) : réduction de 13 % du MACE (HR 0,87 ; IC95 % 0,78–0,97) et de 15 % de la mortalité toutes causes (HR 0,85), principalement par réduction de la mortalité CV. [15][17]
+
+    SUSTAIN-6 (sémaglutide SC) : réduction de 26 % du MACE (HR 0,74), avec un effet marqué sur l'AVC non fatal (HR 0,61). [15]
+
+    Une méta-analyse de 7 essais (56 004 participants) confirme la réduction du MACE (HR 0,88). [13]
+
+Profils complémentaires des deux classes : une méta-analyse de 8 essais (77 242 patients) montre que les deux classes réduisent le MACE de façon comparable (~11–12 %), mais les iSGLT2 sont supérieurs pour réduire les hospitalisations pour insuffisance cardiaque (HR 0,69) et la progression de la maladie rénale (HR 0,55 pour le DFG/insuffisance rénale terminale), tandis que les AR GLP-1 réduisent davantage le risque d'AVC. [18-19]
+Table 3. Clinical Trials Showing Cardiovascular Benefit of Glucose-Lowering Agents in Patients with Type 2 Diabetes.*
+Glucose-Lowering Drugs to Reduce Cardiovascular Risk in Type 2 Diabetes. N Engl J Med. 1 avril 2021.
+
+Used under license from The New England Journal of Medicine.
+Feedback
+
+Messages-clés pour le patient :
+
+    Certains médicaments du diabète protègent aussi le cœur et les reins, au-delà de leur effet sur le sucre.
+
+    Si le médecin prescrit un iSGLT2 ou un agoniste du GLP-1, c'est souvent pour cette double protection, pas seulement pour baisser le sucre.
+
+    Ces bénéfices ont été prouvés dans de très grandes études incluant des milliers de patients.

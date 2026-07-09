@@ -1,0 +1,51 @@
+/* Généralisation du pattern .zoneTooltip / .zoneLabelHit de NicotineModule.module.css — X6 T4 */
+
+.wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.trigger {
+  cursor: help;
+  outline: none;
+  border-bottom: 1px dashed var(--color-text-faint);
+}
+
+.trigger:focus-visible {
+  outline: 2px solid var(--color-nav);
+  outline-offset: 2px;
+}
+
+.panel {
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  min-width: 200px;
+  max-width: 280px;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-3);
+  color: var(--color-text);
+  font-size: var(--font-size-small);
+  line-height: 1.5;
+  font-style: normal;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+.panelAbove {
+  bottom: calc(100% + 8px);
+}
+
+.panelBelow {
+  top: calc(100% + 8px);
+}
+
+@media (max-width: 480px) {
+  .panel {
+    left: 0;
+    transform: none;
+    max-width: min(280px, 80vw);
+  }
+}

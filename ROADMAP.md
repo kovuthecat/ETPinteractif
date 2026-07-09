@@ -35,7 +35,10 @@ illustre ses explications module par module. Multi-thèmes à terme ; premier th
 
 ## Version 2 / idées futures
 
-- [ ] **2e thème ETP** (à définir) validant la généricité du moteur de modules
+- [~] **2e thème ETP — diabète** : moteur multi-thèmes livré et thème scaffoldé (2026-07-08, vide,
+      `enConstruction: true`) ; cadrage clinique en cours avec Thibault (cf. `docs/diabete/00-global.md`,
+      4/8 modules déjà spécifiés) ; reste à finaliser les modules 5-8, transmettre à Claude Design puis
+      implémenter les modules.
 - [ ] Mode plein écran / présentation
 - [ ] Accessibilité renforcée (gros contrastes, taille de police réglable)
 

@@ -1,0 +1,88 @@
+Voici le rapport de synthèse demandé, structuré pour le Module 2 de l'outil d'ETP.
+
+Module 2 — Activité physique et diabète de type 2
+
+Effets comparés de l'activité aérobie et du renforcement musculaire sur la glycémie
+
+L'exercice structuré — qu'il soit aérobie, en résistance ou combiné — réduit l'HbA1c de 0,5 à 0,8 % chez les adultes atteints de diabète de type 2 (DT2), un effet comparable à celui de la metformine dans l'UKPDS (−0,6 % d'HbA1c). [1] Ces bénéfices sont obtenus même en l'absence de perte de poids. [1]
+
+    Exercice aérobie (marche rapide, vélo, natation) : les méta-analyses rapportent une réduction de l'HbA1c de −0,5 à −0,73 %, avec amélioration de la sensibilité à l'insuline périphérique et de la capacité cardiorespiratoire. L'effet passe par une augmentation de la captation musculaire du glucose et une suppression de la production hépatique de glucose. [2-4]
+
+    Exercice en résistance (poids libres, machines, poids du corps) : la réduction de l'HbA1c est de l'ordre de −0,57 %. Le renforcement musculaire augmente la force d'environ 50 % et améliore la flexibilité, l'équilibre et la fonction physique — un point crucial car le DT2 accélère le déclin fonctionnel. [2-3][5]
+
+    Entraînement combiné (aérobie + résistance) : il est supérieur à chaque modalité isolée pour le contrôle glycémique. Une méta-analyse en réseau (85 ECR, 5 535 participants) classe le HIIT en tête (−0,78 % d'HbA1c), suivi de l'entraînement combiné (−0,54 %), du yoga (−0,45 %) et de l'aérobie continu (−0,42 %). [2][4][6]
+
+La méta-analyse d'Umpierre et al. (JAMA, 2011) portant sur des ECR d'exercice structuré illustre ces résultats par modalité :
+Figure 1. Absolute Changes in HbA1c of Individual Studies of Structured Exercise Training vs No Intervention
+Physical Activity Advice Only or Structured Exercise Training and Association With HbA1c Levels in Type 2 Diabetes: A Systematic Review and Meta-analysis. JAMA. 4 mai 2011.
+
+Content used under license from the JAMA Network®
+© American Medical Association
+Feedback
+
+Relation dose-réponse
+
+La dose optimale d'activité physique se situe autour de 1 100 MET-min/semaine (soit environ 244 min/semaine d'activité aérobie d'intensité modérée), avec des réductions d'HbA1c allant de −0,38 % (prédiabète) à −1,02 % (diabète sévèrement déséquilibré) selon le niveau d'HbA1c de départ. [7] Une méta-analyse dose-réponse montre que chaque tranche de 30 min/semaine d'exercice aérobie supervisé réduit l'HbA1c de −0,22 point de pourcentage, avec un effet maximal atteint vers 100 min/semaine et un plateau au-delà. [8] Un seuil significatif d'amélioration est déjà observé à partir de 840 MET-min/semaine. [6]
+
+Recommandations en fréquence, intensité, durée et réduction de la sédentarité
+
+Les recommandations convergent entre l'ADA (Standards of Care 2026), le consensus ADA/EASD 2022 et l'ACSM 2022 :
+Paramètre	Recommandation	Niveau de preuve	Réf.
+Aérobie — durée	≥ 150 min/semaine d'intensité modérée à vigoureuse (ou ≥ 75 min/semaine si vigoureux/HIIT)	B	[1-2]
+Aérobie — fréquence	≥ 3 jours/semaine, pas plus de 2 jours consécutifs sans activité	B	[1-2]
+Aérobie — séances	Bouts d'au moins 10 min, objectif ~30 min/jour	B	[1]
+Résistance	2–3 séances/semaine, jours non consécutifs	B	[1-2]
+Souplesse / équilibre	2–3 fois/semaine (surtout sujets âgés)	C	[1]
+Sédentarité	Interrompre la position assise prolongée toutes les 30 min	C	[1, 3]
+Progression	Augmentation progressive en intensité, fréquence et/ou durée	—	[1]
+
+Le consensus ADA/EASD 2022 souligne qu'une augmentation progressive de l'activité ne nécessite pas de bilan médical préalable, mais qu'une évaluation complémentaire est justifiée en cas de rétinopathie modérée à sévère, néphropathie, neuropathie périphérique ou insuffisance cardiaque instable. [5]
+
+Réduction de la sédentarité : interrompre la position assise par 3 min de marche légère ou d'exercices simples toutes les 30 min réduit significativement la glycémie postprandiale, l'insulinémie et les triglycérides. [2][4][11] Une méta-analyse (42 études) montre un effet modéré mais significatif des pauses actives sur la glycémie (SMD −0,54) et l'insulinémie (SMD −0,56) par rapport à la position assise continue. [11] Même un gain de seulement 500 pas/jour est associé à une réduction de 2 à 9 % de la mortalité cardiovasculaire et globale. [5]
+
+Intérêt du timing : activité post-prandiale
+
+L'exercice réalisé en période post-prandiale (idéalement 30 à 45 min après le repas) atténue de façon plus marquée les pics glycémiques que l'exercice préprandial. [4][12] Les données clés :
+
+    L'exercice aérobie post-prandial réduit l'aire sous la courbe glycémique de 3,4 à 26,6 % et la prévalence de l'hyperglycémie sur 24 h de 11,9 à 65 %. [13]
+
+    L'exercice en résistance post-prandial réduit l'AUC glycémique d'environ 30 %. [13]
+
+    L'effet est d'autant plus marqué que la durée est longue (≥ 45 min) et que l'exercice est réalisé après le repas le plus copieux de la journée. [4][13]
+
+    Le consensus ADA/EASD 2022 recommande explicitement de maximiser les effets glycémiques en pratiquant l'activité en période post-prandiale. [5]
+
+La figure ci-dessous illustre l'impact du timing de l'exercice (30, 60 ou 90 min après le petit-déjeuner) sur la glycémie chez des patients DT2 sous metformine :
+Figure 3. Changes of blood glucose levels throughout the four experimental conditions.
+Timing of Exercise Affects Glycemic Control in Type 2 Diabetes Patients Treated with Metformin. J Diabetes Res. 22 décembre 2017.
+
+Used under license from Wiley.
+Feedback
+
+L'exercice initié 30 min après le repas (EX30) atténue le plus efficacement le pic glycémique post-prandial par rapport à la metformine seule. [14]
+
+Précautions et adaptations selon les complications
+
+L'ACSM (2022) et l'ADA (2026) détaillent les précautions suivantes : [2][4][9]
+Complication	Précautions principales	Réf.
+Rétinopathie proliférante/sévère	Éviter exercice vigoureux, Valsalva, tête en bas, charges lourdes ; contre-indiqué si rétinopathie proliférante instable/non traitée	[1-2]
+Neuropathie périphérique	Éviter traumatismes du pied (randonnée prolongée, course sur terrain irrégulier) ; préférer vélo, natation, exercices assis ; inspection quotidienne des pieds	[1-2]
+Neuropathie autonome	Risque d'hypoglycémie, réponses tensionnelles anormales, thermorégulation altérée ; utiliser l'échelle de perception de l'effort (RPE) plutôt que la FC cible	[1]
+Néphropathie diabétique	Éviter charges lourdes et exercice de haute intensité augmentant excessivement la PA ; exercice léger à modéré possible même en dialyse	[1]
+Risque d'hypoglycémie (insuline, sulfamides)	Avoir du sucre rapide à portée ; surveiller la glycémie avant, pendant et après l'effort ; ne pas débuter si glycémie > 250 mg/dL avec cétose	[1]
+Risque cardiovasculaire élevé	Bilan cardiaque si symptômes ou activité plus intense que la marche rapide ; débuter par des séances courtes et de faible intensité	[1, 3]
+HTA non contrôlée	Éviter charges lourdes et Valsalva ; privilégier exercice dynamique modéré	[1]
+
+Pour les patients sous pharmacothérapie de l'obésité ou après chirurgie métabolique, les exercices de renforcement musculaire sont particulièrement recommandés pour préserver la masse maigre. [9]
+
+Messages-clés pour le patient
+
+    🏃 « Bouger, c'est aussi efficace qu'un médicament. » — 150 minutes par semaine d'activité modérée (marche rapide, vélo, natation) font baisser votre HbA1c autant que certains traitements antidiabétiques.
+
+    💪 « Combinez marche et musculation. » — Faire à la fois de l'activité d'endurance et du renforcement musculaire (2 à 3 séances par semaine) donne les meilleurs résultats sur votre glycémie et votre forme physique.
+
+    🍽️ « Marchez après les repas. » — Une promenade de 15 à 30 minutes après le repas principal réduit nettement le pic de sucre dans le sang. C'est le meilleur moment pour bouger.
+
+    🪑 « Levez-vous toutes les 30 minutes. » — Rester assis longtemps fait monter la glycémie. Se lever, marcher quelques minutes ou faire quelques mouvements simples toutes les demi-heures fait une vraie différence.
+
+    👟 « Chaque pas compte, commencez petit. » — Même 500 pas de plus par jour améliorent votre santé. L'important est de commencer à votre rythme et d'augmenter progressivement, sans chercher la performance.

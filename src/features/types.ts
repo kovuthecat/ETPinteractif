@@ -1,20 +1,15 @@
 import type { ComponentType } from 'react';
 import type { LucideIcon } from 'lucide-react';
 
-export type ModuleId =
-  | 'addiction'
-  | 'nicotine'
-  | 'substituts'
-  | 'nicotine-toxique'
-  | 'soulagement'
-  | 'craving'
-  | 'motivation';
+export type ModuleId = string;
 
 export interface ModuleProps {
   onNavigate: (id: ModuleId) => void;
 }
 
-export type FamilleId = 'comprendre' | 'agir' | 'motivation';
+export type FamilleId = string;
+
+export type Hue = 'nav' | 'confort' | 'vigilance' | 'toxique';
 
 export interface ModuleDef {
   id: ModuleId;
@@ -24,4 +19,24 @@ export interface ModuleDef {
   sources?: string[];
   Icon: LucideIcon;
   Component: ComponentType<ModuleProps>;
+  hue?: Hue;
+}
+
+export interface FamilleDef {
+  id: FamilleId;
+  label: string;
+}
+
+export type ThemeId = string;
+
+export interface ThemeDef {
+  id: ThemeId;
+  titre: string;
+  eyebrow: string;
+  description: string;
+  /** Refrain du thème, affiché en exergue de l'accueil (générique — aucun contenu de thème en dur ici). */
+  exergue?: string;
+  familles: FamilleDef[];
+  modules: ModuleDef[];
+  enConstruction?: boolean;
 }

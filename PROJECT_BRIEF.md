@@ -20,7 +20,9 @@ Application web interactive servant de **support d'éducation thérapeutique du 
 ## Hors périmètre v1
 
 - Tout stockage de données patient (aucune persistance, aucune base, aucun compte).
-- Multi-thèmes au-delà du sevrage tabagique (l'architecture le prépare, mais le contenu v1 = tabac uniquement).
+- Contenu clinique du 2e thème (diabète) : le moteur multi-thèmes et le scaffold `src/features/diabete/`
+  existent depuis le 2026-07-08 (cf. `DECISIONS.md`), mais le cadrage du contenu (modules, interactions,
+  sources) reste à faire avec Thibault avant tout développement de module diabète.
 - Questionnaire de profilage imposé / parcours auto-adaptatif (navigation = choix libre par centres d'intérêt).
 - Authentification, comptes, suivi longitudinal.
 

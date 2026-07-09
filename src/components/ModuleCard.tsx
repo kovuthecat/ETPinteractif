@@ -1,7 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
+import type { Hue } from '../features/types';
 import styles from './ModuleCard.module.css';
-
-export type Hue = 'nav' | 'confort' | 'vigilance' | 'toxique';
 
 interface ModuleCardProps {
   titre: string;

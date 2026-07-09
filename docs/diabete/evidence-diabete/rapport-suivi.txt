@@ -1,0 +1,162 @@
+Pourquoi mesurer l'HbA1c ?
+
+L'HbA1c reflète la glycémie moyenne des 2 à 3 derniers mois. Les essais DCCT (diabète de type 1) et UKPDS (diabète de type 2) ont démontré de façon définitive qu'un contrôle glycémique intensif réduit de 25 à 76 % le risque de complications microvasculaires (rétinopathie, néphropathie, neuropathie). [1-2] Le suivi post-essai de l'UKPDS à 24 ans (UKPDS 91) confirme que les bénéfices d'un contrôle glycémique précoce persistent sur la quasi-totalité de la vie, avec des réductions significatives de la mortalité toutes causes et de l'infarctus du myocarde — un phénomène appelé « mémoire métabolique » ou « effet héritage ». [1][3]
+
+Fréquence de mesure
+
+    Au moins tous les 6 mois chez les patients à l'objectif glycémique et en situation stable. [2][4]
+
+    Tous les 3 mois (trimestrielle) chez les patients n'atteignant pas leur cible, après un changement de traitement, ou en cas de gestion intensive. [2][5]
+
+    En cas d'hospitalisation, mesurer l'HbA1c si aucun résultat n'est disponible dans les 3 mois précédents. [2]
+
+Niveau de preuve : A (modéré) — Recommandation ADA 2026 / ADA-EASD Laboratory Guidelines 2023. [2]
+
+Cibles individualisées d'HbA1c
+
+L'individualisation des objectifs glycémiques est un principe fondamental du consensus ADA/EASD 2022 et des Standards of Care ADA 2026. [1][6] Les cibles doivent être adaptées selon un ensemble de facteurs cliniques :
+
+    < 7 % (< 53 mmol/mol) : cible appropriée pour la majorité des adultes non enceintes, sans hypoglycémie sévère (niveau de preuve A). [1-2]
+
+    < 6,5 % (< 48 mmol/mol) : envisageable chez les patients jeunes, avec un diabète de courte durée, une longue espérance de vie, et un faible risque d'hypoglycémie (niveau de preuve B). [1][6]
+
+    < 8 % (< 64 mmol/mol) : appropriée chez les patients âgés avec comorbidités multiples, espérance de vie limitée, antécédents d'hypoglycémie sévère, ou complications avancées (niveau de preuve B). [1][7]
+
+    Chez les personnes âgées, l'ADA 2026 propose un cadre à trois niveaux selon l'état de santé : sain (< 7–7,5 %), complexe/intermédiaire (< 8 %), très complexe/mauvais état de santé (éviter l'hypoglycémie et l'hyperglycémie symptomatique, sans cible d'HbA1c rigide). [7]
+
+La HAS et la Société Francophone du Diabète (SFD) proposent un cadre similaire d'individualisation, avec une cible générale ≤ 7 % pour la plupart des patients et des cibles plus souples (≤ 8–9 %) pour les patients fragiles ou âgés.
+5.2 Examens de dépistage recommandés et leur périodicité
+5.2.1 Fond d'œil (rétinopathie diabétique)
+
+    Examen initial : dès le diagnostic de diabète de type 2 (examen du fond d'œil dilaté par un ophtalmologiste ou optométriste) — niveau de preuve B. [8]
+
+    Suivi annuel si pas de rétinopathie et glycémie à l'objectif ; possibilité d'espacer à tous les 1 à 2 ans après un ou plusieurs examens normaux et un bon contrôle glycémique — niveau de preuve B. [8-9]
+
+    Plus fréquent (tous les 3 à 6 mois) si rétinopathie présente ou en progression. [8]
+
+    La rétinophotographie avec lecture à distance ou par intelligence artificielle validée par la FDA constitue une alternative de dépistage acceptable. [8]
+
+    Chez la femme enceinte avec diabète préexistant : examen avant la grossesse, au 1er trimestre, puis chaque trimestre si nécessaire. [8]
+
+Recommandation ADA Standards of Care 2026, niveau de preuve B. [8]
+5.2.2 Dépistage de la néphropathie diabétique (rapport albumine/créatinine urinaire et DFGe)
+
+    Dépistage annuel par le rapport albumine/créatinine urinaire (RAC) sur échantillon d'urine ponctuel ET estimation du débit de filtration glomérulaire (DFGe) chez tous les patients avec DT2, dès le diagnostic — niveau de preuve B. [10-11]
+
+    En cas de maladie rénale chronique (MRC) confirmée, surveillance 1 à 4 fois par an selon le stade, en utilisant la matrice KDIGO croisant DFGe et albuminurie. [10-11]
+
+    Deux résultats anormaux sur trois prélèvements dans un intervalle de 3 à 6 mois sont nécessaires pour confirmer une albuminurie modérément ou sévèrement élevée (variabilité biologique > 20 %). [10]
+
+    L'objectif thérapeutique est de réduire le RAC d'au moins 30 à 50 %, idéalement < 30 mg/g. [2][10]
+
+La figure ci-dessous illustre la fréquence de surveillance recommandée selon le stade de MRC (matrice KDIGO) :
+Feedback
+Figure 14. Frequency of monitoring (number of clinic visits per year) based upon eGFR stage and albuminuria. Reproduced with permission from Kidney Disease Improving Global Outcomes (KDIGO) CKD Work Group. KDIGO 2012 Clinical Practice Guideline for the Evaluation and Management of Chronic Kidney Disease. Kidney Int 2013; Suppl 3: 1–150.
+
+Recommandation ADA 2026 / Consensus ADA-KDIGO 2022, niveau de preuve B. [10-11]
+5.2.3 Examen des pieds
+
+    Examen complet annuel des pieds chez tous les patients diabétiques, incluant : inspection cutanée, évaluation des déformations, test au monofilament 10 g (ou Ipswich touch test) + au moins un autre test neurologique (piqûre, température, vibration), et évaluation vasculaire (pouls pédieux et tibial postérieur) — niveau de preuve A. [8]
+
+    À chaque consultation chez les patients à haut risque : perte de sensibilité protectrice, antécédent d'ulcère ou d'amputation — niveau de preuve A. [8]
+
+    Rechercher les symptômes de neuropathie (douleur, brûlure, engourdissement) et d'artériopathie (claudication, fatigue des jambes). [8]
+
+    Éducation à l'auto-examen quotidien des pieds pour tous les patients. [8]
+
+Recommandation ADA Standards of Care 2026, niveau de preuve A/B. [8]
+5.2.4 Dépistage de la neuropathie
+
+    Dès le diagnostic de DT2, puis au moins annuellement : évaluation de la polyneuropathie distale symétrique (test au monofilament 10 g + sensation vibratoire au diapason 128 Hz ou test de température/piqûre) — niveau de preuve B. [8]
+
+    Recherche de signes de neuropathie autonome (hypotension orthostatique, tachycardie de repos, gastroparésie, dysfonction érectile, troubles sudoraux) dès le diagnostic de DT2 — niveau de preuve E. [8]
+
+Recommandation ADA 2026. [8]
+5.2.5 Bilan lipidique
+
+    Au diagnostic et lors de l'évaluation médicale initiale, puis annuellement (ou plus fréquemment si indiqué) chez les patients non traités par statine — niveau de preuve E. [13]
+
+    4 à 12 semaines après l'initiation d'une statine ou un changement de dose, puis annuellement pour surveiller la réponse et l'observance — niveau de preuve A. [13]
+
+    L'AACE recommande également un bilan lipidique annuel chez tous les adultes avec DT2 ou prédiabète. [14]
+
+Recommandation ADA 2026 / AACE 2023. [13-14]
+5.2.6 Suivi dentaire et parodontal
+
+    Examen dentaire au moins une fois par an — niveau de preuve E (ADA 2026). [15]
+
+    La maladie parodontale est plus sévère et plus fréquente chez les patients diabétiques ; elle est associée à des niveaux d'HbA1c plus élevés. [15-16]
+
+    Le traitement parodontal non chirurgical peut améliorer le contrôle glycémique. [15-16]
+
+    Le consensus IDF/EFP 2018 recommande un examen parodontal complet dès le diagnostic de diabète, puis un suivi annuel même en l'absence de parodontite. [16]
+
+Recommandation ADA 2026 (E) / Consensus IDF-EFP 2018. [15-16]
+5.2.7 Évaluation cardiovasculaire
+
+    L'évaluation du risque cardiovasculaire (ASCVD, insuffisance cardiaque) doit être intégrée à chaque visite de suivi et guider le choix des traitements hypoglycémiants (iSGLT2, AR-GLP1) indépendamment de l'HbA1c. [15][17]
+
+    La pression artérielle doit être mesurée à chaque consultation, avec un objectif < 130/80 mmHg pour la plupart des adultes diabétiques. [15]
+
+    Le dépistage systématique par imagerie (score calcique coronaire, épreuve d'effort) n'est pas recommandé chez les patients asymptomatiques, mais le score calcique peut être utile pour guider l'intensification du traitement par statine. [17]
+
+    L'étude Steno-2 a démontré qu'une intervention multifactorielle intensive ciblant simultanément glycémie, pression artérielle, lipides et albuminurie réduit de ~50 % le risque d'événements cardiovasculaires et microvasculaires (HR 0,47 ; IC 95 % 0,24–0,73), avec un gain médian de survie de 7,9 ans au suivi à 21 ans. [18-19]
+
+5.3 Place de l'autosurveillance glycémique
+Autosurveillance glycémique capillaire (ASG)
+
+    Chez les patients sous insuline basale seule : une glycémie capillaire à jeun quotidienne suffit pour atteindre les objectifs de glycémie à jeun (80–130 mg/dL). [4]
+
+    Chez les patients sous multi-injections d'insuline : ASG au minimum avant les repas et au coucher. [4]
+
+    Chez les patients non traités par insuline : l'ASG de routine a un bénéfice clinique limité en termes de réduction de l'HbA1c, mais peut être utile pour certains patients lorsqu'elle est combinée à une éducation et à des ajustements du mode de vie. Une méta-analyse de 22 ECR (6 204 participants) montre une réduction modeste mais significative de l'HbA1c avec l'ASG (−0,30 % ; IC 95 % −0,42 à −0,17), avec de meilleurs résultats lorsque l'ASG est structurée (−0,23 % supplémentaire) et réalisée 8 à 11 fois par semaine. [6][20-21]
+
+Mesure continue du glucose (MCG / CGM)
+
+    La MCG est recommandée pour tous les patients sous insuline et peut être envisagée pour ceux sous traitements non insuliniques. [4][22]
+
+    Une méta-analyse de 12 ECR (1 248 participants DT2) montre que la MCG réduit l'HbA1c de −0,31 % (IC 95 % −0,43 à −0,19) par rapport à l'ASG capillaire, avec une augmentation du temps dans la cible de +6,4 % et une réduction du temps en hypoglycémie. [23]
+
+    Les objectifs CGM pour la plupart des adultes non enceintes sont : temps dans la cible (70–180 mg/dL) > 70 %, temps < 70 mg/dL < 4 %, temps < 54 mg/dL < 1 %. [1][6]
+
+    Chez les personnes âgées avec état de santé complexe : TIR ≥ 50 % et temps < 70 mg/dL < 1 %. [1][7]
+
+Niveau de preuve : B (ADA 2026) / Méta-analyses ECR. [22-23]
+5.4 Bénéfice démontré d'un suivi structuré
+Preuves issues des essais randomisés
+
+UKPDS et suivi à 24 ans (UKPDS 91) : Le contrôle glycémique intensif dès le diagnostic (HbA1c moyenne 7,0 % vs 7,9 %) réduit les complications microvasculaires. Le suivi post-essai démontre un « effet héritage » avec des bénéfices persistants sur la mortalité toutes causes et l'infarctus du myocarde, même après disparition de la différence glycémique entre les groupes. [1][3-4]
+
+Steno-2 : L'intervention multifactorielle structurée (glycémie + PA + lipides + albuminurie + mode de vie) pendant 7,8 ans réduit de ~50 % les événements cardiovasculaires et microvasculaires. Au suivi à 21 ans, le gain médian de survie est de 7,9 ans et le temps sans événement cardiovasculaire est prolongé de 8,1 ans. [18-19]
+Feedback
+Figure 3. Kaplan–Meier Estimates of the Composite End Point of Death from Cardiovascular Causes, Nonfatal Myocardial Infarction, Coronary-Artery Bypass Grafting, Percutaneous Coronary Intervention, Nonfatal Stroke, Amputation, or Surgery for Peripheral Atherosclerotic Artery Disease in the Conventional-Therapy Group and the Intensive-Therapy Group (Panel A) and the Relative Risk of the Development or Progression of Nephropathy, Retinopathy, and Autonomic and Peripheral Neuropathy during the Average Follow-up of 7.8 Years in the Intensive-Therapy Group, as Compared with the Conventional-Therapy Group (Panel B).
+
+ACCORD, ADVANCE, VADT : Ces trois essais chez des patients avec DT2 de plus longue durée (~10 ans) confirment les bénéfices microvasculaires (notamment néphropathie) du contrôle glycémique intensif, mais sans bénéfice macrovasculaire clair, et avec un risque accru d'hypoglycémie sévère. ACCORD a été arrêté prématurément en raison d'une surmortalité dans le bras intensif. [1][4]
+
+Look AHEAD : L'intervention intensive sur le mode de vie (perte de poids + activité physique) n'a pas réduit les événements cardiovasculaires à 10 ans, mais a amélioré le contrôle glycémique, la condition physique, et de nombreux facteurs de risque. [24]
+Bénéfice du suivi structuré en pratique
+
+Une revue systématique sur la fréquence optimale des consultations de suivi montre que pour les patients n'ayant pas atteint leurs objectifs cardiométaboliques, l'intensification de la fréquence des visites améliore l'observance, raccourcit le délai d'atteinte des cibles et améliore la qualité de vie. Pour les patients stables à l'objectif, un suivi semestriel est équivalent à un suivi trimestriel pour le maintien du contrôle. [25]
+5.5 Tableau récapitulatif des examens de suivi
+Examen	Fréquence	Niveau de preuve	Références
+HbA1c	Tous les 3 mois (hors cible) à 6 mois (stable)	A (modéré)	[1-2]
+Fond d'œil dilaté	Annuel (1–2 ans si normal et bon contrôle)	B	[3]
+RAC urinaire + DFGe	Annuel (1–4×/an si MRC)	B	[4-5]
+Examen des pieds	Annuel (chaque visite si haut risque)	A	[3]
+Neuropathie (monofilament + vibration)	Annuel dès le diagnostic	B	[3]
+Bilan lipidique	Au diagnostic, puis annuel	E/A	[6]
+Examen dentaire	Au moins annuel	E	[7]
+Pression artérielle	Chaque consultation	—	[7]
+Évaluation CV globale	Chaque consultation (guide le choix thérapeutique)	A/B	[7-8]
+Messages-clés pour le patient
+
+    Votre HbA1c est votre « moyenne de sucre » sur 3 mois — c'est le chiffre le plus important pour savoir si votre diabète est bien contrôlé. Votre médecin fixe avec vous un objectif personnalisé, souvent autour de 7 %, mais adapté à votre situation.
+
+    Des examens réguliers protègent vos organes — un fond d'œil par an pour vos yeux, une analyse d'urine et de sang pour vos reins, un examen des pieds pour détecter les problèmes de nerfs et de circulation. Ces examens permettent d'agir tôt, avant que les complications ne s'installent.
+
+    Surveiller sa glycémie au quotidien a un sens — si vous êtes sous insuline, les mesures de glycémie (au doigt ou par capteur) aident à ajuster vos doses. Même sans insuline, noter ses glycémies peut aider à comprendre l'effet de l'alimentation et de l'activité physique.
+
+    Agir sur tous les facteurs de risque en même temps sauve des vies — l'étude Steno-2 a montré que contrôler ensemble le sucre, la tension, le cholestérol et protéger les reins peut faire gagner près de 8 ans de vie en bonne santé.
+
+    Chaque rendez-vous de suivi compte — un suivi régulier et structuré avec votre équipe soignante (médecin, infirmier, diététicien, podologue, ophtalmologiste, dentiste) est la meilleure stratégie pour vivre longtemps et bien avec le diabète.
+

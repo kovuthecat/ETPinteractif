@@ -1,0 +1,99 @@
+MODULE 4 — COMPLICATIONS DU DIABÈTE : CE QUE L'ON RISQUE, CE QUE L'ON PEUT ÉVITER
+
+4.1 — Vue d'ensemble : le diabète, une maladie vasculaire
+
+Le diabète de type 2 est associé à des complications microvasculaires (rétinopathie, néphropathie, neuropathie) et macrovasculaires (infarctus du myocarde, AVC, artériopathie des membres inférieurs, insuffisance cardiaque). La maladie cardiovasculaire est la première cause de mortalité chez les patients diabétiques de type 2, multipliant le risque de décès par 3 à 4 par rapport aux personnes sans maladie cardiovasculaire. [1-2] Environ un tiers des adultes atteints de DT2 présentent une maladie cardiovasculaire, 10 % ont une atteinte visuelle sévère, et la prévalence du DT2 atteint 39 % chez les patients en insuffisance rénale terminale. [3]
+
+Dans l'étude DISCOVER (38 pays, ~16 000 patients), la prévalence des complications microvasculaires était de 18,8 % et celle des complications macrovasculaires de 12,7 %, alors que la durée médiane du diabète n'était que de 4,1 ans, soulignant la nécessité d'une intervention précoce. [4]
+
+4.2 — Complications microvasculaires
+
+Rétinopathie diabétique
+
+La rétinopathie est la première cause de cécité acquise chez l'adulte en âge de travailler. L'UKPDS a montré qu'un contrôle glycémique intensif (HbA1c ~7 % vs ~7,9 %) réduit le risque de complications microvasculaires de 25 %. [5-6] Le DCCT a démontré qu'une réduction de 10 % de l'HbA1c (par ex. de 8 % à 7,2 %) diminue le risque de progression de la rétinopathie de 43 %. [5] L'ADA recommande un dépistage par fond d'œil dilaté dès le diagnostic de DT2, puis tous les 1 à 2 ans si l'examen est normal et la glycémie à l'objectif ; annuellement si une rétinopathie est détectée. [7-8]
+
+Néphropathie diabétique (maladie rénale chronique)
+
+La néphropathie touche environ 25 % des patients DT2. [9] L'ADA et KDIGO recommandent un dépistage annuel par le rapport albuminurie/créatininurie (UACR) sur échantillon urinaire et le DFGe dès le diagnostic de DT2. [10-11] Une albuminurie ≥ 30 mg/g est considérée comme anormale et doit être confirmée sur 2 prélèvements sur 3 à 6 mois. [10] Le suivi de la MRC repose sur la classification KDIGO (stades G et A), qui guide la fréquence de surveillance (1 à 4 fois/an) et l'orientation vers le néphrologue. [11] Le traitement repose sur l'optimisation glycémique et tensionnelle, les IEC/ARA2 en cas d'albuminurie, les iSGLT2 et la finérénone pour ralentir la progression rénale. [7][12]
+
+Neuropathie diabétique
+
+La neuropathie périphérique touche environ 50 % des patients diabétiques. [9] L'ADA recommande un dépistage dès le diagnostic de DT2, puis au moins annuellement, par le test au monofilament 10 g (risque d'ulcération/amputation), complété par au moins un autre test (piqûre, température, vibration au diapason 128 Hz). [8] La neuropathie autonome (hypotension orthostatique, tachycardie de repos, dysfonction érectile, gastroparésie) doit également être recherchée. [8]
+
+4.3 — Complications macrovasculaires
+
+Infarctus du myocarde et AVC
+
+La maladie cardiovasculaire athéroscléreuse (MCVAS) — syndrome coronarien aigu, AVC, artériopathie — est la première cause de morbidité et de mortalité dans le DT2. [2][13] Chaque augmentation de 1 % de l'HbA1c accroît le risque de maladie macrovasculaire de 18 %. [2] Les essais ACCORD, ADVANCE et VADT n'ont pas montré de réduction significative des événements cardiovasculaires composites avec un contrôle glycémique très intensif, et ACCORD a été arrêté prématurément en raison d'une surmortalité dans le bras intensif. [6][14] Cependant, une méta-analyse de ces essais a démontré une réduction significative des infarctus du myocarde et des événements cardiovasculaires majeurs avec le traitement intensif. [6] Le suivi à long terme de l'UKPDS (24 ans post-essai) confirme des réductions relatives persistantes de 10 % pour la mortalité, 17 % pour l'infarctus et 26 % pour les complications microvasculaires avec le traitement intensif précoce par sulfonylurées/insuline, et de 20 % pour la mortalité et 31 % pour l'infarctus avec la metformine. [15]
+
+Les essais cardiovasculaires récents ont démontré des bénéfices spécifiques des AR GLP-1 et des iSGLT2 : réduction du risque de MCVAS de 12–26 %, d'insuffisance cardiaque de 18–25 %, et de maladie rénale de 24–39 % sur 2 à 5 ans. [3]
+
+Artériopathie des membres inférieurs (AOMI)
+
+Le diabète est un facteur de risque majeur d'AOMI et de progression vers l'ischémie critique. L'ADA recommande un dépistage par l'examen des pouls, le temps de recoloration capillaire et l'index de pression systolique (IPS) cheville-bras en cas de symptômes. [8][16] Les AR GLP-1 (liraglutide, sémaglutide) et les iSGLT2 réduisent le risque d'événements cardiovasculaires majeurs chez les patients avec AOMI et DT2 (niveau de preuve 1A). [16]
+
+4.4 — Le pied diabétique : une complication évitable
+
+Le risque à vie d'ulcère du pied chez un patient diabétique est de 19 à 34 %. [17-18] Environ 18,6 millions de personnes dans le monde développent un ulcère du pied chaque année. [19] Les ulcères du pied précèdent 80 % des amputations du membre inférieur liées au diabète. [19-20] Environ 50–60 % des ulcères s'infectent, et 20 % des infections modérées à sévères conduisent à une amputation. [19] La mortalité à 5 ans après un ulcère du pied est d'environ 30 %, et dépasse 70 % après une amputation majeure. [19]
+
+L'ADA recommande un examen complet du pied au moins annuellement (inspection cutanée, évaluation neurologique par monofilament 10 g, évaluation vasculaire), et à chaque visite chez les patients à haut risque. [8] Des interventions préventives ont démontré leur efficacité : chaussures thérapeutiques de décharge (RR 0,49), surveillance thermique plantaire avec décharge (RR 0,51), et prise en charge pluridisciplinaire (podologue, infectiologue, chirurgien vasculaire) associée à une réduction des amputations majeures (OR 0,40). [19]
+
+Une méta-analyse d'essais randomisés a montré que les programmes éducatifs réduisent le risque d'amputation d'environ deux tiers. [21]
+Figure 3. (A) Forest plot showing the effect of educational programs on risk of foot ulcers in people with diabetes‐related foot disease.
+Effectiveness of educational interventions for diabetes‐related foot disease: A systematic review and meta‐analysis. Diabetes Metab Res Rev. 1 mars 2024.
+
+Used under license from Wiley.
+Feedback
+
+4.5 — Relation HbA1c – complications : les données fondatrices
+
+DCCT/EDIC (diabète de type 1, extrapolable au DT2)
+
+Le DCCT a démontré qu'un contrôle glycémique intensif (HbA1c ~7 % vs ~9 %) réduit le développement et la progression des complications microvasculaires de 50 à 76 %. [6] Le suivi EDIC a montré la persistance de ces bénéfices sur plus de 20 ans, malgré la convergence des HbA1c entre les groupes, et une réduction de 57 % du risque cardiovasculaire composite, persistant jusqu'à 30 ans. [6][22]
+
+UKPDS (diabète de type 2)
+
+L'UKPDS a randomisé 4 209 patients nouvellement diagnostiqués DT2. Le traitement intensif (HbA1c ~7,0 % vs ~7,9 %) a réduit les complications microvasculaires de 25 %. [3][5] Le suivi post-essai à 24 ans (UKPDS 91, publié en 2024) a confirmé que l'effet héritage (legacy effect) ne s'atténue pas : les bénéfices du contrôle glycémique précoce persistent de façon quasi permanente. [15] Chaque point de pourcentage d'HbA1c plus élevé 20 ans avant le décès confère un surrisque relatif de 36 % de mortalité, contre seulement 8 % pour une valeur élevée 5 ans avant le décès. [15] Retarder de 10 ans une baisse de 1 % de l'HbA1c réduit la réduction estimée du risque relatif de décès de 18,6 % à seulement 6,6 %. [15]
+
+La relation entre HbA1c et complications microvasculaires est curvilinéaire : le bénéfice absolu le plus important est obtenu en faisant passer les patients d'une HbA1c très élevée à un niveau modéré ; un abaissement supplémentaire de 7 % à 6 % apporte un bénéfice additionnel mais plus modeste, avec un risque accru d'hypoglycémie. [6]
+
+La figure ci-dessous illustre l'effet héritage dans l'UKPDS et le DCCT/EDIC :
+Figure 1. Benefits of early treatment of diabetes to reduce latent cardiovascular disease (CVD) risk: The legacy effect.
+Reconsidering the role of glycaemic control in cardiovascular disease risk in type 2 diabetes: A 21st century assessment. Diabetes Obes Metab. 1 décembre 2022.
+
+Used under license from Wiley.
+Feedback
+
+4.6 — L'approche multifactorielle : l'étude Steno-2
+
+L'étude Steno-2 a randomisé 160 patients DT2 avec microalbuminurie vers un traitement multifactoriel intensif (glycémie, PA, lipides, microalbuminurie, aspirine, sevrage tabagique, exercice) ou un traitement conventionnel. [24] Après 7,8 ans, le groupe intensif a présenté une réduction de 53 % du critère cardiovasculaire composite (HR 0,47), de 61 % de la néphropathie (HR 0,39), de 58 % de la rétinopathie (HR 0,42) et de 63 % de la neuropathie autonome (HR 0,37). [24-25]
+
+Le suivi à 21,2 ans a montré un gain médian de survie de 7,9 ans dans le groupe intensif, avec une réduction de 45 % de la mortalité totale (HR 0,55) et une réduction de 69 % du risque d'AVC (HR 0,31). [26-27]
+Figure 3. Kaplan–Meier Estimates of the Composite End Point of Death from Cardiovascular Causes, Nonfatal Myocardial Infarction, Coronary-Artery Bypass Grafting, Percutaneous Coronary Intervention, Nonfatal Stroke, Amputation, or Surgery for Peripheral Atherosclerotic Artery Disease in the Conventional-Therapy Group and the Intensive-Therapy Group (Panel A) and the Relative Risk of the Development or Progression of Nephropathy, Retinopathy, and Autonomic and Peripheral Neuropathy during the Average Follow-up of 7.8 Years in the Intensive-Therapy Group, as Compared with the Conventional-Therapy Group (Panel B).
+Multifactorial Intervention and Cardiovascular Disease in Patients with Type 2 Diabetes. N Engl J Med. 30 janvier 2003.
+
+Used under license from The New England Journal of Medicine.
+Feedback
+
+4.7 — Part des complications évitables
+
+Lorsque tous les facteurs de risque cardiovasculaire majeurs (glycémie, pression artérielle, lipides) sont traités aux objectifs, les patients DT2 ont un risque de décès, d'infarctus ou d'AVC similaire à celui de la population générale. [13] Une étude de modélisation a montré que l'atteinte simultanée des 3 cibles (HbA1c ≤ 58 mmol/mol, cholestérol total < 5 mmol/L, PA ≤ 140/80 mmHg) réduit le risque à 10 ans d'infarctus de 5,6 points de pourcentage absolus par rapport à l'absence d'atteinte des cibles. [28] Une étude de cohorte récente a estimé que 37 à 46 % des complications microvasculaires pourraient être prévenues par un contrôle optimal d'au moins 6 facteurs de risque (glycémie, PA, lipides, activité physique, alimentation, tabac). [29]
+
+La figure suivante illustre la réduction dose-dépendante du risque de complications selon le nombre de cibles thérapeutiques atteintes :
+Figure 1. Average impact of achieving one, two or three of the HbA1c, total cholesterol and blood pressure targets compared to achieving none of the targets on 10‐year risk of mortality and complications in patients with type 2 diabetes.
+Impact of achieving primary care targets in type 2 diabetes on health outcomes and healthcare costs. Diabetes Obes Metab. 1 novembre 2019.
+
+Used under license from Wiley.
+Feedback
+
+4.8 — Messages-clés pour le patient
+
+    « Le diabète peut toucher les yeux, les reins, les nerfs, le cœur et les artères des jambes — mais la grande majorité de ces complications peut être évitée ou retardée par un bon suivi. » Les études montrent qu'un contrôle précoce et global réduit les complications de moitié. [6][24]
+
+    « Plus on agit tôt sur le sucre dans le sang, plus les bénéfices durent longtemps. » L'effet « mémoire » du bon contrôle glycémique protège pendant des décennies, même si le contrôle se relâche ensuite. [15][22]
+
+    « Ce n'est pas seulement le sucre : la tension artérielle, le cholestérol et le tabac comptent autant. » L'étude Steno-2 montre qu'en agissant sur tous ces facteurs ensemble, on peut gagner près de 8 ans de vie. [26]
+
+    « Examinez vos pieds tous les jours et portez des chaussures adaptées. » Le risque d'ulcère du pied au cours de la vie est de 1 sur 3, mais des gestes simples (inspection quotidienne, chaussures de protection, consultation podologique) réduisent ce risque de moitié. [18-19]
+
+    « Les bilans annuels (yeux, reins, pieds, cœur) permettent de dépister les problèmes avant qu'ils ne deviennent graves. » Un dépistage régulier permet une prise en charge précoce et efficace. [8][10]

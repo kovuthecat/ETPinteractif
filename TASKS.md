@@ -63,9 +63,35 @@ Index des tâches : backlog + actives. Historique des tâches faites : `git log`
 - [x] T12 — Consolidation : contexte (STATUS/TASKS/VALIDATION/PROJECT_MAP/DECISIONS) + audit Codex + push · modèle: Haiku/Codex, effort: low
   - Vagues : V1 = S1 (bloquante) → V2 = S2–S9 en parallèle (8 agents, zones disjointes) → V3 = T12. **Complètes, 2026-07-08**.
 
+### Moteur multi-thèmes (2026-07-08) · plan: → C:\Users\kovu\.claude\plans\elegant-fluttering-dragon.md
+- [x] M1 — Déplacer le thème tabac sous `src/features/tabac/` (7 modules + `nicotineCurve.ts`), généraliser
+  `types.ts`/`registry.ts` (ModuleId/FamilleId en `string`, `Hue` dans `ModuleDef`, `ThemeDef`), navigation
+  à 3 niveaux dans `App.tsx`, nouveau `ThemeSelector`, scaffold vide `src/features/diabete/` · modèle: Sonnet,
+  effort: high (auto OK : tsc + vite build + vitest verts ; visuel → VALIDATION.md)
+
 ### Reliquat v1
 - [~] C10 — Compléter le contenu non bloquant · modèle: Sonnet, effort: low · plan: → plans/PLAN_corrections-ux.md
   - [ ] Références de sources par module (HAS / Tabac Info Service) dans `registry.ts`
   - [ ] « Bonnes pratiques / erreurs fréquentes » par forme de substitut (Module 3-A)
   - **Bloqué** : en attente du contenu à fournir par Thibault.
 - [ ] T-301 — Passe de validation visuelle/UX par Thibault (`npm run dev`, cf. `VALIDATION.md`) · humain
+
+### Backlog — thème diabète
+- [~] D0 — Cadrage du contenu du thème diabète avec Thibault (modules retenus, structure interactive,
+  décisions transverses, sources) · humain + Sonnet, sur le modèle des décisions 2026-06-28 pour le tabac ·
+  consigné dans `docs/diabete/` (00-global.md + un fichier par module) puis `DECISIONS.md`.
+  4/8 modules spécifiés en détail (1 · C'est quoi le diabète, 2 · Alimentation, 3 · Activité physique,
+  4 · Risque cardiovasculaire) ; modules 5-8 juste cadrés (`docs/diabete/modules-5-8-cadrage.md`).
+  - **Reste à faire** : finaliser modules 5-8, puis transmettre `docs/diabete/` à Claude Design pour
+    maquette avant tout câblage.
+
+### Extensions tabac (2026-07-09, analyse Fable vs brief diabète) · plan: → plans/extensions-tabac/ · autorité: docs/BRIEF_TABAC.md
+- [x] X1 — Socle fiches : `FicheOverlay` générique + CSS impression A4 · modèle: Sonnet, effort: high · plan: → plans/extensions-tabac/X1.md (auto OK : tsc --noEmit + vite build verts ; visuel → VALIDATION.md §X1)
+- [x] X2 — Fiche « Ma carte anti-envie » (Craving, référence + D perso) · modèle: Sonnet, effort: medium · plan: → plans/extensions-tabac/X2.md (plan marqué fait le 2026-07-09 ; code vérifié X7 : `FicheOverlay` câblé dans `CravingModule.tsx`, bouton « Préparer ma carte » ; visuel → VALIDATION.md)
+- [x] X3 — Fiche « Ma méthode patch » (Substituts, règles + dose du moment) · modèle: Sonnet, effort: medium · plan: → plans/extensions-tabac/X3.md (plan marqué fait le 2026-07-09 ; code vérifié X7 : `FicheOverlay` câblé dans `SubstitutsModule.tsx`, bouton « Imprimer ma méthode » ; visuel → VALIDATION.md)
+- [x] X4 — Fiche « Mes raisons » (Motivation, cartes + échelles) · modèle: Sonnet, effort: medium · plan: → plans/extensions-tabac/X4.md (plan marqué fait le 2026-07-09 ; code vérifié X7 : `FicheOverlay` câblé dans `MotivationModule.tsx`, bouton « Imprimer mes raisons » ; visuel → VALIDATION.md)
+- [x] X5 — Nouveau module « Mon plan d'arrêt » + fiche (famille Agir) · modèle: Sonnet, effort: high · plan: → plans/extensions-tabac/X5.md (plan marqué fait le 2026-07-09 ; code vérifié X7 : `plan-arret/PlanArretModule.tsx` au registre tabac, `id: 'plan-arret'`, famille `agir`, `FicheOverlay` câblé ; visuel → VALIDATION.md)
+- [~] X6 — Portes de fin de module + fil rouge + 2ᵉ niveau (InfoHover) · modèle: Sonnet, effort: high · plan: → plans/extensions-tabac/X6.md (auto OK : tsc --noEmit + vite build + vitest 20 tests verts ; `ModuleFooterNav`/fil rouge câblés et vérifiés en X7 ; **T4 InfoHover livré seul, non câblé** — aucune entrée §3.5 validée dans `BRIEF_TABAC.md` §5, reconfirmé encore vrai en X7 (comportement attendu, pas un défaut) ; visuel → VALIDATION.md §X6)
+- [x] X7 — Resynchroniser les docs sur le code (contenu-modules, STATUS, PROJECT_MAP, TASKS) · modèle: Sonnet, effort: low · plan: → plans/extensions-tabac/X7.md (auto OK : tsc --noEmit + vite build verts, aucun fichier `src/` modifié)
+  - Vagues : V1 = X1 (bloquante) → V2 = X2-X5 en parallèle (fichiers disjoints, X5 seul sur `registry.ts`) → V3 = X6 → V4 = X7. **Chantier clos le 2026-07-09.**
+  - ⚠️ Avant/pendant : validations Thibault listées dans `docs/BRIEF_TABAC.md §5` (fil rouge, contenus 2ᵉ niveau + sources, libellés plan d'arrêt) — le fil rouge et le plan d'arrêt sont partis sur la v1 proposée ; le 2ᵉ niveau (InfoHover) reste non câblé faute de validation, cf. X6 ci-dessus.

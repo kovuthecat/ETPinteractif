@@ -1,0 +1,84 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  padding: var(--space-lg) var(--space-md);
+  background: rgba(30, 20, 10, 0.55);
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.sheet {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  width: min(720px, 92vw);
+  aspect-ratio: 210 / 297;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-3);
+  box-sizing: border-box;
+  padding: 40px 44px;
+}
+
+.header {
+  flex: none;
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-line);
+}
+
+.eyebrow {
+  margin-bottom: var(--space-xs);
+}
+
+.titre {
+  margin: 4px 0 6px;
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 28px;
+  color: var(--color-text);
+}
+
+.date {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-text-soft);
+}
+
+.content {
+  flex: 1;
+}
+
+.footer {
+  flex: none;
+  margin-top: var(--space-lg);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-line);
+}
+
+.mention {
+  margin: var(--space-sm) 0 0;
+  font-size: 12px;
+  font-style: italic;
+  color: var(--color-text-faint);
+}
+
+.actions {
+  display: flex;
+  flex: none;
+  gap: var(--space-sm);
+}
+
+@media (max-width: 600px) {
+  .sheet {
+    padding: 28px 24px;
+  }
+}

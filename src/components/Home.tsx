@@ -1,37 +1,22 @@
-import { MODULES } from '../features/registry';
-import type { ModuleId, FamilleId } from '../features/types';
-import ModuleCard, { type Hue } from './ModuleCard';
+import type { ModuleId, ThemeDef } from '../features/types';
+import ModuleCard from './ModuleCard';
 import styles from './Home.module.css';
 
 interface HomeProps {
+  theme: ThemeDef;
   onNavigate: (id: ModuleId) => void;
 }
 
-const FAMILLES: { id: FamilleId; label: string }[] = [
-  { id: 'comprendre', label: 'Comprendre' },
-  { id: 'agir', label: 'Agir' },
-  { id: 'motivation', label: 'Se motiver' },
-];
-
-const HUES: Record<ModuleId, Hue> = {
-  addiction: 'confort',
-  nicotine: 'nav',
-  'nicotine-toxique': 'vigilance',
-  soulagement: 'toxique',
-  substituts: 'confort',
-  craving: 'vigilance',
-  motivation: 'nav',
-};
-
-export default function Home({ onNavigate }: HomeProps) {
+export default function Home({ theme, onNavigate }: HomeProps) {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <span className={`eyebrow ${styles.eyebrow}`}>Programme ETP · Sevrage tabagique</span>
+        <span className={`eyebrow ${styles.eyebrow}`}>{theme.eyebrow}</span>
         <h1 className={styles.title}>Votre accompagnement</h1>
+        {theme.exergue && <p className={styles.exergue}>{theme.exergue}</p>}
       </div>
-      {FAMILLES.map(({ id: familleId, label }) => {
-        const modules = MODULES.filter((m) => m.famille === familleId);
+      {theme.familles.map(({ id: familleId, label }) => {
+        const modules = theme.modules.filter((m) => m.famille === familleId);
         if (modules.length === 0) return null;
         return (
           <section key={familleId} className={styles.famille}>
@@ -43,7 +28,7 @@ export default function Home({ onNavigate }: HomeProps) {
                   titre={m.titre}
                   resume={m.resume}
                   Icon={m.Icon}
-                  hue={HUES[m.id]}
+                  hue={m.hue}
                   onClick={() => onNavigate(m.id)}
                 />
               ))}

@@ -1,0 +1,542 @@
+<meta charset="utf-8">
+<title>Prompts illustrations — ETP interactif (Diabète &amp; Tabac)</title>
+<style>
+  :root{
+    --bg:#f6f4ef; --card:#ffffff; --ink:#22262b; --muted:#6b7280;
+    --line:#e3ddd2; --teal:#1f7a8c; --teal-d:#155e6d; --terra:#c76b4a;
+    --food:#7a8b3f; --sys:#1f7a8c; --tabac:#9a6b43; --ok:#3f8f4e; --shadow:0 1px 2px rgba(0,0,0,.04),0 6px 20px rgba(0,0,0,.05);
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  a{color:var(--teal-d)}
+  header{background:linear-gradient(180deg,#fff,#fbfaf7);border-bottom:1px solid var(--line);
+    padding:28px 24px 22px;}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 24px}
+  h1{margin:0 0 4px;font-size:26px;letter-spacing:-.01em}
+  .sub{color:var(--muted);margin:0}
+  .intro{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px 20px;margin:20px 0;box-shadow:var(--shadow)}
+  .intro h2{margin:0 0 8px;font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+  .intro ol{margin:8px 0 0;padding-left:20px}
+  .intro li{margin:4px 0}
+  details.style{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    margin:12px 0;box-shadow:var(--shadow);overflow:hidden}
+  details.style>summary{cursor:pointer;padding:14px 18px;font-weight:600;list-style:none;display:flex;
+    align-items:center;gap:10px}
+  details.style>summary::-webkit-details-marker{display:none}
+  details.style>summary::before{content:"▸";color:var(--teal);transition:transform .15s}
+  details.style[open]>summary::before{transform:rotate(90deg)}
+  .style .body{padding:0 18px 16px}
+  textarea{width:100%;min-height:150px;font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    padding:12px;border:1px solid var(--line);border-radius:10px;background:#fbfaf7;color:var(--ink);resize:vertical}
+  .tip{font-size:13px;color:var(--muted);margin:6px 0 0}
+  .toolbar{position:sticky;top:0;z-index:20;background:rgba(246,244,239,.92);backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);padding:10px 0;margin-bottom:8px}
+  .toolbar .wrap{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  #search{flex:1;min-width:200px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;
+    background:#fff;font-size:14px}
+  .counter{font-size:13px;color:var(--muted);white-space:nowrap}
+  .btn{border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 12px;font-size:13px;
+    cursor:pointer;color:var(--ink)}
+  .btn:hover{border-color:var(--teal);color:var(--teal-d)}
+  section.mod{margin:26px 0}
+  section.mod>h2{font-size:20px;margin:0 0 2px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  section.mod>h2 .badge{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+    padding:3px 8px;border-radius:20px;color:#fff}
+  .badge.sys{background:var(--sys)} .badge.food{background:var(--food)} .badge.tabac{background:var(--tabac)}
+  section.mod>.desc{color:var(--muted);margin:2px 0 14px;font-size:14px}
+  .secount{font-size:13px;color:var(--muted);font-weight:400}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 15px;
+    box-shadow:var(--shadow);display:flex;flex-direction:column;gap:9px;transition:opacity .1s}
+  .card.done{opacity:.5}
+  .card h3{margin:0;font-size:15.5px;display:flex;align-items:center;gap:8px}
+  .card h3 .dot{width:9px;height:9px;border-radius:50%;flex:none}
+  .dot.sys{background:var(--sys)} .dot.food{background:var(--food)} .dot.tabac{background:var(--tabac)}
+  .prompt{font-size:13.5px;color:#3a4048;background:#fbfaf7;border:1px solid var(--line);border-radius:9px;
+    padding:9px 11px;margin:0}
+  .note{font-size:12.5px;color:var(--terra);font-style:italic;margin:0}
+  .card .row{display:flex;align-items:center;gap:10px;margin-top:auto}
+  .copy{flex:1;border:none;background:var(--teal);color:#fff;border-radius:9px;padding:9px 12px;font-size:13.5px;
+    font-weight:600;cursor:pointer}
+  .copy:hover{background:var(--teal-d)}
+  .copy.copied{background:var(--ok)}
+  label.chk{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);cursor:pointer;
+    user-select:none;white-space:nowrap}
+  label.chk input{width:17px;height:17px;accent-color:var(--ok)}
+  .infobox{background:#fff8f2;border:1px solid #e8d3c4;border-radius:var(--radius);padding:14px 16px}
+  .infobox h3{margin:0 0 6px;font-size:15px;color:var(--terra)}
+  .infobox ul{margin:6px 0 0;padding-left:20px;font-size:14px}
+  #toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);opacity:0;
+    background:#22262b;color:#fff;padding:11px 18px;border-radius:10px;font-size:14px;pointer-events:none;
+    transition:.2s;z-index:50}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  footer{color:var(--muted);font-size:13px;text-align:center;padding:30px 0 50px}
+  mark{background:#ffe9a8;padding:0 1px}
+</style>
+
+<header>
+  <div class="wrap">
+    <h1>Prompts d'illustrations — ETP interactif</h1>
+    <p class="sub">Diabète (jeu complet) &amp; Tabac (techniques de prise). Générer chaque visuel (ChatGPT / autre modèle image) → vectoriser en SVG → intégrer. Un prompt copiable par illustration.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="intro">
+    <h2>Mode d'emploi</h2>
+    <ol>
+      <li><b>Choisir un style</b> ci-dessous (Système ou Aliments) — il est <b>éditable</b> et se combine automatiquement au sujet lors de la copie.</li>
+      <li><b>Copier</b> un prompt (bouton bleu) → le coller dans ChatGPT (ou autre) pour générer l'image. Le prompt copié est <b>autonome</b> (style + sujet).</li>
+      <li><b>Cocher « générée »</b> quand c'est fait (le suivi est sauvegardé dans ce navigateur).</li>
+      <li><b>Vectoriser</b> le PNG (Illustrator « Vectoriser l'image » / Inkscape / <a href="https://vectorizer.ai" target="_blank" rel="noopener">vectorizer.ai</a>). Garder des aplats nets facilite le tracé.</li>
+    </ol>
+    <p class="tip">⚠️ <b>Piège connu :</b> les PNG produits par ChatGPT embarquent un chunk C2PA « caBX » qui fait <b>planter Inkscape</b>. Correctif : ré-encoder l'image avec Pillow avant vectorisation — <code>from PIL import Image; Image.open("in.png").save("out.png")</code>.</p>
+    <p class="tip">🎯 <b>Cohérence :</b> toutes ces illustrations doivent former <b>une seule famille graphique</b> (BRIEF §1.8). Ne changez pas le style entre deux images d'un même groupe. Gardez le même cadrage/échelle pour les aliments (grille du garde-manger).</p>
+  </div>
+
+  <details class="style" id="styleSysBox" open>
+    <summary>🎨 Style « SYSTÈME » — silhouette, organes, métaphores, icônes, objets UI</summary>
+    <div class="body">
+      <textarea id="styleSys" spellcheck="false"></textarea>
+      <p class="tip">Préfixé automatiquement aux prompts marqués <span style="color:var(--sys)">●</span>. Modifiable — la copie utilise toujours la version actuelle.</p>
+    </div>
+  </details>
+
+  <details class="style" id="styleFoodBox">
+    <summary>🎨 Style « ALIMENTS » — vignettes du garde-manger (module 2)</summary>
+    <div class="body">
+      <textarea id="styleFood" spellcheck="false"></textarea>
+      <p class="tip">Préfixé automatiquement aux prompts marqués <span style="color:var(--food)">●</span>.</p>
+    </div>
+  </details>
+
+  <details class="style" id="styleTabacBox">
+    <summary>🎨 Style « TABAC » — techniques de prise (papier crème / kraft)</summary>
+    <div class="body">
+      <textarea id="styleTabac" spellcheck="false"></textarea>
+      <p class="tip">Préfixé automatiquement aux prompts marqués <span style="color:var(--tabac)">●</span>. Palette distincte du diabète (refonte tabac : crème/kraft, brun chaud, cohérent avec les icônes lucide déjà en place).</p>
+    </div>
+  </details>
+
+  <div class="infobox" style="margin-top:16px">
+    <h3>Revue tabac — pourquoi si peu de prompts&nbsp;?</h3>
+    <p class="tip" style="margin:0">Le thème tabac est fait de « bacs à sable » (courbes, cadrans, animations) et de petits pictos <b>déjà couverts par les icônes lucide-react</b> (Cigarette, Pill, Brain, Wind, Waves…), cohérentes avec le style éditorial. Le <b>seul vrai manque</b> d'illustration est l'encart « Technique de prise&nbsp;» du module Substituts (bandeau 16:7, placeholder documenté) : un <b>geste</b> qu'une icône en ligne ne sait pas montrer. D'où <b>5 prompts</b> seulement. Le reste est listé en bas comme « à garder en code / lucide ».</p>
+  </div>
+
+</div>
+
+<div class="toolbar">
+  <div class="wrap">
+    <input id="search" type="search" placeholder="Rechercher une illustration (ex. rein, baguette, plaque…)">
+    <span class="counter" id="globalCount"></span>
+    <button class="btn" id="expandAll">Tout déplier</button>
+    <button class="btn" id="resetTracking">Réinitialiser le suivi</button>
+  </div>
+</div>
+
+<div class="wrap" id="app"></div>
+
+<footer>
+  Fichier local — <code>design/illustrations/prompts-illustrations-diabete.html</code> · ETP interactif · Suivi stocké localement (localStorage), zéro réseau.
+</footer>
+
+<div id="toast"></div>
+
+<script>
+/* ------------------------------------------------------------------ *
+ * Styles par défaut (éditables dans l'UI)                            *
+ * ------------------------------------------------------------------ */
+const DEFAULT_SYS = `Illustration vectorielle plate (flat design), style pictogramme éditorial adulte et raffiné, pour un support d'éducation thérapeutique médicale montré en consultation. Aplats de couleur unis, AUCUN dégradé, AUCUNE ombre portée, AUCUN effet 3D, pas de texture bruitée. Palette sobre et limitée : fond blanc pur (#ffffff), un bleu-canard principal (~#1f7a8c), un accent chaud terracotta doux (~#c76b4a), gris neutres ; les couleurs feu vert / ambre / rouge UNIQUEMENT si le sujet l'impose. Trait d'épaisseur régulière, formes géométriques nettes et simples, beaucoup d'espace négatif, composition centrée, format carré 1:1 avec marge. AUCUN texte, chiffre, lettre ou étiquette dans l'image. Sujet isolé sur fond blanc uni. Registre digne, jamais enfantin : pas de smiley, pas de visage cartoon, pas de bulle de BD, pas de style « stock santé » souriant. Bords nets, contraste élevé, détails minimaux — pensé pour être vectorisé proprement en SVG. Produire une seule image.`;
+
+const DEFAULT_FOOD = `Vignette d'un seul aliment, illustration vectorielle plate (flat design), appétissante mais épurée, style pictogramme éditorial cohérent (une seule famille graphique avec les autres aliments). Aplats de couleur unis aux teintes naturelles légèrement désaturées et harmonisées, AUCUN dégradé, AUCUNE ombre portée, AUCUN effet 3D, contour fin d'épaisseur régulière possible. UN SEUL aliment, centré, vue de face ou 3/4 lisible à 1 mètre, format carré 1:1, cadrage et échelle constants (le sujet occupe ~70% du cadre). AUCUN texte, AUCUNE pastille de couleur, AUCUNE assiette ni couvert autour, fond blanc pur uni. Jamais de rendu photo, jamais de style « stock ». Bords nets, formes simples — pensé pour être vectorisé proprement en SVG. Produire une seule image.`;
+
+const DEFAULT_TABAC = `Illustration éditoriale chaleureuse pour un support d'éducation thérapeutique au sevrage tabagique, destinée à un BANDEAU HORIZONTAL (ratio 16:7) posé sur une carte crème. Style à trait fin et régulier rehaussé d'aplats doux, cohérent avec une iconographie en lignes (icônes « line »). Palette papier crème / kraft : fond crème très clair (~#f7f4ee), traits et formes en brun chaud sombre (~#3a2c1e), un vert doux « confort » pour le geste correct, un ambre/or « vigilance » et un rouge chaud « toxique » UNIQUEMENT si un geste à éviter est montré, un bleu neutre discret. AUCUN dégradé criard, aucune 3D, aucune ombre lourde, jamais de rendu photo ni de style « stock santé ». Registre adulte et digne, jamais enfantin : pas de smiley, pas de mascotte. Mains, bouche ou visage stylisés et neutres (non genrés, non racialisés). Composition horizontale lisible de gauche à droite, éventuellement 2–3 étapes du geste. AUCUN texte, chiffre ou étiquette dans l'image (les légendes sont ajoutées par l'application). Sujet centré, marges généreuses, fond uni. Bords nets, aplats francs — pensé pour être vectorisé proprement en SVG. Produire une seule image.`;
+
+/* ------------------------------------------------------------------ *
+ * Données : sections -> items [label, prompt, tag('sys'|'food'), note?]*
+ * ------------------------------------------------------------------ */
+const S = 'sys', F = 'food', T = 'tabac';
+const SECTIONS = [
+{
+  key:'commun', title:'Système visuel commun', badge:S,
+  desc:"Objets réutilisés dans plusieurs modules : ils doivent être LE MÊME dessin à chaque réapparition (BRIEF §1). À dessiner en premier.",
+  items:[
+    ["Silhouette-corps (asset central)","Une silhouette de corps humain complète vue de face, debout, posture neutre et symétrique, épaules détendues. Corps stylisé, sobre et digne — ni mannequin médical anxiogène, ni personnage cartoon — en un aplat de couleur neutre non genré et non racialisé. À l'intérieur du corps, un réseau de vaisseaux sanguins stylisé et élégant qui parcourt tout le corps (grand axe du cou et du cœur vers les bras, jusqu'aux jambes et aux pieds) : c'est le fil conducteur « maladie des vaisseaux ». Emplacements des organes seulement suggérés et neutres (yeux, cerveau, cœur, reins, pieds), sans détail clinique. Zones bien distinctes et identifiables pour pouvoir être mises en surbrillance ensuite. Vue de face uniquement, symétrique.",S,"Asset le plus important : réutilisé aux modules 4, 5, 6, 7. Le générer une fois, proprement, puis vectoriser en zones séparées."],
+    ["Réseau vasculaire seul (calque)","Uniquement le réseau des vaisseaux sanguins d'un corps humain, isolé sans le corps autour : un arbre vasculaire stylisé et symétrique (axe central au niveau du cœur, ramifications vers la tête, les bras, les jambes et les pieds), lignes fluides à l'épaisseur dégressive vers les extrémités. Élégant et calme.",S,"Servira de calque superposable à la silhouette."],
+    ["Artère saine (lumière ouverte)","Coupe longitudinale d'un segment de vaisseau sanguin stylisé, paroi propre et lumière (canal intérieur) large et bien ouverte où le sang circule librement. Objet simple, identifiable, réutilisable.",S,"État 1/3 de l'artère réversible du module 4."],
+    ["Artère encrassée (plaque modérée)","Le même segment de vaisseau sanguin stylisé, mais avec un dépôt (plaque d'athérome) sur la paroi qui rétrécit partiellement la lumière : le passage du sang est réduit. Même objet que l'artère saine, seul le dépôt change.",S,"État 2/3. LA PLAQUE = motif-fil qui voyagera sur la silhouette (module 5)."],
+    ["Artère bouchée (lumière quasi fermée)","Le même segment de vaisseau, avec un dépôt de plaque d'athérome important qui bouche presque entièrement la lumière : il ne reste qu'un mince passage. Même objet, dépôt maximal.",S,"État 3/3. Doit être clairement le même objet que les deux précédents."],
+    ["Plaque d'athérome isolée (motif voyageur)","Un petit motif isolé représentant un dépôt de plaque d'athérome, forme reconnaissable et mémorable, destiné à être posé à différents endroits (dans une artère, puis sur une zone de la silhouette). Simple, identifiable seul.",S,"Le même objet doit se reconnaître partout (BRIEF §1.4)."],
+    ["Signature « évitable » (bonne nouvelle)","Un petit motif graphique positif et rassurant symbolisant « c'est évitable et dépistable / bonne nouvelle » : un bouclier doux d'où émerge une jeune pousse (petite feuille), sobre et chaleureux. Doit fonctionner comme une signature récurrente et mémorable, pas comme une simple coche générique.",S,"Motif-réflexe répété au module 5. Une seule forme, réutilisée partout (BRIEF §1.5)."],
+    ["Fil rouge — personne & vaisseaux protégés","Motif central rond : une figure humaine très simplifiée (buste ou silhouette) traversée d'un réseau de vaisseaux sanguins stylisés apaisés, avec une idée douce de protection (halo ou cercle enveloppant). Symbolise « le diabète est une maladie des vaisseaux, agir protège ». Symétrique, centré, apaisant.",S,"Réutilisé au centre du cadran (module 6) et comme refrain."],
+  ]
+},
+{
+  key:'m1', title:'Module 1 — C\'est quoi le diabète ? (clé / serrure)', badge:S,
+  desc:"Métaphore fondatrice clé (insuline) / serrure (cellule). Pas de pancréas gore, pas de culpabilisation.",
+  items:[
+    ["Clé « insuline »","Une clé stylisée, élégante et simple, symbolisant l'insuline. Forme claire et mémorable, lisible même à petite taille, réutilisable en plusieurs exemplaires.",S],
+    ["Cellule-serrure (fermée)","Une cellule du corps stylisée sous forme de porte ronde / hublot organique avec une serrure au centre, fermée. Douce et arrondie mais épurée. La serrure doit visiblement pouvoir accueillir la clé.",S],
+    ["Cellule-serrure (ouverte)","La même cellule-serrure, cette fois ouverte, laissant entrer un jeton de sucre à l'intérieur. Montrer clairement « le sucre entre, ça fonctionne ».",S],
+    ["Serrure rouillée (insulinorésistance)","La même cellule-serrure, mais visiblement grippée / rouillée : la clé est présente mais entre mal, la serrure résiste. Montrer la difficulté avec sobriété (légère texture de rouille), sans dramatiser ni image gore.",S,"Cœur pédagogique : mécanisme différent, même conséquence que « pas assez de clés »."],
+    ["Jeton de sucre (glucose)","Un petit jeton / granule de sucre stylisé (une unité de glucose), forme simple répétable en nombre car on en affichera plusieurs dans le sang.",S],
+    ["Pancréas stylisé (en forme / fatigué)","Un pancréas stylisé, sobre et digne, en aplat de couleur douce, forme reconnaissable mais simplifiée, NON gore. Prévoir deux versions : « en forme » (net) et « fatigué » (plus terne et affaissé) pour illustrer le manque de clés.",S],
+    ["Canal sanguin (scène)","Un segment de vaisseau sanguin ouvert vu comme un canal horizontal stylisé, dans lequel circulent des jetons de sucre et des clés d'insuline. Sobre, lisible, sert de décor à la séquence.",S],
+  ]
+},
+{
+  key:'m2-ui', title:'Module 2 — Alimentation : objets d\'écran', badge:S,
+  desc:"L'assiette (zone de dépôt) et l'assiette-modèle. Objets d'interface, style système.",
+  items:[
+    ["Assiette vide (zone de dépôt)","Une assiette ronde vue de dessus, vide, très épurée, contour simple, légère bordure. Neutre, sert de zone où l'on dépose les aliments.",S],
+    ["Assiette-modèle ½ – ¼ – ¼","Une assiette ronde vue de dessus, divisée visuellement en trois parts délimitées : une moitié « légumes », un quart « protéines », un quart « féculents », en aplats de couleur neutres et distincts (SANS aliments dessinés, seulement les zones proportionnelles). Épurée, claire.",S,"L'assiette-modèle cible du défi 4 / de la fiche."],
+  ]
+},
+{
+  key:'m2-fec', title:'Module 2 — Garde-manger : féculents & pains', badge:F,
+  desc:"Cœur du jeu (comparaison intra-famille). Même cadrage et même échelle pour toutes les vignettes.",
+  items:[
+    ["Baguette blanche","Une baguette de pain blanc à la croûte dorée, entière, une extrémité légèrement coupée."],
+    ["Pain complet","Un petit pain / une tranche épaisse de pain complet aux céréales, mie brune, quelques graines."],
+    ["Riz blanc","Un petit monticule de riz blanc cuit, grains distincts."],
+    ["Riz basmati","Un monticule de riz basmati aux grains longs et fins."],
+    ["Riz complet","Un monticule de riz complet, grains bruns."],
+    ["Semoule fine","Un monticule de semoule fine de blé (couscous fin)."],
+    ["Couscous complet","Un monticule de couscous complet, grains ambrés."],
+    ["Pâtes blanches","Une portion de pâtes classiques (penne, ou spaghetti enroulés à la fourchette)."],
+    ["Pâtes complètes","Une portion de pâtes complètes, teinte plus foncée."],
+    ["Pomme de terre / purée","Une pomme de terre entière à côté d'une petite quenelle de purée."],
+    ["Patate douce","Une patate douce entière et une moitié coupée à chair orange."],
+    ["Attiéké / manioc","Un petit tas d'attiéké (semoule de manioc) et un morceau de racine de manioc."],
+    ["Igname","Un tubercule d'igname, une extrémité coupée montrant la chair claire."],
+    ["Banane plantain","Une banane plantain entière et une rondelle cuite dorée."],
+    ["Lentilles","Un petit tas de lentilles.",F,"Pépite pédagogique : féculent riche en fibres → à double-classer visuellement."],
+    ["Pois chiches","Une petite poignée de pois chiches."],
+    ["Haricots rouges","Un petit tas de haricots rouges."],
+    ["Naan","Un pain naan indien, forme en goutte, légèrement gonflé et moucheté."],
+    ["Chapati complet","Un chapati complet, pain plat et rond, légèrement doré."],
+    ["Boulgour","Un monticule de boulgour."],
+  ]
+},
+{
+  key:'m2-fru', title:'Module 2 — Garde-manger : fruits', badge:F, desc:"",
+  items:[
+    ["Pomme","Une pomme entière avec une petite feuille."],
+    ["Orange","Une orange entière à côté d'un quartier."],
+    ["Cerises","Deux ou trois cerises reliées par la queue."],
+    ["Banane mûre","Une banane mûre, jaune."],
+    ["Mangue","Une mangue entière et une joue coupée en damier."],
+    ["Raisin","Une petite grappe de raisin."],
+    ["Dattes","Deux ou trois dattes."],
+    ["Pastèque","Une tranche triangulaire de pastèque avec quelques pépins."],
+    ["Fruits au sirop","Une coupelle de fruits au sirop (quartiers baignant dans le jus)."],
+  ]
+},
+{
+  key:'m2-leg', title:'Module 2 — Garde-manger : légumes', badge:F,
+  desc:"Message : presque tous « verts ». Rendu homogène et frais.",
+  items:[
+    ["Courgette","Une courgette entière et une rondelle."],
+    ["Tomate","Une tomate entière avec son pédoncule."],
+    ["Aubergine","Une aubergine entière, violette et brillante mais mate (flat)."],
+    ["Haricots verts","Une petite poignée de haricots verts."],
+    ["Épinards","Quelques feuilles d'épinard."],
+    ["Gombo","Deux ou trois gombos (okras)."],
+    ["Poivron","Un poivron entier."],
+  ]
+},
+{
+  key:'m2-lait', title:'Module 2 — Garde-manger : laitages', badge:F, desc:"",
+  items:[
+    ["Yaourt nature","Un pot de yaourt nature ouvert, surface lisse."],
+    ["Lait","Un verre de lait, ou une petite brique générique sans marque."],
+    ["Lben","Un verre de lben (petit-lait fermenté), blanc et légèrement mousseux."],
+    ["Yaourt sucré / aux fruits","Un pot de yaourt aux fruits avec une touche de fruit (coulis) visible."],
+  ]
+},
+{
+  key:'m2-prot', title:'Module 2 — Garde-manger : protéines', badge:F,
+  desc:"Rôle : aplatir la courbe. Charge glycémique ~nulle.",
+  items:[
+    ["Poulet","Un filet / blanc de poulet cuit, ou un pilon."],
+    ["Poisson","Un filet de poisson."],
+    ["Œuf","Un œuf dur coupé en deux (jaune visible), à côté d'un œuf entier."],
+    ["Bœuf","Un morceau de viande de bœuf (steak)."],
+    ["Tofu","Un cube de tofu et une tranche."],
+  ]
+},
+{
+  key:'m2-mg', title:'Module 2 — Garde-manger : matières grasses', badge:F, desc:"",
+  items:[
+    ["Huile d'olive","Une petite burette versant un mince filet d'huile d'olive dorée."],
+    ["Beurre","Une plaquette de beurre avec une noisette coupée."],
+  ]
+},
+{
+  key:'m2-boi', title:'Module 2 — Garde-manger : boissons', badge:F, desc:"",
+  items:[
+    ["Soda","Un verre de soda pétillant avec des bulles (ou une canette générique, sans marque ni texte)."],
+    ["Jus de fruit","Un verre de jus d'orange."],
+    ["Thé à la menthe sucré","Un verre à thé marocain contenant du thé à la menthe."],
+    ["Eau","Un verre d'eau claire."],
+    ["Thé / café non sucré","Une tasse de thé ou de café, sans sucre, sans accompagnement."],
+  ]
+},
+{
+  key:'m3', title:'Module 3 — Activité physique', badge:S,
+  desc:"Rayonnement (un effort, plusieurs bénéfices) + activités du quotidien reconnaissables. Valorisant, jamais culpabilisant.",
+  items:[
+    ["Motif central « activité »","Un motif central rond symbolisant l'activité / le mouvement : une personne très simplifiée en mouvement (marche dynamique), pensée pour être entourée de rayons partant vers plusieurs bénéfices. Centré, énergique mais sobre.",S],
+    ["Rayon — bénéfice « sucre »","Petite icône « glycémie / sucre » : une goutte associée à une courbe qui redescend doucement, ou un granule de sucre. Simple, lisible en bout de rayon.",S],
+    ["Rayon — bénéfice « cœur & vaisseaux »","Petite icône cœur associé à un vaisseau / une pulsation. Sobre.",S],
+    ["Rayon — bénéfice « tête »","Petite icône tête / esprit apaisé (bien-être mental, sommeil), sans visage souriant.",S],
+    ["Rayon — bénéfice « autonomie »","Petite icône force / équilibre : une personne stable, ou un bras tonique minimal, évoquant l'autonomie et la prévention des chutes.",S],
+    ["Marqueur « bon pour les muscles »","Un petit marqueur discret « bon pour les muscles » : un biceps stylisé minimal, non intimidant, à poser en coin de certaines activités.",S],
+    ["Activité — marcher","Une personne très simplifiée qui marche.",S],
+    ["Activité — vélo","Une personne très simplifiée à vélo (ou un vélo seul stylisé).",S],
+    ["Activité — ménage","Le ménage : un balai / aspirateur stylisé, ou une personne qui passe le balai.",S],
+    ["Activité — bricolage","Le bricolage : une perceuse ou un marteau stylisé, ou une personne qui bricole.",S],
+    ["Activité — jardinage","Le jardinage : un arrosoir et une plante, ou une personne qui jardine.",S],
+    ["Activité — porter les courses","Une personne portant des sacs de courses.",S,"Marquer aussi « bon pour les muscles »."],
+    ["Activité — monter les escaliers","Une personne qui monte un escalier.",S,"Marquer aussi « bon pour les muscles »."],
+    ["Activité — se lever d'une chaise","Une personne qui se lève d'une chaise.",S,"Marquer aussi « bon pour les muscles »."],
+    ["Activité — se relever du sol","Une personne qui se relève du sol.",S,"Marquer aussi « bon pour les muscles »."],
+    ["Curseur d'activité (marqueur temps)","Un petit marqueur / curseur déplaçable stylisé (silhouette qui marche posée sur un repère) à faire glisser le long d'un axe de temps.",S,"Se pose sur LA COURBE (voir note SVG)."],
+  ]
+},
+{
+  key:'m4', title:'Module 4 — Risque cardiovasculaire', badge:S,
+  desc:"Les 5 feux (leviers), l'artère réversible (voir section commune), l'anatomie (silhouette réutilisée).",
+  items:[
+    ["Feu tricolore (objet, 3 états)","Un feu de signalisation stylisé et large, à trois états lisibles séparément : vert, ambre, rouge. Objet de réglage simple et digne. Fournir les trois états.",S],
+    ["Feu — icône « sucre »","Petite icône représentant le sucre / la glycémie : une goutte de sang avec un granule.",S],
+    ["Feu — icône « tension »","Petite icône tension artérielle : un brassard de tensiomètre ou un manomètre stylisé.",S],
+    ["Feu — icône « cholestérol »","Petite icône cholestérol : une goutte de lipide dans un vaisseau, ou une gouttelette grasse.",S],
+    ["Feu — icône « tabac »","Petite icône tabac : une cigarette stylisée (neutre, sans réalisme cru).",S],
+    ["Feu — icône « sédentarité »","Petite icône sédentarité : une personne assise / un canapé stylisé. Non culpabilisant.",S],
+  ]
+},
+{
+  key:'m5', title:'Module 5 — Complications (organes)', badge:S,
+  desc:"Silhouette réutilisée + gros plans d'organes. Sobres, dignes, jamais d'images cliniques crues. Chaque organe s'accompagne de la signature « évitable ».",
+  items:[
+    ["Œil / rétine","Un œil humain stylisé et sobre (vue de face simplifiée), évoquant le dépistage du fond d'œil. Digne, non clinique cru. Option : un fin réseau de vaisseaux de la rétine suggéré.",S],
+    ["Rein","Un rein stylisé, forme de haricot claire et reconnaissable. Sobre, digne. Option : un petit néphron / filtre minimal suggéré.",S],
+    ["Nerf","Une fibre nerveuse stylisée (corps + ramifications) évoquant la neuropathie et la sensibilité, sobre. Peut suggérer les extrémités (pieds/mains) sans détail clinique.",S],
+    ["Pied (neutre)","Un pied humain stylisé vu de profil ou 3/4, neutre et digne, sain.",S],
+    ["Pied — points d'auto-examen","Une planche d'auto-examen du pied : le pied vu de dessus ET la plante (dessous), avec quelques points de contrôle repérés (petits repères) et l'espace entre les orteils indiqué. Statique, clair, digne — sert de fiche de référence.",S,"Fiche pied (référence). Illustration statique (pas de séquence)."],
+    ["Miroir d'inspection plantaire","Un petit miroir posé au sol permettant d'examiner la plante du pied. Objet simple.",S],
+    ["Bonne chaussure","Une chaussure fermée, confortable et adaptée, stylisée.",S],
+    ["Pied nu — à éviter","Un pied nu accompagné d'un discret symbole d'interdiction (ne pas marcher pieds nus). Sobre, non moralisateur.",S],
+    ["Monofilament 10 g","Un test au monofilament : un fin fil souple monté sur un manche, touchant la peau d'un pied (dépistage de la sensibilité). Sobre.",S],
+  ]
+},
+{
+  key:'m6', title:'Module 6 — Suivi (icônes du cadran)', badge:S,
+  desc:"Le cadran lui-même se construit en SVG natif (voir note en bas). Ici : les icônes de stations + le centre.",
+  items:[
+    ["Station — consultation","Petite icône « consultation médicale » : un stéthoscope stylisé, ou une blouse / un soignant minimal. Neutre.",S],
+    ["Station — fond d'œil","Icône « examen des yeux » : réutiliser l'œil du module 5 en petit format.",S,"Réutiliser l'asset Œil."],
+    ["Station — rein","Icône « bilan rénal » : réutiliser le rein du module 5 en petit.",S,"Réutiliser l'asset Rein."],
+    ["Station — pied complet","Icône « examen du pied » : réutiliser le pied / monofilament en petit.",S,"Réutiliser l'asset Pied."],
+    ["Station — bilan lipidique","Icône prise de sang / bilan lipidique : un petit tube de prélèvement, ou une goutte de sang.",S],
+    ["Station — dentiste","Icône dentiste : une dent stylisée.",S],
+    ["Station — vaccins","Icône vaccin : une seringue stylisée, sobre.",S],
+    ["Station — HbA1c","Icône HbA1c : une goutte de sang stylisée (le langage « moyenne du sucre » se dira par la couleur/position, sans chiffre).",S],
+  ]
+},
+{
+  key:'m7', title:'Module 7 — Traitements', badge:S,
+  desc:"Silhouette réutilisée (3ᵉ passage : organes « défendus »). Ici : ordonnance, pictos d'usage, halo de protection.",
+  items:[
+    ["Ordonnance (feuille)","Une feuille d'ordonnance stylisée : des lignes de texte seulement SUGGÉRÉES par des traits (aucun vrai mot, aucune lettre), en-tête minimal. Sobre, reconnaissable.",S],
+    ["Picto usage — quotidien","Petit picto « tous les jours » : un soleil, ou un repère « 1 jour ». Simple.",S],
+    ["Picto usage — hebdomadaire","Petit picto « une fois par semaine » : sept repères / un mini-calendrier semaine.",S],
+    ["Picto usage — aux repas","Petit picto « aux repas » : une assiette avec couvert, miniature.",S],
+    ["Pastille — peut faire l'hypo","Petite pastille de surveillance « peut faire l'hypo » : une goutte de sang avec une flèche vers le bas. Discrète (2ᵉ niveau).",S],
+    ["Pastille — rein à contrôler","Petite pastille de surveillance « rein à contrôler » : un mini-rein avec un repère de vérification. Discrète.",S],
+    ["Halo de protection (surbrillance positive)","Un halo lumineux doux et positif, à superposer sur une zone du corps protégée par un traitement. Uniquement positif — aucune alerte, aucun clignotement rouge. Rayonnement apaisé.",S,"Le corps reste « pur » : le halo ne montre que le bien fait."],
+  ]
+},
+{
+  key:'m8', title:'Module 8 — Hypoglycémie', badge:S,
+  desc:"Signalétique de crise, lisible sous stress. Signes précoces + resucrages. Gros, simple, inratable.",
+  items:[
+    ["Signe — tremblements","Une main qui tremble, stylisée (petites lignes de tremblement). Signe d'hypoglycémie.",S],
+    ["Signe — sueurs","Un front / visage minimal avec des gouttes de sueur. Sans expression cartoon.",S],
+    ["Signe — palpitations","Un cœur avec un petit éclair / une pulsation rapide, symbolisant les palpitations.",S],
+    ["Signe — faim","Un estomac / ventre stylisé signalant la faim.",S],
+    ["Signe — irritabilité","Un visage neutre très minimal avec de fines lignes de tension (irritabilité), sans smiley ni grimace cartoon.",S],
+    ["Signe — vertige / confusion","Une tête avec une petite spirale douce évoquant le vertige / la confusion.",S],
+    ["Resucrage — jus de fruit","Un petit verre ou une briquette de jus de fruit (resucrage rapide).",S],
+    ["Resucrage — morceaux de sucre","Deux ou trois morceaux de sucre (≈15 g).",S],
+    ["Resucrage — comprimés de glucose","Un tube / des comprimés de glucose.",S],
+    ["Piège — chocolat (à écarter)","Une barre / un carré de chocolat associé à un discret symbole « trop lent » (resucrage inadapté car le gras ralentit). Sobre.",S,"Montrer que le gras remonte trop lentement (piège à écarter)."],
+    ["Horloge — attendre 15 min","Une horloge stylisée signalant une courte attente (~15 minutes), calme. Le temps fort du module.",S],
+  ]
+},
+{
+  key:'m9', title:'Module 9 — Insuline (adaptation)', badge:S,
+  desc:"La courbe du capteur + bandes se font en SVG natif (note en bas). Ici : matériel + flèches de tendance.",
+  items:[
+    ["Stylo à insuline lente","Un stylo à insuline stylisé, identifié comme l'insuline LENTE (couleur froide, sobre). Objet médical digne.",S],
+    ["Stylo à insuline (bolus)","Un stylo à insuline stylisé, distinct du précédent, identifié comme le bolus / rapide (couleur plus chaude).",S,"Doit se différencier clairement de la lente."],
+    ["Capteur FreeStyle Libre","Un capteur de glycémie rond porté sur le haut du bras (type FreeStyle Libre), stylisé et sobre, sur une portion de bras minimale.",S],
+    ["Flèche de tendance","Un jeu de flèches de tendance stylisées : nette montée, stable, nette descente (trois flèches d'une même famille), pour lire l'évolution d'un coup d'œil.",S],
+  ]
+},
+{
+  key:'tabac-tech', title:'TABAC — Substituts : techniques de prise', badge:T,
+  desc:"Seul vrai manque d'illustration du thème tabac : l'encart « Technique de prise — <forme> » du module Substituts (bandeau 16:7, placeholder documenté dans DESIGN_REFONTE). Une illustration par forme, montrant le BON geste. Contenu tiré des bonnes pratiques validées (2026-07-01).",
+  items:[
+    ["Patch — technique","Le bon geste d'application d'un patch de nicotine : une main pose un patch bien à plat sur le haut du bras ou l'épaule. Évoquer le matin au réveil (petit soleil discret) et l'idée de changer d'emplacement chaque jour (deux sites suggérés, ou une flèche douce vers un autre endroit). Geste calme, patch qui adhère bien à la peau.",T,"Erreurs à ne PAS illustrer comme correctes : reposer au même endroit, attendre un effet immédiat."],
+    ["Gomme — technique","La bonne technique de la gomme de nicotine, en deux étapes lisibles de gauche à droite : (1) mâcher lentement quelques fois ; (2) « garer » la gomme contre l'intérieur de la joue et la laisser au repos (bouche/joue stylisée montrant la gomme placée contre la paroi interne). Suggérer la lenteur et les pauses — surtout pas un mâchage continu et rapide.",T,"Contraste possible : mâchage rapide = à éviter (nicotine avalée)."],
+    ["Pastille — technique","La bonne technique de la pastille de nicotine : laisser une pastille se dissoudre lentement sous la langue ou contre la joue (bouche stylisée, pastille en train de fondre). Idée de patience et de lente dissolution — ne pas croquer.",T],
+    ["Comprimé sublingual — technique","La bonne technique du comprimé sublingual : placer le comprimé SOUS la langue et le laisser fondre (bouche stylisée montrant clairement l'emplacement sous la langue). Idée de dissolution lente, sans croquer ni avaler.",T],
+    ["Spray buccal — technique","La bonne technique du spray buccal : un petit flacon spray dirigé vers l'INTÉRIEUR de la joue pour y pulvériser (viser la face interne de la joue, jamais le fond de la gorge). Bouche stylisée, fine pulvérisation orientée vers la paroi interne de la joue.",T,"Geste à éviter : viser le fond de la gorge / inhaler."],
+  ]
+},
+];
+
+/* Éléments à produire en SVG natif (pas via un modèle image) */
+const CODE_ITEMS = [
+  ["LA COURBE de glycémie","Modules 2, 3, 8, 9. Géométrie de données (hauteur du pic, moment, douceur de descente) + valeurs au survol : à dessiner en SVG/code, pas en image. Se vectorise mal depuis un raster et doit rester paramétrable."],
+  ["Le cadran de l'année","Module 6. Cercle = 12 mois, aiguille = maintenant, densité de points = fréquence. Géométrie précise → SVG natif. Réutiliser le motif « fil rouge » au centre et les icônes de stations ci-dessus."],
+  ["Bandes « temps dans la cible »","Module 9. Barre colorée empilée (vert/haut/bas) : SVG natif."],
+  ["Zone-cible / bande verte réglable","Module 9. Bande de couleur repositionnable : SVG natif."],
+  ["Tabac — petits pictos","Piliers de l'addiction, outils Cigarette/Patch/Substitut, 4 D du craving, cartes de motivation, feux/zones : déjà couverts par les icônes lucide-react en place (Cigarette, Pill, Brain, Wind, Waves, HeartPulse…), cohérentes avec le style éditorial. Ne PAS les régénérer en image."],
+  ["Tabac — courbes & cadran","Nicotinémie 24 h, courbe de tension (soulagement), vague du craving, cadran de motivation : géométries de données en SVG/code (nicotineCurve.ts, Dial.tsx). Pas d'image."],
+  ["Tabac — scène « nicotine ≠ toxique »","Déjà une scène SVG codée avec hotspots (NicotineToxiqueModule). Pas d'image."],
+];
+
+/* ------------------------------------------------------------------ *
+ * Rendu                                                              *
+ * ------------------------------------------------------------------ */
+const $ = s => document.querySelector(s);
+const app = $('#app');
+const styleSysEl = $('#styleSys');
+const styleFoodEl = $('#styleFood');
+const styleTabacEl = $('#styleTabac');
+
+// charge styles (persistés si édités)
+styleSysEl.value = localStorage.getItem('etp_style_sys') || DEFAULT_SYS;
+styleFoodEl.value = localStorage.getItem('etp_style_food') || DEFAULT_FOOD;
+styleTabacEl.value = localStorage.getItem('etp_style_tabac') || DEFAULT_TABAC;
+styleSysEl.addEventListener('input',()=>localStorage.setItem('etp_style_sys',styleSysEl.value));
+styleFoodEl.addEventListener('input',()=>localStorage.setItem('etp_style_food',styleFoodEl.value));
+styleTabacEl.addEventListener('input',()=>localStorage.setItem('etp_style_tabac',styleTabacEl.value));
+
+// tag -> style / libellé de badge / classe
+const STYLE_EL = { sys:styleSysEl, food:styleFoodEl, tabac:styleTabacEl };
+const BADGE = { sys:['sys','Système'], food:['food','Aliments'], tabac:['tabac','Tabac'] };
+
+function idFor(sk,i){ return 'etp_done_'+sk+'_'+i; }
+function isDone(sk,i){ return localStorage.getItem(idFor(sk,i))==='1'; }
+function setDone(sk,i,v){ v?localStorage.setItem(idFor(sk,i),'1'):localStorage.removeItem(idFor(sk,i)); }
+
+let TOTAL=0;
+SECTIONS.forEach(sec=>{
+  const el=document.createElement('section'); el.className='mod'; el.dataset.key=sec.key;
+  const [badgeCls,badgeTxt] = BADGE[sec.badge] || BADGE.sys;
+  el.innerHTML =
+    `<h2>${sec.title} <span class="badge ${badgeCls}">${badgeTxt}</span> <span class="secount" data-secount></span></h2>`+
+    (sec.desc?`<p class="desc">${sec.desc}</p>`:'')+
+    `<div class="grid"></div>`;
+  const grid=el.querySelector('.grid');
+  sec.items.forEach((it,i)=>{
+    TOTAL++;
+    const [label,prompt,tag=sec.badge,note]=it;
+    const dotCls = (BADGE[tag]||BADGE.sys)[0];
+    const card=document.createElement('div'); card.className='card';
+    card.dataset.search=(label+' '+prompt).toLowerCase();
+    card.dataset.sk=sec.key; card.dataset.i=i; card.dataset.tag=tag;
+    card.innerHTML =
+      `<h3><span class="dot ${dotCls}"></span>${label}</h3>`+
+      `<p class="prompt">${prompt}</p>`+
+      (note?`<p class="note">↳ ${note}</p>`:'')+
+      `<div class="row">`+
+        `<button class="copy">Copier le prompt</button>`+
+        `<label class="chk"><input type="checkbox"> générée</label>`+
+      `</div>`;
+    const cb=card.querySelector('input');
+    if(isDone(sec.key,i)){ cb.checked=true; card.classList.add('done'); }
+    cb.addEventListener('change',()=>{ setDone(sec.key,i,cb.checked);
+      card.classList.toggle('done',cb.checked); refreshCounts(); });
+    card.querySelector('.copy').addEventListener('click',e=>{
+      const base = (STYLE_EL[tag]||styleSysEl).value;
+      const full = base.trim()+'\n\nSUJET À ILLUSTRER :\n'+prompt;
+      copy(full,e.target);
+    });
+    grid.appendChild(card);
+  });
+  app.appendChild(el);
+});
+
+// section code SVG
+const codeSec=document.createElement('div'); codeSec.className='infobox'; codeSec.style.margin='26px 0';
+codeSec.innerHTML='<h3>À réaliser en SVG natif — ne PAS générer en image</h3>'+
+  '<p class="tip" style="margin:0 0 6px">Géométries de données : elles se vectorisent mal depuis un PNG et doivent rester paramétrables dans l\'app.</p>'+
+  '<ul>'+CODE_ITEMS.map(([t,d])=>`<li><b>${t}</b> — ${d}</li>`).join('')+'</ul>';
+app.appendChild(codeSec);
+
+/* ------------------------------------------------------------------ *
+ * Interactions                                                       *
+ * ------------------------------------------------------------------ */
+function copy(text,btn){
+  navigator.clipboard.writeText(text).then(()=>{
+    toast('Prompt copié ✓ — collez-le dans ChatGPT');
+    if(btn){ const t=btn.textContent; btn.textContent='Copié ✓'; btn.classList.add('copied');
+      setTimeout(()=>{ btn.textContent=t; btn.classList.remove('copied'); },1200); }
+  }).catch(()=>{
+    // fallback
+    const ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy'); ta.remove(); toast('Prompt copié ✓');
+  });
+}
+let toastT;
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),1800); }
+
+function refreshCounts(){
+  let done=0;
+  document.querySelectorAll('section.mod').forEach(sec=>{
+    const cards=[...sec.querySelectorAll('.card')];
+    const d=cards.filter(c=>c.querySelector('input').checked).length;
+    done+=d;
+    sec.querySelector('[data-secount]').textContent=`${d}/${cards.length}`;
+  });
+  $('#globalCount').textContent=`${done} / ${TOTAL} illustrations générées`;
+}
+refreshCounts();
+
+$('#search').addEventListener('input',e=>{
+  const q=e.target.value.trim().toLowerCase();
+  document.querySelectorAll('.card').forEach(c=>{
+    c.style.display = !q || c.dataset.search.includes(q) ? '' : 'none';
+  });
+  document.querySelectorAll('section.mod').forEach(sec=>{
+    const any=[...sec.querySelectorAll('.card')].some(c=>c.style.display!=='none');
+    sec.style.display=any?'':'none';
+  });
+});
+
+$('#resetTracking').addEventListener('click',()=>{
+  if(!confirm('Réinitialiser le suivi « générée » de toutes les illustrations ?')) return;
+  Object.keys(localStorage).filter(k=>k.startsWith('etp_done_')).forEach(k=>localStorage.removeItem(k));
+  document.querySelectorAll('.card input').forEach(cb=>cb.checked=false);
+  document.querySelectorAll('.card').forEach(c=>c.classList.remove('done'));
+  refreshCounts();
+});
+
+let expanded=false;
+$('#expandAll').addEventListener('click',()=>{
+  expanded=!expanded;
+  document.querySelectorAll('details.style').forEach(d=>d.open=expanded);
+  $('#expandAll').textContent=expanded?'Tout replier':'Tout déplier';
+});
+</script>

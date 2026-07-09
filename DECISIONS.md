@@ -365,3 +365,230 @@ pour que S4/S7 implémentent fidèlement le handoff (grille 0–100/24h vs. anci
   pour commit mais signalée dans `VALIDATION.md`.
 - Si correction ultérieure : localiser le `.module.css` du module impacté dans `src/features/<slug>/` ou la règle
   dans `global.css` (primitives) / `tokens.css` (variables). Modifications de `nicotineCurve.ts` affectent S4/S7 seulement.
+
+## 2026-07-08 — Introduction du moteur multi-thèmes + scaffold du thème diabète
+
+### Décision
+
+Généraliser le moteur, jusqu'ici implicitement câblé pour le tabac, pour qu'il accueille plusieurs
+thèmes ETP, et scaffolder un 2e thème `diabete` (sans contenu) pour valider le moteur de bout en bout :
+
+1. **Déplacement** : les 7 modules tabac + `registry.ts` + `src/lib/nicotineCurve.ts` déménagent sous
+   `src/features/tabac/` (via `git mv`, historique préservé). `src/features/registry.ts` devient le
+   registre des **thèmes** (`THEMES: ThemeDef[]`), chaque thème import son propre `registry.ts`
+   (`tabac/registry.ts`, `diabete/registry.ts`).
+2. **Types généralisés** (`src/features/types.ts`) : `ModuleId`/`FamilleId` passent d'unions littérales
+   tabac-spécifiques à `string` ; `Hue` (déplacé depuis `ModuleCard.tsx`) rejoint `ModuleDef.hue` ;
+   nouveaux types `FamilleDef` et `ThemeDef { id, titre, eyebrow, description, familles, modules,
+   enConstruction? }`.
+3. **Navigation à 3 niveaux** dans `App.tsx` : `{type:'themes'} | {type:'home', themeId} |
+   {type:'module', themeId, moduleId}`. L'écran de sélection de thème (`ThemeSelector`, nouveau
+   composant) ne s'affiche que si `THEMES.length > 1` — avec un seul thème, on saute directement à
+   l'accueil (zéro friction ajoutée pour l'usage tabac actuel).
+4. **`Home.tsx` reçoit `theme: ThemeDef` en prop** au lieu d'importer `MODULES` directement ; les
+   tables locales `HUES` et `FAMILLES` (codées en dur avec les ids de modules tabac) sont supprimées —
+   remplacées par `m.hue` et `theme.familles`.
+5. **Thème `diabete` scaffoldé vide** : `src/features/diabete/registry.ts` exporte `MODULES: []`,
+   `THEMES` le référence avec `enConstruction: true`. `ThemeSelector` l'affiche non cliquable avec un
+   badge « Bientôt disponible ». Le cadrage clinique (modules, contenu, sources) est explicitement
+   hors scope de cette tâche — stub créé dans `docs/contenu-modules-diabete.md`.
+6. **`docs/contenu-modules.md` renommé `docs/contenu-modules-tabac.md`** (contenu inchangé) pour
+   préparer un fichier d'autorité par thème.
+
+### Contexte
+
+Thibault veut concevoir un module diabète. Le moteur était prêt en théorie (`docs/architecture.md`
+anticipait déjà un type `Theme = { id, titre, modules }` dès le cadrage initial du 2026-06-28) mais
+pas en pratique : `Home.tsx` avait un header « Programme ETP · Sevrage tabagique » en dur et des
+tables (`HUES`, `FAMILLES`) indexées par les ids littéraux des 7 modules tabac — exactement le
+couplage que l'invariant projet #4 interdit. Avant de cadrer le contenu diabète, il fallait que ce
+couplage disparaisse.
+
+### Alternatives envisagées
+
+- Préfixer les ids de modules par thème (`tabac-addiction`, `diabete-alimentation`) pour garder
+  `ModuleId` comme union littérale globale → écarté : la recherche de module est désormais scopée au
+  thème courant (`theme.modules.find(...)`), donc l'unicité n'est requise qu'au sein d'un thème ; un
+  préfixage aurait été de la complexité sans bénéfice.
+- Ajouter directement du contenu diabète dans cette tâche → écarté : le cadrage clinique (comme celui
+  fait pour le tabac le 2026-06-28) n'a pas encore eu lieu ; coder des modules sans cadrage validé
+  risquerait une erreur médicale. Le scaffold vide prouve le moteur sans inventer de contenu.
+- Garder `src/lib/nicotineCurve.ts` à la racine (utilitaire « partagé ») → écarté : c'est un modèle
+  pharmacocinétique du tabac (nicotinémie/tension), consommé uniquement par 2 modules tabac ; il n'a
+  rien de générique au moteur, donc il suit les modules sous `features/tabac/lib/`.
+
+### Raison du choix
+
+Respecter l'invariant #4 (généricité multi-thèmes) sans reconception lourde : le moteur (`types.ts`,
+`registry.ts`, `src/components/`) ne connaît plus aucun nom de thème ni d'id de module en dur. Le
+scaffold vide permet de valider l'architecture (build, tests, navigation) avant d'investir dans le
+cadrage clinique du diabète.
+
+### Conséquences
+
+- Le contenu tabac est identique visuellement et fonctionnellement — pure réorganisation + généralisation.
+- `docs/contenu-modules-diabete.md` (stub) et le backlog `TASKS.md` portent la prochaine étape :
+  cadrage du contenu diabète avec Thibault, sur le modèle des décisions 2026-06-28 pour le tabac.
+- Toute future addition de thème suit le même schéma : dossier `src/features/<theme>/registry.ts` +
+  entrée dans `THEMES` (`src/features/registry.ts`) + fichier `docs/contenu-modules-<theme>.md`.
+
+### Impact IA
+
+- Si Thibault ajoute des modules diabète : uniquement toucher `src/features/diabete/` (nouveaux
+  dossiers de module + `registry.ts`) et `docs/contenu-modules-diabete.md` — aucune modification du
+  moteur générique nécessaire, sauf besoin réel non anticipé (à documenter ici si ça arrive).
+- `PROJECT_MAP.md` mis à jour avec la nouvelle arborescence.
+
+## 2026-07-08 — Cadrage diabète : fichier par module + sources probantes brutes
+
+### Décision
+
+Le stub `docs/contenu-modules-diabete.md` est remplacé par un dossier `docs/diabete/` : un fichier
+`00-global.md` (grammaire commune, vue d'ensemble des 8 modules, journal des décisions) + un fichier
+par module (`module-1-cest-quoi-le-diabete.md`, `module-2-alimentation.md`,
+`module-3-activite-physique.md`, `module-4-risque-cardiovasculaire.md`, et un fichier groupé
+`modules-5-8-cadrage.md` pour les 4 modules encore juste cadrés). Les rapports de synthèse
+OpenEvidence fournis par Thibault (traitement, suivi, complications, risque CV, activité physique,
+alimentation) sont rangés dans `docs/evidence-diabete/` (noms en kebab-case).
+
+### Contexte
+
+Thibault a fourni un premier jet de spécification complète (`SPEC_outil_ETP_diabete.md`, 336 lignes)
+couvrant l'intention, la grammaire commune et le détail de 4 des 8 modules diabète, plus 6 rapports de
+sources probantes. Le thème diabète compte plus de modules que le tabac (8 vs 7) avec un niveau de
+détail par module plus élevé (ex. module Alimentation à lui seul comparable en taille à tout
+`contenu-modules-tabac.md`) — un fichier unique grossirait au point de devenir coûteux à charger en
+contexte IA à mesure que les 8 modules seraient spécifiés puis codés.
+
+### Alternatives envisagées
+
+- Garder un fichier unique `docs/contenu-modules-diabete.md` comme pour le tabac → écarté : le tabac
+  est un contenu **clos** (7 modules déjà codés), alors que le diabète est en cadrage **actif** et va
+  continuer à grossir ; le fichier unique serait déjà le plus long du repo avant même d'avoir codé un
+  seul module.
+- Un fichier par module dès le départ, y compris pour les modules 5-8 encore sommaires → écarté pour
+  l'instant : ces 4 modules n'ont que quelques lignes de cadrage chacun (pas encore de détail
+  écran-par-écran) ; les regrouper dans `modules-5-8-cadrage.md` évite 4 fichiers quasi vides, à
+  éclater plus tard quand chacun sera vraiment spécifié.
+
+### Raison du choix
+
+Le découpage par module est le même principe que le découpage `features/<theme>/<module>/` déjà en
+place côté code : quand on travaille sur un module diabète (cadrage, design, câblage), on ne charge
+que son fichier + `00-global.md`, jamais l'intégralité du contenu des 8 modules.
+
+### Conséquences
+
+- Toute référence à `docs/contenu-modules-diabete.md` dans le repo pointe maintenant vers
+  `docs/diabete/00-global.md` (ou le fichier de module concerné) — mises à jour dans `PROJECT_MAP.md`,
+  `CLAUDE.md`, `STATUS.md`, `ROADMAP.md`, `TASKS.md`.
+- `registry.ts` du thème diabète reste `MODULES: []` — ce découpage ne change rien au statut « pas
+  encore câblé » ; les 4 modules spécifiés (1, 2, 3, 4) sont prêts pour la maquette Claude Design, pas
+  encore pour le code.
+
+### Impact IA
+
+- Pattern à réutiliser pour un futur thème volumineux : `docs/<theme>/00-global.md` + un fichier par
+  module, plutôt qu'un fichier unique `docs/contenu-modules-<theme>.md` — à trancher au cas par cas
+  selon le nombre de modules et leur profondeur attendue (le tabac, plus petit et clos, reste en
+  fichier unique).
+
+## 2026-07-08 — Substituts : retrait de l'inhaleur et de la vapoteuse (5 formes)
+
+### Décision
+
+Le Module 3 (substituts & titration) ne propose plus que **5 formes** : patch, gomme, pastille,
+comprimé sublingual, spray buccal. **Inhaleur** et **vapoteuse** sont retirés du sélecteur de formes.
+
+### Contexte
+
+Ces deux formes étaient les seules restées sans contenu validé (affichées « Fiche en cours de
+rédaction — à voir avec votre soignant », état `enRedaction`). Plutôt que de rédiger leur contenu,
+Thibault (autorité clinique) a tranché pour leur retrait lors du dépouillement des questions ouvertes
+de `VALIDATION.md` (2026-07-08).
+
+### Alternatives envisagées
+
+- Rédiger le contenu bonnes pratiques / erreurs pour l'inhaleur et la vapoteuse → écarté par Thibault.
+- Garder le repli « en rédaction » indéfiniment → écarté : laisse deux formes vides dans le sélecteur.
+
+### Raison du choix
+
+Un module qui ne présente que des formes à contenu validé ; suppression du mécanisme `enRedaction`
+devenu inutile (code mort). Décision de l'expert clinique.
+
+### Conséquences
+
+- **Revient sur une décision antérieure du 2026-06-28** (« Substituts : toutes les formes + la
+  vapoteuse ») pour le périmètre du Module 3. La vapoteuse **reste** un outil d'aide à l'arrêt à part
+  entière et **demeure présente comme geste du bac à sable Nicotine (Module 2)** — seule sa présence
+  comme « forme de substitut » du Module 3 est retirée.
+- `SubstitutsModule.tsx` : type `FormeId` réduit à 5, `FORMES_DATA` idem, suppression du type
+  `enRedaction`, de sa branche de rendu (`panelRedaction`) et des classes CSS associées
+  (`formeCardMuted`, `panelRedaction`). `tsc -b` + `vite build` verts.
+- `docs/contenu-modules-tabac.md` mis à jour (décision transverse, Module 3, données cliniques,
+  « reste à fournir »).
+
+### Impact IA
+
+- `docs/contenu-modules-tabac.md` reste l'autorité : le Module 3 = 5 formes. Ne pas réintroduire
+  inhaleur/vapoteuse comme formes sans une nouvelle décision de Thibault.
+- **Question laissée ouverte** (signalée à Thibault) : faut-il aussi retirer la vapoteuse du bac à
+  sable Nicotine (Module 2) et des renvois du Module 4, ou la démonstration de cinétique la garde-t-elle ?
+
+## 2026-07-09 — Extensions tabac au niveau du brief diabète, en v1 directe sans maquette
+
+### Décision
+
+Suite à l'analyse comparative code tabac ↔ brief diabète (session Fable du 2026-07-09), lancer
+5 chantiers d'extension du thème tabac, **sans passage par Claude Design** (v1 directe composée
+depuis le design system existant) :
+
+1. **Fiches à emporter imprimables** (4 : carte anti-envie, méthode patch, mes raisons, plan
+   d'arrêt) via un composant générique `FicheOverlay` — impression à la volée, zéro persistance.
+2. **Nouveau module « Mon plan d'arrêt »** (famille Agir) — le module d'application qui clôt
+   l'arc, fiche « frigo » à ROI maximal.
+3. **Généralisation des portes de fin de module** (`ModuleFooterNav`, extrait de nicotine-toxique)
+   et du **2ᵉ niveau de lecture** (`InfoHover`, extrait des tooltips de zones de nicotine).
+4. **Fil rouge** du thème : « C'est la fumée qui rend malade. C'est le manque qui fait fumer.
+   Et le manque, ça se traite. » (exergue accueil + clôtures Comprendre + pieds de fiches).
+5. **`docs/BRIEF_TABAC.md`** : nouveau référentiel design/pédagogie du thème (rédigé par Fable,
+   le code faisant foi pour l'existant) + resynchronisation des docs dépassées.
+
+### Contexte
+
+Le brief diabète (`docs/diabete/BRIEF_DESIGN_diabete.md`) a posé une barre de conception
+(fiches à emporter, personnalisation, fil rouge, ponts scénarisés, 2ᵉ niveau au survol) que le
+thème tabac — construit avant — n'atteint pas, alors que le code tabac contient déjà des embryons
+de ces mécanismes (portes de nicotine-toxique, tooltips de zones de nicotine). Constat clé :
+le thème tabac est 100 % démonstration/exploration, sans module d'application ni artefact emporté.
+
+### Alternatives envisagées
+
+- **Maquette Claude Design d'abord** (pipeline Templates habituel pour toute UI nouvelle) —
+  écartée pour cette v1 : le module Plan d'arrêt est compositionnel (réutilise chips, quarts de
+  patch, 4D, cartes raisons déjà dessinés) et le design system est documenté (`DESIGN_REFONTE.md`).
+  Recours possible : repasser par Claude Design si la validation visuelle humaine déçoit.
+- Import automatique des raisons (module Motivation → Plan d'arrêt) — écarté : zéro persistance
+  inter-modules ; la re-sélection par chips se fait en parlant.
+
+### Raison du choix
+
+Coût d'essai faible (validation visuelle humaine = filet existant), vitesse, et cohérence garantie
+par la composition de primitives déjà maquettées.
+
+### Conséquences
+
+- Plans exécutables Sonnet : `plans/extensions-tabac/X1..X7` (vagues : X1 → X2-X5 parallèles → X6 → X7).
+- Nouveau référentiel `docs/BRIEF_TABAC.md` ; `contenu-modules-tabac.md` et `STATUS.md` seront
+  resynchronisés en X7 (des dérives doc/code y sont recensées).
+- Validations Thibault en attente listées dans `BRIEF_TABAC.md §5` (libellé fil rouge, contenus
+  2ᵉ niveau + sources, libellés plan d'arrêt) — le 2ᵉ niveau n'est câblé qu'après validation.
+
+### Impact IA
+
+- Pour toute modification du thème tabac : lire `docs/BRIEF_TABAC.md` (design/pédagogie) en plus
+  de `contenu-modules-tabac.md` (contenu médical). **Le code reste la source de vérité de
+  l'existant** tant que X7 n'a pas resynchronisé les docs.
+- `FicheOverlay`, `ModuleFooterNav`, `InfoHover` sont des composants **moteur** (génériques,
+  multi-thèmes) : ne jamais y coder de contenu tabac en dur — le thème diabète les réutilisera.

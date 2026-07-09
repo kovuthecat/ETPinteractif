@@ -20,6 +20,15 @@
   font-size: 34px;
 }
 
+.exergue {
+  margin: 10px 0 0;
+  max-width: 60ch;
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-size: 17px;
+  color: var(--color-text-soft);
+}
+
 .famille {
   margin-bottom: 26px;
 }

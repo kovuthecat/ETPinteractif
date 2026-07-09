@@ -1,0 +1,135 @@
+.1 Le diabète de type 2, un facteur de risque cardiovasculaire majeur
+
+Le diabète de type 2 (DT2) multiplie par 2 à 4 le risque de décès et d'événements cardiovasculaires (CV) par rapport à la population générale. [1] Les maladies CV (infarctus du myocarde, accident vasculaire cérébral, insuffisance cardiaque, artériopathie des membres inférieurs) représentent la première cause de mortalité chez les patients diabétiques. [1] Une étude suédoise de registre portant sur plus de 435 000 patients DT2 a montré un taux de mortalité CV de 17,15/1 000 personnes-années chez les diabétiques contre 12,86 chez les témoins appariés. [2] Cet excès de risque est particulièrement marqué chez les sujets jeunes : le hazard ratio de mortalité toutes causes atteint 1,92 chez les patients de moins de 55 ans avec une HbA1c ≤ 6,9 %, contre 0,95 chez les patients de 75 ans et plus. [2]
+
+Plus de 80 % des adultes DT2 présentent également une hypertension artérielle, et la coexistence des deux pathologies plus que double le risque CV par rapport à chaque condition isolée. [3]
+
+Donnée-clé pour l'ETP : Le diabète n'est pas seulement une maladie du sucre ; c'est avant tout une maladie des vaisseaux sanguins.
+3.2 Les principaux facteurs de risque cardiovasculaire associés
+
+Le DT2 s'inscrit le plus souvent dans un contexte de syndrome métabolique associant plusieurs facteurs de risque qui se potentialisent mutuellement : [4-5]
+
+    Hypertension artérielle (HTA) : présente chez 70 à 80 % des patients DT2, elle accélère l'athérosclérose et la néphropathie diabétique. L'étude UKPDS 38 a démontré qu'un contrôle tensionnel strict (PA moyenne 144/82 vs 154/87 mmHg) réduit de 24 % les complications liées au diabète, de 32 % la mortalité liée au diabète et de 44 % le risque d'AVC (niveau de preuve A). [5-6]
+
+    Dyslipidémie : les patients DT2 présentent fréquemment une dyslipidémie athérogène (LDL-cholestérol élevé, triglycérides élevés, HDL-cholestérol bas). Les méta-analyses du Cholesterol Treatment Trialists montrent une réduction de 9 % de la mortalité toutes causes et de 13 % de la mortalité vasculaire pour chaque réduction de 1 mmol/L (39 mg/dL) du LDL-cholestérol sous statine. [7]
+
+    Tabagisme : dans la cohorte suédoise de Rawshani et al. (NEJM 2018), le tabagisme était le plus puissant prédicteur de mortalité chez les patients DT2. Le sevrage tabagique est recommandé avec un niveau de preuve A par l'ADA. [1][5]
+
+    Obésité et surpoids : l'excès pondéral, en particulier l'adiposité abdominale, aggrave l'insulinorésistance, l'HTA et la dyslipidémie. L'IMC est le facteur le plus fortement associé au risque d'insuffisance cardiaque dans le DT2, expliquant potentiellement plus de 30 % de ce risque. [8]
+
+    Sédentarité : l'activité physique régulière (≥ 150 min/semaine d'intensité modérée) améliore le contrôle glycémique, la pression artérielle, le profil lipidique et le poids. Les études de cohorte montrent une association entre un niveau d'activité physique plus élevé et des taux réduits d'événements CV et de mortalité CV (niveau de preuve A). [5][9]
+
+L'illustration centrale de Newman et al. (JACC 2017) résume les voies physiopathologiques reliant ces facteurs de risque modifiables au DT2 et aux maladies CV, via la dysfonction endothéliale, l'inflammation, le stress oxydatif et l'hypercoagulabilité. [5]
+3.3 Cibles thérapeutiques : pression artérielle et LDL-cholestérol
+Pression artérielle
+
+Les recommandations convergent vers une cible de PA < 130/80 mmHg chez la plupart des patients DT2 (ADA 2026, ACC/AHA 2025, ESC/EASD). [3][7][10] Les données récentes renforcent cette position :
+
+    L'essai BPROAD (2024) a randomisé 12 821 patients DT2 à haut risque CV vers une cible de PAS < 120 mmHg vs < 140 mmHg et a montré une réduction de 21 % du critère composite (AVC non fatal, IDM non fatal, insuffisance cardiaque, décès CV). [7]
+
+    L'essai ESPRIT a confirmé une réduction de 12 % du critère composite CV avec une cible de PAS < 120 mmHg. [7]
+
+    L'ADA 2026 recommande désormais d'encourager une cible de PAS < 120 mmHg chez les patients à haut risque CV ou rénal (niveau de preuve A). [7]
+
+    Chez les patients de plus de 65 ans, l'ESC/EASD recommande une cible plus souple de PAS 130-139 mmHg. [10]
+
+Traitement de première intention : IEC ou ARA II (surtout en cas d'albuminurie), inhibiteurs calciques, diurétiques thiazidiques. Les quatre classes sont considérées comme efficaces (niveau de preuve A). [3]
+LDL-cholestérol
+
+Les cibles de LDL-cholestérol sont stratifiées selon le niveau de risque CV :
+Situation clinique	Cible LDL-C	Traitement	Références
+DT2, 40-75 ans, sans MCVA, risque modéré	< 100 mg/dL (2,6 mmol/L)	Statine d'intensité modérée (réduction ≥ 30-49 %)	[1-2]
+DT2, 40-75 ans, sans MCVA, facteurs de risque multiples	< 70 mg/dL (1,8 mmol/L)	Statine de haute intensité (réduction ≥ 50 %)	[1-2]
+DT2 avec MCVA établie (prévention secondaire)	< 55 mg/dL (1,4 mmol/L)	Statine haute intensité ± ézétimibe ± iPCSK9	[2]
+
+Les recommandations ACC/AHA 2026 et ADA 2026 introduisent désormais des cibles numériques de LDL-C en plus des objectifs de réduction en pourcentage, ce qui représente un changement par rapport aux recommandations de 2018. [7][12] En cas d'intolérance aux statines, l'acide bempédoïque est recommandé (niveau de preuve A). [7]
+3.4 Évaluation du risque cardiovasculaire global
+
+L'évaluation du risque CV global est essentielle pour guider l'intensité du traitement. Plusieurs outils et stratégies coexistent :
+
+    Équations PREVENT-ASCVD (ACC/AHA 2026) : remplacent les anciennes Pooled Cohort Equations pour estimer le risque à 10 ans d'événements athérosclérotiques. Le diabète est intégré comme variable et augmente significativement le risque prédit. [10][13]
+
+    Stratification ESC/EASD (utilisée en Europe et reprise par la HAS/SFD) : trois catégories de risque : [10]
+
+        Risque modéré : DT2 < 50 ans, durée < 10 ans, sans autre facteur de risque
+
+        Risque élevé : DT2 > 10 ans de durée OU ≥ 1 facteur de risque additionnel (âge, HTA, dyslipidémie, tabac, obésité)
+
+        Risque très élevé : DT2 avec atteinte d'organe cible (protéinurie, IRC, rétinopathie, HVG) ou MCVA établie
+
+    Facteurs amplificateurs de risque spécifiques au diabète (ACC/AHA, ADA) : durée du diabète ≥ 10 ans, albuminurie ≥ 30 µg/mg, DFG < 60 mL/min/1,73 m², rétinopathie, neuropathie, index cheville-bras < 0,9. [10]
+
+    Score TIMI pour l'athérothrombose dans le diabète : outil plus récent intégrant des variables démographiques, métaboliques et rénales, avec une bonne discrimination et une capacité à identifier les patients bénéficiant le plus des iSGLT2 et des iPCSK9. [14]
+
+L'intérêt de cette évaluation globale est de personnaliser l'intensité du traitement : les patients à plus haut risque tirent un bénéfice absolu plus important d'un traitement intensif. [15-16]
+3.5 Bénéfice démontré du contrôle multifactoriel : l'étude Steno-2 et au-delà
+L'étude Steno-2
+
+L'étude Steno-2 constitue la démonstration la plus convaincante du bénéfice d'une approche multifactorielle dans le DT2. Cet essai randomisé danois a inclus 160 patients DT2 avec microalbuminurie, assignés soit à un traitement conventionnel, soit à une intervention intensive ciblant simultanément : [17]
+
+    L'hyperglycémie (cible HbA1c < 6,5 %)
+
+    L'HTA (cible PA < 140/85 mmHg)
+
+    La dyslipidémie
+
+    La microalbuminurie (IEC systématique)
+
+    Le mode de vie (sevrage tabagique, alimentation, exercice)
+
+    La prévention secondaire (aspirine)
+
+Résultats à 7,8 ans : l'intervention intensive a réduit de 53 % le risque d'événements CV (HR 0,47 ; IC 95 % 0,24-0,73), de 61 % la néphropathie, de 58 % la rétinopathie et de 63 % la neuropathie autonome. [17]
+
+La figure suivante, tirée de l'étude Steno-2 publiée dans le NEJM, illustre la séparation progressive des courbes de survie CV entre les deux groupes et les réductions de risque pour les complications microvasculaires :
+Feedback
+Figure 3. Kaplan–Meier Estimates of the Composite End Point of Death from Cardiovascular Causes, Nonfatal Myocardial Infarction, Coronary-Artery Bypass Grafting, Percutaneous Coronary Intervention, Nonfatal Stroke, Amputation, or Surgery for Peripheral Atherosclerotic Artery Disease in the Conventional-Therapy Group and the Intensive-Therapy Group (Panel A) and the Relative Risk of the Development or Progression of Nephropathy, Retinopathy, and Autonomic and Peripheral Neuropathy during the Average Follow-up of 7.8 Years in the Intensive-Therapy Group, as Compared with the Conventional-Therapy Group (Panel B).
+
+Suivi à 21,2 ans : après la fin de l'intervention (7,8 ans), tous les patients ont reçu le traitement intensif. Malgré cela, les bénéfices ont persisté avec un gain médian de 7,9 années de vie dans le groupe intervention initiale (HR de mortalité 0,55 ; IC 95 % 0,36-0,83 ; p = 0,005). Le délai médian avant le premier événement CV était prolongé de 8,1 ans. [18]
+L'étude de Rawshani et al. (NEJM 2018)
+
+Cette étude de cohorte suédoise portant sur 271 174 patients DT2 a confirmé à grande échelle le concept du contrôle multifactoriel. Cinq facteurs de risque ont été évalués : HbA1c, PA, LDL-cholestérol, albuminurie et tabagisme. Le résultat majeur est que les patients ayant les cinq facteurs dans les cibles présentaient un excès de risque quasi nul par rapport à la population générale : [1]
+
+    Mortalité toutes causes : HR 1,06 (IC 95 % 1,00-1,12)
+
+    Infarctus du myocarde : HR 0,84 (IC 95 % 0,75-0,93)
+
+    AVC : HR 0,95 (IC 95 % 0,84-1,07)
+
+Seul le risque d'insuffisance cardiaque restait significativement élevé (HR 1,45), même avec un contrôle optimal de tous les facteurs. [1] L'HbA1c hors cible était le plus puissant prédicteur d'IDM et d'AVC, tandis que le tabagisme était le plus puissant prédicteur de mortalité. [1]
+
+La figure suivante illustre les relations dose-réponse entre les niveaux d'HbA1c, de PAS et de LDL-cholestérol et les événements CV dans cette cohorte :
+Feedback
+Figure 3. Association between Levels of Glycated Hemoglobin, Systolic Blood Pressure, and LDL Cholesterol and Death from Any Cause, Acute Myocardial Infarction, Stroke, and Heart Failure in Patients with Type 2 Diabetes.
+Données complémentaires
+
+    Sattar et al. (Circulation 2023) : sur 679 072 patients DT2 suivis de 2001 à 2019, les taux d'événements athérosclérotiques ont diminué de manière significative au fil du temps (IDM : de 73,9 à 41,0/10 000 personnes-années), reflétant l'amélioration du contrôle des facteurs de risque. Cependant, l'incidence de l'insuffisance cardiaque a plafonné à partir de 2013. [8]
+
+    Wright et al. (Circulation 2020) : même avec un contrôle optimal de tous les facteurs de risque, les patients DT2 conservent un risque CV supérieur de 21 % par rapport aux témoins, soulignant l'existence d'un risque résiduel lié au diabète lui-même. [19]
+
+3.6 Synthèse des cibles thérapeutiques pour l'ETP
+Facteur de risque	Cible recommandée	Source
+HbA1c	< 7 % (individualisée)	ADA 2026 [1]
+Pression artérielle	< 130/80 mmHg (< 120 mmHg si haut risque CV/rénal)	ADA 2026, ACC/AHA 2025 [2-3]
+LDL-cholestérol (prévention primaire)	< 1,0 g/L (2,6 mmol/L) ; < 0,7 g/L si risque élevé	ACC/AHA 2026, ADA 2026 [2, 4]
+LDL-cholestérol (prévention secondaire)	< 0,55 g/L (1,4 mmol/L)	ADA 2026, ESC/EASD [2]
+Tabac	Sevrage complet	ADA (LOE A) [1]
+Activité physique	≥ 150 min/semaine d'intensité modérée	ADA (LOE A) [1, 5]
+Poids	Perte de 5-10 % si surpoids/obésité	ADA, ACC/AHA [5-6]
+3.7 Messages-clés pour le patient
+
+    « Le diabète abîme les artères en silence. » La maladie cardiovasculaire (infarctus, AVC) est la complication la plus fréquente et la plus grave du diabète. Elle se développe souvent sans symptôme pendant des années.
+
+    « Ce n'est pas seulement le sucre qui compte. » La tension artérielle, le cholestérol, le tabac et le poids sont aussi importants que la glycémie. Agir sur tous ces facteurs en même temps est beaucoup plus efficace que de n'en traiter qu'un seul — l'étude Steno-2 a montré que cette approche globale divise par deux le risque de complications.
+
+    « Avec un bon contrôle de tous les facteurs de risque, le risque cardiovasculaire peut devenir presque identique à celui d'une personne sans diabète. » Une grande étude suédoise a montré que les patients diabétiques ayant tous leurs paramètres dans les cibles n'avaient pratiquement plus d'excès de risque d'infarctus ou d'AVC.
+
+    « Arrêter de fumer est la mesure la plus efficace pour réduire le risque de décès. » Chez les personnes diabétiques, le tabac est le facteur le plus fortement lié à la mortalité — encore plus que le sucre ou la tension.
+
+    « Bouger 30 minutes par jour, 5 jours par semaine, c'est un vrai médicament. » L'activité physique régulière améliore le sucre, la tension, le cholestérol et le poids, et réduit le risque de maladies du cœur et des vaisseaux.
+
+References
+
+Ce rapport s'appuie sur un socle de preuves solide. Les cibles tensionnelles sont fondées sur les ADA Standards of Care 2026 et les recommandations ACC/AHA 2025, renforcées par les essais BPROAD et ESPRIT qui soutiennent désormais une cible de PAS < 120 mmHg chez les patients à haut risque. [3][7] Les cibles lipidiques proviennent des recommandations ACC/AHA 2026 sur la dyslipidémie et des ADA Standards 2026, qui introduisent pour la première fois des cibles numériques de LDL-C en prévention primaire. [7][11-12] L'étude Steno-2 (NEJM 2003, suivi 21 ans) et la cohorte de Rawshani et al. (NEJM 2018) constituent les deux piliers de la démonstration du bénéfice multifactoriel. [1][17-18] Les données de tendance temporelle de Sattar et al. (Circulation 2023) confirment l'amélioration des résultats CV au fil du temps, tout en soulignant le plateau de l'insuffisance cardiaque. [8]
+
+Concernant les recommandations HAS/SFD spécifiquement, celles-ci s'alignent largement sur les recommandations ESC/EASD pour la stratification du risque et les cibles thérapeutiques. [10] La stratification en trois niveaux de risque (modéré, élevé, très élevé) utilisée par l'ESC/EASD est celle reprise dans le contexte français.
