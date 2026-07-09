@@ -1,0 +1,364 @@
+.module {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* --- Onglets des 4 vues (état partagé, persistant entre elles) --- */
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  justify-content: center;
+}
+
+.tab {
+  padding: 10px 18px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--color-line);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: 600 15px 'Work Sans', sans-serif;
+  cursor: pointer;
+}
+
+.tabActive {
+  background: var(--color-text);
+  border-color: var(--color-text);
+  color: var(--color-bg);
+}
+
+.vueBody {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.vueEyebrow {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-soft);
+  text-align: center;
+}
+
+.vueHint {
+  margin: 0;
+  max-width: 60ch;
+  text-align: center;
+  font-size: 0.9em;
+  color: var(--color-text-soft);
+}
+
+/* --- Vue 1 : les feux --- */
+
+.feuxRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  justify-content: center;
+}
+
+.feuCard {
+  position: relative;
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-lg) var(--space-md);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  border: 2px solid var(--feu-fg, var(--color-line));
+  box-shadow: var(--shadow-1);
+}
+
+.feuNom {
+  margin: 0;
+  font-weight: 600;
+  text-align: center;
+}
+
+.feuState {
+  width: 100%;
+  padding: 10px 0;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--feu-fg);
+  background: var(--feu-soft);
+  color: var(--feu-fg);
+  font: 700 14px 'Work Sans', sans-serif;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  text-align: center;
+}
+
+.feuTooltip {
+  position: absolute;
+  bottom: -34px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* --- Vue 2 : l'artère --- */
+
+.chipsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  justify-content: center;
+}
+
+.chipFeu {
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--feu-fg);
+  background: var(--feu-soft);
+  color: var(--feu-fg);
+  font: 600 14px 'Work Sans', sans-serif;
+  cursor: pointer;
+}
+
+.arterePanel {
+  width: 100%;
+  max-width: 720px;
+  padding: var(--space-lg) var(--space-lg);
+}
+
+.artereEyebrow {
+  margin: 0 0 var(--space-md);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-soft);
+}
+
+.artereMessage {
+  margin: 0;
+  max-width: 62ch;
+  text-align: center;
+  font-size: 1.1em;
+}
+
+/* --- Vue 3 : l'anatomie --- */
+
+.anatomieRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xl);
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.silhouetteWrap {
+  flex: none;
+  width: 220px;
+}
+
+.plaquePin {
+  position: absolute;
+  transform: translate(-50%, 0);
+  width: 64px;
+  pointer-events: none;
+}
+
+.zonesCol {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  width: 100%;
+  max-width: 420px;
+}
+
+.zoneBtn {
+  cursor: pointer;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  border: 2px solid var(--color-line);
+  font: 600 16px 'Work Sans', sans-serif;
+  text-align: left;
+  color: var(--color-text);
+}
+
+.zoneBtnActive {
+  background: var(--color-confort-soft);
+  border-color: var(--color-confort);
+  color: var(--color-confort-strong);
+}
+
+.zoneDescPanel {
+  padding: var(--space-md) var(--space-lg);
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+}
+
+.zoneDescPanel p {
+  margin: 0;
+  line-height: 1.45;
+}
+
+/* --- Vue 4 : la fiche à l'écran --- */
+
+.ficheItemsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  justify-content: center;
+}
+
+.ficheItemCard {
+  cursor: pointer;
+  width: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-sm);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  border: 2px solid var(--feu-fg, var(--color-line));
+  opacity: 0.6;
+}
+
+.ficheItemCardOn {
+  opacity: 1;
+}
+
+.ficheItemNom {
+  font-size: 0.95em;
+  font-weight: 600;
+}
+
+.ficheCheckDot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--color-line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.ficheItemCardOn .ficheCheckDot {
+  background: var(--color-confort-strong);
+  border-color: var(--color-confort-strong);
+}
+
+.encadre {
+  max-width: 680px;
+  padding: var(--space-md) var(--space-lg);
+}
+
+.encadre p {
+  margin: 0;
+  text-align: center;
+  line-height: 1.5;
+  color: var(--color-text-soft);
+}
+
+.ficheButtonRow {
+  display: flex;
+  justify-content: center;
+}
+
+/* --- Caption de synthèse (bas de chaque vue) --- */
+
+.caption {
+  text-align: center;
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--color-line);
+}
+
+.captionText {
+  margin: var(--space-xs) 0 0;
+  font-size: 1.05em;
+  max-width: 76ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* --- Contenu de la fiche imprimable (FicheOverlay) --- */
+
+.ficheFeuxList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.ficheFeuxItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 6px 0;
+}
+
+.ficheFeuxPastille {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--feu-fg);
+}
+
+.ficheFeuxNom {
+  flex: 1;
+  font-weight: 600;
+}
+
+.ficheFeuxEtat {
+  font-weight: 700;
+  color: var(--feu-fg);
+}
+
+.ficheDList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.ficheDItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.ficheDItem input[type='checkbox'] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--color-confort-strong);
+}
+
+.ficheDItemActive {
+  opacity: 1;
+  background: var(--color-confort-soft);
+  border-color: var(--color-confort);
+}
+
+.ficheEncadreTexte {
+  margin: 0;
+  line-height: 1.5;
+  color: var(--color-text-soft);
+}
