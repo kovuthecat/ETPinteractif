@@ -21,9 +21,15 @@ export const THEMES: ThemeDef[] = [
     id: 'diabete',
     titre: 'Diabète',
     eyebrow: 'Programme ETP · Diabète',
-    description: 'Contenu en cours de cadrage.',
-    familles: [],
+    description:
+      "Comprendre le mécanisme, agir au quotidien sur l'alimentation et l'activité, se soigner : suivi, traitements et gestes de sécurité.",
+    exergue:
+      "Le diabète est une maladie des vaisseaux, pas seulement du sucre — agir sur tout ensemble protège.",
+    familles: [
+      { id: 'comprendre', label: 'Comprendre' },
+      { id: 'agir', label: 'Agir au quotidien' },
+      { id: 'soigner', label: 'Se soigner' },
+    ],
     modules: DIABETE_MODULES,
-    enConstruction: true,
   },
 ];
