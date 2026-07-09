@@ -53,13 +53,13 @@ const MARQUEUR_REPAS = [{ t: 0, type: 'repas' as const, label: 'Repas' }];
 
 /**
  * Seuils de classification du pic (défi 2, décision S5 : « la prédiction bas/moyen/haut
- * se compare au pic de la courbe, seuils sur le max, pas sur un score »). Calibrés en
- * échantillonnant `paramsFromAssiette`/`sampleRepas` sur l'ensemble du garde-manger
- * (`data.ts`) pour différencier les comparaisons intra-famille visées par le brief
- * (baguette vs pain complet, riz blanc vs basmati/complet…).
+ * se compare au pic de la courbe, seuils sur le max, pas sur un score »). Recalibrés S14
+ * §0.c.5 en ré-échantillonnant `paramsFromAssiette`/`sampleRepas` sur l'ensemble du
+ * garde-manger avec le modèle par composition réelle, pour différencier les comparaisons
+ * intra-famille visées par le brief (baguette vs pain complet, riz blanc vs basmati/complet…).
  */
-const PEAK_BAS_MAX = 55;
-const PEAK_HAUT_MIN = 78;
+const PEAK_BAS_MAX = 47;
+const PEAK_HAUT_MIN = 50;
 
 function classifyPeak(peak: number): Niveau {
   if (peak < PEAK_BAS_MAX) return 'bas';
@@ -68,7 +68,7 @@ function classifyPeak(peak: number): Niveau {
 }
 
 function toAliment(food: Food): AlimentRepas {
-  return { cg: food.cg, famille: food.famille };
+  return { cg: food.cg, fibres: food.fibres, proteines: food.proteines, lipides: food.lipides };
 }
 
 function buildCourbe(assiette: Assiette): { d: string; peak: number; mg: number } {
@@ -107,11 +107,7 @@ const D1_CAPTIONS = [
   'Trois ajouts : à féculent constant, le pic est nettement plus doux.',
 ];
 
-const D1_ADDITION_ANCHORS = [
-  { left: '8%', top: '4%' },
-  { left: '58%', top: '4%' },
-  { left: '33%', top: '60%' },
-];
+const D1_PLATE_MAX = 10;
 
 const D3_FIXED = ['riz-blanc', 'poulet', 'brocoli'];
 const D3_ORDINALS = ['1ère bouchée', '2e bouchée', '3e bouchée'];
@@ -190,36 +186,32 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
   const [gmFamily, setGmFamily] = useState(FAMILIES[0].id);
 
   // ── Défi 1 — Composition ──────────────────────────────────────────────
-  const [d1Base, setD1Base] = useState('riz-blanc');
-  const [d1Additions, setD1Additions] = useState<string[]>([]);
+  // Assiette libre (même patron que la synthèse ★, B1) : vide au montage, toutes les
+  // familles acceptées (fruits/laitiers compris), doublons autorisés, plafond ~10.
+  const [d1Plate, setD1Plate] = useState<{ uid: string; id: string }[]>([]);
 
-  function applyD1Food(id: string) {
-    const food = foodById(id);
-    if (!food) return;
-    if (food.famille === 'feculents') {
-      setD1Base(id);
-      return;
-    }
-    if (food.famille === 'fruits' || food.famille === 'laitiers') return;
-    setD1Additions((prev) => (prev.includes(id) || prev.length >= 3 ? prev : [...prev, id]));
+  function addD1Food(id: string) {
+    if (!foodById(id)) return;
+    setD1Plate((prev) =>
+      prev.length >= D1_PLATE_MAX ? prev : [...prev, { uid: `${id}-${prev.length}-${Math.random()}`, id }],
+    );
   }
   function handleD1Drop(e: DragEvent<HTMLElement>) {
-    applyD1Food(readDropId(e));
+    addD1Food(readDropId(e));
   }
-  function handleD1Remove(id: string) {
-    setD1Additions((prev) => prev.filter((x) => x !== id));
+  function handleD1Remove(uid: string) {
+    setD1Plate((prev) => prev.filter((c) => c.uid !== uid));
   }
   function handleD1Reset() {
-    setD1Base('riz-blanc');
-    setD1Additions([]);
+    setD1Plate([]);
   }
 
-  const d1BaseFood = foodById(d1Base) ?? foodById('riz-blanc')!;
-  const d1AdditionFoods = d1Additions.map((id) => foodById(id)).filter((f): f is Food => !!f);
-  const d1Assiette: Assiette = {
-    aliments: [toAliment(d1BaseFood), ...d1AdditionFoods.map(toAliment)],
-  };
-  const d1Courbe = buildCourbe(d1Assiette);
+  const d1Foods = d1Plate.map((c) => foodById(c.id)).filter((f): f is Food => !!f);
+  const d1Feculents = d1Foods.filter((f) => f.famille === 'feculents');
+  const d1FreinCount = d1Foods.filter(
+    (f) => f.famille === 'proteines' || f.famille === 'lipides' || f.famille === 'legumes',
+  ).length;
+  const d1Courbe = buildCourbe({ aliments: d1Foods.map(toAliment) });
 
   // ── Défi 2 — Qualité (devine → révèle) ────────────────────────────────
   const [d2Slots, setD2Slots] = useState<{ A: string; B: string }>({ A: 'baguette', B: 'pain-complet' });
@@ -262,17 +254,49 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
 
   // ── Défi 3 — Ordre ─────────────────────────────────────────────────────
   const [d3Order, setD3Order] = useState<string[]>(D3_FIXED);
+  const [d3Hint, setD3Hint] = useState<string | null>(null);
 
+  // Conflit de payload (B2) : le réordonnancement interne pose un index préfixé,
+  // le garde-manger pose un id d'aliment brut — on route dans handleD3Drop.
   function handleD3DragStart(index: number) {
     return (e: DragEvent<HTMLElement>) => {
-      e.dataTransfer.setData('text/plain', String(index));
+      e.dataTransfer.setData('text/plain', `d3-index:${index}`);
     };
   }
+
+  function d3ReplaceSlot(index: number, foodId: string) {
+    const food = foodById(foodId);
+    if (!food) return;
+    setD3Order((prev) => {
+      if (prev.includes(foodId)) {
+        setD3Hint('Cet aliment est déjà dans le trio.');
+        return prev;
+      }
+      const resteFeculent = prev.some((id, i) =>
+        i === index ? food.famille === 'feculents' : foodById(id)?.famille === 'feculents',
+      );
+      if (!resteFeculent) {
+        setD3Hint('Gardez au moins un féculent pour cet exercice.');
+        return prev;
+      }
+      setD3Hint(null);
+      const arr = [...prev];
+      arr[index] = foodId;
+      return arr;
+    });
+  }
+
   function handleD3Drop(index: number) {
     return (e: DragEvent<HTMLElement>) => {
-      e.preventDefault();
-      const from = Number.parseInt(e.dataTransfer.getData('text/plain'), 10);
+      const payload = readDropId(e);
+      const reorderMatch = /^d3-index:(\d+)$/.exec(payload);
+      if (!reorderMatch) {
+        d3ReplaceSlot(index, payload);
+        return;
+      }
+      const from = Number.parseInt(reorderMatch[1], 10);
       if (Number.isNaN(from) || from === index) return;
+      setD3Hint(null);
       setD3Order((prev) => {
         const arr = [...prev];
         const [item] = arr.splice(from, 1);
@@ -282,6 +306,7 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
     };
   }
   function handleD3Move(index: number, dir: -1 | 1) {
+    setD3Hint(null);
     setD3Order((prev) => {
       const target = index + dir;
       if (target < 0 || target >= prev.length) return prev;
@@ -290,15 +315,33 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
       return arr;
     });
   }
+  /** Fallback clic garde-manger (B2) : remplace le slot de même famille, sinon le dernier
+   *  slot non-féculent. */
+  function d3ActivateFromShelf(foodId: string) {
+    const food = foodById(foodId);
+    if (!food) return;
+    const sameFamilyIdx = d3Order.findIndex((id) => foodById(id)?.famille === food.famille);
+    if (sameFamilyIdx !== -1) {
+      d3ReplaceSlot(sameFamilyIdx, foodId);
+      return;
+    }
+    for (let i = d3Order.length - 1; i >= 0; i--) {
+      if (foodById(d3Order[i])?.famille !== 'feculents') {
+        d3ReplaceSlot(i, foodId);
+        return;
+      }
+    }
+  }
 
   const d3Foods = d3Order.map((id) => foodById(id)).filter((f): f is Food => !!f);
   const d3FeculentIdx = d3Foods.findIndex((f) => f.famille === 'feculents');
-  const d3OrdreDernier = d3FeculentIdx === d3Foods.length - 1;
+  const d3OrdreFrac = d3FeculentIdx >= 0 && d3Foods.length > 1 ? d3FeculentIdx / (d3Foods.length - 1) : 0;
+  const d3OrdreFracFantome = d3OrdreFrac >= 0.5 ? 0 : 1;
   const d3AlimentsBase = d3Foods.map(toAliment);
-  const d3CourbeActuel = buildCourbe({ aliments: d3AlimentsBase, ordreFeculentDernier: d3OrdreDernier });
-  const d3CourbeRef = buildCourbe({ aliments: d3AlimentsBase, ordreFeculentDernier: !d3OrdreDernier });
-  const d3ActuelLabel = d3OrdreDernier ? 'Féculent en dernier' : "Féculent pas en dernier";
-  const d3RefLabel = d3OrdreDernier ? 'Si féculent en premier' : 'Si féculent en dernier';
+  const d3CourbeActuel = buildCourbe({ aliments: d3AlimentsBase, ordreFeculent: d3OrdreFrac });
+  const d3CourbeRef = buildCourbe({ aliments: d3AlimentsBase, ordreFeculent: d3OrdreFracFantome });
+  const d3ActuelLabel = `Féculent en ${D3_ORDINALS[d3FeculentIdx] ?? D3_ORDINALS[0]}`;
+  const d3RefLabel = d3OrdreFrac >= 0.5 ? 'Si féculent en premier' : 'Si féculent en dernier';
 
   // ── Défi 4 — Proportion ───────────────────────────────────────────────
   const [d4Counts, setD4Counts] = useState<Record<D4Category, number>>({
@@ -327,11 +370,13 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
   const d4Diff = Math.abs(d4Pct.legumes - 0.5) + Math.abs(d4Pct.proteines - 0.25) + Math.abs(d4Pct.feculents - 0.25);
   const d4Achieved = d4Touched && d4Diff < D4_ACHIEVED_TOLERANCE && d4CountsTotal >= 3;
 
-  const d4Aliments = D4_CATEGORIES.filter((cat) => d4Counts[cat.id] > 0)
-    .map((cat) => foodById(cat.repFoodId))
-    .filter((f): f is Food => !!f)
-    .map(toAliment);
-  const d4Courbe = buildCourbe({ aliments: d4Aliments, proportions: d4Pct });
+  // B3 : portions réelles — chaque catégorie apporte son aliment représentatif répété
+  // `d4Counts[cat]` fois (plus de paramètre `proportions` : l'effet émerge de la composition).
+  const d4Aliments = D4_CATEGORIES.flatMap((cat) => {
+    const food = foodById(cat.repFoodId);
+    return food ? Array.from({ length: d4Counts[cat.id] }, () => toAliment(food)) : [];
+  });
+  const d4Courbe = buildCourbe({ aliments: d4Aliments });
 
   let d4Angle = -90;
   const d4PieSlices = D4_CATEGORIES.map((cat) => {
@@ -392,18 +437,19 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
 
   const synthCourbePrincipale = buildCourbe({
     aliments: synthFoods.map(toAliment),
-    ordreFeculentDernier: true,
+    ordreFeculent: 1,
   });
   const synthCourbeNaive = buildCourbe({
     aliments: synthFoods.filter((f) => f.famille !== 'legumes').map(toAliment),
-    ordreFeculentDernier: false,
+    ordreFeculent: 0,
   });
 
   // ── Caption (verbatim maquette, cf. « Écrans, gestes, textes = maquette ») ────
   function getCaption(): { eyebrow: string; text: string } {
     if (defi === 1) {
-      const n = Math.min(d1Additions.length, 3);
-      return { eyebrow: '① Composition — un ajout à la fois', text: D1_CAPTIONS[n] };
+      const text =
+        d1Foods.length === 0 ? 'Glissez un premier aliment depuis le garde-manger.' : D1_CAPTIONS[Math.min(d1FreinCount, 3)];
+      return { eyebrow: '① Composition — construisez votre assiette', text };
     }
     if (defi === 2) {
       return {
@@ -414,7 +460,7 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
     if (defi === 3) {
       return {
         eyebrow: '③ Ordre — même assiette, ordre différent',
-        text: 'Manger le féculent en dernier réduit le pic — mêmes aliments, ordre différent.',
+        text: d3Hint ?? 'Manger le féculent en dernier réduit le pic — mêmes aliments, ordre différent.',
       };
     }
     if (defi === 4) {
@@ -431,8 +477,9 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
   const caption = getCaption();
 
   function handleShelfActivate(id: string) {
-    if (defi === 1) applyD1Food(id);
+    if (defi === 1) addD1Food(id);
     else if (defi === 2) d2AssignFood(id);
+    else if (defi === 3) d3ActivateFromShelf(id);
     else if (defi === 5) addToPlate(id);
   }
 
@@ -443,7 +490,7 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
     setDefi(DEFI_ORDER[nextIndex]);
   }
 
-  const showShelf = defi === 1 || defi === 2 || defi === 5;
+  const showShelf = defi === 1 || defi === 2 || defi === 3 || defi === 5;
 
   return (
     <div className={styles.module}>
@@ -494,28 +541,33 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
             <>
               <div className={styles.d1Layout}>
                 <div className={styles.d1Plate} onDragOver={allowDrop} onDrop={handleD1Drop}>
-                  <div className={styles.d1Base}>
-                    <IllustrationSlot id={`aliment-${d1BaseFood.id}`} label={d1BaseFood.name} shape="circle" size={80} />
-                  </div>
-                  {d1AdditionFoods.map((food, i) => (
-                    <div key={food.id} className={styles.d1Chip} style={D1_ADDITION_ANCHORS[i]}>
+                  {d1Foods.length === 0 && (
+                    <p className={styles.d1Empty}>Glissez un premier aliment depuis le garde-manger.</p>
+                  )}
+                  {d1Plate.map((chip) => {
+                    const food = foodById(chip.id);
+                    if (!food) return null;
+                    return (
                       <button
+                        key={chip.uid}
                         type="button"
-                        className={styles.d1ChipBtn}
-                        onClick={() => handleD1Remove(food.id)}
+                        className={styles.d1Chip}
+                        onClick={() => handleD1Remove(chip.uid)}
                         aria-label={`Retirer ${food.name} de l'assiette`}
                       >
                         <IllustrationSlot id={`aliment-${food.id}`} label={food.name} shape="circle" size={56} />
                       </button>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
                 <div className={styles.side}>
-                  <p className={styles.sideLabel}>Féculent : {d1BaseFood.name}</p>
-                  <p className={styles.sideHint}>Glissez un autre féculent pour le remplacer (aperçu qualité).</p>
-                  <p className={styles.sideLabel}>Ajouts dans l'assiette ({d1Additions.length}/3)</p>
+                  <p className={styles.sideLabel}>
+                    Dans l'assiette : {d1Foods.length} aliment{d1Foods.length > 1 ? 's' : ''}, dont {d1Feculents.length}{' '}
+                    féculent{d1Feculents.length > 1 ? 's' : ''}
+                  </p>
                   <p className={styles.sideHint}>
-                    Glissez protéine, lipide ou légume sur l'assiette (ou activez-les dans le garde-manger).
+                    Glissez des aliments du garde-manger sur l'assiette (ou activez-les) — toutes les familles sont
+                    acceptées, plusieurs fois si besoin.
                   </p>
                   <button type="button" className={styles.linkReset} onClick={handleD1Reset}>
                     Recommencer
@@ -626,7 +678,10 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
 
           {defi === 3 && (
             <>
-              <p className={styles.sideHint}>Glissez pour changer l'ordre des bouchées (ou utilisez les flèches).</p>
+              <p className={styles.sideHint}>
+                Glissez pour changer l'ordre des bouchées (ou utilisez les flèches) — ou glissez un aliment du
+                garde-manger sur une bouchée pour la remplacer.
+              </p>
               <div className={styles.d3Row}>
                 {d3Foods.map((food, index) => (
                   <div

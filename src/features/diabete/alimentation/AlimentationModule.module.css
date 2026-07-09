@@ -219,27 +219,24 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
+  align-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 28px;
+  box-sizing: border-box;
 }
 
-.d1Base {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: var(--color-surface);
-  border: 3px solid var(--color-vigilance);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.d1Empty {
+  margin: 0;
+  font-size: 15px;
+  color: var(--color-text-soft);
+  text-align: center;
+  max-width: 200px;
 }
 
 .d1Chip {
-  position: absolute;
-}
-
-.d1ChipBtn {
-  width: 78px;
-  height: 78px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   background: var(--color-surface);
   border: 2px solid var(--color-confort);
@@ -356,7 +353,7 @@
 }
 
 .d3Slot {
-  width: 180px;
+  width: 150px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -376,8 +373,8 @@
 }
 
 .d3ImageWrap {
-  width: 140px;
-  height: 140px;
+  width: 96px;
+  height: 96px;
   border-radius: var(--radius-lg);
   background: var(--color-bg);
   border: 2px solid var(--color-line);
@@ -586,10 +583,13 @@
 /* --- Courbe (partagée entre tous les défis + synthèse) --- */
 
 .courbeCard {
+  max-width: 760px;
+  margin: 0 auto;
   padding: var(--space-md) var(--space-lg);
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
+  box-sizing: border-box;
 }
 
 .courbeEyebrow {
