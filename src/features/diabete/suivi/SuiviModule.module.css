@@ -1,0 +1,653 @@
+.module {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* ── Onglets ①/② ─────────────────────────────────────────────────────────── */
+
+.tabs {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 9px 20px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text-soft);
+  font-size: 13px;
+  font-weight: 800;
+  box-shadow: var(--shadow-1);
+  cursor: pointer;
+}
+
+.tab:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
+}
+
+.tabActive {
+  background: var(--color-nav);
+  color: #fff;
+  box-shadow: none;
+}
+
+/* ── Mise en page parcours : cadran + panneau ───────────────────────────── */
+
+.parcours {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+  align-items: center;
+}
+
+@media (min-width: 860px) {
+  .parcours {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+  }
+}
+
+/* ── Le cadran (SVG + stations HTML positionnées en %, cf. Silhouette.tsx) ── */
+
+.dialWrap {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  flex-shrink: 0;
+}
+
+.dialSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.dialRing {
+  fill: var(--color-surface);
+  stroke: var(--color-line);
+  stroke-width: 2;
+}
+
+.dialDot {
+  fill: var(--color-line);
+}
+
+.dialMonthLabel {
+  font: 700 14px 'Work Sans', sans-serif;
+  letter-spacing: 0.05em;
+  fill: var(--color-text-soft);
+}
+
+.dialNeedle {
+  stroke: var(--color-text);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.dialNeedleTip {
+  fill: var(--color-text);
+}
+
+.dialCenterHalo {
+  fill: none;
+  stroke: var(--color-confort);
+  stroke-width: 3;
+  opacity: 0.5;
+}
+
+.dialCenterCore {
+  fill: var(--color-text);
+}
+
+.dialCenterDot {
+  fill: var(--color-bg);
+}
+
+/* ── Stations (consultation / bio / examen) ─────────────────────────────── */
+
+.station {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  padding: 4px;
+  cursor: pointer;
+  border-radius: var(--radius-pill);
+  animation: stationPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.station:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
+}
+
+@keyframes stationPop {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.stationIcon {
+  display: block;
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-1);
+}
+
+.station[data-size='consult'] .stationIcon {
+  outline: 3px solid var(--color-line);
+  outline-offset: -3px;
+}
+
+.station[data-size='bio'] .stationIcon,
+.station[data-size='exam'] .stationIcon {
+  outline: 3px solid var(--color-line);
+  outline-offset: -3px;
+}
+
+.station[data-status='fait'] .stationIcon {
+  outline-color: var(--color-confort);
+}
+
+.station[data-status='a_programmer'] .stationIcon {
+  outline-color: var(--color-vigilance);
+}
+
+.station[data-status='a_venir'] .stationIcon {
+  outline-color: var(--color-line);
+}
+
+.station[data-status='longcycle'] .stationIcon {
+  outline-color: var(--color-text-faint);
+  opacity: 0.75;
+}
+
+.stationBadge {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 3px solid var(--color-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  background: var(--color-line);
+  box-shadow: var(--shadow-1);
+  pointer-events: none;
+}
+
+.station[data-status='fait'] .stationBadge {
+  background: var(--color-confort);
+}
+
+.station[data-status='a_programmer'] .stationBadge {
+  background: var(--color-vigilance);
+}
+
+.station[data-status='a_venir'] .stationBadge {
+  background: var(--color-line);
+}
+
+.station[data-status='longcycle'] .stationBadge {
+  background: var(--color-text-faint);
+}
+
+.stationTooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  z-index: 2;
+}
+
+.station:hover .stationTooltip,
+.station:focus-visible .stationTooltip {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .station {
+    animation: none;
+  }
+}
+
+/* ── Panneau de réglage ──────────────────────────────────────────────────── */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  width: 100%;
+  max-width: 560px;
+  flex: 1;
+  min-width: 0;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.panelEyebrow {
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-soft);
+  font-weight: 700;
+}
+
+.resetLink {
+  border: none;
+  background: transparent;
+  color: var(--color-text-soft);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 6px 4px;
+}
+
+.consultRow,
+.examRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  padding: 10px 16px;
+}
+
+.examRow[data-revealed='false'] {
+  opacity: 0.72;
+}
+
+.rowIcon {
+  flex-shrink: 0;
+  display: block;
+}
+
+.rowLabel {
+  width: 140px;
+  flex-shrink: 0;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.examName {
+  width: 160px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.examNameLabel {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.examProtects {
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+  font-weight: 700;
+}
+
+.chipGroup {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.chip,
+.chipSmall {
+  cursor: pointer;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  white-space: nowrap;
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: 2px solid var(--color-line);
+}
+
+.chip {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.chipSmall {
+  padding: 5px 9px;
+  font-size: 11px;
+}
+
+.chip[aria-pressed='true'],
+.chipSmall[aria-pressed='true'] {
+  background: var(--color-nav);
+  color: #fff;
+  border-color: var(--color-nav);
+}
+
+.infoGlyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-line);
+  color: var(--color-text-soft);
+  font: 700 11px 'Work Sans', sans-serif;
+  font-style: italic;
+  cursor: help;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.stepper button {
+  border-radius: 50%;
+  background: var(--color-bg);
+  border: 2px solid var(--color-line);
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.stepper span {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-soft);
+  width: 42px;
+  text-align: center;
+}
+
+.examStatus {
+  flex: 1;
+  min-width: 90px;
+  text-align: right;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--color-text-soft);
+}
+
+.examStatus[data-status='fait'] {
+  color: var(--color-confort-strong);
+}
+
+.examStatus[data-status='a_programmer'] {
+  color: var(--color-vigilance);
+}
+
+.examStatus[data-status='longcycle'] {
+  color: var(--color-text-faint);
+}
+
+.doorButton {
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--color-text);
+  color: var(--color-bg);
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.revealToggle {
+  padding: 7px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  border: 2px solid var(--color-line);
+  background: var(--color-bg);
+  color: var(--color-text-soft);
+  cursor: pointer;
+}
+
+.revealToggle[aria-pressed='true'] {
+  background: var(--color-text);
+  color: var(--color-bg);
+  border-color: var(--color-text);
+}
+
+.examListLabel {
+  margin: 4px 0 0;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-soft);
+  font-weight: 700;
+}
+
+.examList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 480px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+/* ── Légende basse ───────────────────────────────────────────────────────── */
+
+.caption {
+  text-align: center;
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--color-text-soft);
+  max-width: 64ch;
+  margin: 0 auto;
+}
+
+/* ── Porte « Ce que ça garde » ───────────────────────────────────────────── */
+
+.doorOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(38, 34, 27, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+  z-index: 50;
+}
+
+.doorSheet {
+  width: min(680px, 100%);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  position: relative;
+  display: flex;
+  gap: var(--space-lg);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.doorClose {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--color-bg);
+  border: 2px solid var(--color-line);
+  color: var(--color-text-soft);
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.doorVisual {
+  flex: none;
+  width: 160px;
+}
+
+.doorText {
+  flex: 1;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.doorEyebrow {
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-soft);
+  font-weight: 700;
+}
+
+.doorText p {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+/* ── Fiche — check-list calendrier ───────────────────────────────────────── */
+
+.ficheList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ficheRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  background: var(--color-bg);
+  flex-wrap: wrap;
+}
+
+.ficheMonth {
+  width: 56px;
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-text-soft);
+}
+
+.ficheDot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--color-line);
+  border: 2px solid var(--color-line);
+}
+
+.ficheDot[data-status='fait'] {
+  background: var(--color-confort);
+  border-color: var(--color-confort);
+}
+
+.ficheDot[data-status='a_programmer'] {
+  background: var(--color-vigilance);
+  border-color: var(--color-vigilance);
+}
+
+.ficheDot[data-status='grise'] {
+  background: var(--color-text-faint);
+  border-color: var(--color-text-faint);
+}
+
+.ficheName {
+  flex: 1;
+  min-width: 160px;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.ficheStatus {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-soft);
+  white-space: nowrap;
+}
+
+.ficheStatus[data-status='fait'] {
+  color: var(--color-confort-strong);
+}
+
+.ficheStatus[data-status='a_programmer'] {
+  color: var(--color-vigilance);
+}
+
+.ficheDate {
+  width: 170px;
+  flex-shrink: 0;
+  font-size: 13px;
+  color: var(--color-text-faint);
+  border-bottom: 1.5px solid var(--color-line);
+  padding-bottom: 4px;
+}
+
+.ficheLegend {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+@media (max-width: 600px) {
+  .ficheDate {
+    width: 100%;
+    order: 5;
+  }
+}
