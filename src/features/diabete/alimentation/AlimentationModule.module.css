@@ -1,0 +1,673 @@
+.module {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* --- Barre de défis --- */
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.tab {
+  min-height: var(--target-min);
+  padding: 10px 20px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--color-line);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: 600 15px 'Work Sans', sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.tabActive {
+  background: var(--color-text);
+  color: var(--color-bg);
+  border-color: var(--color-text);
+}
+
+/* --- Layout garde-manger + scène --- */
+
+.layout {
+  display: flex;
+  gap: var(--space-lg);
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.shelf {
+  width: 320px;
+  flex: 1 1 320px;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.shelfTitle {
+  margin: 0;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-soft);
+  font-weight: 600;
+}
+
+.familyTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.familyTab {
+  min-height: 36px;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--color-line);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font: 600 14px 'Work Sans', sans-serif;
+  cursor: pointer;
+}
+
+.familyTabActive {
+  background: var(--color-text);
+  color: var(--color-bg);
+  border-color: var(--color-text);
+}
+
+.shelfGrid {
+  flex: 1;
+  min-height: 260px;
+  max-height: 420px;
+  overflow-y: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: var(--space-sm);
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+}
+
+.foodVignette {
+  width: 92px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: grab;
+  position: relative;
+  padding: 4px;
+  border-radius: var(--radius);
+  border: none;
+  background: transparent;
+}
+
+.foodVignette:hover,
+.foodVignette:focus-visible {
+  background: var(--color-bg);
+  outline: 2px solid var(--color-nav);
+  outline-offset: 2px;
+}
+
+.foodImageWrap {
+  position: relative;
+}
+
+.cgDot {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 2px solid var(--color-surface);
+}
+
+.foodName {
+  font-size: 13px;
+  text-align: center;
+  line-height: 1.25;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.foodTooltip {
+  opacity: 0;
+  position: absolute;
+  top: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.foodVignette:hover .foodTooltip,
+.foodVignette:focus-visible .foodTooltip {
+  opacity: 1;
+}
+
+/* --- Scène (contenu du défi actif) --- */
+
+.stage {
+  flex: 2 1 480px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sideLabel {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-soft);
+}
+
+.sideHint {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-text-soft);
+}
+
+.linkReset {
+  align-self: flex-start;
+  min-height: var(--target-min);
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 14px;
+  color: var(--color-text-soft);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* --- Défi 1 : composition --- */
+
+.d1Layout {
+  display: flex;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.d1Plate {
+  width: 300px;
+  height: 300px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 3px dashed var(--color-line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.d1Base {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 3px solid var(--color-vigilance);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.d1Chip {
+  position: absolute;
+}
+
+.d1ChipBtn {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 2px solid var(--color-confort);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* --- Défi 2 : qualité --- */
+
+.d2Layout {
+  display: flex;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.d2Card {
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  background: var(--color-surface);
+  border: 2px dashed var(--color-line);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+}
+
+.d2ImageWrap {
+  width: 140px;
+  height: 140px;
+  border-radius: var(--radius-lg);
+  background: var(--color-bg);
+  border: 2px solid var(--color-line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.d2Name {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.d2Levels {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.levelBtn {
+  min-height: var(--target-min);
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  font: 600 14px 'Work Sans', sans-serif;
+  cursor: pointer;
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 2px solid var(--color-line);
+}
+
+.levelBtn:disabled {
+  cursor: default;
+}
+
+.levelGuessed {
+  background: var(--color-nav);
+  color: #fff;
+  border-color: var(--color-nav);
+}
+
+.levelCorrect {
+  background: var(--color-confort);
+  color: #fff;
+  border-color: var(--color-confort);
+}
+
+.levelWrongGuess {
+  background: var(--color-surface);
+  color: var(--color-nav);
+  border-color: var(--color-nav);
+}
+
+.resultOk {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-confort-strong);
+}
+
+.resultOff {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-vigilance);
+}
+
+.d2Actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-md);
+}
+
+/* --- Défi 3 : ordre --- */
+
+.d3Row {
+  display: flex;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.d3Slot {
+  width: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  cursor: grab;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+}
+
+.d3Ordinal {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-soft);
+}
+
+.d3ImageWrap {
+  width: 140px;
+  height: 140px;
+  border-radius: var(--radius-lg);
+  background: var(--color-bg);
+  border: 2px solid var(--color-line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.d3Name {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.d3Nudge {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.nudgeBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-line);
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nudgeBtn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* --- Défi 4 : proportion --- */
+
+.d4Layout {
+  display: flex;
+  gap: var(--space-xl);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.d4Pie {
+  width: 240px;
+  height: 240px;
+  flex-shrink: 0;
+}
+
+.d4Zones {
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.d4Zone {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  background: var(--color-surface);
+  border: 2px dashed var(--color-line);
+  border-radius: var(--radius-lg);
+  padding: 10px var(--space-md);
+}
+
+.d4Dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.d4Label {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.d4Pct {
+  font-size: 14px;
+  color: var(--color-text-soft);
+  width: 48px;
+  text-align: right;
+}
+
+.roundBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.achieved {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-confort-strong);
+}
+
+/* --- Synthèse ★ --- */
+
+.synthPlate {
+  min-height: 220px;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  border: 3px dashed var(--color-vigilance);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+}
+
+.synthEmpty {
+  font-size: 16px;
+  color: var(--color-text-soft);
+  text-align: center;
+  max-width: 340px;
+  margin: 0;
+}
+
+.synthChip {
+  width: 100px;
+  height: 100px;
+  border-radius: var(--radius-lg);
+  background: var(--color-bg);
+  border: 2px solid var(--color-confort);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.synthFooterRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+.principleRow {
+  display: flex;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.principleItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.principleMark,
+.principleMarkOk {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.principleMark {
+  background: var(--color-line);
+}
+
+.principleMarkOk {
+  background: var(--color-confort);
+}
+
+.principleLabel {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-soft);
+}
+
+.principleLabelOk {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.ficheButton {
+  align-self: flex-start;
+}
+
+/* --- Courbe (partagée entre tous les défis + synthèse) --- */
+
+.courbeCard {
+  padding: var(--space-md) var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.courbeEyebrow {
+  margin: 0;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-soft);
+  font-weight: 600;
+}
+
+.bougerBtn {
+  align-self: flex-start;
+}
+
+/* --- Bandeau de caption (bas d'écran) --- */
+
+.captionBlock {
+  text-align: center;
+}
+
+.captionEyebrow {
+  margin: 0 0 6px;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-soft);
+}
+
+.captionText {
+  margin: 0 auto;
+  max-width: 900px;
+  font-size: 20px;
+  line-height: 1.35;
+  font-weight: 500;
+}
+
+/* --- Fiche --- */
+
+.ficheList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ficheListItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+}
+
+.fichePrinciples {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 15px;
+}
+
+.fichePrincipleItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    flex-direction: column;
+  }
+
+  .shelf {
+    max-width: none;
+    width: 100%;
+  }
+}
