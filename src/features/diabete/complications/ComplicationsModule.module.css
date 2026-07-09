@@ -1,0 +1,309 @@
+.module {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.intro {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+}
+
+.layout {
+  display: flex;
+  gap: var(--space-xl);
+  align-items: flex-start;
+}
+
+.silhouetteCol {
+  flex: 0 0 auto;
+  width: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-sm);
+}
+
+.chipVerrouille {
+  --chip-bg: var(--color-line);
+  --chip-fg: var(--color-text-faint);
+  cursor: pointer;
+  border: none;
+}
+
+.panneau {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 420px;
+}
+
+.fade {
+  animation: complications-fade-in 0.35s ease;
+}
+
+@keyframes complications-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- État vide --- */
+
+.etatVide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  text-align: center;
+  padding: 0 var(--space-lg);
+}
+
+.videIcone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 84px;
+  height: 84px;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  border: 2px solid var(--color-line);
+  color: var(--color-nav);
+}
+
+.videTitre {
+  margin: 0;
+  max-width: 640px;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+.videSousTitre {
+  margin: 0;
+  font-size: 17px;
+  color: var(--color-text-faint);
+}
+
+/* --- État verrouillé (cœur / cerveau, « déjà vu — module 4 ») --- */
+
+.etatVerrouille {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  text-align: center;
+  padding: 0 var(--space-lg);
+}
+
+.verrouilleTexte {
+  margin: 0;
+  max-width: 620px;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+.verrouilleSousTexte {
+  margin: 0;
+  max-width: 560px;
+  font-size: 16px;
+  color: var(--color-text-faint);
+}
+
+/* --- Organe ouvert : structure en 3 temps --- */
+
+.organe {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  max-width: 760px;
+}
+
+.temps {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+}
+
+.tempsMenace p,
+.tempsGeste p {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.45;
+  color: var(--color-text);
+}
+
+.tempsGeste p {
+  font-weight: 600;
+}
+
+.pointMenace,
+.pointGeste {
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-pill);
+}
+
+.pointMenace {
+  background: var(--color-vigilance);
+}
+
+.pointGeste {
+  background: var(--color-text);
+}
+
+.tempsEvitable {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-1);
+}
+
+.tempsEvitable p {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.45;
+  color: var(--color-text);
+}
+
+/* --- Branche renforcée : le pied --- */
+
+.piedExtra {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  padding: var(--space-md) var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.pointsControle {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 16px;
+  color: var(--color-text);
+}
+
+.pointsControle li::before {
+  content: '— ';
+  color: var(--color-text-faint);
+}
+
+.ficheBouton {
+  margin-left: auto;
+}
+
+/* --- Légende de bas d'écran --- */
+
+.caption {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  text-align: center;
+  font-size: 18px;
+  line-height: 1.4;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+/* --- Fiche pied (FicheOverlay) --- */
+
+.ficheIntro {
+  margin: 0 0 var(--space-lg);
+  font-size: 17px;
+  color: var(--color-text-soft);
+}
+
+.ficheChecklist {
+  list-style: none;
+  margin: 0 0 var(--space-lg);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.ficheChecklistItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+  font-size: 17px;
+  color: var(--color-text);
+}
+
+.ficheChecklistMark {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--color-confort);
+}
+
+.ficheStat {
+  margin-bottom: var(--space-lg);
+  padding: var(--space-md) var(--space-lg);
+  background: var(--color-confort-soft);
+  border: 1.5px solid var(--color-confort);
+  border-radius: var(--radius-lg);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--color-confort-strong);
+}
+
+.fichePlaie p {
+  margin: 4px 0 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--color-text);
+}
+
+@media (max-width: 900px) {
+  .layout {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .piedExtra {
+    justify-content: center;
+  }
+
+  .ficheBouton {
+    margin-left: 0;
+  }
+}
