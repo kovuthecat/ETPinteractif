@@ -7,15 +7,15 @@
 **Statut des modules**
 | Module | Conception | Design | Code |
 |--------|:---:|:---:|:---:|
-| 1 · C'est quoi le diabète ? | ✅ spécifié | ⬜ | ⬜ |
-| 2 · Alimentation | ✅ spécifié | ⬜ | ⬜ |
-| 3 · Activité physique | ✅ spécifié | ⬜ | ⬜ |
-| 4 · Risque cardiovasculaire | ✅ spécifié | ⬜ | ⬜ |
-| 5 · Complications | ✅ spécifié | ⬜ | ⬜ |
-| 6 · Suivi | ✅ spécifié | ⬜ | ⬜ |
-| 7 · Traitements | ✅ spécifié | ⬜ | ⬜ |
-| 8 · Hypoglycémie | ✅ spécifié | ⬜ | ⬜ |
-| 9 · Insuline (adaptation) | ✅ spécifié | ⬜ | ⬜ |
+| 1 · C'est quoi le diabète ? | ✅ spécifié | ✅ maquette + câblée | ✅ |
+| 2 · Alimentation | ✅ spécifié | ✅ maquette + câblée | ✅ |
+| 3 · Activité physique | ✅ spécifié | ✅ maquette + câblée | ✅ |
+| 4 · Risque cardiovasculaire | ✅ spécifié | ✅ maquette + câblée | ✅ |
+| 5 · Complications | ✅ spécifié | ✅ maquette + câblée | ✅ |
+| 6 · Suivi | ✅ spécifié | ✅ maquette + câblée | ✅ |
+| 7 · Traitements | ✅ spécifié | ✅ maquette + câblée | ✅ |
+| 8 · Hypoglycémie | ✅ spécifié | ✅ maquette + câblée | ✅ |
+| 9 · Insuline (adaptation) | ✅ spécifié | ✅ maquette + câblée | ✅ |
 
 ---
 

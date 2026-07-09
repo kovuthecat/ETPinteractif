@@ -77,13 +77,27 @@ Index des tâches : backlog + actives. Historique des tâches faites : `git log`
 - [ ] T-301 — Passe de validation visuelle/UX par Thibault (`npm run dev`, cf. `VALIDATION.md`) · humain
 
 ### Backlog — thème diabète
-- [~] D0 — Cadrage du contenu du thème diabète avec Thibault (modules retenus, structure interactive,
-  décisions transverses, sources) · humain + Sonnet, sur le modèle des décisions 2026-06-28 pour le tabac ·
-  consigné dans `docs/diabete/` (00-global.md + un fichier par module) puis `DECISIONS.md`.
-  4/8 modules spécifiés en détail (1 · C'est quoi le diabète, 2 · Alimentation, 3 · Activité physique,
-  4 · Risque cardiovasculaire) ; modules 5-8 juste cadrés (`docs/diabete/modules-5-8-cadrage.md`).
-  - **Reste à faire** : finaliser modules 5-8, puis transmettre `docs/diabete/` à Claude Design pour
-    maquette avant tout câblage.
+- [x] D0 — Cadrage du contenu du thème diabète avec Thibault · humain + Sonnet · **clos le 2026-07-09** :
+  SPEC consolidée (`docs/diabete/SPEC_outil_ETP_diabete.md`, 9 modules) + brief design
+  (`docs/diabete/BRIEF_DESIGN_diabete.md`) + **maquette Claude Design reçue** (handoff
+  `maquettes/Maquette handsoff diabete/extracted/`, 9 pages `.dc.html`). Suite → plan theme-diabete.
+
+### Thème diabète — câblage (2026-07-09, maquette Claude Design) · plan: → plans/theme-diabete/ (index + S1-S13)
+- [x] D1 — Socle thème : registre 9 modules + familles + stubs + `IllustrationSlot` · modèle: Sonnet, effort: medium · plan: → plans/theme-diabete/S1.md (auto OK : tsc+vite build verts)
+- [x] D2 — Lib courbe de glycémie (`glycemieCurve.ts` + tests) — modèle physiologique (note Thibault : courbes réalistes M2/M3/M9) · modèle: Sonnet, effort: high · plan: → plans/theme-diabete/S2.md (auto OK : npm test 50 verts ; tsc+vite build verts)
+- [x] D3 — Objets transversaux SVG : Silhouette, CourbeGlycemie, PlaqueArtere, SignatureEvitable · modèle: Sonnet, effort: high · plan: → plans/theme-diabete/S3.md (auto OK : tsc+vite build verts)
+- [x] D4 — Module 1 « C'est quoi le diabète » (clé/serrure, 4 temps) · modèle: Sonnet, effort: medium · plan: → plans/theme-diabete/S4.md (auto OK : tsc+vite build verts)
+- [x] D5 — Module 2 « Alimentation » (4 défis + synthèse, courbe physiologique, fiche assiette) · modèle: Sonnet, effort: high · plan: → plans/theme-diabete/S5.md (auto OK : npm test 50 verts ; tsc+vite build verts)
+- [x] D6 — Module 3 « Activité physique » (rayonnement, jauge ouverte, timing sur la courbe) · modèle: Sonnet, effort: high · plan: → plans/theme-diabete/S6.md (auto OK : npm test 50 verts ; tsc+vite build verts)
+- [x] D7 — Module 4 « Risque cardiovasculaire » (5 feux, artère réversible, anatomie, fiche) · modèle: Sonnet, effort: high · plan: → plans/theme-diabete/S7.md (auto OK : tsc+vite build verts)
+- [x] D8 — Module 5 « Complications » (silhouette, signature « évitable », fiche pied) · modèle: Sonnet, effort: medium · plan: → plans/theme-diabete/S8.md (auto OK : tsc+vite build verts)
+- [x] D9 — Module 6 « Suivi » (cadran de l'année + fiche calendrier frigo) · modèle: Sonnet, effort: high · plan: → plans/theme-diabete/S9.md (auto OK : tsc+vite build verts)
+- [x] D10 — Module 7 « Traitements » (ordonnance ↔ silhouette, double protection) · modèle: Sonnet, effort: medium · plan: → plans/theme-diabete/S10.md (auto OK : tsc+vite build verts)
+- [x] D11 — Module 8 « Hypoglycémie » (15/15, récupération/overshoot, carte-réflexe) · modèle: Sonnet, effort: medium · plan: → plans/theme-diabete/S11.md (auto OK : npm test 50 verts ; tsc+vite build verts)
+- [x] D12 — Module 9 « Insuline » (traces capteur générées, TIR vivant, 3 situations) · modèle: Sonnet, effort: high · plan: → plans/theme-diabete/S12.md (auto OK : npm test 50 verts ; tsc+vite build verts)
+- [x] D13 — Consolidation : contexte + commits par tâche + audit Codex + push · modèle: Haiku (+Codex), effort: low · plan: → plans/theme-diabete/S13.md (auto OK : tsc+vite build+npm test verts ; 13 commits atomiques D1-D13 réalisés)
+  - Vagues : V1 = S1·S2·S3 (parallèles, zones disjointes) → V2 = S4-S12 (9 agents parallèles, un module chacun) → V3 = S13 (solo).
+  - ⚠️ Points ouverts Thibault (n'empêchent pas d'exécuter) : familles d'accueil, illustrations à générer (`design/illustrations/prompts-illustrations-diabete.html` → `public/illustrations/diabete/`), fréquences module 6 + seuils module 4 à revalider.
 
 ### Extensions tabac (2026-07-09, analyse Fable vs brief diabète) · plan: → plans/extensions-tabac/ · autorité: docs/BRIEF_TABAC.md
 - [x] X1 — Socle fiches : `FicheOverlay` générique + CSS impression A4 · modèle: Sonnet, effort: high · plan: → plans/extensions-tabac/X1.md (auto OK : tsc --noEmit + vite build verts ; visuel → VALIDATION.md §X1)

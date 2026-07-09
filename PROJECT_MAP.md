@@ -50,7 +50,24 @@ src/
       lib/
         nicotineCurve.ts + .test.ts  # logique pure tabac : sampleCurve/toSvgPath/sampleStress, partagée Modules 2 & 5
     diabete/
-      registry.ts             # MODULES: [] — scaffold vide, cadrage en cours avec Thibault
+      registry.ts             # MODULES: ModuleDef[] — 9 modules diabète, titres/résumés/icônes/hue/sources (S1)
+      components/
+        IllustrationSlot.tsx / .module.css   # composant placeholder pour illustrations (S1)
+        Silhouette.tsx / .module.css         # corps humain SVG avec zones nommées + états (S3)
+        CourbeGlycemie.tsx / .module.css     # rendu unique de courbe glycémie avec marqueurs (S3)
+        PlaqueArtere.tsx / .module.css       # motif plaque d'athérome, variantes artère/pastille (S3)
+        SignatureEvitable.tsx / .module.css  # badge « Évitable et dépistable » récurrent (S3)
+      lib/
+        glycemieCurve.ts / .test.ts  # logique pure diabète : paramsFromAssiette/sampleRepas/sampleActivite/sampleRecuperation/sampleJournee/tempsDansCible (S2, 50 tests)
+      mecanisme/MecanismeModule.tsx / .module.css  # Module 1 — C'est quoi le diabète (clé/serrure, 4 temps, S4)
+      alimentation/AlimentationModule.tsx / .module.css / data.ts  # Module 2 — Alimentation (garde-manger, 4 défis + synthèse, fiche, S5)
+      activite/ActiviteModule.tsx / .module.css / data.ts         # Module 3 — Activité physique (rayonnement, jauge, timing, S6)
+      risque-cardio/RisqueCardioModule.tsx / .module.css          # Module 4 — Risque cardiovasculaire (5 feux, artère, anatomie, fiche, S7)
+      complications/ComplicationsModule.tsx / .module.css / data.ts  # Module 5 — Complications (silhouette, « évitable », fiche pied, S8)
+      suivi/SuiviModule.tsx / .module.css / logic.ts              # Module 6 — Suivi (cadran année, fiche calendrier, S9)
+      traitements/TraitementsModule.tsx / .module.css / data.ts   # Module 7 — Traitements (ordonnance ↔ silhouette, S10)
+      hypoglycemie/HypoglycemieModule.tsx / .module.css           # Module 8 — Hypoglycémie (15/15, récupération/overshoot, carte, S11)
+      insuline/InsulineModule.tsx / .module.css / scenarios.ts    # Module 9 — Insuline (traces capteur, TIR vivant, S12)
 docs/
   architecture.md
   BRIEF_TABAC.md               # brief design & pédagogie tabac (Fable, 2026-07-09) — §2 fiches rétroactives des 7

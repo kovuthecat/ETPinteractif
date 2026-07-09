@@ -195,3 +195,112 @@
   que l'encart les affiche. Tant qu'elles manquent, l'app tourne mais sans afficher ses sources —
   c'est le seul point qui touche l'invariant « contenu sourcé ». *(C10)*
   → *Tu peux me les donner en vrac (une ligne par module) quand tu veux, je les câble.*
+
+---
+
+## Thème diabète (9 modules, S1-S12) — validation visuelle
+
+> À valider par Thibault (passe visuelle `npm run dev`).
+> Les checklists détaillées par module sont consignées dans `plans/theme-diabete/S<k>.md` (sections « Validation », « Humain »).
+> Cette section centralise l'état de validation visuelle.
+
+### Module 1 — Mécanisme (C'est quoi le diabète ?)
+
+**Statut** : [ ] à valider par Thibault
+
+Checklist (S4) :
+- [ ] Temps 1 : 5 cellules ouvertes (vert), clé posée, 2 jetons par cellule ; vaisseau avec 3 jetons dégressifs.
+- [ ] Temps 2 : cellule 0 ouverte, 4 autres fermées ; pancréas atténué ; vaisseau chargé de jetons.
+- [ ] Temps 3 : 5 cellules rouillées ; pancréas net ; **vaisseau strictement identique au temps 2**.
+- [ ] Temps 4 : mix cellules fermées/rouillées/ouvertes ; pancréas atténué ; bouton « Continuer vers Alimentation ».
+- [ ] Navigation correcte, 4 points de progression, aucun terme culpabilisant.
+
+### Module 2 — Alimentation (4 défis + synthèse, fiche)
+
+**Statut** : [ ] à valider par Thibault
+
+Checklist (S5) :
+- [ ] Ajouter protéines aplatit ET retarde visiblement le pic.
+- [ ] Féculent en dernier ≠ juste « plus petit » : le pic se décale.
+- [ ] Pastèque = pastille verte (CG) malgré l'idée reçue.
+- [ ] Fiche imprimable lisible ; aucun chiffre imposé hors survol.
+- [ ] Drag HTML5 natif + fallback clic fonctionnels sur toutes zones de dépôt.
+
+### Module 3 — Activité physique (rayonnement, jauge, timing)
+
+**Statut** : [ ] à valider par Thibault
+
+Checklist (S6) :
+- [ ] Temps ① : rayonnement (SVG nœuds/rayons) et clic « Sucre » passent au temps ②.
+- [ ] Temps ② : jauge ouverte (12 activités, minutes, total) sans plafond ; point « bon pour muscles ».
+- [ ] Temps ③ : Marche 15 min écrête le pic ; Marche 120 min intact, queue accélérée.
+- [ ] Fenêtre d'activité visible sur l'axe ; 6 micro-coupures distinctes de la marche.
+- [ ] Marqueurs `activite` lisibles sur l'axe de `CourbeGlycemie`.
+
+### Module 4 — Risque cardiovasculaire (5 feux, artère, anatomie, fiche)
+
+**Statut** : [ ] à valider par Thibault
+
+Checklist (S7) :
+- [ ] Rouge→Vert dégage l'artère aussi visiblement que Vert→Rouge l'encrasse.
+- [ ] Jamais de note/score affiché ; aucune couleur seule (libellé + couleur systématique).
+- [ ] Plaque de vue ② et celle posée silhouette = même motif.
+- [ ] Fiche imprimable OK (état 5 feux + leviers cochés).
+- [ ] Seuils affichés au survol (HbA1c, TA, LDL — à revalider Thibault).
+
+### Module 5 — Complications (silhouette exploratoire, « évitable », fiche pied)
+
+**Statut** : [ ] à valider par Thibault
+
+Checklist (S8) :
+- [ ] Yeux/reins/nerfs/pied cliquables (sélection unique) ; Cerveau/Cœur verrouillés (tooltip « Déjà vu »).
+- [ ] Chaque menace immédiatement suivie du badge « Évitable » (jamais menace seule).
+- [ ] Fiche pied imprimable : checklist 6 items, encadré « −2/3 amputations », bandeau « si plaie ».
+- [ ] Animation d'entrée douce sur panneau.
+
+### Module 6 — Suivi (cadran année + fiche calendrier)
+
+**Statut** : [ ] à valider par Thibault
+
+Checklist (S9) :
+- [ ] Cadran pré-peuplé au montage (consultations 3 mois, 7 examens à fréquences par défaut).
+- [ ] **Aucun rouge** (fait=vert, à programmer=ambre+horloge, à venir=beige, bisannuel+=grisé+badge).
+- [ ] Densité de repères = message (passer 3→6 mois retire visiblement des points).
+- [ ] Fiche A4 imprimable : check-list triée par mois, ✓/⏳, ligne « Date : __/__/____ ».
+- [ ] HbA1c se comporte comme examen « chaque consultation ».
+- [ ] Fréquences en constantes `// à revalider (Thibault — ADA/HAS-SFD)`.
+
+### Module 7 — Traitements (ordonnance ↔ silhouette)
+
+**Statut** : [ ] à valider par Thibault
+
+Checklist (S10) :
+- [ ] Sélectionner Dapagliflozine → Cœur + Reins + Sucre s'allument ensemble (halo + badge « plusieurs fronts »).
+- [ ] Sélectionner Metformine → seul Sucre s'allume.
+- [ ] Aucune alerte, aucun rouge sur silhouette (corps pur).
+- [ ] Champ molécule en Source Serif 4 italique (effet « manuscrit », pas Caveat).
+- [ ] Pastille « Quoi surveiller » navigue bien vers Hypoglycémie/Insuline.
+- [ ] Phrases cliniques 8 classes en constantes `// à revalider (Thibault)`.
+
+### Module 8 — Hypoglycémie (15/15, récupération/overshoot, carte-réflexe)
+
+**Statut** : [ ] à valider par Thibault
+
+Checklist (S11) :
+- [ ] Sans patience (toggle overshoot) : courbe fantôme dépasse clairement bande cible.
+- [ ] Avec patience : courbe principale se pose dans bande sans dépasser.
+- [ ] Carte-réflexe (temps ③, écran + fiche) lisible à ~1 m : gros caractères, boucle 15/15 signalétique.
+- [ ] Rappel chocolat/gras visuellement distinct.
+- [ ] Rien sur hypo sévère/entourage/glucagon nulle part.
+
+### Module 9 — Insuline (traces capteur, TIR vivant, 3 situations)
+
+**Statut** : [ ] à valider par Thibault
+
+Checklist (S12) :
+- [ ] Tendance vs bruit discriminables d'un coup d'œil.
+- [ ] Changer profil (jeune↔âgé) change le TIR à situation constante.
+- [ ] Aucun chiffre générique à l'écran (pas de mg/dL, pas de dose) — hoverLegend non activé.
+- [ ] Refrain de sécurité toujours visible (quel que soit l'onglet).
+- [ ] « Plonge bas » mène à hypo d'abord.
+
