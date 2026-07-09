@@ -38,7 +38,7 @@ export const PROFILES: Record<ProfileId, ProfileDef> = {
   },
 };
 
-export type SituationId = 'tendance' | 'bruit' | 'rapide' | 'bas';
+export type SituationId = 'tendance' | 'descend' | 'rapide' | 'bas';
 export type ActionTon = 'vigilance' | 'neutre' | 'toxique';
 
 export interface SituationDef {
@@ -50,23 +50,30 @@ export interface SituationDef {
   scenario: ScenarioTrace;
 }
 
-/** Les 3 lectures de la nuit (temps ③, carte ①) — SPEC §13.5, verbatim maquette. */
+/**
+ * Les 3 lectures de la nuit (temps ③, carte ①) — SPEC §13.5. Évolution S14 §B7 (demande
+ * Thibault 2026-07-09) : le chip « Une seule nuit isolée » disparaît (rendait la nuit
+ * déviante comme trace principale, lisible comme « la courbe plonge » plutôt que comme du
+ * bruit) — son enseignement (plusieurs nuits d'affilée = tendance, une seule nuit qui dévie
+ * = du bruit) est reporté dans la desc du chip `tendance`. Le chip `descend` couvre le cas
+ * d'école du cran de moins sur la lente (descente nocturne → hypo au petit matin).
+ */
 export const SUB_SITUATIONS: SituationDef[] = [
   {
     id: 'tendance',
     label: 'Plusieurs nuits qui montent',
-    desc: "Le taux grimpe pendant la nuit, loin de tout repas — et ça se répète, nuit après nuit : une vraie dérive de la lente.",
+    desc: "Le taux grimpe pendant la nuit, loin de tout repas — et ça se répète, nuit après nuit, plusieurs nuits d'affilée : une vraie dérive de la lente. Une seule nuit qui dévie, c'est du bruit : on ne bouge pas.",
     action: 'Un cran de plus sur la lente — puis on attend ~3 jours sans retoucher.',
     ton: 'vigilance',
     scenario: 'derive_haute',
   },
   {
-    id: 'bruit',
-    label: 'Une seule nuit isolée',
-    desc: "Une seule nuit s'écarte des autres, qui restent normales — c'est le corollaire de la tendance : ici, du bruit, pas une tendance.",
-    action: 'On ne bouge pas.',
-    ton: 'neutre',
-    scenario: 'nuit_isolee',
+    id: 'descend',
+    label: 'Ça descend la nuit, bas au réveil',
+    desc: 'La trace glisse vers le bas au fil de la nuit et finit près du plancher au petit matin — plusieurs nuits d\'affilée : la lente est trop forte.',
+    action: 'Un cran de moins sur la lente — puis on attend ~3 jours sans retoucher.',
+    ton: 'vigilance',
+    scenario: 'descend_hypo_matinale',
   },
   {
     id: 'rapide',
@@ -90,7 +97,7 @@ export const BAS: SituationDef = {
 
 export const SITUATIONS: Record<SituationId, SituationDef> = {
   tendance: SUB_SITUATIONS[0],
-  bruit: SUB_SITUATIONS[1],
+  descend: SUB_SITUATIONS[1],
   rapide: SUB_SITUATIONS[2],
   bas: BAS,
 };
@@ -102,7 +109,7 @@ const N_NUITS = 3;
 const SEED_BY_SCENARIO: Record<ScenarioTrace, number> = {
   stable: 101,
   derive_haute: 202,
-  nuit_isolee: 303,
+  descend_hypo_matinale: 303,
   haut_stable_apres_repas: 404,
   plonge_bas: 505,
 };
