@@ -19,7 +19,7 @@
  * API gelée (plan `theme-diabete/S2.md`) pour les modules consommateurs
  * (S5 = alimentation, S6 = activité, S11 = hypoglycémie, S12 = insuline) :
  * - constantes : LEVEL_MAX, BASELINE, BANDE_CIBLE_DEFAUT
- * - types : Point, Famille, AlimentRepas, Assiette, RepasParams, ActiviteParams,
+ * - types : Point, AlimentRepas, Assiette, RepasParams, ActiviteParams,
  *   ScenarioTrace
  * - paramsFromAssiette(assiette) : RepasParams
  * - sampleRepas(params, opts?) : Point[] — courbe post-repas 0→180 min
@@ -30,6 +30,14 @@
  * - tempsDansCible(traces, bande) : { bas, cible, haut } (pourcentages, somme 100)
  * - toSvgPath(points, viewBox) : chemin SVG
  * - mgFromLevel(v) : conversion indicative (hover uniquement)
+ *
+ * Évolution 2026-07-09 (S14, demande Thibault) : `paramsFromAssiette` dérive désormais
+ * la courbe de la **composition réelle approximative** du repas (charge glycémique,
+ * fibres, protéines, lipides) plutôt que d'heuristiques de familles + proximité à une
+ * assiette-modèle — `Famille` et les proportions sortent de la lib (ne vivent plus que
+ * côté modules). L'ordre du féculent devient gradué (`ordreFeculent` 0→1, l'ancien booléen
+ * `ordreFeculentDernier` disparaît). Le scénario nocturne `nuit_isolee` est remplacé par
+ * `descend_hypo_matinale`, et le raccord nuit→jour de `sampleJournee` est continu.
  */
 
 export const LEVEL_MAX = 100;
@@ -46,14 +54,12 @@ export type Point = { t: number; v: number };
 // Repas (modules 2 / 3)
 // ---------------------------------------------------------------------------
 
-export type Famille = 'feculents' | 'proteines' | 'lipides' | 'legumes' | 'fruits' | 'laitiers';
-
-export type AlimentRepas = { cg: number; famille: Famille };
+export type AlimentRepas = { cg: number; fibres: number; proteines: number; lipides: number };
 
 export type Assiette = {
   aliments: AlimentRepas[];
-  ordreFeculentDernier?: boolean;
-  proportions?: { legumes: number; proteines: number; feculents: number };
+  /** Position du féculent dans le repas, 0 = mangé en premier … 1 = mangé en dernier. */
+  ordreFeculent?: number;
 };
 
 export type RepasParams = { charge: number; frein: number; retard: number };
@@ -66,54 +72,46 @@ function clampRange(x: number, lo: number, hi: number): number {
   return Math.min(hi, Math.max(lo, x));
 }
 
-/** Familles qui freinent l'absorption (protéines/lipides/légumes-fibres, brief §6.4/6.5). */
-const FAMILLES_FREIN: Famille[] = ['proteines', 'lipides', 'legumes'];
-
-/** Assiette-modèle de référence (SPEC §6.4 défi 4). */
-const PROPORTIONS_CIBLE = { legumes: 0.5, proteines: 0.25, feculents: 0.25 };
-
 /** Constante de saturation de la charge glycémique cumulée (jamais de cumul linéaire infini). */
 const K_CHARGE = 60;
-/** Constante de saturation du frein lié au nombre d'aliments-frein (rendements décroissants). */
-const K_FREIN_N = 1.4;
+/**
+ * Constantes de saturation du frein (aplatissement) et du retard (décalage du pic) liés à
+ * la composition réelle du repas (fibres/lipides/protéines, S14 §0.c.3) — calibrées pour que
+ * les assiettes types du module restent dans la dynamique visuelle du modèle (pic ~40-95).
+ */
+const K_FREIN = 6;
+const K_RETARD = 5;
 
 const ORDRE_FREIN_BONUS = 0.45;
 const ORDRE_RETARD_BONUS = 0.35;
-const PROPORTIONS_FREIN_BONUS_MAX = 0.2;
-const PROPORTIONS_RETARD_BONUS_MAX = 0.25;
 
-/** Agrège une assiette (défis composition/qualité/ordre/proportion) en paramètres de repas. */
+/**
+ * Agrège une assiette en paramètres de repas à partir de sa composition réelle approximative
+ * (S14 §0.c) : les fibres freinent fort l'absorption et retardent modérément le pic, les
+ * lipides ralentissent fort la vidange gastrique (retardent, allongent la descente) et
+ * aplatissent modérément, les protéines aplatissent modérément et retardent peu. L'ordre du
+ * féculent (0 = en premier … 1 = en dernier) ajoute un bonus gradué aux deux effets.
+ */
 export function paramsFromAssiette(assiette: Assiette): RepasParams {
   const aliments = assiette.aliments ?? [];
 
   const totalCg = aliments.reduce((sum, a) => sum + Math.max(0, a.cg), 0);
   const charge = clamp01(1 - Math.exp(-totalCg / K_CHARGE));
 
-  const nFrein = aliments.filter((a) => FAMILLES_FREIN.includes(a.famille)).length;
-  const freinRaw = clamp01(1 - Math.exp(-nFrein / K_FREIN_N));
+  const totalFibres = aliments.reduce((sum, a) => sum + Math.max(0, a.fibres), 0);
+  const totalLipides = aliments.reduce((sum, a) => sum + Math.max(0, a.lipides), 0);
+  const totalProteines = aliments.reduce((sum, a) => sum + Math.max(0, a.proteines), 0);
 
-  let ordreBonusFrein = 0;
-  let ordreBonusRetard = 0;
-  if (assiette.ordreFeculentDernier) {
-    ordreBonusFrein = ORDRE_FREIN_BONUS;
-    ordreBonusRetard = ORDRE_RETARD_BONUS;
-  }
+  const freinRaw = clamp01(
+    1 - Math.exp(-(1.0 * totalFibres + 0.25 * totalLipides + 0.15 * totalProteines) / K_FREIN),
+  );
+  const retardRaw = clamp01(
+    1 - Math.exp(-(0.5 * totalFibres + 1.0 * totalLipides + 0.15 * totalProteines) / K_RETARD),
+  );
 
-  let propBonusFrein = 0;
-  let propBonusRetard = 0;
-  if (assiette.proportions) {
-    const ecart =
-      Math.abs(assiette.proportions.legumes - PROPORTIONS_CIBLE.legumes) +
-      Math.abs(assiette.proportions.proteines - PROPORTIONS_CIBLE.proteines) +
-      Math.abs(assiette.proportions.feculents - PROPORTIONS_CIBLE.feculents);
-    // ecart = 0 (assiette-modèle exacte) -> proximite = 1 ; ecart >= 1 -> proximite = 0.
-    const proximite = clamp01(1 - ecart);
-    propBonusFrein = proximite * PROPORTIONS_FREIN_BONUS_MAX;
-    propBonusRetard = proximite * PROPORTIONS_RETARD_BONUS_MAX;
-  }
-
-  const frein = clamp01(freinRaw * 0.75 + ordreBonusFrein + propBonusFrein);
-  const retard = clamp01(freinRaw * 0.45 + ordreBonusRetard + propBonusRetard);
+  const ordreFrac = clamp01(assiette.ordreFeculent ?? 0);
+  const frein = clamp01(freinRaw + ORDRE_FREIN_BONUS * ordreFrac);
+  const retard = clamp01(retardRaw + ORDRE_RETARD_BONUS * ordreFrac);
 
   return { charge, frein, retard };
 }
@@ -130,6 +128,7 @@ function ease(f: number): number {
 }
 
 function peakAmplitude(params: RepasParams): number {
+  if (params.charge <= 0) return 0;
   const heightFactor = clamp01(params.charge) * (1 - 0.6 * clamp01(params.frein));
   return AMP_MAX * (AMP_FLOOR_FRACTION + (1 - AMP_FLOOR_FRACTION) * heightFactor);
 }
@@ -291,13 +290,16 @@ export function sampleRecuperation(opts: { resucrages: number[]; second?: boolea
 export type ScenarioTrace =
   | 'stable'
   | 'derive_haute'
-  | 'nuit_isolee'
+  | 'descend_hypo_matinale'
   | 'haut_stable_apres_repas'
   | 'plonge_bas';
 
 const NUIT_MINUTES = 480; // 8h de nuit
 const JOUR_MINUTES = 960; // 16h de jour
 const JOURNEE_MINUTES = NUIT_MINUTES + JOUR_MINUTES; // 24h, coucher -> coucher
+/** Durée du raccord nuit→jour (S14 §0.d.3) : la portion jour repart du niveau de fin de nuit
+ *  et revient vers BASELINE en douceur, plutôt qu'un saut brutal. */
+const RACCORD_MATIN_MINUTES = 90;
 
 /** Repas représentatif utilisé pour les 3 bosses de la trace 24h (mêmes formes qu'au module 2). */
 const REPAS_JOURNEE: RepasParams = { charge: 0.55, frein: 0.35, retard: 0.3 };
@@ -321,15 +323,24 @@ function nightBaseLevel(scenario: ScenarioTrace, x: number): number {
       return BASELINE - 22 * bumpNocturne(x);
     case 'haut_stable_apres_repas':
       return BASELINE + 30;
+    case 'descend_hypo_matinale':
+      // Descente progressive (ease) jusqu'à frôler le plancher hypo au petit matin.
+      return BASELINE - (BASELINE - (HYPO_FLOOR + 3)) * ease(x);
     default:
-      // 'stable' et 'nuit_isolee' (le tirage « une seule nuit qui dévie » est géré
-      // par sampleNuits, qui pioche une trace 'plonge_bas' pour la nuit isolée).
+      // 'stable'
       return BASELINE;
   }
 }
 
-function dayLevelAt(xMinutes: number): number {
-  let v = BASELINE;
+/**
+ * Niveau de la portion jour : repart du niveau de fin de nuit (`nightEndLevel`) et revient
+ * vers BASELINE en ~`RACCORD_MATIN_MINUTES` (décroissance ease de l'écart), les bosses repas
+ * s'ajoutant par-dessus (S14 §0.d.3 — corrige le saut brutal au passage nuit→jour).
+ */
+function dayLevelAt(xMinutes: number, nightEndLevel: number): number {
+  const ecart = nightEndLevel - BASELINE;
+  const raccord = xMinutes < RACCORD_MATIN_MINUTES ? ecart * (1 - ease(xMinutes / RACCORD_MATIN_MINUTES)) : 0;
+  let v = BASELINE + raccord;
   for (const offset of OFFSETS_REPAS_JOUR) {
     v += Math.max(0, repasLevelAt(REPAS_JOURNEE, xMinutes - offset) - BASELINE);
   }
@@ -378,33 +389,28 @@ export function sampleJournee(scenario: ScenarioTrace, seed: number): Point[] {
   const rng = mulberry32(seed);
   const anchors = buildNoiseAnchors(rng);
   const stepMinutes = 5;
+  const nightEndLevel = nightBaseLevel(scenario, 1) + noiseAt(anchors, NUIT_MINUTES);
   return sampleRange(0, JOURNEE_MINUTES, stepMinutes, (t) => {
     if (t <= NUIT_MINUTES) {
       const x = t / NUIT_MINUTES;
       return nightBaseLevel(scenario, x) + noiseAt(anchors, t);
     }
     const xJour = t - NUIT_MINUTES;
-    return dayLevelAt(xJour) + noiseAt(anchors, t) * 0.4;
+    return dayLevelAt(xJour, nightEndLevel) + noiseAt(anchors, t) * 0.4;
   });
 }
 
 /**
  * n traces pour superposition (profil type du Libre, SPEC §13.4). `derive_haute` :
- * pente nocturne positive répétée sur toutes les nuits. `nuit_isolee` : une seule
- * trace s'écarte (dip marqué), les autres normales. `plonge_bas` : plongées basses
- * répétées. `haut_stable_apres_repas` : départ haut dès le coucher sur toutes les nuits.
- * Même seed → mêmes traces (déterminisme).
+ * pente nocturne positive répétée sur toutes les nuits. `descend_hypo_matinale` :
+ * descente progressive répétée sur toutes les nuits, minimum en fin de nuit (proche du
+ * plancher hypo, S14 §0.d). `plonge_bas` : plongées basses répétées. `haut_stable_apres_repas` :
+ * départ haut dès le coucher sur toutes les nuits. Même seed → mêmes traces (déterminisme).
  */
 export function sampleNuits(scenario: ScenarioTrace, n: number, seed: number): Point[][] {
   const traces: Point[][] = [];
   for (let i = 0; i < n; i++) {
-    if (scenario === 'nuit_isolee') {
-      // Une seule nuit (la dernière du lot, choix déterministe) s'écarte nettement ;
-      // les autres restent des nuits normales.
-      traces.push(sampleJournee(i === n - 1 ? 'plonge_bas' : 'stable', seed + i));
-    } else {
-      traces.push(sampleJournee(scenario, seed + i));
-    }
+    traces.push(sampleJournee(scenario, seed + i));
   }
   return traces;
 }

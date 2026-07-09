@@ -13,8 +13,10 @@ import {
   toSvgPath,
   mgFromLevel,
   type Assiette,
+  type AlimentRepas,
   type RepasParams,
   type Point,
+  type ScenarioTrace,
 } from './glycemieCurve';
 
 function peakOf(points: Point[]): { v: number; t: number } {
@@ -29,152 +31,182 @@ function valueAt(points: Point[], t: number): number {
   return found.v;
 }
 
+// Aliments représentatifs (ordres de grandeur repris de `alimentation/data.ts`, S14 §0.c.1) —
+// dupliqués ici en littéraux pour garder la lib découplée des modules (elle ne connaît plus
+// les familles).
+const RIZ_BLANC: AlimentRepas = { cg: 28, fibres: 1, proteines: 4, lipides: 0.5 };
+const RIZ_BASMATI: AlimentRepas = { cg: 19, fibres: 1.5, proteines: 4, lipides: 0.5 };
+const RIZ_COMPLET: AlimentRepas = { cg: 16, fibres: 3, proteines: 4.5, lipides: 1.5 };
+const BAGUETTE: AlimentRepas = { cg: 22, fibres: 1.5, proteines: 4, lipides: 1 };
+const PAIN_COMPLET: AlimentRepas = { cg: 14, fibres: 3.5, proteines: 5, lipides: 1.5 };
+const BROCOLI: AlimentRepas = { cg: 1, fibres: 4, proteines: 3, lipides: 0 };
+const HUILE_OLIVE: AlimentRepas = { cg: 0, fibres: 0, proteines: 0, lipides: 10 };
+const POULET: AlimentRepas = { cg: 0, fibres: 0, proteines: 28, lipides: 4 };
+const LENTILLES: AlimentRepas = { cg: 6, fibres: 8, proteines: 12, lipides: 0.5 };
+const GALETTE_RIZ: AlimentRepas = { cg: 17, fibres: 0.5, proteines: 1, lipides: 0.5 };
+const PASTEQUE: AlimentRepas = { cg: 4, fibres: 0.5, proteines: 0.5, lipides: 0 };
+
 // ---------------------------------------------------------------------------
-// Invariant 1 — composition : chaque ajout baisse le pic, le retarde, adoucit la
-// descente, avec rendements décroissants.
+// Invariant 0.a — assiette vide -> courbe plate.
 // ---------------------------------------------------------------------------
 
-describe('paramsFromAssiette / sampleRepas — composition (invariant 1)', () => {
-  const feculentSeul: Assiette = { aliments: [{ cg: 80, famille: 'feculents' }] };
-  const plusProteine: Assiette = {
-    aliments: [
-      { cg: 80, famille: 'feculents' },
-      { cg: 0, famille: 'proteines' },
-    ],
-  };
-  const plusLegume: Assiette = {
-    aliments: [
-      { cg: 80, famille: 'feculents' },
-      { cg: 0, famille: 'proteines' },
-      { cg: 0, famille: 'legumes' },
-    ],
-  };
-  const plusLipide: Assiette = {
-    aliments: [
-      { cg: 80, famille: 'feculents' },
-      { cg: 0, famille: 'proteines' },
-      { cg: 0, famille: 'legumes' },
-      { cg: 0, famille: 'lipides' },
-    ],
-  };
+describe('0.a — assiette vide (charge nulle) -> courbe plate à la baseline', () => {
+  it('paramsFromAssiette({aliments: []}) -> sampleRepas reste exactement à BASELINE partout', () => {
+    const params = paramsFromAssiette({ aliments: [] });
+    expect(params.charge).toBe(0);
+    for (const p of sampleRepas(params)) expect(p.v).toBe(BASELINE);
+  });
+});
 
-  const etapes = [feculentSeul, plusProteine, plusLegume, plusLipide].map((assiette) => {
+// ---------------------------------------------------------------------------
+// Invariant 0.b — ordre gradué du féculent.
+// ---------------------------------------------------------------------------
+
+describe('0.b — ordreFeculent gradué', () => {
+  const aliments: AlimentRepas[] = [RIZ_BLANC];
+
+  it('pic(féculent en premier) > pic(au milieu) > pic(en dernier), à assiette égale', () => {
+    const peakPremier = peakOf(sampleRepas(paramsFromAssiette({ aliments, ordreFeculent: 0 }))).v;
+    const peakMilieu = peakOf(sampleRepas(paramsFromAssiette({ aliments, ordreFeculent: 0.5 }))).v;
+    const peakDernier = peakOf(sampleRepas(paramsFromAssiette({ aliments, ordreFeculent: 1 }))).v;
+    expect(peakPremier).toBeGreaterThan(peakMilieu);
+    expect(peakMilieu).toBeGreaterThan(peakDernier);
+  });
+
+  it('ordreFeculent absent équivaut à 0 (féculent en premier, comportement par défaut)', () => {
+    const sansOrdre = paramsFromAssiette({ aliments });
+    const avecZero = paramsFromAssiette({ aliments, ordreFeculent: 0 });
+    expect(sansOrdre).toEqual(avecZero);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Invariant 0.c.4 — composition réelle (charge/fibres/protéines/lipides).
+// ---------------------------------------------------------------------------
+
+describe('composition : chaque ajout baisse le pic, le retarde, adoucit la descente', () => {
+  const feculentSeul: Assiette = { aliments: [RIZ_BLANC] };
+  const plusFibre: Assiette = { aliments: [...feculentSeul.aliments, BROCOLI] };
+  const plusProteine: Assiette = { aliments: [...plusFibre.aliments, POULET] };
+  const plusLipide: Assiette = { aliments: [...plusProteine.aliments, HUILE_OLIVE] };
+
+  const etapes = [feculentSeul, plusFibre, plusProteine, plusLipide].map((assiette) => {
     const params = paramsFromAssiette(assiette);
     const curve = sampleRepas(params);
     return { params, peak: peakOf(curve) };
   });
 
-  it('féculent seul : pic haut et précoce, jamais plat, jamais sous la baseline', () => {
+  it('féculent seul : pic net et relativement précoce, jamais plat, jamais sous la baseline', () => {
     const [seul] = etapes;
-    expect(seul.peak.v).toBeGreaterThan(BASELINE + 30);
-    expect(seul.peak.t).toBeLessThanOrEqual(45);
+    expect(seul.peak.v).toBeGreaterThan(BASELINE + 15);
+    expect(seul.peak.t).toBeLessThanOrEqual(55);
     for (const p of sampleRepas(seul.params)) expect(p.v).toBeGreaterThanOrEqual(BASELINE - 1e-9);
   });
 
   it('chaque ajout baisse le pic (hauteur)', () => {
-    for (let i = 1; i < etapes.length; i++) {
-      expect(etapes[i].peak.v).toBeLessThan(etapes[i - 1].peak.v);
-    }
+    for (let i = 1; i < etapes.length; i++) expect(etapes[i].peak.v).toBeLessThan(etapes[i - 1].peak.v);
   });
 
   it('chaque ajout retarde le pic (moment)', () => {
-    for (let i = 1; i < etapes.length; i++) {
-      expect(etapes[i].peak.t).toBeGreaterThan(etapes[i - 1].peak.t);
-    }
+    for (let i = 1; i < etapes.length; i++) expect(etapes[i].peak.t).toBeGreaterThan(etapes[i - 1].peak.t);
   });
 
-  it('chaque ajout adoucit la descente (frein croissant -> retour baseline plus tardif)', () => {
-    for (let i = 1; i < etapes.length; i++) {
-      expect(etapes[i].params.frein).toBeGreaterThan(etapes[i - 1].params.frein);
-    }
+  it('chaque ajout augmente le frein (descente plus tardive)', () => {
+    for (let i = 1; i < etapes.length; i++) expect(etapes[i].params.frein).toBeGreaterThan(etapes[i - 1].params.frein);
   });
 
-  it('rendements décroissants : effet du 3e ajout (sur le pic) < effet du 1er ajout', () => {
-    const deltaPremier = etapes[0].peak.v - etapes[1].peak.v;
-    const deltaTroisieme = etapes[2].peak.v - etapes[3].peak.v;
-    expect(deltaTroisieme).toBeLessThan(deltaPremier);
-  });
-
-  it('la charge glycémique reste quasi constante (aliments ajoutés à CG nulle)', () => {
-    for (let i = 1; i < etapes.length; i++) {
-      expect(etapes[i].params.charge).toBeCloseTo(etapes[0].params.charge, 5);
-    }
+  it('la charge glycémique reste quasi constante (aliments ajoutés à CG quasi nulle)', () => {
+    for (let i = 1; i < etapes.length; i++) expect(etapes[i].params.charge).toBeCloseTo(etapes[0].params.charge, 1);
   });
 });
 
-// ---------------------------------------------------------------------------
-// Invariant 2 — monotonie CG à frein constant.
-// ---------------------------------------------------------------------------
+describe('invariant CG : baguette vs pain complet, riz blanc vs basmati vs complet', () => {
+  it('pain complet vs baguette : pic plus bas et plus tardif', () => {
+    const baguette = peakOf(sampleRepas(paramsFromAssiette({ aliments: [BAGUETTE] })));
+    const painComplet = peakOf(sampleRepas(paramsFromAssiette({ aliments: [PAIN_COMPLET] })));
+    expect(painComplet.v).toBeLessThan(baguette.v);
+    expect(painComplet.t).toBeGreaterThan(baguette.t);
+  });
 
-describe('invariant 2 — monotonie de la charge glycémique', () => {
-  function peakPourCg(cg: number): number {
-    const assiette: Assiette = { aliments: [{ cg, famille: 'feculents' }] };
-    return peakOf(sampleRepas(paramsFromAssiette(assiette))).v;
+  it('riz blanc > riz basmati > riz complet : chaque version plus complète a un pic plus bas et plus tardif', () => {
+    const blanc = peakOf(sampleRepas(paramsFromAssiette({ aliments: [RIZ_BLANC] })));
+    const basmati = peakOf(sampleRepas(paramsFromAssiette({ aliments: [RIZ_BASMATI] })));
+    const complet = peakOf(sampleRepas(paramsFromAssiette({ aliments: [RIZ_COMPLET] })));
+    expect(basmati.v).toBeLessThan(blanc.v);
+    expect(complet.v).toBeLessThan(basmati.v);
+    expect(basmati.t).toBeGreaterThan(blanc.t);
+    expect(complet.t).toBeGreaterThan(basmati.t);
+  });
+});
+
+describe('invariant fibres/lipides/protéines pris isolément (à partir du riz blanc)', () => {
+  const rizSeul = peakOf(sampleRepas(paramsFromAssiette({ aliments: [RIZ_BLANC] })));
+
+  it('riz blanc + brocoli (fibres) : pic plus bas que riz blanc seul', () => {
+    const avecBrocoli = peakOf(sampleRepas(paramsFromAssiette({ aliments: [RIZ_BLANC, BROCOLI] })));
+    expect(avecBrocoli.v).toBeLessThan(rizSeul.v);
+  });
+
+  it("riz blanc + huile d'olive (lipides) : pic plus bas et nettement plus tardif", () => {
+    const avecHuile = peakOf(sampleRepas(paramsFromAssiette({ aliments: [RIZ_BLANC, HUILE_OLIVE] })));
+    expect(avecHuile.v).toBeLessThan(rizSeul.v);
+    expect(avecHuile.t - rizSeul.t).toBeGreaterThan(15);
+  });
+
+  it('riz blanc + poulet (protéines) : pic plus bas', () => {
+    const avecPoulet = peakOf(sampleRepas(paramsFromAssiette({ aliments: [RIZ_BLANC, POULET] })));
+    expect(avecPoulet.v).toBeLessThan(rizSeul.v);
+  });
+});
+
+describe('invariant légumineuses / galette / pastèque (pièges pédagogiques du brief)', () => {
+  it('lentilles ≪ riz blanc (légumineuses : CG basse + fibres)', () => {
+    const lentilles = peakOf(sampleRepas(paramsFromAssiette({ aliments: [LENTILLES] }))).v;
+    const rizBlanc = peakOf(sampleRepas(paramsFromAssiette({ aliments: [RIZ_BLANC] }))).v;
+    expect(lentilles).toBeLessThan(BASELINE + 12);
+    expect(rizBlanc).toBeGreaterThan(BASELINE + 15);
+    expect(lentilles).toBeLessThan(rizBlanc);
+  });
+
+  it('galette de riz : pic haut et précoce malgré l\'image "légère" (fibres quasi nulles)', () => {
+    const galette = peakOf(sampleRepas(paramsFromAssiette({ aliments: [GALETTE_RIZ] })));
+    const painComplet = peakOf(sampleRepas(paramsFromAssiette({ aliments: [PAIN_COMPLET] })));
+    expect(galette.v).toBeGreaterThan(painComplet.v);
+    expect(galette.t).toBeLessThan(painComplet.t);
+  });
+
+  it('pastèque : petit pic (CG basse malgré l\'IG réputé haut)', () => {
+    const pasteque = peakOf(sampleRepas(paramsFromAssiette({ aliments: [PASTEQUE] }))).v;
+    const rizBlanc = peakOf(sampleRepas(paramsFromAssiette({ aliments: [RIZ_BLANC] }))).v;
+    expect(pasteque).toBeLessThan(BASELINE + 12);
+    expect(pasteque).toBeLessThan(rizBlanc);
+  });
+});
+
+describe('B3 émergent : remplacer une portion de féculent par une portion de protéine ne fait jamais monter le pic', () => {
+  function plate(nFeculent: number, nProteine: number): Assiette {
+    return {
+      aliments: [
+        ...Array.from({ length: nFeculent }, () => RIZ_BLANC),
+        ...Array.from({ length: nProteine }, () => POULET),
+      ],
+    };
   }
 
-  it('pic(CG 85) > pic(CG 55) > pic(CG 25), jamais plat, jamais sous la baseline', () => {
-    const p25 = peakPourCg(25);
-    const p55 = peakPourCg(55);
-    const p85 = peakPourCg(85);
-    expect(p85).toBeGreaterThan(p55);
-    expect(p55).toBeGreaterThan(p25);
-    expect(p25).toBeGreaterThan(BASELINE);
+  it('à portions totales constantes (3), chaque échange féculent -> protéine baisse (ou stagne) le pic', () => {
+    const peaks = [0, 1, 2, 3].map((n) => peakOf(sampleRepas(paramsFromAssiette(plate(3 - n, n)))).v);
+    for (let i = 1; i < peaks.length; i++) expect(peaks[i]).toBeLessThanOrEqual(peaks[i - 1] + 1e-9);
+    expect(peaks[peaks.length - 1]).toBeLessThan(peaks[0]);
   });
 });
 
-// ---------------------------------------------------------------------------
-// Invariant 3 — ordre.
-// ---------------------------------------------------------------------------
-
-describe('invariant 3 — ordreFeculentDernier', () => {
-  const base: Assiette = {
-    aliments: [
-      { cg: 80, famille: 'feculents' },
-      { cg: 0, famille: 'proteines' },
-      { cg: 0, famille: 'legumes' },
-    ],
-  };
-  const avecOrdre: Assiette = { ...base, ordreFeculentDernier: true };
-
-  const peakSansOrdre = peakOf(sampleRepas(paramsFromAssiette(base)));
-  const peakAvecOrdre = peakOf(sampleRepas(paramsFromAssiette(avecOrdre)));
-
-  it('pic réduit d\'environ un tiers (entre 20 % et 50 % de réduction)', () => {
-    const excesSansOrdre = peakSansOrdre.v - BASELINE;
-    const excesAvecOrdre = peakAvecOrdre.v - BASELINE;
-    const ratio = excesAvecOrdre / excesSansOrdre;
-    expect(ratio).toBeLessThan(0.8);
-    expect(ratio).toBeGreaterThan(0.5);
-  });
-
-  it('pic retardé', () => {
-    expect(peakAvecOrdre.t).toBeGreaterThan(peakSansOrdre.t);
-  });
-});
-
-// ---------------------------------------------------------------------------
-// Invariant 4 — proportions.
-// ---------------------------------------------------------------------------
-
-describe('invariant 4 — proportions (assiette-modèle vs ¾ féculents)', () => {
-  const aliments: Assiette['aliments'] = [
-    { cg: 80, famille: 'feculents' },
-    { cg: 0, famille: 'proteines' },
-    { cg: 0, famille: 'legumes' },
-  ];
-  const assietteModele: Assiette = {
-    aliments,
-    proportions: { legumes: 0.5, proteines: 0.25, feculents: 0.25 },
-  };
-  const assietteTroisQuarts: Assiette = {
-    aliments,
-    proportions: { legumes: 0.125, proteines: 0.125, feculents: 0.75 },
-  };
-
-  it('assiette-modèle ½/¼/¼ -> pic < assiette ¾ féculents, aliments comparables', () => {
-    const peakModele = peakOf(sampleRepas(paramsFromAssiette(assietteModele))).v;
-    const peakTroisQuarts = peakOf(sampleRepas(paramsFromAssiette(assietteTroisQuarts))).v;
-    expect(peakModele).toBeLessThan(peakTroisQuarts);
+describe('assiette-modèle émergente (½ légumes · ¼ protéines · ¼ féculents)', () => {
+  it('plus douce que 100 % féculents, à portions égales (4), sans aucun paramètre "proportions" dans la lib', () => {
+    const modele: Assiette = { aliments: [BROCOLI, BROCOLI, POULET, RIZ_BLANC] };
+    const toutFeculent: Assiette = { aliments: [RIZ_BLANC, RIZ_BLANC, RIZ_BLANC, RIZ_BLANC] };
+    const peakModele = peakOf(sampleRepas(paramsFromAssiette(modele))).v;
+    const peakFeculent = peakOf(sampleRepas(paramsFromAssiette(toutFeculent))).v;
+    expect(peakModele).toBeLessThan(peakFeculent);
   });
 });
 
@@ -299,23 +331,6 @@ describe('invariant 8 — sampleJournee / sampleNuits', () => {
     }
   });
 
-  it('nuit_isolee : une seule trace s\'écarte nettement, les autres restent stables', () => {
-    const traces = sampleNuits('nuit_isolee', 4, 42);
-    const mins = traces.map((trace) => Math.min(...nightSegment(trace).map((p) => p.v)));
-    const autresMins = mins.slice(0, -1);
-    const traceIsolee = mins[mins.length - 1];
-
-    for (const m of autresMins) expect(m).toBeGreaterThan(BASELINE - 6);
-    expect(traceIsolee).toBeLessThan(BANDE_CIBLE_DEFAUT.basse);
-
-    const autresMedianes = traces.slice(0, -1).map((trace) => {
-      const vals = nightSegment(trace).map((p) => p.v);
-      const mid = Math.floor(vals.length / 2);
-      return vals.sort((a, b) => a - b)[mid];
-    });
-    for (const med of autresMedianes) expect(Math.abs(med - BASELINE)).toBeLessThan(6);
-  });
-
   it('plonge_bas : minimum nocturne sous la bande basse, sur toutes les traces', () => {
     const traces = sampleNuits('plonge_bas', 3, 7);
     for (const trace of traces) {
@@ -332,6 +347,60 @@ describe('invariant 8 — sampleJournee / sampleNuits', () => {
     const traceA = sampleNuits('plonge_bas', 3, 5);
     const traceB = sampleNuits('plonge_bas', 3, 5);
     expect(traceA).toEqual(traceB);
+  });
+});
+
+describe('0.d — descend_hypo_matinale : descente progressive, minimum en fin de nuit', () => {
+  it('toutes les traces descendent nettement pendant la nuit', () => {
+    const traces = sampleNuits('descend_hypo_matinale', 4, 55);
+    for (const trace of traces) {
+      const nuit = nightSegment(trace);
+      const debut = nuit.slice(0, 4).reduce((s, p) => s + p.v, 0) / 4;
+      const fin = nuit.slice(-4).reduce((s, p) => s + p.v, 0) / 4;
+      expect(fin).toBeLessThan(debut - 5);
+    }
+  });
+
+  it('le minimum nocturne est atteint en fin de nuit, proche du plancher hypo', () => {
+    const traces = sampleNuits('descend_hypo_matinale', 3, 21);
+    for (const trace of traces) {
+      const nuit = nightSegment(trace);
+      let minIdx = 0;
+      for (let i = 1; i < nuit.length; i++) if (nuit[i].v < nuit[minIdx].v) minIdx = i;
+      expect(minIdx).toBeGreaterThan(nuit.length * 0.8);
+      expect(nuit[minIdx].v).toBeLessThan(BANDE_CIBLE_DEFAUT.basse + 8);
+    }
+  });
+
+  it('déterminisme : même seed -> mêmes traces', () => {
+    const a = sampleJournee('descend_hypo_matinale', 17);
+    const b = sampleJournee('descend_hypo_matinale', 17);
+    expect(a).toEqual(b);
+  });
+});
+
+describe('0.d.3 — raccord nuit -> jour sans falaise', () => {
+  const scenarios: ScenarioTrace[] = [
+    'stable',
+    'derive_haute',
+    'plonge_bas',
+    'haut_stable_apres_repas',
+    'descend_hypo_matinale',
+  ];
+
+  // Continuité au raccord (au sens de la correction B7 : la « falaise » de saut brutal au
+  // passage nuit → jour, ex. −28 sur `derive_haute`). Le seuil <5 est vérifié autour de la
+  // jonction (t=480, ±40 min) — pas sur toute la trace : les bosses repas de la portion jour
+  // ont, elles, une pente ease intrinsèquement plus raide sur le pas d'échantillonnage à
+  // 5 min (comportement du modèle inchangé par S14, pas la « falaise » visée par ce test).
+  it('aucun saut > 5 entre deux pas consécutifs autour de la jonction nuit -> jour', () => {
+    for (const scenario of scenarios) {
+      const trace = sampleJournee(scenario, 999);
+      const aroundBoundary = trace.filter((p) => p.t >= 440 && p.t <= 520);
+      for (let i = 1; i < aroundBoundary.length; i++) {
+        expect(Math.abs(aroundBoundary[i].v - aroundBoundary[i - 1].v)).toBeLessThan(5);
+      }
+    }
   });
 });
 
