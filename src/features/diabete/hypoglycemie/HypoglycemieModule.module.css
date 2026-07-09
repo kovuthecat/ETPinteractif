@@ -35,6 +35,10 @@
   gap: var(--space-lg);
 }
 
+.panel[hidden] {
+  display: none; /* B6 : .panel{display:flex} écrasait le display:none du user-agent */
+}
+
 .sectionLabel {
   margin: 0;
   font-size: 14px;

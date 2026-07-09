@@ -23,6 +23,7 @@ export default function IllustrationSlot({ id, label, shape = 'rounded', size = 
   const dimensionStyle = { width: size, height: size };
 
   if (errored) {
+    const labelClass = size < 56 ? `${styles.placeholderLabel} ${styles.placeholderLabelHidden}` : styles.placeholderLabel;
     return (
       <div
         className={`${styles.placeholder} ${shapeClass}`}
@@ -30,7 +31,7 @@ export default function IllustrationSlot({ id, label, shape = 'rounded', size = 
         role="img"
         aria-label={label}
       >
-        <span className={styles.placeholderLabel}>{label}</span>
+        <span className={labelClass}>{label}</span>
       </div>
     );
   }

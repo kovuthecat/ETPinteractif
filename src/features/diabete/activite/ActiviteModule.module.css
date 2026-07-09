@@ -68,6 +68,11 @@
   box-shadow: var(--shadow-1);
 }
 
+.node:hover,
+.node:focus-within {
+  z-index: 6; /* passe au-dessus de .nodeCenter (z-index: 1) le temps du survol/focus (B4) */
+}
+
 /* Le cercle lui-même n'est plus l'élément cliquable (cf. .nodeButton) : un badge info
    (`.nodeInfo`) peut lui être posé en frère sans imbriquer deux contrôles interactifs. */
 .nodeButton {
