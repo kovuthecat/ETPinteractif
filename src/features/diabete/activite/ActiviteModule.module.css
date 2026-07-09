@@ -1,0 +1,499 @@
+.module {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* --- Onglets (temps ①②③ / régimes) --- */
+
+.tempsTabs,
+.regimeTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  justify-content: center;
+}
+
+.tab {
+  padding: 10px 20px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--color-line);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: 600 15px 'Work Sans', sans-serif;
+  cursor: pointer;
+}
+
+.tabActive {
+  background: var(--color-text);
+  border-color: var(--color-text);
+  color: var(--color-bg);
+}
+
+/* --- Temps ① : rayonnement --- */
+
+.rayonWrap {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  aspect-ratio: 1;
+  margin: var(--space-md) auto;
+}
+
+.raySvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.ray {
+  stroke: var(--color-line);
+  stroke-width: 1.2;
+}
+
+.rayLit {
+  stroke: var(--color-confort);
+  stroke-width: 1.8;
+}
+
+.node {
+  position: absolute;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 3px solid var(--color-line);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-1);
+}
+
+/* Le cercle lui-même n'est plus l'élément cliquable (cf. .nodeButton) : un badge info
+   (`.nodeInfo`) peut lui être posé en frère sans imbriquer deux contrôles interactifs. */
+.nodeButton {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px;
+  cursor: pointer;
+  color: inherit;
+  min-width: unset;
+  min-height: unset;
+}
+
+.nodeCenter {
+  border-width: 4px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px;
+  cursor: pointer;
+  min-width: unset;
+  min-height: unset;
+}
+
+.nodeSucre {
+  border-color: var(--color-vigilance);
+  background: var(--color-vigilance-soft);
+}
+
+.nodeLit {
+  border-color: var(--color-confort);
+  background: var(--color-confort-soft);
+}
+
+.nodeLabel {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.15;
+  text-align: center;
+}
+
+.nodeCenter .nodeLabel {
+  font-size: 14px;
+}
+
+.nodeHint {
+  font-size: 9px;
+  color: var(--color-text-faint);
+  text-align: center;
+  line-height: 1.2;
+}
+
+.nodeSuite {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 9px;
+  color: var(--color-text-soft);
+  font-weight: 600;
+}
+
+.nodeInfo {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+}
+
+.nodeInfoGlyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-line);
+  color: var(--color-text-soft);
+  font-size: 11px;
+  font-weight: 700;
+  font-style: italic;
+  cursor: help;
+}
+
+/* --- Temps ② : volume (jauge ouverte) --- */
+
+.volumeLayout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-lg);
+  align-items: flex-start;
+}
+
+.volumeMain {
+  flex: 2 1 420px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.volumeSide {
+  flex: 1 1 260px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.activitiesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--space-sm);
+  padding: var(--space-md);
+}
+
+.activityCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: 12px 8px;
+  border-radius: var(--radius-lg);
+  background: var(--color-bg);
+  border: 2px solid var(--color-line);
+}
+
+.activityCardOn {
+  background: var(--color-confort-soft);
+  border-color: var(--color-confort);
+}
+
+.activityMain {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  min-height: unset;
+  min-width: unset;
+  color: inherit;
+}
+
+.activityIllu {
+  position: relative;
+}
+
+.muscleDot {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--color-vigilance);
+  border: 2px solid var(--color-surface);
+}
+
+.activityName {
+  font-size: 12.5px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.checkMark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--color-confort);
+  background: var(--color-confort);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.activityCard:not(.activityCardOn) .checkMark {
+  background: var(--color-surface);
+  border-color: var(--color-line);
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.stepper button {
+  width: 26px;
+  height: 26px;
+  min-width: unset;
+  min-height: unset;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-line);
+  background: var(--color-surface);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.stepperValue {
+  font-size: 12.5px;
+  font-weight: 600;
+  min-width: 46px;
+  text-align: center;
+}
+
+.activityTooltip {
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-size: 11px;
+  padding: 4px 9px;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+}
+
+.activityCard:hover .activityTooltip,
+.activityCard:focus-within .activityTooltip {
+  opacity: 1;
+}
+
+.totalCard {
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.totalNumber {
+  margin: 0;
+  font: 700 42px 'Work Sans', sans-serif;
+}
+
+.totalUnit {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--color-text-soft);
+}
+
+.jaugeTrack {
+  position: relative;
+  height: 22px;
+  border-radius: var(--radius-pill);
+  background: var(--color-bg);
+  overflow: hidden;
+}
+
+.jaugeFill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--color-confort);
+  border-radius: var(--radius-pill);
+  transition: width 0.25s;
+}
+
+.jaugeScale {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--color-text-soft);
+}
+
+.totalNote {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--color-text-soft);
+  line-height: 1.5;
+}
+
+.muscleLegend {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 13px;
+  color: var(--color-text-soft);
+}
+
+.muscleLegend .muscleDot {
+  position: static;
+  border: none;
+}
+
+/* --- Temps ③ : timing --- */
+
+.timingLayout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.timingCard {
+  width: 100%;
+  max-width: 720px;
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.sliderBlock {
+  margin-top: var(--space-sm);
+  padding: 0 var(--space-sm);
+}
+
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--color-line);
+  outline: none;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--color-text);
+  cursor: pointer;
+  border: 3px solid var(--color-surface);
+  box-shadow: 0 0 0 1.5px var(--color-text);
+}
+
+.slider::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--color-text);
+  cursor: pointer;
+  border: 3px solid var(--color-surface);
+  box-shadow: 0 0 0 1.5px var(--color-text);
+}
+
+.sliderTicks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--color-text-soft);
+  margin-top: var(--space-sm);
+}
+
+.microBlock {
+  margin-top: var(--space-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.microRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.microDot {
+  width: 30px;
+  height: 30px;
+  min-width: unset;
+  min-height: unset;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 2px solid var(--color-line);
+  cursor: pointer;
+}
+
+.microDotOn {
+  background: var(--color-confort);
+  border-color: var(--color-confort);
+}
+
+.microCaption {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-text-soft);
+}
+
+.timingHint {
+  margin: 0;
+  font-size: 17px;
+  color: var(--color-text-soft);
+  text-align: center;
+  max-width: 640px;
+}
+
+/* --- Bandeau de légende commun --- */
+
+.captionBand {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  align-items: center;
+}
+
+.captionText {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.35;
+  font-weight: 500;
+  max-width: 900px;
+}
