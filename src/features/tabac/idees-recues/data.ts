@@ -24,7 +24,7 @@ export const RENVOI_LABELS: Record<string, string> = {
   'nicotine-toxique': "La nicotine n'est pas le toxique",
   soulagement: 'Le piège du soulagement',
   substituts: 'Utilisation des substituts',
-  craving: 'Gérer le craving',
+  'boite-a-outils': 'Stratégies & outils',
   'plan-arret': "Mon plan d'arrêt",
   motivation: 'Explorer ma motivation',
   'benefices-arret': "Ce que l'arrêt répare",
@@ -87,9 +87,38 @@ export const CARDS: IdeeRecue[] = [
     affirmation: "« Si j'arrête, je vais forcément prendre beaucoup de poids. »",
     verdict: 'faux',
     explication:
-      "La prise moyenne est de 2 à 4 kg, et environ une personne sur trois n'en prend pas. La nicotine augmentait les dépenses d'énergie : le corps se rééquilibre. Les substituts bien dosés et l'activité physique limitent nettement cette prise — et rien n'oblige à tout mener de front.",
-    source: 'Tabac Info Service · HAS',
+      "La prise moyenne est de 3 à 5 kg, très variable : environ une personne sur cinq n'en prend pas, ou en perd. La nicotine augmentait les dépenses d'énergie et coupait l'appétit : le corps se rééquilibre. Substituts bien dosés et activité physique limitent cette prise — et rien n'oblige à mener arrêt et régime de front.",
+    source: 'Tabac Info Service · Cochrane', // à revalider (Thibault)
     renvoi: 'substituts',
+    actif: true,
+  },
+  {
+    id: 'vf-poids-coeur',
+    affirmation: "« Prendre du poids à l'arrêt annule le bénéfice pour le cœur. »",
+    verdict: 'faux',
+    explication:
+      "Même chez ceux qui prennent beaucoup de poids (plus de 10 kg), le risque de mourir d'une maladie cardiovasculaire est réduit de moitié à deux tiers par rapport à ceux qui continuent de fumer. Le cœur gagne toujours au change — quelle que soit la balance.",
+    source: 'NEJM 2018', // à revalider (Thibault)
+    renvoi: 'benefices-arret',
+    actif: true,
+  },
+  {
+    id: 'vf-fumer-mince',
+    affirmation: '« Mieux vaut continuer à fumer que de prendre quelques kilos. »',
+    verdict: 'faux',
+    explication:
+      "Le tabac tue un fumeur régulier sur deux. Les 3 à 5 kg moyens de l'arrêt n'ont aucun impact comparable sur la santé — et ils se stabilisent puis diminuent avec les années. Aucun bénéfice du tabac ne compense ses risques.",
+    source: 'Tabac Info Service · NEJM 2018', // à revalider (Thibault)
+    renvoi: 'benefices-arret',
+    actif: true,
+  },
+  {
+    id: 'vf-poids-regime',
+    affirmation: "« Il faut se mettre au régime en même temps qu'on arrête de fumer. »",
+    verdict: 'faux',
+    explication:
+      "C'est même déconseillé : une restriction stricte mime les sensations de manque et fragilise le sevrage. L'objectif des premiers mois est « maintenir, pas maigrir » : bouger 30 minutes par jour (seule mesure démontrée sur le poids à un an), boire de l'eau, garder des en-cas peu caloriques à portée. On s'occupe du poids plus tard, si besoin.",
+    source: 'ACC 2018 · Cochrane', // à revalider (Thibault)
     actif: true,
   },
   {
@@ -115,12 +144,12 @@ export const CARDS: IdeeRecue[] = [
   },
   {
     id: 'vf-faux-pas',
-    affirmation: '« Une cigarette pendant le sevrage, et tout est à refaire. »',
+    affirmation: "« Si je craque pour une cigarette, c'est un échec — tout est à refaire. »",
     verdict: 'faux',
     explication:
-      "Un écart n'est pas une rechute : il n'efface ni les bénéfices déjà acquis, ni ce que vous avez appris. Ce qui compte, c'est la trajectoire d'ensemble, pas la perfection. Comprendre ce qui a déclenché l'écart prépare la suite.",
-    source: 'Tabac Info Service',
-    renvoi: 'craving',
+      "Un écart n'est pas une rechute : il n'efface ni les bénéfices déjà acquis, ni ce que vous avez appris. Il faut en moyenne plusieurs tentatives — souvent 5 ou 6 — avant un arrêt durable, et repartir immédiatement après un écart multiplie les chances de réussite. Ce qui compte : jeter le paquet, continuer les substituts, comprendre le déclencheur.",
+    source: 'Tabac Info Service · JAMA 2022', // à revalider (Thibault)
+    renvoi: 'boite-a-outils',
     actif: true,
   },
   {
@@ -160,7 +189,7 @@ export const CARDS: IdeeRecue[] = [
     explication:
       "Une envie est une vague de quelques minutes : elle monte, culmine, puis retombe d'elle-même — qu'on fume ou non. Les techniques des 4D aident à la laisser passer, et les vagues s'espacent avec le temps.",
     source: 'Tabac Info Service',
-    renvoi: 'craving',
+    renvoi: 'boite-a-outils',
     actif: true,
   },
   {
@@ -170,6 +199,38 @@ export const CARDS: IdeeRecue[] = [
     nuance: "Elle n'est pas anodine pour autant, et l'objectif reste de s'en libérer aussi.",
     explication:
       "En l'état des connaissances, la vapoteuse est nettement moins nocive que la cigarette, car il n'y a pas de combustion — donc ni goudrons ni monoxyde de carbone. Elle n'est pas anodine pour autant, et l'objectif reste de s'en libérer aussi. À discuter avec un professionnel.",
+    source: 'Santé publique France', // à revalider (Thibault)
+    renvoi: 'nicotine-toxique',
+    actif: true,
+  },
+  {
+    id: 'vf-vape-aide',
+    affirmation: '« La vapoteuse peut aider à arrêter de fumer. »',
+    verdict: 'vrai',
+    nuance:
+      "Ce n'est pas un médicament : les substituts restent le premier choix, la vapoteuse une option à discuter.",
+    explication:
+      "Les études récentes montrent qu'elle aide au moins autant que les substituts nicotiniques — à condition de basculer complètement, sans continuer à fumer à côté. En France, elle est considérée comme un outil de réduction des risques, pas comme un traitement : à discuter avec un professionnel.",
+    source: 'Cochrane 2025 · HCSP', // à revalider (Thibault)
+    renvoi: 'substituts',
+    actif: true,
+  },
+  {
+    id: 'vf-double-usage',
+    affirmation: "« Vapoter tout en continuant à fumer, c'est déjà bon pour la santé. »",
+    verdict: 'faux',
+    explication:
+      "Le bénéfice de la vapoteuse n'existe que si elle remplace complètement le tabac fumé. Fumer et vapoter en même temps expose au moins autant que fumer seul — c'est le piège du « double usage ». Si on vapote, l'objectif est zéro cigarette.",
+    source: 'Cochrane · revues 2022-2026', // à revalider (Thibault)
+    renvoi: 'substituts',
+    actif: true,
+  },
+  {
+    id: 'vf-vapeur-eau',
+    affirmation: "« La vapeur de la vapoteuse, c'est juste de la vapeur d'eau. »",
+    verdict: 'faux',
+    explication:
+      "L'aérosol contient de la nicotine, du propylène glycol, de la glycérine, des arômes et des traces de substances irritantes. Beaucoup moins que la fumée — sans combustion, ni goudrons ni monoxyde de carbone — mais pas rien : c'est pourquoi l'objectif à terme reste de s'en libérer aussi.",
     source: 'Santé publique France', // à revalider (Thibault)
     renvoi: 'nicotine-toxique',
     actif: true,
