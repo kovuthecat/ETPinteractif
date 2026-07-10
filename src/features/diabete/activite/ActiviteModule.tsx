@@ -104,6 +104,10 @@ export default function ActiviteModule({ onNavigate }: ModuleProps) {
   // Temps ② — volume (jauge ouverte)
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   const [minutesOverride, setMinutesOverride] = useState<Record<string, number>>({});
+  // Interrupteur soignant (BO8) : masque les activités légères de la réserve. Défaut
+  // `false` = comportement actuel intact. Ne retire jamais un choix déjà fait par le
+  // patient (cf. filtre appliqué plus bas, qui garde les activités cochées).
+  const [toniquesUniquement, setToniquesUniquement] = useState(false);
 
   // Temps ③ — timing
   const [regime, setRegime] = useState<'marche' | 'microcoupures'>('marche');
@@ -147,6 +151,17 @@ export default function ActiviteModule({ onNavigate }: ModuleProps) {
         curMinutes: minutesOverride[a.id] ?? a.minutes,
       })),
     [checked, minutesOverride],
+  );
+
+  // Réserve filtrée par l'interrupteur : une activité légère déjà cochée par le
+  // patient reste visible (on ne retire jamais un choix fait), seules les légères
+  // non cochées disparaissent de la réserve.
+  const reserveView = useMemo(
+    () =>
+      toniquesUniquement
+        ? activitiesView.filter((a) => a.intensite !== 'légère' || a.isChecked)
+        : activitiesView,
+    [activitiesView, toniquesUniquement],
   );
 
   const totalMinutes = useMemo(
@@ -346,8 +361,26 @@ export default function ActiviteModule({ onNavigate }: ModuleProps) {
         <div className={styles.volumeLayout}>
           <div className={styles.volumeMain}>
             <p className="eyebrow">Ce que je fais déjà — cochez ce qui compte pour vous</p>
+            <div className={styles.switchRow}>
+              <span id="toniques-switch-label" className={styles.switchCaption}>
+                Activités toniques uniquement
+              </span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={toniquesUniquement}
+                aria-labelledby="toniques-switch-label"
+                className={`${styles.switchBtn} ${toniquesUniquement ? styles.switchBtnOn : ''}`}
+                onClick={() => setToniquesUniquement((v) => !v)}
+              >
+                <span className={styles.switchTrack} aria-hidden="true">
+                  <span className={styles.switchKnob} />
+                </span>
+                <span className={styles.switchState}>{toniquesUniquement ? 'Modérées+' : 'Toutes'}</span>
+              </button>
+            </div>
             <div className={`card ${styles.activitiesGrid}`}>
-              {activitiesView.map((a) => (
+              {reserveView.map((a) => (
                 <div key={a.id} className={`${styles.activityCard} ${a.isChecked ? styles.activityCardOn : ''}`}>
                   <button
                     type="button"
