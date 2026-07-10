@@ -12,66 +12,85 @@
   line-height: 1.55;
 }
 
-/* --- Points de progression --- */
+/* --- Barre de progression (compteur + Recommencer) --- */
 
-.points {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.pointDot {
-  position: relative;
-  width: 20px;
-  height: 20px;
-  min-width: 20px;
-  min-height: 20px;
-  padding: 0;
-  border: 2px solid var(--color-line);
-  border-radius: 50%;
-  background: var(--color-surface);
-  cursor: pointer;
-}
-
-/* Cible tactile réelle >= 44px (invariant projet), zone invisible autour du
-   point visuel pour ne pas alourdir la rangée de 15 pastilles. */
-.pointDot::before {
-  content: '';
-  position: absolute;
-  inset: -12px;
-}
-
-.pointDot:hover,
-.pointDot:focus-visible {
-  border-color: var(--color-nav);
-}
-
-.pointDone {
-  background: var(--color-nav-soft);
-  border-color: var(--color-nav);
-}
-
-.pointCurrent {
-  border-color: var(--color-nav);
-  outline: 2px solid var(--color-nav);
-  outline-offset: 2px;
-}
-
-/* --- Ligne de navigation (‹ compteur › Recommencer) --- */
-
-.navRow {
+.progressRow {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-sm);
 }
 
-.arrowBtn {
+.progressText {
+  font-weight: 700;
+  font-size: var(--font-size-small);
+  color: var(--color-text-soft);
+}
+
+.progressRow .btn--tertiary {
+  margin-left: auto;
+}
+
+/* --- Grille de sélection --- */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--space-md);
+}
+
+.tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  min-height: 96px;
+  padding: var(--space-md);
+  border: 2px solid var(--color-line);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.tile:hover,
+.tile:focus-visible {
+  border-color: var(--color-nav);
+}
+
+.tileVrai {
+  background: var(--color-confort-soft);
+  border-color: var(--color-confort);
+}
+
+.tileFaux {
+  background: var(--color-vigilance-soft);
+  border-color: var(--color-vigilance);
+}
+
+.tileBadge {
+  font-size: var(--font-size-small);
+  font-weight: 700;
+}
+
+.tileText {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+/* --- Bouton retour à la grille --- */
+
+.backBtn {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  min-width: var(--target-min);
+  gap: 6px;
+  align-self: flex-start;
   min-height: var(--target-min);
+  padding: 8px 14px;
   border: 1.5px solid var(--color-line);
   border-radius: var(--radius-pill);
   background: var(--color-surface);
@@ -79,25 +98,10 @@
   cursor: pointer;
 }
 
-.arrowBtn:hover:not(:disabled),
-.arrowBtn:focus-visible:not(:disabled) {
+.backBtn:hover,
+.backBtn:focus-visible {
   border-color: var(--color-nav);
   color: var(--color-nav);
-}
-
-.arrowBtn:disabled {
-  opacity: 0.35;
-  cursor: default;
-}
-
-.counter {
-  font-weight: 700;
-  font-size: var(--font-size-small);
-  color: var(--color-text-soft);
-}
-
-.navRow .btn--tertiary {
-  margin-left: auto;
 }
 
 /* --- Carte --- */
