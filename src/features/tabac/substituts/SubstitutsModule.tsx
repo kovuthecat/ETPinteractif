@@ -3,6 +3,7 @@ import { AlertTriangle, Flame, Moon, Sun } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import FicheOverlay from '../../../components/FicheOverlay';
 import ModuleFooterNav from '../../../components/ModuleFooterNav';
+import TechniqueIllustration from './TechniqueIllustration';
 import styles from './SubstitutsModule.module.css';
 
 type FormeId =
@@ -81,6 +82,8 @@ const FORMES_DATA: Record<FormeId, FormeContent> = {
 const QUARTS_PAR_PATCH = 4;
 const INITIAL_QUARTS = QUARTS_PAR_PATCH;
 
+const FORMES_PONCTUELLES: FormeId[] = ['gomme', 'pastille', 'sublingual', 'spray'];
+
 const FRACTIONS_RESTE: Record<number, string> = { 1: '1/4', 2: '1/2', 3: '3/4' };
 
 function formatPatchs(patchsPleins: number, reste: number): string {
@@ -90,27 +93,36 @@ function formatPatchs(patchsPleins: number, reste: number): string {
   return [partiePleins, partieReste].filter(Boolean).join(' + ');
 }
 
-function PatchQuarts({ quarts, label }: { quarts: number; label: string }) {
+function PatchQuarts({
+  quarts,
+  label,
+  quartsVides = 0,
+}: {
+  quarts: number;
+  label: string;
+  quartsVides?: number;
+}) {
   const patchsPleins = Math.floor(quarts / QUARTS_PAR_PATCH);
   const reste = quarts % QUARTS_PAR_PATCH;
-  const patchsAffiches = Math.max(patchsPleins + (reste > 0 ? 1 : 0), 1);
+  const total = quarts + quartsVides;
+  const patchsAffiches = Math.max(Math.ceil(total / QUARTS_PAR_PATCH), 1);
 
   return (
     <div className={styles.patchBlock}>
       <div className={styles.patchesGrid}>
-        {Array.from({ length: patchsAffiches }, (_, patchIndex) => {
-          const quartsDansCePatch = patchIndex < patchsPleins ? QUARTS_PAR_PATCH : reste;
-          return (
-            <div key={patchIndex} className={styles.patch}>
-              {Array.from({ length: QUARTS_PAR_PATCH }, (_, i) => (
+        {Array.from({ length: patchsAffiches }, (_, patchIndex) => (
+          <div key={patchIndex} className={styles.patch}>
+            {Array.from({ length: QUARTS_PAR_PATCH }, (_, i) => {
+              const indexGlobal = patchIndex * QUARTS_PAR_PATCH + i;
+              return (
                 <div
                   key={i}
-                  className={i < quartsDansCePatch ? styles.quartFilled : styles.quartEmpty}
+                  className={indexGlobal < quarts ? styles.quartFilled : styles.quartEmpty}
                 />
-              ))}
-            </div>
-          );
-        })}
+              );
+            })}
+          </div>
+        ))}
       </div>
       <p className={styles.patchLabel}>
         <span className={styles.patchLabelMain}>{label}</span>
@@ -131,8 +143,12 @@ export default function SubstitutsModule({ onNavigate }: ModuleProps) {
   const [jourNuit, setJourNuit] = useState(false);
   const [quartsNuit, setQuartsNuit] = useState(INITIAL_QUARTS);
   const [ficheOpen, setFicheOpen] = useState(false);
+  const [ficheForme, setFicheForme] = useState<FormeId | null>(null);
 
   const quartsNuitAffiche = Math.min(quartsNuit, quartsJour);
+
+  const resteJour = quartsJour % QUARTS_PAR_PATCH;
+  const videsJour = (resteJour === 0 ? 0 : QUARTS_PAR_PATCH - resteJour) + QUARTS_PAR_PATCH;
 
   function ajouterQuart() {
     setQuartsJour((q) => q + 1);
@@ -189,16 +205,10 @@ export default function SubstitutsModule({ onNavigate }: ModuleProps) {
         )}
       </section>
 
-      {showTechnique && formeData && (
+      {showTechnique && formeData && selectedForme && (
         <section className={styles.section}>
           <p className={styles.sectionEyebrow}>Technique de prise — {formeData.label}</p>
-          <div className={styles.techniqueCard}>
-            <div className={styles.techniquePlaceholder}>
-              <span className={styles.techniqueLabel}>
-                illustration · technique de prise « {formeData.label} »
-              </span>
-            </div>
-          </div>
+          <TechniqueIllustration forme={selectedForme} label={formeData.label} />
         </section>
       )}
 
@@ -320,6 +330,31 @@ export default function SubstitutsModule({ onNavigate }: ModuleProps) {
 
           <p className={styles.message}>Expérimentez, fiez-vous à votre ressenti.</p>
 
+          <div className={styles.ficheFormeGroup}>
+            <p className={styles.ficheFormeLabel}>Ajouter une prise ponctuelle à ma fiche</p>
+            <div className={styles.ficheFormeOptions}>
+              <button
+                type="button"
+                className={`${styles.ficheFormeOption} ${ficheForme === null ? styles.ficheFormeOptionActive : ''}`}
+                onClick={() => setFicheForme(null)}
+                aria-pressed={ficheForme === null}
+              >
+                Aucune
+              </button>
+              {FORMES_PONCTUELLES.map((forme) => (
+                <button
+                  key={forme}
+                  type="button"
+                  className={`${styles.ficheFormeOption} ${ficheForme === forme ? styles.ficheFormeOptionActive : ''}`}
+                  onClick={() => setFicheForme(forme)}
+                  aria-pressed={ficheForme === forme}
+                >
+                  {FORMES_DATA[forme].label}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <button
             type="button"
             className={`btn btn--ghost ${styles.ficheButton}`}
@@ -370,10 +405,25 @@ export default function SubstitutsModule({ onNavigate }: ModuleProps) {
           <div className="fiche-bloc">
             <span className="fiche-bloc-eyebrow">Ma dose du moment</span>
             <div className={styles.ficheDoses}>
-              <PatchQuarts quarts={quartsJour} label="Jour" />
+              <PatchQuarts quarts={quartsJour} label="Jour" quartsVides={videsJour} />
               {jourNuit && <PatchQuarts quarts={quartsNuitAffiche} label="Nuit" />}
             </div>
+            <p className={styles.ficheDosesLegende}>
+              Colorie ¼ de plus tous les 3 jours si l'envie persiste, sans signe de surdosage.
+            </p>
           </div>
+
+          {ficheForme && (
+            <div className="fiche-bloc">
+              <span className="fiche-bloc-eyebrow">Ma prise ponctuelle — {FORMES_DATA[ficheForme].label}</span>
+              <TechniqueIllustration forme={ficheForme} label={FORMES_DATA[ficheForme].label} />
+              <ul className={styles.ficheFormeListe}>
+                {FORMES_DATA[ficheForme].bonnesPratiques.map((item, idx) => (
+                  <li key={idx}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           <p className={styles.ficheMessage}>Expérimentez, fiez-vous à votre ressenti.</p>
 
