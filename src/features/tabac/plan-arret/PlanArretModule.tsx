@@ -8,7 +8,7 @@ import styles from './PlanArretModule.module.css';
 // et docs/BRIEF_TABAC.md §3.2). Chaque module reste isolé — pas d'import croisé.
 
 // Substituts (5 formes) — cf. features/tabac/substituts/SubstitutsModule.tsx (FORMES_DATA).
-const SUBSTITUTS: string[] = ['Patch (24 h / 16 h)', 'Gomme', 'Pastille', 'Comprimé sublingual', 'Spray buccal'];
+const SUBSTITUTS: string[] = ['Patch (24 h / 16 h)', 'Gomme', 'Pastille', 'Comprimé sublingual', 'Spray buccal', 'Vapoteuse'];
 
 // Situations à risque — automatismes du pilier comportemental, cf.
 // features/tabac/addiction/AddictionModule.tsx (PILLARS_DATA.comportementale.exemples).
@@ -27,6 +27,15 @@ const PARADES: string[] = ['Différer', "Détourner l'attention", 'Se détendre 
 
 // Seed Motivation — cf. features/tabac/motivation/MotivationModule.tsx (MOTIVATION_SEED).
 const RAISONS: string[] = ['Ma santé', 'Mes proches', 'Le budget', "Le goût / l'odorat", 'Mon souffle / ma forme', 'Ma liberté'];
+
+// Plan de secours en cas d'écart — cf. plans/boite-a-outils/S2.md, outil 13 `outil-faux-pas`
+// (contenu cohérent, adapté ici au format « plan personnel »).
+const GESTES_ECART: string[] = [
+  'Je jette le paquet et le briquet',
+  "J'appelle quelqu'un — un proche ou le 39 89",
+  "Je relis mes raisons d'arrêter",
+  'Je continue mes substituts comme avant',
+];
 
 function toggleInSet(set: Set<string>, value: string): Set<string> {
   const next = new Set(set);
@@ -129,19 +138,24 @@ export default function PlanArretModule(_: ModuleProps) {
   const [raisonsFixes, setRaisonsFixes] = useState<Set<string>>(new Set());
   const [raisonsLibres, setRaisonsLibres] = useState<string[]>([]);
 
+  const [gestesEcartFixes, setGestesEcartFixes] = useState<Set<string>>(new Set());
+  const [gestesEcartLibres, setGestesEcartLibres] = useState<string[]>([]);
+
   const [ficheOpen, setFicheOpen] = useState(false);
 
   const substitutsChoisis = selectedItems(SUBSTITUTS, substituts, []);
   const situationsChoisies = selectedItems(SITUATIONS, situationsFixes, situationsLibres);
   const paradesChoisies = selectedItems(PARADES, paradesFixes, paradesLibres);
   const raisonsChoisies = selectedItems(RAISONS, raisonsFixes, raisonsLibres);
+  const gestesEcartChoisis = selectedItems(GESTES_ECART, gestesEcartFixes, gestesEcartLibres);
 
   const auMoinsUneSection =
     date !== '' ||
     substitutsChoisis.length > 0 ||
     situationsChoisies.length > 0 ||
     paradesChoisies.length > 0 ||
-    raisonsChoisies.length > 0;
+    raisonsChoisies.length > 0 ||
+    gestesEcartChoisis.length > 0;
 
   let dateFormatee = '';
   if (date) {
@@ -224,6 +238,21 @@ export default function PlanArretModule(_: ModuleProps) {
         </ul>
       </section>
 
+      <section className={`card ${styles.section}`}>
+        <p className={styles.sectionLabel}>7. Si j'ai un écart</p>
+        <p className={styles.renvoi}>
+          Un écart n'est pas une rechute. Je prépare maintenant mes 3 gestes pour repartir aussitôt.
+        </p>
+        <ChipGroup
+          fixedOptions={GESTES_ECART}
+          selected={gestesEcartFixes}
+          onToggleFixed={(v) => setGestesEcartFixes((s) => toggleInSet(s, v))}
+          libres={gestesEcartLibres}
+          onAddLibre={(v) => setGestesEcartLibres((prev) => [...prev, v])}
+          onRemoveLibre={(v) => setGestesEcartLibres((prev) => prev.filter((item) => item !== v))}
+        />
+      </section>
+
       <div className={styles.ficheButtonRow}>
         <button
           type="button"
@@ -280,6 +309,20 @@ export default function PlanArretModule(_: ModuleProps) {
               <span className="fiche-bloc-eyebrow">Mes parades</span>
               <ul className={styles.ficheList}>
                 {paradesChoisies.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {gestesEcartChoisis.length > 0 && (
+            <div className="fiche-bloc">
+              <span className="fiche-bloc-eyebrow">Si j'ai un écart — repartir aussitôt</span>
+              <p className={styles.ficheEcartPhrase}>
+                Un écart n'est pas une rechute : les 24 heures qui suivent comptent.
+              </p>
+              <ul className={styles.ficheList}>
+                {gestesEcartChoisis.map((item) => (
                   <li key={item}>{item}</li>
                 ))}
               </ul>
