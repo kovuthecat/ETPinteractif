@@ -1,0 +1,307 @@
+.module {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.intro {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+}
+
+.layout {
+  display: flex;
+  gap: var(--space-xl);
+  align-items: flex-start;
+}
+
+.silhouetteCol {
+  flex: 0 0 auto;
+  width: 260px;
+}
+
+.panneau {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* --- Frise des jalons --- */
+
+.frise {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.friseControls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.friseNavBtn {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--color-line);
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.friseNavBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.friseNavBtn:not(:disabled):hover,
+.friseNavBtn:not(:disabled):focus-visible {
+  border-color: var(--color-confort);
+  color: var(--color-confort-strong);
+}
+
+.friseTrack {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  overflow-x: auto;
+  padding: 6px 4px;
+}
+
+.friseTrack::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 4px;
+  right: 4px;
+  height: 2px;
+  background: var(--color-line);
+  transform: translateY(-50%);
+  z-index: 0;
+}
+
+.friseChip {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--color-line);
+  background: var(--color-surface);
+  color: var(--color-text-soft);
+  font: 700 13px 'Work Sans', sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.friseChip:hover,
+.friseChip:focus-visible {
+  border-color: var(--color-confort);
+}
+
+.friseChipAcquis {
+  border-color: var(--color-confort);
+  background: var(--color-confort-soft);
+  color: var(--color-confort-strong);
+}
+
+.friseChipActuel {
+  border-color: var(--color-confort);
+  background: var(--color-confort);
+  color: #fff;
+  box-shadow: var(--shadow-1);
+}
+
+.friseFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.friseNote {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-text-faint);
+}
+
+/* --- Panneau (jalon ou détail de zone) --- */
+
+.panel {
+  min-height: 260px;
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.detailJalon {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.echeance {
+  margin: 0;
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 34px;
+  color: var(--color-confort-strong);
+}
+
+.texteBenefice {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--color-text);
+  max-width: 60ch;
+}
+
+.zonesConcernees {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-top: var(--space-xs);
+}
+
+.zoneChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--color-confort-soft);
+  color: var(--color-confort-strong);
+  font: 700 13px 'Work Sans', sans-serif;
+}
+
+.horizon {
+  margin-top: var(--space-sm);
+}
+
+/* --- Détail de zone --- */
+
+.detailZone {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.retour {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 6px 10px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-soft);
+  font: 600 14px 'Work Sans', sans-serif;
+  cursor: pointer;
+}
+
+.retour:hover,
+.retour:focus-visible {
+  color: var(--color-nav);
+}
+
+.detailHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.beneficesListe {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.beneficeItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+}
+
+.beneficeAcquis {
+  background: var(--color-confort-soft);
+}
+
+.beneficeMarque {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--color-confort-strong);
+}
+
+.beneficeItem p {
+  margin: 2px 0 0;
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--color-text);
+}
+
+.beneficeEcheance {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--color-text-soft);
+}
+
+.beneficeAcquisLabel {
+  color: var(--color-confort-strong);
+}
+
+/* --- Message transverse permanent --- */
+
+.messageTransverse {
+  margin: 0;
+  padding-left: var(--space-md);
+  border-left: 2px solid var(--color-confort);
+  color: var(--color-text-soft);
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-size: var(--font-size-lead);
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .silhouetteCol {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .panneau {
+    width: 100%;
+  }
+}
