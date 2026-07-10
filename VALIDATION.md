@@ -229,6 +229,88 @@
 
 ---
 
+## Chantier boite-a-outils (BO1-BO9) — validation du 2026-07-10
+
+**Statut** : chantier consolidé (commits BO1-BO8 + contexte) · en attente de validation visuelle
+Thibault (`npm run dev`) — aucune vérification navigateur n'a été faite côté Claude, conformément à la
+règle projet. Checklists reprises des sections « Validation visuelle » de chaque `S<k>.md`
+(`plans/boite-a-outils/`).
+
+### Module 1 — Composantes (refonte radiale, BO3)
+
+- [ ] Chaque pilier déploie ses situations en éventail sur son secteur (7 items max pour physique/
+      comportementale, 6 pour psychologique) sans recouvrir les deux autres cercles ni les zones de
+      clic des cercles. Si chevauchement à l'écran : élargir le secteur d'arc et/ou le rayon du menu
+      radial (clause « Si bloqué » de `S3.md`, non déclenchée par construction mais jamais vérifiée à
+      l'écran).
+- [ ] Sélection/désélection visible autrement que par la couleur (fond plein + icône `Check` + texte
+      inversé).
+- [ ] Sélection conservée en changeant de pilier (garanti par construction : un seul `Set` au niveau du
+      module).
+- [ ] « Stratégies et outils (n) » navigue vers `boite-a-outils` avec la sélection en contexte, la
+      grille s'ouvre pré-filtrée.
+- [ ] Retour arrière → sélection remise à zéro (comportement **accepté**, pas un bug : l'historique de
+      navigation restaure la vue, pas le state interne du module).
+
+### Module 6 — Stratégies & outils (BO1-BO2, ex-Craving)
+
+- [ ] Arrivée sans contexte → les 14 outils s'affichent. Chip « Stress » seule active → visibles :
+      `outil-bouger`, `outil-respiration` + les 4 transverses (`outil-vague-4d`, `outil-si-alors`,
+      `outil-journal`, `outil-faux-pas`), soit 6 au total.
+- [ ] Panneau de détail lisible à ~1 m : illustration, titre, badges situations (pastille pilier +
+      libellé), mention de preuve qualitative (jamais de chiffre), bloc « Comment le proposer » en
+      retrait, bouton renvoi si présent.
+- [ ] « Lancer l'outil » (sur `outil-vague-4d`) ouvre la vague/4D : minuteur réel 180 s, 4 D,
+      animation de respiration, fiche « Ma carte anti-envie » — mécanique strictement identique à
+      l'ancien module Craving (aucune logique modifiée, seule la coquille a changé).
+- [ ] Fiche « Ma boîte à outils » : grille 2 colonnes (1 colonne < 560px), lisible jusqu'à ~8-10 outils
+      cochés (fallback consigne-seule au-delà du 8ᵉ implémenté) ; bouton désactivé à 0 outil coché.
+- [ ] `ModuleFooterNav` en pied → Plan d'arrêt, Motivation.
+
+### Module 3 — Substituts : vapoteuse (BO5)
+
+- [ ] 6ᵉ forme « Vapoteuse » en dernière position avec badge « Réduction des risques » visible.
+- [ ] Sélection → encart de statut sobre (bleu neutre `--color-nav`, pas rouge) + 4 bonnes pratiques +
+      4 erreurs ; aucune mention mg/ml dans le contenu.
+- [ ] `FORMES_PONCTUELLES` ignore la vapoteuse (absente de la titration du patch et du sélecteur
+      « Ajouter une prise ponctuelle » de la fiche).
+- [ ] Rangée de 6 formes reste lisible (wrap en 2 lignes si besoin, cibles ≥ 44 px conservées).
+
+### Module 8 — Plan d'arrêt : section « Si j'ai un écart » (BO6)
+
+- [ ] Section 7 visuellement cohérente avec les sections 2-5 (chips + saisie libre).
+- [ ] Fiche A4 : bloc « Si j'ai un écart » présent si ≥ 1 geste coché, absent sinon ; la fiche reste
+      sur une page avec les 7 sections pleines (aucun débordement constaté au build, à confirmer à
+      l'écran).
+- [ ] « Vapoteuse » sélectionnable en section 2 (substituts) et rendue sur la fiche imprimée.
+
+### Module 10 — Vrai ou faux : 6 nouvelles cartes (BO4)
+
+- [ ] Les 6 nouvelles cartes (`vf-poids-coeur`, `vf-fumer-mince`, `vf-poids-regime`, `vf-vape-aide`,
+      `vf-double-usage`, `vf-vapeur-eau`) s'affichent et se retournent comme les 15 cartes existantes ;
+      21 cartes au total, deck non cassé (pagination, compteur).
+- [ ] Badge « …et c'est plus nuancé » présent sur `vf-vape-aide` (a un champ `nuance`).
+- [ ] Renvois de `vf-faux-pas` et `vf-vague` mènent au module Stratégies & outils (libellé
+      « Stratégies & outils »).
+
+### Diabète — Module Activité : filtre « toniques uniquement » (BO8)
+
+- [ ] Interrupteur `role="switch"` au-dessus de la réserve, libellé « Activités toniques uniquement »,
+      double encodage position + texte « Toutes / Modérées+ ».
+- [ ] Off → 12 activités dans la réserve ; on → seules les modérées (vélo, bricolage, jardinage,
+      escaliers, danse, voiture).
+- [ ] Une activité légère déjà cochée avant activation du filtre reste visible/comptée dans la jauge
+      après activation (le filtre ne retire jamais un choix du patient).
+- [ ] Retour à off → réserve complète à nouveau.
+
+### Design (BO7)
+
+- [ ] `design/illustrations/prompts-illustrations-diabete.html` : nouvelle section « Tabac — Stratégies
+      & outils » (15 entrées : 14 outils + `substitut-vapoteuse`), même style `TQ` que les sections
+      tabac existantes, compteurs/recherche du HTML non cassés.
+
+---
+
 ## Plan alimentation-v2 (S1-S4) — validation du 2026-07-09
 
 **Statut** : chantier consolidé · commits locaux prêts (S1/S2/S3/S4 + contexte) · en attente de validation visuelle Thibault + revalidation données médicales

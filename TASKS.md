@@ -88,6 +88,19 @@ Index des tâches : backlog + actives. Historique des tâches faites : `git log`
   - Vagues : V1 = S1·S2·S3·S4 parallèles → V2 = S5·S6 parallèles → V3 = S7 solo. **Chantier clos 2026-07-10.**
   - ⚠️ Points ouverts Thibault : jalons S5 chiffres (Tabac Info Service/OMS) ; cartes S6 n°4/14/15 à revalider ; mention graphe S3 actualisée (derrière `// à revalider`) ; illustrations tabac → `public/illustrations/tabac/<id>.png`.
 
+### Boîte à outils du sevrage + refonte Composantes + enrichissements (2026-07-10) · plan: → plans/boite-a-outils/ (index + S1-S9)
+- [x] BO1 — Moteur : contexte de navigation générique + registre + `situations.ts` + stub `boite-a-outils/` · modèle: Sonnet, effort: medium · plan: → plans/boite-a-outils/S1.md (auto OK : tsc --noEmit + vite build verts)
+- [x] BO2 — Module « Stratégies & outils » (14 outils, filtres, vague 4D héritée, fiche imprimable) · modèle: Sonnet, effort: xhigh · plan: → plans/boite-a-outils/S2.md (auto OK : tsc --noEmit + vite build verts ; `craving/` supprimé sans import cassé)
+- [x] BO3 — Composantes : situations radiales sélectionnables + CTA contextuel · modèle: Sonnet, effort: high · plan: → plans/boite-a-outils/S3.md (auto OK : tsc --noEmit + vite build verts)
+- [x] BO4 — Vrai/faux : 6 nouvelles cartes (poids/vapoteuse) + reformulation faux-pas + renvois · modèle: Sonnet, effort: medium · plan: → plans/boite-a-outils/S4.md (auto OK : tsc --noEmit vert ; `npm run build` bloqué par des erreurs pré-existantes hors zone diabète/activité d'une autre session de la même vague, sans lien avec `idees-recues`)
+- [x] BO5 — Substituts : forme « Vapoteuse » (réduction des risques) · modèle: Sonnet, effort: medium · plan: → plans/boite-a-outils/S5.md (auto OK : tsc --noEmit + vite build verts)
+- [x] BO6 — Plan d'arrêt : section « Si j'ai un écart » + vapoteuse dans les chips · modèle: Sonnet, effort: medium · plan: → plans/boite-a-outils/S6.md (auto OK : tsc --noEmit + vite build verts)
+- [x] BO7 — Prompts d'illustrations (14 outils + vapoteuse) dans le HTML · modèle: Sonnet, effort: low · plan: → plans/boite-a-outils/S7.md (vérification statique OK)
+- [x] BO8 — Diabète/Activité : interrupteur « activités toniques uniquement » · modèle: Sonnet, effort: low · plan: → plans/boite-a-outils/S8.md (auto OK : tsc --noEmit + vite build + npm test 78/78 verts)
+- [x] BO9 — Consolidation : docs (`contenu-modules-tabac.md`) + contexte + 9 commits (BO1-BO8 + contexte) · modèle: Sonnet, effort: low · plan: → plans/boite-a-outils/S9.md (auto OK : tsc --noEmit + vite build + npm test verts)
+  - Vagues : V1 = BO1·BO4·BO5·BO7·BO8 parallèles (5 agents, zones disjointes) → V2 = BO2·BO3·BO6 parallèles (3 agents) → V3 = BO9 solo. **Chantier clos 2026-07-10.**
+  - ⚠️ Points ouverts Thibault (n'empêchent pas d'exécuter) : vapoteuse substituts (BO5, technique à revalider) ; 11/21 cartes Vrai/faux à revalider (BO4, sources internationales) ; formulations patient des 14 outils (BO2, à juger à l'usage) ; illustrations 14 outils + vapoteuse à générer (BO7 → `public/illustrations/tabac/<id>.png`) ; occurrences résiduelles du mot « craving » hors périmètre (`src/features/registry.ts`, `nicotine/NicotineModule.tsx`, `plan-arret/PlanArretModule.tsx` — cf. `DECISIONS.md`).
+
 ### Reliquat v1
 - [~] C10 — Compléter le contenu non bloquant · modèle: Sonnet, effort: low · plan: → plans/PLAN_corrections-ux.md
   - [ ] Références de sources par module (HAS / Tabac Info Service) dans `registry.ts`

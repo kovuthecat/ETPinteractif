@@ -1,7 +1,10 @@
 # Contenu des modules — thème : sevrage tabagique
 
-> **Statut : contenu validé le 2026-06-28** (données cliniques fournies par Thibault).
-> Tout contenu médical s'appuie sur des références validées (HAS, Tabac Info Service).
+> **Statut : contenu validé le 2026-06-28**, **resynchronisé le 2026-07-10** (chantier
+> `plans/boite-a-outils/` BO1-BO9 : fusion Craving → Stratégies & outils, refonte Composantes,
+> vapoteuse dans les substituts, section « Si j'ai un écart », 6 cartes Vrai/faux supplémentaires).
+> Tout contenu médical s'appuie sur des références validées (HAS, Tabac Info Service) et, pour les
+> chiffres du module Stratégies & outils, sur `docs/evidence-tabac/2026-07-10-rapport-openevidence-sevrage.md`.
 > ⚠️ Les **références de sources exactes** restent à compléter par Thibault (placeholders dans chaque module).
 
 ---
@@ -10,14 +13,18 @@
 
 - **Style d'interaction : manipulation libre.** Modules = « bacs à sable » (curseurs/boutons, rendu en direct).
 - **Graphiques : qualitatif / relatif.** Aucune unité ni valeur chiffrée ; mention « schéma illustratif ».
-- **Module 1 = carte d'orientation.** Conseils ultra-courts + renvois, pas de duplication.
+- **Module 1 = page de repérage pur.** *(Révisé 2026-07-10)* Sélection de situations sans description ni
+  solution à l'écran (la narration est portée par le soignant) ; un seul CTA contextuel vers le module
+  Stratégies & outils, pas de duplication de son contenu.
 - **Public mixte** (ambivalents + engagés) → ton **non injonctif**, leviers motivationnels disponibles non imposés.
-- **Substituts : 5 formes** (patch, gomme, pastille, comprimé sublingual, spray buccal). *(Inhaleur et vapoteuse retirés le 2026-07-08 — cf. `DECISIONS.md`. La vapoteuse reste un outil d'aide à l'arrêt à part entière au niveau clinique, mais n'apparaît plus dans aucun module manipulable : ni comme « forme de substitut » du Module 3, ni comme outil du bac à sable Nicotine du Module 2 — dont les 3 outils manipulables, depuis la réécriture S4 du 2026-07-08, sont Cigarette/Patch/Substitut.)*
+- **Substituts : 6 formes** (patch, gomme, pastille, comprimé sublingual, spray buccal, vapoteuse). *(Vapoteuse réintégrée le 2026-07-10 — chantier `boite-a-outils` BO5, cf. `DECISIONS.md` — comme outil de réduction des risques à traitement distinct (badge « Réduction des risques », encart de statut « pas un médicament »). Inhaleur reste retiré (2026-07-08). La vapoteuse n'apparaît toujours pas comme outil manipulable du bac à sable Nicotine du Module 2 — dont les 3 outils manipulables restent Cigarette/Patch/Substitut — ni dans les formes ponctuelles (`FORMES_PONCTUELLES`) de la titration du Module 3-B.)*
 - **Sources : affichage discret** (icône dans l'en-tête du module → liste en pop-over).
 - **Zéro persistance** : toute manipulation est éphémère (invariant projet).
-- **Fiches imprimables** (X1-X4, `docs/BRIEF_TABAC.md` §3.1) : 4 fiches à emporter (craving, substituts,
-  motivation, plan d'arrêt), composées à l'écran et imprimées à la volée (`window.print()`) via le
-  composant générique `FicheOverlay` — zéro donnée conservée.
+- **Fiches imprimables** (X1-X4 + BO2, `docs/BRIEF_TABAC.md` §3.1) : 5 fiches à emporter — **Ma carte
+  anti-envie** (attachée à l'outil vague/4D du module Stratégies & outils, contenu inchangé depuis
+  l'ancien module Craving), **Ma boîte à outils** (nouvelle, BO2 — composée des outils cochés par le
+  patient), méthode patch, mes raisons, mon plan d'arrêt — composées à l'écran et imprimées à la volée
+  (`window.print()`) via le composant générique `FicheOverlay` — zéro donnée conservée.
 - **Fil rouge** (X6, `docs/BRIEF_TABAC.md` §3.4) : refrain du thème en exergue d'accueil et en clôture
   des 4 modules « Comprendre », classe globale `.filrouge`/`.fiche-filrouge`.
 - **2ᵉ niveau InfoHover** (X6, `docs/BRIEF_TABAC.md` §3.5) : composant générique créé pour généraliser
@@ -27,35 +34,60 @@
 
 ## Modules retenus (cadrage v1 + v2 + extensions 2026-07-09)
 
-1. Les composantes de l'addiction
+1. Les composantes de l'addiction (refonte 2026-07-10 : sélection radiale de situations, cf. Module 1)
 2. La nicotine : cinétique & seuils
 3. Utilisation des substituts & titration du patch
 4. La nicotine n'est pas le toxique
 5. Le piège du soulagement
-6. Gérer le craving (4D)
+6. Stratégies & outils (fusion avec l'ancien module « Gérer le craving (4D) », le 2026-07-10)
 7. Explorer ma motivation (ajouté 2026-07-01, `PLAN_corrections-v2.md` R9)
-8. Mon plan d'arrêt (ajouté 2026-07-09, brief §3.2)
+8. Mon plan d'arrêt (ajouté 2026-07-09, brief §3.2 ; section 7 « Si j'ai un écart » ajoutée le 2026-07-10)
 
-Carte des renvois (portes de fin de module, `ModuleFooterNav`, X6) : Nicotine → Substituts, Soulagement ·
-Soulagement → Substituts, Craving · Craving → Motivation, Plan d'arrêt · Substituts → Plan d'arrêt,
-Nicotine · Motivation → Plan d'arrêt · Nicotine ≠ toxique → Substituts, Nicotine (inchangé) · Addiction →
-portes contextuelles dans le panneau (pas de pied dupliqué) · Plan d'arrêt → aucune (la fiche est la sortie).
+Carte des renvois (portes de fin de module, `ModuleFooterNav`, X6 ; mise à jour BO1-BO3 du 2026-07-10) :
+Nicotine → Substituts, Soulagement · Soulagement → Substituts, Stratégies & outils · Stratégies & outils
+→ Plan d'arrêt, Motivation · Substituts → Plan d'arrêt, Nicotine · Motivation → Plan d'arrêt · Nicotine ≠
+toxique → Substituts, Nicotine (inchangé) · Addiction → CTA contextuel unique vers Stratégies & outils
+(situations sélectionnées transmises en contexte de navigation, pas de pied `ModuleFooterNav`) · Plan
+d'arrêt → aucune (la fiche est la sortie).
 
 ---
 
 ### Module 1 — Les composantes de l'addiction
 
-**Objectif** : comprendre que l'addiction au tabac a 3 dimensions imbriquées, chacune avec ses leviers.
+**Objectif** : repérer, avec le patient, les situations qui déclenchent l'envie de fumer dans chacune
+des 3 dimensions de l'addiction — sans dupliquer le contenu du module Stratégies & outils. La
+narration (expliquer *pourquoi* physique/psychologique/comportementale, donner du sens aux situations)
+reste portée par le soignant ; l'écran ne fait que le **repérage**.
 
-**Structure interactive** : 3 piliers cliquables — **Physique (nicotinique)** · **Psychologique** · **Comportementale**. Clic sur un pilier → 2 onglets : « De quoi parle-t-on ? » (exemples) puis « Outils / stratégies » (conseils courts + renvois). Les 3 piliers restent visibles.
+**Structure interactive (refonte 2026-07-10, `plans/boite-a-outils/` BO3)** : diagramme de Venn à
+3 cercles cliquables — **Physique (nicotinique)** · **Psychologique** · **Comportementale**, géométrie
+fixe (même rayon dans tous les états). Clic sur un cercle → ses situations se déploient en **menu
+radial** de puces autour du cercle (secteur d'arc dédié par pilier, même géométrie que l'ancien menu
+radial du module). Les situations sont désormais **la liste canonique partagée**
+`src/features/tabac/situations.ts` (20 situations, 3 piliers) — plus aucun libellé en dur dans le
+composant :
 
-| Composante | Exemples (« de quoi on parle ») | Outils (courts) + renvois |
-| --- | --- | --- |
-| Physique | manque, irritabilité, nervosité, troubles concentration/sommeil, fringales, craving | substituts adaptés → *Module 3* ; comprendre le manque → *Module 2* |
-| Psychologique | stress, anxiété, ennui, plaisir, récompense, stimulation, « anti-déprime » | gestion stress/respiration, alternatives plaisir → *Module 6* |
-| Comportementale | automatismes : café-clope, après repas, pause, voiture, téléphone, social, alcool | repérer/rompre les associations, modifier routines → *Module 6* |
+| Pilier | Situations (`situations.ts`) |
+| --- | --- |
+| Physique | Manque, Irritabilité, Nervosité, Concentration difficile, Sommeil perturbé, Fringales, Envie irrépressible |
+| Psychologique | Stress, Anxiété, Ennui, Plaisir / récompense, Stimulation, « Anti-déprime » |
+| Comportementale | Café-clope, Après les repas, En pause, En voiture, Avec le téléphone, En société, Avec l'alcool |
 
-**Vigilance** : rester une carte d'orientation, ne pas dupliquer les modules dédiés.
+Chaque situation est une **puce à bascule** (`aria-pressed`, double encodage fond plein + coche +
+texte inversé quand sélectionnée). La sélection (un `Set` d'ids) est **persistante en changeant de
+pilier** — on peut sélectionner des situations dans les 3 piliers — avec un badge « · n » sur la
+légende de chaque pilier. **Aucun texte descriptif n'apparaît à l'écran** : ni « De quoi parle-t-on ? »,
+ni tooltip, ni panneau latéral, ni renvoi direct vers un autre module — ce panneau et ces renvois
+directs (vers nicotine/substituts/craving) ont été retirés avec la refonte.
+
+**CTA** : sous le diagramme, dès qu'au moins une situation est sélectionnée, un bouton primaire
+« Stratégies et outils (n) » navigue vers le module **Stratégies & outils** (`boite-a-outils`) avec la
+sélection en contexte de navigation (`{ situations: [...] }`) — la grille d'outils s'y ouvre déjà
+pré-filtrée sur ces situations. À 0 sélection, une ligne discrète invite à sélectionner.
+
+**Vigilance** : rester une page de repérage pur (zéro texte pédagogique par situation), ne pas
+dupliquer le module Stratégies & outils. Le retour arrière remet le module à zéro (le `Set` de
+sélection n'est pas conservé dans l'historique de navigation — comportement accepté, cf. `DECISIONS.md`).
 **Sources** : HAS / Tabac Info Service *(références exactes à compléter)*.
 
 ---
@@ -101,8 +133,9 @@ Invariants garantis (voir `nicotineCurve.test.ts`, 37+ tests) : clairance noctur
 
 **Partie A — Bonnes pratiques par forme.** Sélecteur de formes ; chaque forme = « bonnes pratiques » + « erreurs fréquentes » :
 
-- Patch (24 h / 16 h), gomme, pastille, comprimé sublingual, spray buccal.
-  *(Inhaleur et vapoteuse retirés le 2026-07-08 — décision Thibault, cf. `DECISIONS.md` ; les 5 formes conservées ont toutes un contenu validé.)*
+- Patch (24 h / 16 h), gomme, pastille, comprimé sublingual, spray buccal, **vapoteuse** (réintégrée
+  le 2026-07-10, cf. ci-dessous). *(Inhaleur reste retiré depuis le 2026-07-08 — décision Thibault,
+  cf. `DECISIONS.md`.)*
 
 **Contenu validé par Thibault (2026-07-01) — intégré dans le code :**
 
@@ -120,6 +153,21 @@ Erreurs : croquer ou avaler le comprimé.
 
 *Spray buccal* — bonnes pratiques : une ou deux pulvérisations dès que l'envie se fait sentir ; pulvériser sur l'intérieur des joues ; efficace en ~1 min.
 Erreurs : viser le fond de la gorge / inhaler la pulvérisation.
+
+*Vapoteuse* (réintégrée le 2026-07-10, `// à revalider (Thibault)`, rédigée d'après HAS/HCSP + rapport
+OE) — bonnes pratiques : choisir le dosage de nicotine avec un professionnel (un dosage trop faible
+est la première cause de retour à la cigarette) ; tirer lentement, en bouffées longues et espacées ;
+vapoter dès les premiers signes d'envie, autant que nécessaire ; objectif = remplacer complètement le
+tabac fumé, puis réduire progressivement le dosage à distance.
+Erreurs : sous-doser « pour faire moins fort » ; continuer à fumer en parallèle (« double usage ») ;
+reproduire les bouffées courtes et rapides de la cigarette ; acheter hors des circuits contrôlés
+(normes UE/AFNOR).
+**Encart de statut** (affiché uniquement quand la forme est sélectionnée, style sobre, pas une alerte) :
+« La vapoteuse n'est pas un médicament : c'est un outil de réduction des risques, utile aux personnes
+qui n'ont pas réussi avec les traitements validés. Les substituts restent le premier choix. À discuter
+avec un professionnel. » `// à revalider (Thibault)`. **Badge** sur le bouton de sélection : « Réduction
+des risques » (libellé + pictogramme, jamais couleur seule). N'entre pas dans les formes ponctuelles
+(`FORMES_PONCTUELLES`) de la titration du patch (partie B).
 
 **Partie B — Méthode de titration du patch (illustration de la MÉTHODE, pas un calculateur)** :
 
@@ -174,31 +222,118 @@ Interaction : cliquer un composant pour afficher son rôle/effet.
 
 ---
 
-### Module 6 — Gérer le craving (4D)
+### Module 6 — Stratégies & outils *(ex-« Gérer le craving (4D) », fusionné le 2026-07-10)*
 
-**Objectif** : montrer que l'envie est une **vague de quelques minutes** qui retombe, et donner des techniques immédiates.
+**Objectif** : proposer, situation par situation, des techniques concrètes pour faire face à l'envie
+sans fumer — l'ancien outil vague/4D devient **un outil parmi 14**, filtrables selon les situations
+sélectionnées au Module 1 — et permettre de composer une fiche « Ma boîte à outils » à emporter.
+**Autorité chiffrée** : les niveaux de preuve numériques ci-dessous (OR, SMD, RR) proviennent de
+`docs/evidence-tabac/2026-07-10-rapport-openevidence-sevrage.md` — **ils ne vivent que dans cette
+documentation** ; l'écran patient n'affiche jamais qu'une des 2 mentions qualitatives
+« Efficacité démontrée dans les études » / « Recommandé par les experts du sevrage » (cf. décision
+transverse « Niveaux de preuve à l'écran », `DECISIONS.md` 2026-07-10).
 
-**Structure interactive** :
+**Structure interactive (`boite-a-outils/`)** :
 
-1. **La vague de l'envie** : courbe en cloche (tracé Bézier) ; bouton « Je ressens un craving » →
-   **compte à rebours réel de 3 min** (horloge `3:00 → 0:00`, `CRAVING_DURATION = 180` s dans
-   `CravingModule.tsx`), un repère parcourt la vague au même rythme. **3 phases** : `idle` (« Une envie
-   arrive ? »), `active` (compte à rebours + 4D affichés), `done` (« La vague est passée » — réservé à
-   la fin réelle du décompte). Bouton « Recommencer » en phase `done`.
-2. **Les 4 D** (cartes cliquables/bascules, actives pendant la phase `active`), libellés exacts du
-   code :
-   - **Différer** : attendre que la vague passe.
-   - **Détourner l'attention** : occuper les mains et l'esprit quelques minutes.
-   - **Se détendre — respirez** : respiration lente — **animation de respiration** (cercle qui grandit/se
-     resserre, inspire/expire 5 s, en boucle quand la carte est activée).
-   - **D'eau** : boire un verre d'eau lentement, en petites gorgées.
-   - Aparté discret, en toute phase : en parler / **Tabac Info Service 39 89**.
-3. **Fiche « Ma carte anti-envie »** (X2) : bouton « Préparer ma carte » (hors phase `active`) → voir
-   `docs/BRIEF_TABAC.md` §3.1.
+1. **Intro** (1 ligne) : « Des techniques simples, à choisir selon vos situations. Touchez un outil
+   pour voir comment l'utiliser. »
+2. **Barre de filtres** : chips des 20 situations de `situations.ts`, groupées par pilier dans un
+   `<details>` replié « Filtrer selon mes situations ». À l'arrivée depuis le Module 1 (contexte de
+   navigation `{ situations: [...] }`), les situations transmises sont pré-actives. Filtre en
+   **union** : un outil s'affiche si aucune chip n'est active, s'il est `transverse`, ou si ses
+   situations croisent au moins une chip active.
+3. **Grille de 14 outils** (carte = illustration + titre + accroche + case « Dans ma fiche »
+   indépendante). Clic sur la carte → panneau de détail : illustration, titre, situations liées
+   (double encodage pastille pilier + libellé), **mention de preuve qualitative** (jamais de chiffre),
+   bloc « **Comment le proposer** » (formulation patient entre guillemets), renvoi éventuel, bouton
+   « Ajouter à ma fiche ». Pour `outil-vague-4d` : bouton « Lancer l'outil » → l'outil interactif
+   vague/4D (voir ci-dessous, code hérité de l'ancien module Craving, mécanique inchangée).
+4. **Pied** : bouton « Imprimer ma boîte à outils (n) » → fiche « Ma boîte à outils » (titre +
+   consigne d'une ligne par outil coché, jusqu'à ~12 outils lisibles en A4) + aparté « En parler —
+   Tabac Info Service 39 89 ».
+5. **Portes de fin de module** → Plan d'arrêt, Motivation.
 
-**Renvoi** ← Module 1 (composantes psychologique & comportementale) · **Portes de fin de module**
-(X6) → Motivation, Plan d'arrêt.
-**Sources** : HAS / Tabac Info Service *(à compléter)*.
+**Les 14 outils** (id, titre, situations, niveau de preuve *qualitatif à l'écran*, renvoi) :
+
+| # | id | Titre | Situations | Preuve (écran) | Renvoi |
+| --- | --- | --- | --- | --- | --- |
+| 1 | `outil-vague-4d` | Laisser passer la vague — les 4D | transverse | Recommandé par les experts | — |
+| 2 | `outil-si-alors` | Mes plans « SI… ALORS… » | transverse | Efficacité démontrée | Plan d'arrêt |
+| 3 | `outil-bouger` | Bouger 10 minutes | craving, stress, ennui, stimulation, déprime, fringales | Efficacité démontrée | — |
+| 4 | `outil-respiration` | Respirer pour redescendre | stress, anxiété, nervosité, irritabilité | Recommandé par les experts | Soulagement |
+| 5 | `outil-surfer` | Surfer sur l'envie | anxiété, craving, manque | Recommandé par les experts | — |
+| 6 | `outil-place-nette` | Faire place nette | café, repas, voiture | Recommandé par les experts | — |
+| 7 | `outil-routine` | Casser la routine | café, repas, pause, voiture, téléphone | Recommandé par les experts | — |
+| 8 | `outil-mains-bouche` | Occuper les mains et la bouche | fringales, ennui, téléphone, craving, café | Recommandé par les experts | — |
+| 9 | `outil-journal` | Une semaine d'observation | transverse | Recommandé par les experts | — |
+| 10 | `outil-refus` | Ma phrase de refus | social, alcool, pause | Recommandé par les experts | — |
+| 11 | `outil-recompense` | Se récompenser — la tirelire | plaisir, déprime, stimulation | Recommandé par les experts | — |
+| 12 | `outil-anti-ennui` | La liste anti-ennui | ennui, stimulation, téléphone | Recommandé par les experts | — |
+| 13 | `outil-faux-pas` | Si j'ai un écart — le plan de secours | transverse | Recommandé par les experts | Plan d'arrêt |
+| 14 | `outil-substituts` | Traiter le manque — les substituts | manque, irritabilité, nervosité, concentration, sommeil, fringales, craving | Efficacité démontrée | Substituts |
+
+**Détail par outil** (principe + formulation patient, verbatim `data.ts` ; chiffres bruts du rapport OE
+entre parenthèses, **jamais affichés à l'écran**) :
+
+1. **Les 4 D** : une envie de fumer est une vague de 3 à 5 minutes qui redescend toujours, qu'on fume
+   ou non. Différer, Détourner l'attention, se Détendre, boire De l'eau aident à tenir pendant le pic.
+   Outil hérité tel quel de l'ancien module Craving (minuteur réel 180 s, animation de respiration,
+   fiche « Ma carte anti-envie »).
+2. **Plans « SI… ALORS… »** : pré-programmer une réponse précise pour chaque situation à risque
+   court-circuite la décision au moment critique — *OR 1,70 (IC 95 % 1,32–2,20) pour le sevrage,
+   méta-analyse de 12 études*. Formuler 3 à 5 plans écrits, relus chaque matin.
+3. **Bouger 10 minutes** : un exercice bref (même 10 min de marche rapide) fait nettement baisser
+   l'envie, effet persistant 20-30 min — *SMD −1,64 (IC 95 % −2,22 à −1,05), effet aigu sur le
+   craving*. À défaut : 5 contractions des poings 10 s.
+4. **Respirer pour redescendre** : la respiration lente active le système d'apaisement du corps ;
+   rappel utile — la cigarette ne réduit pas le stress, elle soulage le manque qu'elle a elle-même
+   créé (*paradoxe tabac-stress, SMD −0,37 anxiété / −0,27 stress après l'arrêt*). Respiration 4-7-8
+   (inspirer 4 s, retenir 7 s, souffler 8 s, ×3).
+5. **Surfer sur l'envie** : observer l'envie comme une vague qu'on regarde passer, sans lutter ni
+   céder, affaiblit peu à peu le lien situation-cigarette (pleine conscience informelle, niveau de
+   preuve faible à modéré selon Cochrane).
+6. **Faire place nette** : chaque objet/lieu associé à la cigarette est un déclencheur ; les retirer du
+   champ de vision désamorce l'automatisme (contrôle du stimulus, composante du counseling infirmier —
+   *RR 1,29, IC 95 % 1,21–1,38, 44 essais*).
+7. **Casser la routine** : modifier un élément de la séquence café/repas/pause (lieu, ordre, boisson)
+   casse l'enchaînement automatique (méta-régression sur 143 groupes, processus auto-régulateurs
+   *B = 0,041, p < 0,05*).
+8. **Occuper les mains et la bouche** : un geste de remplacement incompatible avec la cigarette comble
+   le vide sensoriel pendant que l'envie redescend (substitution comportementale, consensus ACC).
+9. **Une semaine d'observation** : noter chaque cigarette avec son contexte avant l'arrêt fait
+   apparaître les schémas répétitifs — première étape recommandée pour planifier des parades ciblées.
+10. **Ma phrase de refus** : une réponse courte et préparée évite d'improviser au moment vulnérable ;
+    vigilance particulière avec l'alcool, qui baisse la garde (revue de 27 études : consommation
+    d'alcool associée à des taux de sevrage plus faibles dans 20/27 études).
+11. **Se récompenser — la tirelire** : planifier des plaisirs de remplacement et matérialiser l'argent
+    économisé soutient la motivation les premières semaines (incitations financières, revue Cochrane
+    de 43 études).
+12. **La liste anti-ennui** : une liste de 10 activités courtes, préparée à l'avance, évite de rester
+    inactif face à une envie — l'envie a besoin de vide pour s'installer.
+13. **Si j'ai un écart — le plan de secours** : un écart n'est pas une rechute ; le geste d'après compte
+    plus que l'écart lui-même. Plan en 3 gestes (jeter le paquet, appeler quelqu'un, relire ses
+    raisons) puis reprendre les substituts comme avant — le **recyclage immédiat** après un écart
+    multiplie les chances de réussite (*OR 3,5, IC 95 % 1,0–12,4, vs. attente, essai SMART*). Rationnel
+    partagé avec la section 7 du Module 8 (préparer la réponse à l'écart *avant* le jour J).
+14. **Traiter le manque — les substituts** : les signes physiques du manque (irritabilité, nervosité,
+    concentration, sommeil, fringales) se traitent avec des substituts bien dosés — patch pour le fond,
+    forme orale pour les pics d'envie (association recommandée, HAS/Cochrane).
+
+**Outil interactif vague/4D** (`VagueCraving.tsx`, déplacé quasi tel quel depuis l'ancien module
+Craving) : courbe en cloche (tracé Bézier) ; bouton → **compte à rebours réel de 3 min** (`3:00 →
+0:00`, `CRAVING_DURATION = 180` s), un repère parcourt la vague au même rythme. **3 phases** : `idle`
+(« Une envie arrive ? »), `active` (compte à rebours + 4D affichés), `done` (« La vague est passée » —
+réservé à la fin réelle du décompte). Les 4 D restent des cartes cliquables/bascules actives pendant la
+phase `active`, avec l'animation de respiration (cercle qui grandit/se resserre, inspire/expire 5 s).
+Fiche « Ma carte anti-envie » (X2) inchangée : bouton « Préparer ma carte » (hors phase `active`) → voir
+`docs/BRIEF_TABAC.md` §3.1. Bouton « ← Retour aux outils » pour revenir à la grille (remplace l'ancien
+`ModuleFooterNav` interne, qui vit désormais au niveau du module).
+
+**Renvoi** ← Module 1 (sélection de situations, transmise en contexte de navigation) · **Portes de fin
+de module** (X6) → Plan d'arrêt, Motivation.
+**Sources** : HAS — Arrêt de la consommation de tabac (2014) · Tabac Info Service · ACC — Tobacco
+Cessation Treatment Pathway (2018) `// à revalider (Thibault)` · Cochrane — revues sevrage tabagique
+`// à revalider (Thibault)`.
 
 ---
 
@@ -241,14 +376,25 @@ source HAS/Tabac Info Service.
 
 ---
 
-### Module 8 — Mon plan d'arrêt (ajouté 2026-07-09)
+### Module 8 — Mon plan d'arrêt (ajouté 2026-07-09 ; section 7 ajoutée le 2026-07-10)
 
 **Objectif** : clore l'arc du thème par l'**application** — rassembler ce qui a été compris et choisi
 (date, substituts, situations à risque, parades, raisons) en un plan concret, imprimé, collé au frigo.
 Contenu détaillé, décisions et libellés exacts : `docs/BRIEF_TABAC.md` §3.2 (autorité normative — non
 dupliqué ici). **Aucune porte de fin de module** : la fiche imprimée est la sortie du module.
+
+**Section 7 — « Si j'ai un écart »** (ajoutée BO6, 2026-07-10, 7ᵉ et dernière section, après « 6. Autour
+de moi ») : rationnel — préparer la réponse à l'écart **avant** le jour J plutôt que de l'improviser
+(recommandation forte du rapport OE, cf. Module 6 outil `outil-faux-pas` : le recyclage immédiat après
+un écart multiplie les chances de réussite). Phrase d'ancrage : « Un écart n'est pas une rechute. Je
+prépare maintenant mes 3 gestes pour repartir aussitôt. » Chips pré-alimentées (+ saisie libre, comme
+les 6 autres sections) : « Je jette le paquet et le briquet » · « J'appelle quelqu'un — un proche ou le
+39 89 » · « Je relis mes raisons d'arrêter » · « Je continue mes substituts comme avant ». Reprise sur
+la fiche imprimée (bloc « Si j'ai un écart — repartir aussitôt », conditionné à ≥ 1 geste coché). Ton :
+« écart » uniquement, jamais « craquer »/« rechute » dans les libellés. Chips substituts (section 2) :
+« Vapoteuse » ajoutée en fin de liste (cohérence avec le Module 3).
 **Sources** : aucune (pas de contenu clinique chiffré — reprend, en chips, des libellés déjà validés des
-modules Substituts, Addiction, Craving et Motivation).
+modules Substituts, Addiction, Stratégies & outils et Motivation).
 
 ---
 
@@ -288,27 +434,38 @@ modules Substituts, Addiction, Craving et Motivation).
 
 Navigation : points cliquables (cible ≥ 44 px) + boutons ‹ › ; compteur sobrement placé ; « Recommencer » réinitialise. On peut passer une carte sans répondre. Consigne d'ouverture : « À votre avis, vrai ou faux ? Répondez, puis regardons ce qu'en disent les faits. »
 
-**Les 15 affirmations** (toutes livrées actives — à revalider par Thibault après usage) :
+**Les 21 affirmations** (toutes livrées actives — à revalider par Thibault après usage ; 6 cartes
+ajoutées le 2026-07-10, BO4, issues des rapports OE poids et cigarette électronique) :
 
-| # | Affirmation | Verdict | Explication (+ nuance) | Source | Renvoi |
-| --- | --- | --- | --- | --- | --- |
-| 1 | « Fumer me détend. » | FAUX | La nicotine est un stimulant, pas un calmant. La sensation de détente vient surtout du soulagement du manque — créé par la cigarette précédente. Après le sevrage, le niveau moyen de stress et d'anxiété diminue chez la plupart des personnes. | Tabac Info Service | Module 5 |
-| 2 | « Les substituts nicotiniques sont dangereux pour le cœur. » | FAUX | Ce qui abîme le cœur et les vaisseaux, c'est la fumée (monoxyde de carbone, particules) — pas la nicotine seule. Les substituts délivrent la nicotine sans combustion : ils sont utilisables, y compris en cas de maladie cardiaque, avec l'avis d'un professionnel. | HAS · Tabac Info Service | Module 4 |
-| 3 | « J'ai fumé trop longtemps, ça ne sert plus à rien d'arrêter. » | FAUX | Les bénéfices commencent 20 minutes après la dernière cigarette et s'accumulent pendant des années, quel que soit l'âge et l'ancienneté du tabagisme. Arrêter après 60 ans améliore encore la santé et l'espérance de vie. | Tabac Info Service · OMS | Module 9 |
-| 4 | « Quelques cigarettes par jour, ce n'est pas vraiment dangereux. » | FAUX *(nuancé)* | Il n'existe pas de seuil sans risque : même 1 à 5 cigarettes par jour exposent à une part importante du risque d'infarctus et d'AVC — le risque cardiovasculaire n'est pas proportionnel au nombre de cigarettes. Réduire reste un pas — mais c'est l'arrêt qui protège. | Santé publique France | — |
-| 5 | « Les cigarettes "light" ou roulées sont moins nocives. » | FAUX | Les « light » n'ont jamais réduit le risque : on compense en tirant plus fort et plus profondément (l'appellation est d'ailleurs interdite depuis 2003). Le tabac à rouler délivre au moins autant — souvent plus — de goudrons et de monoxyde de carbone. | Tabac Info Service | Module 4 |
-| 6 | « Si j'arrête, je vais forcément prendre beaucoup de poids. » | FAUX | La prise moyenne est de 2 à 4 kg, et environ une personne sur trois n'en prend pas. La nicotine augmentait les dépenses d'énergie : le corps se rééquilibre. Les substituts bien dosés et l'activité physique limitent nettement cette prise — et rien n'oblige à tout mener de front. | Tabac Info Service · HAS | Module 3 |
-| 7 | « Arrêter de fumer, c'est juste une question de volonté. » | FAUX | La dépendance est un mécanisme neurobiologique (les récepteurs à la nicotine du cerveau), pas un trait de caractère. La volonté compte, mais un accompagnement et des substituts bien dosés multiplient par 1,5 à 2 les chances de réussite. Demander de l'aide n'est pas un aveu de faiblesse. | HAS · Cochrane | Module 1 |
-| 8 | « J'ai déjà essayé les patchs : ça ne marche pas sur moi. » | FAUX *(nuancé)* | Le plus souvent, ce n'est pas le patch qui a échoué : c'est la dose qui était trop faible, ou la durée trop courte. La dose s'ajuste au ressenti (par quarts de patch) et se complète d'une forme orale pour les envies. Une tentative « ratée » renseigne surtout sur le bon réglage pour la prochaine. | HAS | Module 3 |
-| 9 | « Une cigarette pendant le sevrage, et tout est à refaire. » | FAUX | Un écart n'est pas une rechute : il n'efface ni les bénéfices déjà acquis, ni ce que vous avez appris. Ce qui compte, c'est la trajectoire d'ensemble, pas la perfection. Comprendre ce qui a déclenché l'écart prépare la suite. | Tabac Info Service | Module 6 |
-| 10 | « Le corps commence à se réparer moins d'une heure après la dernière cigarette. » | VRAI | Dès 20 minutes, la pression artérielle et la fréquence cardiaque redeviennent normales. En 24 à 48 heures, le monoxyde de carbone est éliminé, le goût et l'odorat reviennent. La réparation démarre tout de suite — et continue pendant des années. | Tabac Info Service | Module 9 |
-| 11 | « On peut utiliser un patch et une gomme en même temps. » | VRAI | C'est même recommandé quand les envies persistent : le patch assure un fond stable, la forme orale (gomme, pastille, spray) répond aux pics d'envie. Cette association augmente les chances de réussite — elle se règle avec un professionnel. | HAS · Cochrane | Module 3 |
-| 12 | « Il faut souvent plusieurs tentatives avant d'arrêter pour de bon. » | VRAI | La plupart des ex-fumeurs ont fait plusieurs tentatives avant l'arrêt durable. Chaque tentative n'est pas un échec : c'est un entraînement qui augmente les chances de la suivante. | Tabac Info Service | Module 7 |
-| 13 | « Une envie de fumer finit toujours par passer, même sans fumer. » | VRAI | Une envie est une vague de quelques minutes : elle monte, culmine, puis retombe d'elle-même — qu'on fume ou non. Les techniques des 4D aident à la laisser passer, et les vagues s'espacent avec le temps. | Tabac Info Service | Module 6 |
-| 14 | « La vapoteuse est aussi dangereuse que la cigarette. » | FAUX *(nuancé)* | En l'état des connaissances, la vapoteuse est nettement moins nocive que la cigarette, car il n'y a pas de combustion — donc ni goudrons ni monoxyde de carbone. Elle n'est pas anodine pour autant, et l'objectif reste de s'en libérer aussi. À discuter avec un professionnel. | Santé publique France *(à revalider Thibault)* | Module 4 |
-| 15 | « Réduire sa consommation sans arrêter protège déjà la santé. » | FAUX *(nuancé)* | Réduire seul protège peu : on compense souvent en tirant davantage sur chaque cigarette, et le risque cardiovasculaire persiste même à faible consommation. En revanche, réduire **avec des substituts**, comme étape préparant l'arrêt complet, est une stratégie valable. | HAS *(à revalider Thibault)* | Module 8 |
+| # | id | Affirmation | Verdict | Explication (+ nuance) | Source | Renvoi |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | `vf-detente` | « Fumer me détend. » | FAUX | La nicotine est un stimulant, pas un calmant. La sensation de détente vient surtout du soulagement du manque — créé par la cigarette précédente. Après le sevrage, le niveau moyen de stress et d'anxiété diminue chez la plupart des personnes. | Tabac Info Service | Soulagement |
+| 2 | `vf-substituts-coeur` | « Les substituts nicotiniques sont dangereux pour le cœur. » | FAUX | Ce qui abîme le cœur et les vaisseaux, c'est la fumée (monoxyde de carbone, particules) — pas la nicotine seule. Les substituts délivrent la nicotine sans combustion : ils sont utilisables, y compris en cas de maladie cardiaque, avec l'avis d'un professionnel. | HAS · Tabac Info Service | Nicotine ≠ toxique |
+| 3 | `vf-trop-tard` | « J'ai fumé trop longtemps, ça ne sert plus à rien d'arrêter. » | FAUX | Les bénéfices commencent 20 minutes après la dernière cigarette et s'accumulent pendant des années, quel que soit l'âge et l'ancienneté du tabagisme. Arrêter après 60 ans améliore encore la santé et l'espérance de vie. | Tabac Info Service · OMS | Ce que l'arrêt répare |
+| 4 | `vf-petit-fumeur` | « Quelques cigarettes par jour, ce n'est pas vraiment dangereux. » | FAUX *(nuancé dans le texte)* | Il n'existe pas de seuil sans risque : même 1 à 5 cigarettes par jour exposent à une part importante du risque d'infarctus et d'AVC. Réduire reste un pas — mais c'est l'arrêt qui protège. | Santé publique France *(à revalider Thibault)* | — |
+| 5 | `vf-light-roule` | « Les cigarettes "light" ou roulées sont moins nocives. » | FAUX | Les « light » n'ont jamais réduit le risque (appellation interdite depuis 2003). Le tabac à rouler délivre au moins autant — souvent plus — de goudrons et de monoxyde de carbone. | Tabac Info Service | Nicotine ≠ toxique |
+| 6 | `vf-poids` | « Si j'arrête, je vais forcément prendre beaucoup de poids. » | FAUX | La prise moyenne est de **3 à 5 kg** (chiffre aligné sur le rapport OE), très variable : environ une personne sur cinq n'en prend pas, ou en perd. Substituts bien dosés et activité physique limitent cette prise — rien n'oblige à mener arrêt et régime de front. | Tabac Info Service · Cochrane *(à revalider Thibault)* | Substituts |
+| 7 | `vf-poids-coeur` | « Prendre du poids à l'arrêt annule le bénéfice pour le cœur. » *(nouvelle, BO4)* | FAUX | Même chez ceux qui prennent beaucoup de poids (> 10 kg), le risque de mourir d'une maladie cardiovasculaire est réduit de moitié à deux tiers par rapport à ceux qui continuent de fumer. Le cœur gagne toujours au change. | NEJM 2018 *(à revalider Thibault)* | Ce que l'arrêt répare |
+| 8 | `vf-fumer-mince` | « Mieux vaut continuer à fumer que de prendre quelques kilos. » *(nouvelle, BO4)* | FAUX | Le tabac tue un fumeur régulier sur deux. Les 3 à 5 kg moyens de l'arrêt n'ont aucun impact comparable — et ils se stabilisent puis diminuent avec les années. | Tabac Info Service · NEJM 2018 *(à revalider Thibault)* | Ce que l'arrêt répare |
+| 9 | `vf-poids-regime` | « Il faut se mettre au régime en même temps qu'on arrête de fumer. » *(nouvelle, BO4)* | FAUX | Déconseillé : une restriction stricte mime les sensations de manque et fragilise le sevrage. Objectif des premiers mois : « maintenir, pas maigrir » (bouger 30 min/jour, boire de l'eau, en-cas peu caloriques). | ACC 2018 · Cochrane *(à revalider Thibault)* | — |
+| 10 | `vf-volonte` | « Arrêter de fumer, c'est juste une question de volonté. » | FAUX | La dépendance est un mécanisme neurobiologique, pas un trait de caractère. Un accompagnement et des substituts bien dosés multiplient par 1,5 à 2 les chances de réussite. | HAS · Cochrane | Addiction |
+| 11 | `vf-patch-marche-pas` | « J'ai déjà essayé les patchs : ça ne marche pas sur moi. » | FAUX *(nuancé)* | Le plus souvent, ce n'est pas le patch qui a échoué : c'est la dose trop faible, ou la durée trop courte. Une tentative « ratée » renseigne surtout sur le bon réglage pour la prochaine. | HAS | Substituts |
+| 12 | `vf-faux-pas` | « Si je craque pour une cigarette, c'est un échec — tout est à refaire. » *(reformulée BO4)* | FAUX | Un écart n'est pas une rechute : il n'efface ni les bénéfices déjà acquis, ni ce que vous avez appris. Il faut en moyenne plusieurs tentatives — souvent 5 ou 6 — avant un arrêt durable, et repartir immédiatement après un écart multiplie les chances de réussite. Ce qui compte : jeter le paquet, continuer les substituts, comprendre le déclencheur. | Tabac Info Service · JAMA 2022 *(à revalider Thibault)* | Stratégies & outils |
+| 13 | `vf-20min` | « Le corps commence à se réparer moins d'une heure après la dernière cigarette. » | VRAI | Dès 20 minutes, la pression artérielle et la fréquence cardiaque redeviennent normales. En 24 à 48 heures, le monoxyde de carbone est éliminé, le goût et l'odorat reviennent. | Tabac Info Service | Ce que l'arrêt répare |
+| 14 | `vf-combinaison` | « On peut utiliser un patch et une gomme en même temps. » | VRAI | C'est même recommandé quand les envies persistent : le patch assure un fond stable, la forme orale répond aux pics d'envie. | HAS · Cochrane | Substituts |
+| 15 | `vf-tentatives` | « Il faut souvent plusieurs tentatives avant d'arrêter pour de bon. » | VRAI | La plupart des ex-fumeurs ont fait plusieurs tentatives avant l'arrêt durable. Chaque tentative est un entraînement qui augmente les chances de la suivante. | Tabac Info Service | Motivation |
+| 16 | `vf-vague` | « Une envie de fumer finit toujours par passer, même sans fumer. » | VRAI | Une envie est une vague de quelques minutes : elle monte, culmine, puis retombe d'elle-même — qu'on fume ou non. Les vagues s'espacent avec le temps. | Tabac Info Service | Stratégies & outils |
+| 17 | `vf-vapoteuse` | « La vapoteuse est aussi dangereuse que la cigarette. » | FAUX *(nuancé)* | Nettement moins nocive que la cigarette (pas de combustion, ni goudrons ni monoxyde de carbone). Pas anodine pour autant ; l'objectif reste de s'en libérer aussi. | Santé publique France *(à revalider Thibault)* | Nicotine ≠ toxique |
+| 18 | `vf-vape-aide` | « La vapoteuse peut aider à arrêter de fumer. » *(nouvelle, BO4)* | VRAI *(nuancé)* | Aide au moins autant que les substituts nicotiniques, à condition de basculer complètement. Pas un médicament : les substituts restent le premier choix, la vapoteuse une option à discuter. | Cochrane 2025 · HCSP *(à revalider Thibault)* | Substituts |
+| 19 | `vf-double-usage` | « Vapoter tout en continuant à fumer, c'est déjà bon pour la santé. » *(nouvelle, BO4)* | FAUX | Le bénéfice n'existe que si la vapoteuse remplace complètement le tabac fumé — fumer et vapoter ensemble expose au moins autant que fumer seul (piège du « double usage »). | Cochrane · revues 2022-2026 *(à revalider Thibault)* | Substituts |
+| 20 | `vf-vapeur-eau` | « La vapeur de la vapoteuse, c'est juste de la vapeur d'eau. » *(nouvelle, BO4)* | FAUX | L'aérosol contient nicotine, propylène glycol, glycérine, arômes et traces irritantes — beaucoup moins que la fumée, mais pas rien. | Santé publique France *(à revalider Thibault)* | Nicotine ≠ toxique |
+| 21 | `vf-reduire` | « Réduire sa consommation sans arrêter protège déjà la santé. » | FAUX *(nuancé)* | Réduire seul protège peu (compensation par bouffée). En revanche, réduire **avec des substituts**, comme étape préparant l'arrêt complet, est une stratégie valable. | HAS *(à revalider Thibault)* | Plan d'arrêt |
 
-**Cartes 4, 14 et 15** : contenu à revalider par Thibault après usage (marqué `// à revalider (Thibault)` dans le code — statut `actif: true` actuellement, pour permettre une revue clinique en conditions réelles ; retrait possible sans code change).
+**Cartes à revalider par Thibault après usage** (marquées `// à revalider (Thibault)` dans le code —
+statut `actif: true` actuellement, pour permettre une revue clinique en conditions réelles ; retrait
+possible sans code change) : 4, 6, 7, 8, 9, 12, 17, 18, 19, 20, 21 — soit toutes les cartes portant une
+source internationale (NEJM, Cochrane, ACC, JAMA) ou Santé publique France en attendant un équivalent
+HAS/Tabac Info Service pour les mêmes affirmations.
 
 **Vigilance** : jamais de jugement (« il faut »), jamais d'humour moqueur, aucune formulation « raté/perdu/gagné ». Badges verdict en couleur + picto, jamais couleur seule (double encodage).
 
@@ -317,11 +474,12 @@ Navigation : points cliquables (cible ≥ 44 px) + boutons ‹ › ; compteur so
 
 ---
 
-## Données cliniques (validées 2026-06-28, complétées 2026-07-08/09)
+## Données cliniques (validées 2026-06-28, complétées 2026-07-08/09/10)
 
 - **Titration** : pas de calcul de dose (méthode illustrée) ; ¼ de patch tous les 2-3 jours tant qu'envie persiste sans surdosage ; pas de dose max (borne = ressenti) ; retour à la dose précédente si surdosage ; signes = nausées, écœurement, céphalées, palpitations, rêves intenses ; patchs sécables ; nuance jour/nuit (dose nuit plus faible si troubles du sommeil) ; objectif d'autonomisation/expérimentation.
-- **Vapoteuse** : outil d'aide à l'arrêt à part entière ; dosage traité **qualitativement**. *(N'apparaît plus comme forme du Module 3 depuis le 2026-07-08 ; n'est plus non plus un outil manipulable du bac à sable Nicotine, Module 2, depuis sa réécriture S4 le même jour — seuls Cigarette/Patch/Substitut y figurent désormais.)*
-- **Craving** : 4 D (Différer, Détourner l'attention, Se détendre — respirez, D'eau) + aparté Tabac Info Service 39 89 ; vague réelle de 3 min (idle/active/done).
+- **Vapoteuse** : outil d'aide à l'arrêt à part entière ; dosage traité **qualitativement**. *(Réintégrée comme 6ᵉ forme du Module 3 le 2026-07-10 — réduction des risques, à revalider Thibault ; reste absente du bac à sable Nicotine, Module 2, et des formes ponctuelles de la titration.)*
+- **Stratégies & outils (ex-Craving)** : 14 outils filtrables par situation, dont les 4 D (Différer, Détourner l'attention, Se détendre — respirez, D'eau, désormais `outil-vague-4d`) + aparté Tabac Info Service 39 89 ; vague réelle de 3 min (idle/active/done) inchangée. Niveaux de preuve à l'écran limités à 2 mentions qualitatives — les chiffres bruts (OR/SMD/RR) ne vivent que dans `docs/evidence-tabac/2026-07-10-rapport-openevidence-sevrage.md`.
+- **Plan d'arrêt** : 7 sections (dont la nouvelle section 7 « Si j'ai un écart », 2026-07-10) + fiche imprimée correspondante.
 - **Motivation** : cadran circulaire 0–10 (Importance, Confiance) + cartes seed — libellés validés par Thibault le 2026-07-08.
 - **Sources** : affichage discret.
 

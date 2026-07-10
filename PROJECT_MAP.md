@@ -2,7 +2,7 @@
 
 Carte synthétique du projet. Permet à ChatGPT et Claude Code de localiser vite les zones pertinentes.
 
-> État : **lot `PLAN_modules-tabac.md` (T1-T11) terminé le 2026-06-28** — scaffolding + les 6 modules du thème tabac sont implémentés et naviguables. **`plans/PLAN_corrections-v2.md` (R1-R9) terminé le 2026-07-01** — dont R9 : ajout d'un 7ᵉ module transverse, `motivation/`. **Moteur multi-thèmes introduit le 2026-07-08** : le thème tabac a été déplacé sous `features/tabac/`, un écran de sélection de thème (`ThemeSelector`) a été ajouté, et un thème `diabete` est scaffoldé (sans contenu, en attente de cadrage). **Chantier `plans/extensions-tabac/` (X1-X7) clos le 2026-07-09** (brief `docs/BRIEF_TABAC.md`) : 8ᵉ module `plan-arret/`, 4 fiches imprimables via `FicheOverlay`, portes de fin de module via `ModuleFooterNav`, fil rouge du thème, composant `InfoHover` (créé, non câblé). Cette carte décrit l'arborescence réelle.
+> État : **lot `PLAN_modules-tabac.md` (T1-T11) terminé le 2026-06-28** — scaffolding + les 6 modules du thème tabac sont implémentés et naviguables. **`plans/PLAN_corrections-v2.md` (R1-R9) terminé le 2026-07-01** — dont R9 : ajout d'un 7ᵉ module transverse, `motivation/`. **Moteur multi-thèmes introduit le 2026-07-08** : le thème tabac a été déplacé sous `features/tabac/`, un écran de sélection de thème (`ThemeSelector`) a été ajouté, et un thème `diabete` est scaffoldé (sans contenu, en attente de cadrage). **Chantier `plans/extensions-tabac/` (X1-X7) clos le 2026-07-09** (brief `docs/BRIEF_TABAC.md`) : 8ᵉ module `plan-arret/`, 4 fiches imprimables via `FicheOverlay`, portes de fin de module via `ModuleFooterNav`, fil rouge du thème, composant `InfoHover` (créé, non câblé). **Chantier `plans/approfondissement-tabac/` (S1-S7) clos le 2026-07-10** : modèle `nicotineCurve.ts` réaliste, `SilhouetteCorps` générique, modules 9 (Ce que l'arrêt répare) et 10 (Vrai ou faux ?). **Chantier `plans/boite-a-outils/` (BO1-BO9) clos le 2026-07-10** : `craving/` remplacé par `boite-a-outils/` (14 outils filtrables, fiche « Ma boîte à outils »), refonte du module Composantes (sélection radiale de situations, `situations.ts` partagé), contexte de navigation générique (`unknown`) dans le moteur, vapoteuse réintégrée dans les Substituts, section « Si j'ai un écart » dans Plan d'arrêt, 6 nouvelles cartes Vrai/faux (21 au total), interrupteur « toniques uniquement » côté diabète/Activité. Cette carte décrit l'arborescence réelle.
 
 ---
 
@@ -38,15 +38,26 @@ src/
     types.ts                # ModuleId/FamilleId (string génériques), Hue, ModuleDef, FamilleDef, ThemeDef, exergue?
     registry.ts              # THEMES: ThemeDef[] — registre des thèmes (tabac + diabete)
     tabac/
-      registry.ts            # MODULES: ModuleDef[] — les 8 modules tabac, titres/résumés/icônes/hue
-      addiction/AddictionModule.tsx              # Module 1 — composantes de l'addiction (T8, C6 : 3 cercles qui se chevauchent)
+      registry.ts            # MODULES: ModuleDef[] — les 10 modules tabac, titres/résumés/icônes/hue
+      situations.ts          # SITUATIONS: 20 situations partagées (3 piliers) + parseSelectionSituations
+                              # (contexte de navigation Addiction → Stratégies & outils, BO1, 2026-07-10)
+      addiction/AddictionModule.tsx              # Module 1 — composantes de l'addiction (refonte BO3 2026-07-10 :
+                                                  # sélection radiale de situations, sans description ni solution à l'écran)
       nicotine/NicotineModule.tsx                # Module 2 — nicotine, frise 24 h cliquable (S4, X6 : ModuleFooterNav)
-      substituts/SubstitutsModule.tsx            # Module 3 — substituts & titration (T9, X3 : fiche, X6 : ModuleFooterNav)
+      substituts/SubstitutsModule.tsx            # Module 3 — substituts & titration, 6 formes dont vapoteuse
+                                                  # (T9, X3 : fiche, X6 : ModuleFooterNav, BO5 2026-07-10 : vapoteuse)
       nicotine-toxique/NicotineToxiqueModule.tsx # Module 4 — nicotine ≠ toxique (T10, X6 : migré sur ModuleFooterNav)
       soulagement/SoulagementModule.tsx          # Module 5 — le piège du soulagement (S7, X6 : ModuleFooterNav)
-      craving/CravingModule.tsx                  # Module 6 — gérer le craving / 4D (T11, X2 : fiche, X6 : ModuleFooterNav)
+      boite-a-outils/BoiteAOutilsModule.tsx      # Module 6 — Stratégies & outils, ex-Craving (BO1-BO2, 2026-07-10) :
+                                                  # 14 outils filtrables par situation, VagueCraving.tsx (4D hérité),
+                                                  # fiche « Ma boîte à outils », X6 : ModuleFooterNav
       motivation/MotivationModule.tsx            # Module 7 — explorer ma motivation (S9 cadran Dial, X4 : fiche, X6)
-      plan-arret/PlanArretModule.tsx             # Module 8 — mon plan d'arrêt (X5, ajouté 2026-07-09, famille agir)
+      plan-arret/PlanArretModule.tsx             # Module 8 — mon plan d'arrêt (X5, ajouté 2026-07-09 ; section 7
+                                                  # « Si j'ai un écart » ajoutée BO6, 2026-07-10 ; famille agir)
+      benefices-arret/BeneficesArretModule.tsx   # Module 9 — ce que l'arrêt répare
+                                                  # (silhouette générique + frise 10 jalons, S5 approfondissement-tabac)
+      idees-recues/IdeesRecuesModule.tsx + data.ts  # Module 10 — Vrai ou faux ? (21 cartes, S6 approfondissement-tabac
+                                                     # + BO4 2026-07-10 : 6 cartes poids/vapoteuse + reformulation faux-pas)
       lib/
         nicotineCurve.ts + .test.ts  # logique pure tabac : sampleCurve/toSvgPath/sampleStress, partagée Modules 2 & 5
     diabete/
@@ -61,7 +72,9 @@ src/
         glycemieCurve.ts / .test.ts  # logique pure diabète : paramsFromAssiette/sampleRepas/sampleActivite/sampleRecuperation/sampleJournee/tempsDansCible (S2, 50 tests)
       mecanisme/MecanismeModule.tsx / .module.css  # Module 1 — C'est quoi le diabète (clé/serrure, 4 temps, S4)
       alimentation/AlimentationModule.tsx / .module.css / data.ts  # Module 2 — Alimentation (déroulé guidé, 4 défis + synthèse, fiche + 2ᵉ niveau, S5 + alimentation-v2 S1-S3)
-      activite/ActiviteModule.tsx / .module.css / data.ts         # Module 3 — Activité physique (rayonnement, jauge, timing, S6)
+      activite/ActiviteModule.tsx / .module.css / data.ts         # Module 3 — Activité physique (rayonnement, jauge, timing, S6 ;
+                                                                    # interrupteur « toniques uniquement » BO8, 2026-07-10 — filtre la
+                                                                    # réserve seule, ne retire jamais un choix déjà placé dans la jauge)
       risque-cardio/RisqueCardioModule.tsx / .module.css          # Module 4 — Risque cardiovasculaire (5 feux, artère, anatomie, fiche, S7)
       complications/ComplicationsModule.tsx / .module.css / data.ts  # Module 5 — Complications (silhouette, « évitable », fiche pied, S8)
       suivi/SuiviModule.tsx / .module.css / logic.ts              # Module 6 — Suivi (cadran année, fiche calendrier, S9)
@@ -81,9 +94,17 @@ docs/
     module-4-risque-cardiovasculaire.md
     modules-5-8-cadrage.md    # modules 5-8, cadrés mais pas encore détaillés écran par écran
   evidence-diabete/           # rapports de synthèse OpenEvidence (sources probantes brutes, thème diabète)
+  evidence-tabac/             # rapports de synthèse OpenEvidence (sources probantes brutes, thème tabac)
+    2026-07-10-rapport-openevidence-sevrage.md  # stratégies comportementales du sevrage — autorité chiffrée
+                                                 # du Module 6 (Stratégies & outils) ; chiffres jamais à l'écran
 plans/
   extensions-tabac/           # X1-X7 : socle fiches, 3 fiches modules, module « Mon plan d'arrêt » + sa fiche,
                                # portes de fin de module + fil rouge + InfoHover, resync docs — chantier clos 2026-07-09
+  approfondissement-tabac/    # S1-S7 : modèle nicotineCurve.ts réaliste, SilhouetteCorps générique, modules
+                               # 9 (Ce que l'arrêt répare) et 10 (Vrai ou faux ?) — chantier clos 2026-07-10
+  boite-a-outils/             # BO1-BO9 : craving → Stratégies & outils, refonte Composantes, vapoteuse
+                               # substituts, section « Si j'ai un écart », 6 cartes Vrai/faux, filtre diabète
+                               # activité — chantier clos 2026-07-10
 PLAN_modules-tabac.md         # plan d'exécution T1-T11 (clos)
 STATUS.md / VALIDATION.md / PROJECT_MAP.md
 ```
@@ -103,16 +124,24 @@ Fichiers clés : `src/components/ModuleShell.tsx`, `src/components/Sources.tsx`,
 Points de vigilance : généricité = clé de la réutilisation multi-thèmes ; aucun module ne duplique son propre en-tête.
 
 ### Feature 3 — Modules du thème tabac
-Rôle : le contenu interactif des 8 modules (addiction, nicotine, substituts, nicotine-toxique, soulagement, craving, motivation, plan-arret).
-Fichiers clés : `src/features/tabac/<slug>/`, contenu source dans `docs/contenu-modules-tabac.md` (mécaniques) et `docs/BRIEF_TABAC.md` (design/pédagogie + extensions X1-X7).
-Points de vigilance : exactitude médicale, sources affichables (via `registry.ts` → `sources?: string[]`), sobriété visuelle, aucun dosage chiffré pour les substituts.
+Rôle : le contenu interactif des 10 modules (addiction, nicotine, substituts, nicotine-toxique,
+soulagement, boite-a-outils, motivation, plan-arret, benefices-arret, idees-recues). `boite-a-outils`
+remplace `craving` depuis le 2026-07-10 (chantier `plans/boite-a-outils/`, BO1-BO2) — le dossier
+`craving/` a été supprimé après déplacement de son code (vague/4D) dans `boite-a-outils/VagueCraving.tsx`.
+Fichiers clés : `src/features/tabac/<slug>/`, `src/features/tabac/situations.ts` (situations partagées
+Addiction ↔ Stratégies & outils), contenu source dans `docs/contenu-modules-tabac.md` (mécaniques +
+niveaux de preuve qualitatifs), `docs/evidence-tabac/` (rapports OpenEvidence, chiffres bruts jamais à
+l'écran) et `docs/BRIEF_TABAC.md` (design/pédagogie + extensions X1-X7).
+Points de vigilance : exactitude médicale, sources affichables (via `registry.ts` → `sources?: string[]`), sobriété visuelle, aucun dosage chiffré pour les substituts, aucun chiffre d'étude brut (OR/SMD/RR) côté patient.
 
-### Feature 3bis — Fiches à emporter, portes de fin de module, fil rouge (extensions X1-X7)
-Rôle : `FicheOverlay` compose et imprime à la volée une feuille A4 (4 fiches : anti-envie, méthode
+### Feature 3bis — Fiches à emporter, portes de fin de module, fil rouge (extensions X1-X7 + BO2)
+Rôle : `FicheOverlay` compose et imprime à la volée une feuille A4 (5 fiches : **Ma carte anti-envie**
+— attachée à l'outil vague/4D de Stratégies & outils —, **Ma boîte à outils** — nouvelle, BO2 —, méthode
 patch, mes raisons, mon plan d'arrêt), zéro persistance ; `ModuleFooterNav` câble des portes optionnelles
-en pied de 6 modules ; le fil rouge du thème (`ThemeDef.exergue`) s'affiche en exergue d'accueil et en
-clôture des 4 modules « Comprendre » ; `InfoHover` généralise le tooltip de zone pour un 2ᵉ niveau de
-lecture, créé mais non câblé tant qu'aucun contenu n'est validé par Thibault.
+en pied de modules (dont Stratégies & outils → Plan d'arrêt/Motivation depuis BO2) ; le fil rouge du
+thème (`ThemeDef.exergue`) s'affiche en exergue d'accueil et en clôture des 4 modules « Comprendre » ;
+`InfoHover` généralise le tooltip de zone pour un 2ᵉ niveau de lecture, créé mais non câblé tant
+qu'aucun contenu n'est validé par Thibault.
 Fichiers clés : `src/components/FicheOverlay.tsx`, `src/components/ModuleFooterNav.tsx`,
 `src/components/InfoHover.tsx`, `src/features/tabac/plan-arret/PlanArretModule.tsx`, `docs/BRIEF_TABAC.md`.
 Points de vigilance : composants génériques, agnostiques du thème (aucun contenu en dur) ; les portes ne
