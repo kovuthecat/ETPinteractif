@@ -4,7 +4,7 @@
 
 > **Frontières** — STATUS : état actuel · `TASKS.md` : backlog + tâches · `plans/` : plan d'une tâche active · `VALIDATION.md` : checklist visuelle.
 >
-> **Dernière mise à jour :** 2026-07-10 (alimentation-v2 — consolidation S1-S4 : déroulé, lisibilité défi ②, 2ᵉ niveau InfoHover, contexte consolidé)
+> **Dernière mise à jour :** 2026-07-10 (approfondissement-tabac S7 — consolidation S1-S6 : refonte nicotineCurve, +2 modules, prompts, contexte mis à jour)
 
 ## Phase actuelle
 
@@ -36,6 +36,44 @@ validée par Thibault à ce stade, cf. §5 du brief — comportement attendu, co
 sur l'état réel du code (aucun fichier `src/` modifié). X1-X6 codés mais **non commités** au moment de X7
 (cf. `git status` — normal, contexte de session en cours). `tsc --noEmit` + `vite build` verts pour
 l'ensemble ; `vitest run` (20 tests) vert.
+
+## Phase actuelle (suite)
+
+**Phase 9 (approfondissement-tabac)** — **Chantier multi-agents S1-S6 + consolidation S7 (2026-07-09/10)** :
+Trois domaines d'amélioration du thème tabac lancés le 2026-07-09 pour approfondir la compréhension clinique :
+1. **Courbes réalistes** (S3) : refonte du modèle `nicotineCurve.ts` pour refléter les ordres de grandeur
+   pharmacologiques réels (demi-vie ≈ 2 h, pic cigarette < 10 min, patch 2-4 h, saturation/tolérance, tension
+   du manque liée à la nicotinémie) tout en préservant la pédagogie des 3 zones. API gelée. 37 invariants testés
+   → 78/78 tests verts (S3).
+2. **Silhouette générique** (S2) : promotion du composant diabète en `src/components/SilhouetteCorps` générique
+   (zones en données, états `actif`/`ouvert`/`allume`/`verrouille`/`masque`, motif vaisseaux optionnel) ; wrapper
+   diabète en `src/features/diabete/components/Silhouette.tsx` iso-API (aucun module diabète ne change).
+3. **Deux nouveaux modules tabac** (S1 socle, S5-S6 implémentation) :
+   - **Module 9 — Ce que l'arrêt répare** (S5) : silhouette générique + frise de 10 jalons (20 min → 10-15 ans)
+     rallumant le corps zone par zone — registre exclusivement positif (jamais l'organe malade). Famille Se motiver.
+     Chiffres à revalider (source : Tabac Info Service / OMS).
+   - **Module 10 — Vrai ou faux ?** (S6) : 15 cartes d'idées reçues, verdict factuel + nuancé + sourcé (livrées
+     toutes actives, cartes 4/14/15 flaggées `// à revalider (Thibault)` pour revue clinique réelle avant
+     usage en consultation). Famille Comprendre. Ton informatif, jamais culpabilisant.
+4. **Prompts d'illustrations** (S4) : section « Tabac — bénéfices » (8 vignettes d'organes) + « Tabac — vrai/faux »
+   (15 vignettes affirmations) dans `design/illustrations/prompts-illustrations-diabete.html` + nouveau style
+   carré `tabacsq` (palette crème/kraft, format 1:1).
+
+**Points à revalider par Thibault** (non bloquants pour S7, livrés avec la liasse de commits) :
+- **Jalons S5** : chiffres et formulations (source Tabac Info Service / OMS, constantes commentées `// à revalider`).
+- **Cartes sensibles S6** : vapoteuse (n° 14) et réduction (n° 15) — contenu marqué `// à revalider`, statut
+  `actif: true` actuellement pour permettre revue réelle en usage. Retrait possible sans code change.
+- **Carte S6 supplémentaire** : n° 4 « Quelques cigarettes » — marquée `// à revalider` sur la source, formulée
+  sur Santé publique France (vérifier actualité).
+- **Mention du graphe S3** : `NicotineModule.tsx` dispose d'une mention actualisée (« ordres de grandeur réels »)
+  **derrière une constante avec `// à revalider (Thibault)`** ; l'ancienne mention reste par défaut.
+- **Illustrations tabac** : PNG à générer selon les prompts S4 et déposer dans `public/illustrations/tabac/<id>.png`
+  (piège C2PA/Inkscape : ré-encoder via Pillow ; convention d'ids dans `plans/approfondissement-tabac/S4.md`).
+
+**Gate consolidation S7 (avant commit)** : `npx tsc --noEmit` ✓ · `npm run build` ✓ (1855 modules) ·
+`npm test` ✓ (78/78 tests). Commits S1-S6 créés atomiquement (5 fichiers) + commit docs
+(contenu-modules-tabac.md) + commit contexte (STATUS/TASKS/VALIDATION/PROJECT_MAP/DECISIONS/index.md).
+Aucun push (attente validation orchestrateur).
 
 ## Ce qui fonctionne
 

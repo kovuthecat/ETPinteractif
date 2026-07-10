@@ -77,6 +77,17 @@ Index des tâches : backlog + actives. Historique des tâches faites : `git log`
   - Vagues : V1 = S1·S2 (parallèles, zones disjointes) → V2 = S3 (solo) → V3 = S4 (solo). **Chantier clos 2026-07-10.**
   - ⚠️ Points ouverts Thibault : valeurs qualitatives sel/graisses/oméga-3 (à revalider), bande moyen étroite défi ② (recalibrage futur), illustrations 3 aliments (placeholders).
 
+### Approfondissement tabac (2026-07-09, refonte courbe + 2 modules + prompts) · plan: → plans/approfondissement-tabac/ (index + S1-S7)
+- [x] AP1 — Registre +2 modules (benefices-arret, idees-recues) + stubs + IllustrationSlot tabac · modèle: Sonnet, effort: low · plan: → plans/approfondissement-tabac/S1.md (auto OK : tsc --noEmit + vite build verts)
+- [x] AP2 — Silhouette générique SilhouetteCorps + wrapper diabète iso-API · modèle: Sonnet, effort: medium · plan: → plans/approfondissement-tabac/S2.md (auto OK : tsc --noEmit + vite build + vitest 61 tests verts)
+- [x] AP3 — Refonte nicotineCurve.ts (demi-vie 2h, Bateman, saturation, tension) + tests invariants · modèle: Sonnet, effort: high · plan: → plans/approfondissement-tabac/S3.md (auto OK : tsc --noEmit + vite build + vitest 78 tests verts)
+- [x] AP4 — Prompts illustrations tabac (bénéfices + vrai/faux) + style carré tabacsq · modèle: Sonnet, effort: low · plan: → plans/approfondissement-tabac/S4.md (verification statique OK)
+- [x] AP5 — Module 9 « Ce que l'arrêt répare » (silhouette + frise 10 jalons) · modèle: Sonnet, effort: high · plan: → plans/approfondissement-tabac/S5.md (auto OK : tsc --noEmit + vite build verts)
+- [x] AP6 — Module 10 « Vrai ou faux ? » (15 idées reçues sourcées, toutes actives) · modèle: Sonnet, effort: high · plan: → plans/approfondissement-tabac/S6.md (auto OK : tsc --noEmit + vite build verts)
+- [x] AP7 — Consolidation docs + contexte + 8 commits (S1-S6 + docs + contexte) · modèle: Haiku, effort: low · plan: → plans/approfondissement-tabac/S7.md (auto OK : tsc --noEmit + vite build + vitest 78 tests verts)
+  - Vagues : V1 = S1·S2·S3·S4 parallèles → V2 = S5·S6 parallèles → V3 = S7 solo. **Chantier clos 2026-07-10.**
+  - ⚠️ Points ouverts Thibault : jalons S5 chiffres (Tabac Info Service/OMS) ; cartes S6 n°4/14/15 à revalider ; mention graphe S3 actualisée (derrière `// à revalider`) ; illustrations tabac → `public/illustrations/tabac/<id>.png`.
+
 ### Reliquat v1
 - [~] C10 — Compléter le contenu non bloquant · modèle: Sonnet, effort: low · plan: → plans/PLAN_corrections-ux.md
   - [ ] Références de sources par module (HAS / Tabac Info Service) dans `registry.ts`
