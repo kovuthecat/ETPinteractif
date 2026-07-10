@@ -1,10 +1,10 @@
 <meta charset="utf-8">
-<title>Prompts illustrations — ETP interactif (Diabète &amp; Tabac)</title>
+<title>Prompts illustrations — ETP interactif (Diabète &amp; Tabac complet)</title>
 <style>
   :root{
     --bg:#f6f4ef; --card:#ffffff; --ink:#22262b; --muted:#6b7280;
     --line:#e3ddd2; --teal:#1f7a8c; --teal-d:#155e6d; --terra:#c76b4a;
-    --food:#7a8b3f; --sys:#1f7a8c; --tabac:#9a6b43; --ok:#3f8f4e; --shadow:0 1px 2px rgba(0,0,0,.04),0 6px 20px rgba(0,0,0,.05);
+    --food:#7a8b3f; --sys:#1f7a8c; --tabac:#9a6b43; --tabacsq:#b08d5b; --ok:#3f8f4e; --shadow:0 1px 2px rgba(0,0,0,.04),0 6px 20px rgba(0,0,0,.05);
     --radius:14px;
   }
   *{box-sizing:border-box}
@@ -46,7 +46,7 @@
   section.mod>h2{font-size:20px;margin:0 0 2px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
   section.mod>h2 .badge{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
     padding:3px 8px;border-radius:20px;color:#fff}
-  .badge.sys{background:var(--sys)} .badge.food{background:var(--food)} .badge.tabac{background:var(--tabac)}
+  .badge.sys{background:var(--sys)} .badge.food{background:var(--food)} .badge.tabac{background:var(--tabac)} .badge.tabacsq{background:var(--tabacsq)}
   section.mod>.desc{color:var(--muted);margin:2px 0 14px;font-size:14px}
   .secount{font-size:13px;color:var(--muted);font-weight:400}
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
@@ -55,7 +55,7 @@
   .card.done{opacity:.5}
   .card h3{margin:0;font-size:15.5px;display:flex;align-items:center;gap:8px}
   .card h3 .dot{width:9px;height:9px;border-radius:50%;flex:none}
-  .dot.sys{background:var(--sys)} .dot.food{background:var(--food)} .dot.tabac{background:var(--tabac)}
+  .dot.sys{background:var(--sys)} .dot.food{background:var(--food)} .dot.tabac{background:var(--tabac)} .dot.tabacsq{background:var(--tabacsq)}
   .prompt{font-size:13.5px;color:#3a4048;background:#fbfaf7;border:1px solid var(--line);border-radius:9px;
     padding:9px 11px;margin:0}
   .note{font-size:12.5px;color:var(--terra);font-style:italic;margin:0}
@@ -81,7 +81,7 @@
 <header>
   <div class="wrap">
     <h1>Prompts d'illustrations — ETP interactif</h1>
-    <p class="sub">Diabète (jeu complet) &amp; Tabac (techniques de prise). Générer chaque visuel (ChatGPT / autre modèle image) → vectoriser en SVG → intégrer. Un prompt copiable par illustration.</p>
+    <p class="sub">Diabète (jeu complet) &amp; Tabac (jeu complet : techniques de prise, bénéfices de l'arrêt, vrai ou faux). Générer chaque visuel (ChatGPT / autre modèle image) → vectoriser en SVG → intégrer. Un prompt copiable par illustration.</p>
   </div>
 </header>
 
@@ -123,6 +123,14 @@
     </div>
   </details>
 
+  <details class="style" id="styleTabacSqBox">
+    <summary>🎨 Style « Tabac · carré » — vignettes bénéfices &amp; vrai/faux (papier crème / kraft, format 1:1)</summary>
+    <div class="body">
+      <textarea id="styleTabacSq" spellcheck="false"></textarea>
+      <p class="tip">Préfixé automatiquement aux prompts marqués <span style="color:var(--tabacsq)">●</span>. Même palette crème/kraft que le style TABAC, mais pensé pour des vignettes CARRÉES (cartes/panneaux), pas des bandeaux 16:7.</p>
+    </div>
+  </details>
+
   <div class="infobox" style="margin-top:16px">
     <h3>Revue tabac — pourquoi si peu de prompts&nbsp;?</h3>
     <p class="tip" style="margin:0">Le thème tabac est fait de « bacs à sable » (courbes, cadrans, animations) et de petits pictos <b>déjà couverts par les icônes lucide-react</b> (Cigarette, Pill, Brain, Wind, Waves…), cohérentes avec le style éditorial. Le <b>seul vrai manque</b> d'illustration est l'encart « Technique de prise&nbsp;» du module Substituts (bandeau 16:7, placeholder documenté) : un <b>geste</b> qu'une icône en ligne ne sait pas montrer. D'où <b>5 prompts</b> seulement. Le reste est listé en bas comme « à garder en code / lucide ».</p>
@@ -157,10 +165,12 @@ const DEFAULT_FOOD = `Vignette d'un seul aliment, illustration vectorielle plate
 
 const DEFAULT_TABAC = `Illustration éditoriale chaleureuse pour un support d'éducation thérapeutique au sevrage tabagique, destinée à un BANDEAU HORIZONTAL (ratio 16:7) posé sur une carte crème. Style à trait fin et régulier rehaussé d'aplats doux, cohérent avec une iconographie en lignes (icônes « line »). Palette papier crème / kraft : fond crème très clair (~#f7f4ee), traits et formes en brun chaud sombre (~#3a2c1e), un vert doux « confort » pour le geste correct, un ambre/or « vigilance » et un rouge chaud « toxique » UNIQUEMENT si un geste à éviter est montré, un bleu neutre discret. AUCUN dégradé criard, aucune 3D, aucune ombre lourde, jamais de rendu photo ni de style « stock santé ». Registre adulte et digne, jamais enfantin : pas de smiley, pas de mascotte. Mains, bouche ou visage stylisés et neutres (non genrés, non racialisés). Composition horizontale lisible de gauche à droite, éventuellement 2–3 étapes du geste. AUCUN texte, chiffre ou étiquette dans l'image (les légendes sont ajoutées par l'application). Sujet centré, marges généreuses, fond uni. Bords nets, aplats francs — pensé pour être vectorisé proprement en SVG. Produire une seule image.`;
 
+const DEFAULT_TABAC_SQ = `Illustration éditoriale sobre pour un support d'éducation thérapeutique au sevrage tabagique, format CARRÉ 1:1, destinée à une vignette posée sur une carte crème. Style à trait fin et régulier rehaussé d'aplats doux, cohérent avec une iconographie en lignes (icônes « line »). Palette papier crème / kraft : fond crème très clair (~#f7f4ee), traits et formes en brun chaud sombre (~#3a2c1e), un vert doux pour ce qui va mieux ou le geste juste, un bleu neutre discret ; l'ambre et le rouge chaud UNIQUEMENT si le sujet l'impose. AUCUN dégradé criard, aucune 3D, aucune ombre lourde, jamais de rendu photo ni de style « stock santé ». Registre adulte et digne, jamais enfantin ni moralisateur : pas de smiley, pas de mascotte, pas de doigt pointé. Corps, mains ou visages stylisés et neutres (non genrés, non racialisés). AUCUN texte, chiffre ou étiquette dans l'image. Sujet centré, marges généreuses, fond uni. Bords nets, aplats francs — pensé pour être vectorisé proprement en SVG. Produire une seule image.`;
+
 /* ------------------------------------------------------------------ *
  * Données : sections -> items [label, prompt, tag('sys'|'food'), note?]*
  * ------------------------------------------------------------------ */
-const S = 'sys', F = 'food', T = 'tabac';
+const S = 'sys', F = 'food', T = 'tabac', TQ = 'tabacsq';
 const SECTIONS = [
 {
   key:'commun', title:'Système visuel commun', badge:S,
@@ -248,6 +258,8 @@ const SECTIONS = [
     ["Épinards","Quelques feuilles d'épinard."],
     ["Gombo","Deux ou trois gombos (okras)."],
     ["Poivron","Un poivron entier."],
+    ["Carotte","Une carotte entière avec un bout de fane, et une rondelle."],
+    ["Brocoli","Un bouquet de brocoli."],
   ]
 },
 {
@@ -275,6 +287,7 @@ const SECTIONS = [
   items:[
     ["Huile d'olive","Une petite burette versant un mince filet d'huile d'olive dorée."],
     ["Beurre","Une plaquette de beurre avec une noisette coupée."],
+    ["Avocat","Un demi-avocat avec son noyau, à côté d'une moitié coupée, chair vert clair.",F,"Classé dans les lipides (matière grasse) dans le jeu du garde-manger."],
   ]
 },
 {
@@ -306,6 +319,10 @@ const SECTIONS = [
     ["Activité — monter les escaliers","Une personne qui monte un escalier.",S,"Marquer aussi « bon pour les muscles »."],
     ["Activité — se lever d'une chaise","Une personne qui se lève d'une chaise.",S,"Marquer aussi « bon pour les muscles »."],
     ["Activité — se relever du sol","Une personne qui se relève du sol.",S,"Marquer aussi « bon pour les muscles »."],
+    ["Activité — danser","Une personne très simplifiée qui danse (posture dynamique, bras en mouvement).",S],
+    ["Activité — jouer avec les enfants","Une personne très simplifiée qui joue avec un enfant (ballon, ou main dans la main en mouvement).",S],
+    ["Activité — laver la voiture","Le lavage de la voiture : une personne avec une éponge devant une voiture stylisée, ou un seau + éponge + voiture.",S],
+    ["Activité — marcher le chien","Une personne qui promène un chien tenu en laisse.",S],
     ["Curseur d'activité (marqueur temps)","Un petit marqueur / curseur déplaçable stylisé (silhouette qui marche posée sur un repère) à faire glisser le long d'un axe de temps.",S,"Se pose sur LA COURBE (voir note SVG)."],
   ]
 },
@@ -328,6 +345,7 @@ const SECTIONS = [
     ["Œil / rétine","Un œil humain stylisé et sobre (vue de face simplifiée), évoquant le dépistage du fond d'œil. Digne, non clinique cru. Option : un fin réseau de vaisseaux de la rétine suggéré.",S],
     ["Rein","Un rein stylisé, forme de haricot claire et reconnaissable. Sobre, digne. Option : un petit néphron / filtre minimal suggéré.",S],
     ["Nerf","Une fibre nerveuse stylisée (corps + ramifications) évoquant la neuropathie et la sensibilité, sobre. Peut suggérer les extrémités (pieds/mains) sans détail clinique.",S],
+    ["Cœur (organe)","Un cœur humain stylisé, sobre et digne, forme reconnaissable et simplifiée (jamais anatomique cru), en aplat de couleur douce, avec les gros vaisseaux qui en partent suggérés. Sert d'organe « déjà vu au module 4 » (macro) et de révélation « ce que ça garde ».",S,"Réutilisé au module 6 (« ce que ça garde — cœur », station bilan lipidique) et cohérent avec la zone cœur de la silhouette."],
     ["Pied (neutre)","Un pied humain stylisé vu de profil ou 3/4, neutre et digne, sain.",S],
     ["Pied — points d'auto-examen","Une planche d'auto-examen du pied : le pied vu de dessus ET la plante (dessous), avec quelques points de contrôle repérés (petits repères) et l'espace entre les orteils indiqué. Statique, clair, digne — sert de fiche de référence.",S,"Fiche pied (référence). Illustration statique (pas de séquence)."],
     ["Miroir d'inspection plantaire","Un petit miroir posé au sol permettant d'examiner la plante du pied. Objet simple.",S],
@@ -373,9 +391,11 @@ const SECTIONS = [
     ["Signe — faim","Un estomac / ventre stylisé signalant la faim.",S],
     ["Signe — irritabilité","Un visage neutre très minimal avec de fines lignes de tension (irritabilité), sans smiley ni grimace cartoon.",S],
     ["Signe — vertige / confusion","Une tête avec une petite spirale douce évoquant le vertige / la confusion.",S],
+    ["Signe — vision trouble","Un œil stylisé avec une zone de flou / de fines lignes douces devant, évoquant une vision trouble passagère. Sobre, non clinique.",S],
     ["Resucrage — jus de fruit","Un petit verre ou une briquette de jus de fruit (resucrage rapide).",S],
     ["Resucrage — morceaux de sucre","Deux ou trois morceaux de sucre (≈15 g).",S],
     ["Resucrage — comprimés de glucose","Un tube / des comprimés de glucose.",S],
+    ["Resucrage — soda classique","Un verre de soda classique (sucré) avec quelques bulles, ou une canette générique sans marque ni texte. Resucrage rapide de dépannage.",S,"Bien « classique » — jamais light / zéro (sans sucre = inefficace pour resucrer)."],
     ["Piège — chocolat (à écarter)","Une barre / un carré de chocolat associé à un discret symbole « trop lent » (resucrage inadapté car le gras ralentit). Sobre.",S,"Montrer que le gras remonte trop lentement (piège à écarter)."],
     ["Horloge — attendre 15 min","Une horloge stylisée signalant une courte attente (~15 minutes), calme. Le temps fort du module.",S],
   ]
@@ -401,6 +421,41 @@ const SECTIONS = [
     ["Spray buccal — technique","La bonne technique du spray buccal : un petit flacon spray dirigé vers l'INTÉRIEUR de la joue pour y pulvériser (viser la face interne de la joue, jamais le fond de la gorge). Bouche stylisée, fine pulvérisation orientée vers la paroi interne de la joue.",T,"Geste à éviter : viser le fond de la gorge / inhaler."],
   ]
 },
+{
+  key:'tabac-benef', title:'TABAC — Ce que l\'arrêt répare (vignettes d\'organes)', badge:TQ,
+  desc:"Vignettes du panneau de détail par zone du module Bénéfices (S5). Une vignette = un organe qui va mieux — toujours l'état positif, jamais l'organe malade.",
+  items:[
+    ["Poumons qui respirent","Une paire de poumons stylisés, clairs et aérés, avec de fines ramifications bronchiques apaisées et quelques discrets signes d'air frais qui circule (petites volutes claires entrantes). État sain et léger, sensation de souffle retrouvé.",TQ,"Fichier cible : public/illustrations/tabac/benef-poumons.png"],
+    ["Cœur apaisé","Un cœur humain stylisé, sobre et digne, au rythme calme (une fine ligne de pouls régulière et douce passant derrière), vaisseaux qui en partent dégagés. Aucune alerte, aucun éclair.",TQ,"Fichier cible : public/illustrations/tabac/benef-coeur.png"],
+    ["Sang mieux oxygéné","Un segment de vaisseau sanguin stylisé vu en coupe longitudinale, lumière bien ouverte, dans lequel circulent des globules ronds accompagnés de petites bulles d'oxygène claires. Circulation fluide, propre.",TQ,"Fichier cible : public/illustrations/tabac/benef-sang.png"],
+    ["Goût & odorat retrouvés","Un nez et une bouche stylisés de profil, neutres et dignes, avec de fines lignes d'arômes montant d'un fruit ou d'un plat suggéré à côté. Idée de saveurs et d'odeurs qui reviennent.",TQ,"Fichier cible : public/illustrations/tabac/benef-bouche.png"],
+    ["Cerveau protégé","Un cerveau stylisé calme, entouré d'un fin halo doux de protection, avec un réseau de vaisseaux apaisés qui l'irrigue. Aucune spirale d'angoisse, aucun éclair.",TQ,"Fichier cible : public/illustrations/tabac/benef-cerveau.png"],
+    ["Jambes qui marchent","Deux jambes stylisées en pleine marche d'un pas ample et facile, avec un fin trait de trajectoire régulier au sol. Énergie tranquille, aisance.",TQ,"Fichier cible : public/illustrations/tabac/benef-jambes.png"],
+    ["Peau plus lumineuse","Un visage stylisé neutre et digne de trois quarts (sans expression marquée), au teint uni et clair, avec quelques fins rayons doux suggérant l'éclat retrouvé. Pas de comparatif avant/après.",TQ,"Fichier cible : public/illustrations/tabac/benef-peau.png"],
+    ["Des années gagnées","Un chemin ou une route stylisée qui s'étire vers un horizon dégagé et lumineux, avec une silhouette qui avance d'un bon pas. Idée d'espérance de vie retrouvée, ton serein.",TQ,"Fichier cible : public/illustrations/tabac/benef-horizon.png"],
+  ]
+},
+{
+  key:'tabac-vf', title:'TABAC — Vrai ou faux ? (une vignette par idée reçue)', badge:TQ,
+  desc:"Vignettes des cartes du module Vrai ou faux (S6). La vignette illustre l'affirmation sans la juger — jamais de symbole moqueur, jamais de croix rouge sur une personne.",
+  items:[
+    ["« Fumer me détend »","Une tasse fumante posée près d'une fenêtre, avec des volutes calmes qui montent, et à côté une cigarette éteinte dans un cendrier. Ambiance pause, ambiguë et paisible, sans jugement.",TQ,"Fichier cible : public/illustrations/tabac/vf-detente.png"],
+    ["Substituts et cœur","Un patch de nicotine stylisé et un cœur humain stylisé côte à côte, reliés par une fine ligne neutre, le cœur serein. Aucun symbole d'alerte.",TQ,"Fichier cible : public/illustrations/tabac/vf-substituts-coeur.png"],
+    ["« Trop tard pour moi »","Une personne d'âge mûr stylisée (canne discrète ou posture posée) qui ouvre grand une fenêtre vers un ciel clair. Idée : ça vaut la peine à tout âge.",TQ,"Fichier cible : public/illustrations/tabac/vf-trop-tard.png"],
+    ["« Quelques cigarettes seulement »","Trois cigarettes stylisées alignées, dont émane malgré tout un long fil de fumée qui serpente loin. Sobre, factuel, sans dramatisation.",TQ,"Fichier cible : public/illustrations/tabac/vf-petit-fumeur.png"],
+    ["Light & tabac à rouler","Une cigarette manufacturée fine dite « light » et une cigarette roulée côte à côte, strictement au même niveau, avec la même fumée. Idée d'équivalence.",TQ,"Fichier cible : public/illustrations/tabac/vf-light-roule.png"],
+    ["Poids et arrêt","Une balance stylisée à l'équilibre, avec d'un côté une pomme et de l'autre une paire de chaussures de marche. Ton neutre et rassurant, aucun corps représenté.",TQ,"Fichier cible : public/illustrations/tabac/vf-poids.png"],
+    ["« Une question de volonté »","Un cerveau stylisé dont une zone est entourée de petits récepteurs en forme de serrures, avec une main tendue qui apporte une clé. Idée : mécanisme biologique + aide, pas un bras de fer.",TQ,"Fichier cible : public/illustrations/tabac/vf-volonte.png"],
+    ["« Les patchs ne marchent pas »","Un patch stylisé en quarts dont un quart supplémentaire vient s'ajouter (geste d'ajustement), avec une petite jauge qui se remplit doucement. Idée de réglage, pas d'échec.",TQ,"Fichier cible : public/illustrations/tabac/vf-patch-marche-pas.png"],
+    ["Un écart n'efface rien","Un long chemin stylisé déjà parcouru avec un petit pas de côté, puis le chemin qui continue vers l'avant. Le tracé parcouru reste bien visible.",TQ,"Fichier cible : public/illustrations/tabac/vf-faux-pas.png"],
+    ["Ça commence en 20 minutes","Une montre ou horloge stylisée douce à côté d'un cœur au rythme calme, reliés par une fine ligne. Idée d'un bénéfice immédiat.",TQ,"Fichier cible : public/illustrations/tabac/vf-20min.png"],
+    ["Patch + gomme","Un patch stylisé sur un bras et une gomme/pastille stylisée près d'une bouche neutre, réunis dans une même composition harmonieuse. Idée d'association possible.",TQ,"Fichier cible : public/illustrations/tabac/vf-combinaison.png"],
+    ["Plusieurs tentatives","Un escalier stylisé montant, dont certaines marches portent une petite trace de pas ; une silhouette continue de monter. Chaque marche compte, aucune n'est barrée.",TQ,"Fichier cible : public/illustrations/tabac/vf-tentatives.png"],
+    ["L'envie est une vague","Une vague stylisée douce qui monte puis retombe, avec une petite silhouette stable qui la regarde passer depuis le rivage. Calme, non menaçant.",TQ,"Fichier cible : public/illustrations/tabac/vf-vague.png"],
+    ["Vapoteuse vs cigarette","Une vapoteuse stylisée et une cigarette allumée côte à côte : la cigarette dégage une fumée dense et chargée, la vapoteuse une vapeur nettement plus légère. Factuel, sans promotion.",TQ,"Fichier cible : public/illustrations/tabac/vf-vapoteuse.png · Carte active, contenu à revalider (Thibault)."],
+    ["Réduire ou arrêter","Un cendrier qui se vide progressivement en trois temps suggérés de gauche à droite, avec un patch qui apparaît au deuxième temps. Idée d'étape accompagnée.",TQ,"Fichier cible : public/illustrations/tabac/vf-reduire.png · Carte active, contenu à revalider (Thibault)."],
+  ]
+},
 ];
 
 /* Éléments à produire en SVG natif (pas via un modèle image) */
@@ -412,6 +467,8 @@ const CODE_ITEMS = [
   ["Tabac — petits pictos","Piliers de l'addiction, outils Cigarette/Patch/Substitut, 4 D du craving, cartes de motivation, feux/zones : déjà couverts par les icônes lucide-react en place (Cigarette, Pill, Brain, Wind, Waves, HeartPulse…), cohérentes avec le style éditorial. Ne PAS les régénérer en image."],
   ["Tabac — courbes & cadran","Nicotinémie 24 h, courbe de tension (soulagement), vague du craving, cadran de motivation : géométries de données en SVG/code (nicotineCurve.ts, Dial.tsx). Pas d'image."],
   ["Tabac — scène « nicotine ≠ toxique »","Déjà une scène SVG codée avec hotspots (NicotineToxiqueModule). Pas d'image."],
+  ["Tabac — silhouette des bénéfices","Réutilise le composant générique SilhouetteCorps (promotion S2) avec les zones tabac — pas d'image."],
+  ["Tabac — frise des jalons de l'arrêt","Échelle temporelle non linéaire (20 min → 10-15 ans), géométrie de données → SVG/code dans le module (S5)."],
 ];
 
 /* ------------------------------------------------------------------ *
@@ -422,18 +479,21 @@ const app = $('#app');
 const styleSysEl = $('#styleSys');
 const styleFoodEl = $('#styleFood');
 const styleTabacEl = $('#styleTabac');
+const styleTabacSqEl = $('#styleTabacSq');
 
 // charge styles (persistés si édités)
 styleSysEl.value = localStorage.getItem('etp_style_sys') || DEFAULT_SYS;
 styleFoodEl.value = localStorage.getItem('etp_style_food') || DEFAULT_FOOD;
 styleTabacEl.value = localStorage.getItem('etp_style_tabac') || DEFAULT_TABAC;
+styleTabacSqEl.value = localStorage.getItem('etp_style_tabacsq') || DEFAULT_TABAC_SQ;
 styleSysEl.addEventListener('input',()=>localStorage.setItem('etp_style_sys',styleSysEl.value));
 styleFoodEl.addEventListener('input',()=>localStorage.setItem('etp_style_food',styleFoodEl.value));
 styleTabacEl.addEventListener('input',()=>localStorage.setItem('etp_style_tabac',styleTabacEl.value));
+styleTabacSqEl.addEventListener('input',()=>localStorage.setItem('etp_style_tabacsq',styleTabacSqEl.value));
 
 // tag -> style / libellé de badge / classe
-const STYLE_EL = { sys:styleSysEl, food:styleFoodEl, tabac:styleTabacEl };
-const BADGE = { sys:['sys','Système'], food:['food','Aliments'], tabac:['tabac','Tabac'] };
+const STYLE_EL = { sys:styleSysEl, food:styleFoodEl, tabac:styleTabacEl, tabacsq:styleTabacSqEl };
+const BADGE = { sys:['sys','Système'], food:['food','Aliments'], tabac:['tabac','Tabac'], tabacsq:['tabacsq','Tabac · carré'] };
 
 function idFor(sk,i){ return 'etp_done_'+sk+'_'+i; }
 function isDone(sk,i){ return localStorage.getItem(idFor(sk,i))==='1'; }
