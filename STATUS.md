@@ -4,7 +4,7 @@
 
 > **Frontières** — STATUS : état actuel · `TASKS.md` : backlog + tâches · `plans/` : plan d'une tâche active · `VALIDATION.md` : checklist visuelle.
 >
-> **Dernière mise à jour :** 2026-07-09 (S14 — corrections bugs revue visuelle : 7 bugs, 5 modules + lib `glycemieCurve`, contexte resynchronisé)
+> **Dernière mise à jour :** 2026-07-10 (alimentation-v2 — consolidation S1-S4 : déroulé, lisibilité défi ②, 2ᵉ niveau InfoHover, contexte consolidé)
 
 ## Phase actuelle
 

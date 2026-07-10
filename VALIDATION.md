@@ -229,6 +229,82 @@
 
 ---
 
+## Plan alimentation-v2 (S1-S4) — validation du 2026-07-09
+
+**Statut** : chantier consolidé · commits locaux prêts (S1/S2/S3/S4 + contexte) · en attente de validation visuelle Thibault + revalidation données médicales
+
+### Valeurs à revalider (S1 — données médicales brutes)
+
+Toutes les valeurs ci-dessous sont des ordres de grandeur qualitatifs (tables Ciqual/GI-GL, repères SFD), marquées `// à revalider (Thibault)` dans le code. Checklist :
+
+| Aliment | sel | graisses | oméga-3 | atout | Remarques |
+| --- | --- | --- | --- | --- | --- |
+| Baguette blanche | élevé | — | non | « Le pain, une source de sel insoupçonnée du quotidien. » | Source majeure de sel du quotidien |
+| Pain complet | modéré | — | non | — | |
+| Pain pita | modéré | — | non | — | |
+| Riz blanc | faible | — | non | — | |
+| Riz basmati | faible | — | non | — | |
+| Riz complet | faible | — | non | — | |
+| Semoule / couscous | faible | — | non | — | |
+| Pomme de terre / purée | modéré | — | non | — | Purée présumée salée/beurrée |
+| Patate douce | faible | — | non | — | |
+| Igname | faible | — | non | — | |
+| Manioc / attiéké | faible | — | non | — | |
+| Galette de riz soufflé | faible | — | non | — | |
+| Lentilles | faible | — | non | « Légumineuse : un féculent qui monte doucement. » | Pépite pédagogique |
+| Pois chiches | faible | — | non | « Légumineuse : un féculent qui monte doucement. » | Pépite pédagogique |
+| Pomme | faible | — | non | — | |
+| Banane mûre | faible | — | non | — | |
+| Dattes | faible | — | non | — | |
+| Pastèque | faible | — | non | « IG réputé haut, mais CG basse par portion — la pastèque, ça va. » | Piège inversé |
+| Brocoli | faible | — | non | — | |
+| Carotte | faible | — | non | — | |
+| Yaourt nature | faible | — | non | — | Lipides 3 g non significatifs |
+| Poulet | faible | mixte | non | — | À confirmer : graisses mixte vs saturées ? |
+| Œuf | faible | saturées | non | — | Jaune saturé |
+| Avocat | faible | insaturées | non | — | |
+| Huile d'olive | — | insaturées | non | — | Matière grasse pure |
+| **Sardine** | élevé | insaturées | **oui** | — | Conserve présumée ; grammes proteines/lipides/fibres à revalider |
+| **Saumon** | faible | insaturées | **oui** | — | Frais présumé (hors fumé) ; grammes à revalider |
+| **Noix** | — | insaturées | **oui** | — | Non salées ; CG ~0-2 ; grammes à revalider |
+
+**Seuils des paliers dérivés (constants en code, `// à revalider`) :**
+- Fibres : `<2` (faible) · `2–4` (bon/modéré) · `>4` (élevé)
+- Protéines : `<5` (faible) · `5–15` (bon/modéré) · `>15` (élevé)
+
+### Checklist visuelle (S3 — auto-vérification code, jamais navigateur)
+
+À valider par Thibault (`npm run dev`) :
+
+- [ ] **Consigne en haut de la scène** : repositionnée en `.captionRow` au-dessus du contenu de chaque défi, alignée à gauche (taille ≈18px), textes de `getCaption()` verbatim inchangés (inclus `d3Hint` et libellés `D1_CAPTIONS`).
+
+- [ ] **Coche + CTA sur les onglets joués** : coche `✓` en `--color-confort-strong` après le libellé d'un onglet (défi ①②③④, jamais ★) après les critères de jeu (assiette remplie ①, révèle ②, réordonnance ③, défi ④, jamais ★). CTA « Défi suivant → » n'apparaît qu'après le défi actif joué, jamais sur ★.
+
+- [ ] **Défi ① : courbe fantôme « Vos féculents seuls »** : quand ≥1 féculent ET ≥1 frein, `CourbeSection` reçoit une 2ᵉ courbe `variante: 'fantome'`.
+
+- [ ] **Défi ② : 4 chips duels suggérés** (baguette/pain complet, riz blanc/basmati, riz blanc/lentilles, dattes/pastèque) au-dessus des cartes, chip active marquée `aria-pressed`, glisser-déposer libre inchangé.
+
+- [ ] **Défi ② au révèle : verdicts visuels francs** : 
+  - Badge pill coloré (--color-confort/vigilance/toxique, texte blanc ≥16px gras, hauteur ≥36px) : « Pic bas / Pic moyen / Pic haut »
+  - Ligne pictogramme (`Check`/`X` lucide) : « ✓ Bonne prédiction » (confort-strong) ou « ✗ Vous aviez dit : {niveau} » (texte normal, jamais rouge)
+  - Liseré d'identité (border-top 5px, duoA bleu nav / duoB prune) sur chaque carte
+  - Courbes bleu nav / prune étiquetées par nom d'aliment + marqueur de pic
+  - Tracé animé (dashoffset 1→0, ~900ms ease-out au montage, respecte prefers-reduced-motion)
+
+- [ ] **Panneau InfoHover au survol ET au clic verrouillant** (garde-manger + cartes ②) : 
+  - Noms des aliments soulignés pointillés discrets (affordance)
+  - Survol/focus ouvre, quitter referme — sauf si verrouillé
+  - Clic/Enter/Espace bascule le verrouillage ; Escape referme et déverrouille
+  - Clic hors du panneau referme si verrouillé
+  - Contenu `FoodDetail` : titre + portion (soft), ligne CG (pastille + libellé), lignes Fibres/Protéines/Graisses/Sel (paliers ●●○, pas de grammes), badge oméga-3 si présent, phrase-clé en italique, pied « vaisseaux »
+  - Lisible à ~1 m (texte ≥14px)
+
+- [ ] **Défis ③④★ inchangés** : seuls touchés par les mécanismes transverses (coche, CTA, caption repositionnée).
+
+- [ ] **Fiche imprimable** : inchangée de S5.
+
+---
+
 ## Thème diabète (9 modules, S1-S12) — validation visuelle
 
 > À valider par Thibault (passe visuelle `npm run dev`).

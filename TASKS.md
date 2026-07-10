@@ -69,6 +69,14 @@ Index des tâches : backlog + actives. Historique des tâches faites : `git log`
   à 3 niveaux dans `App.tsx`, nouveau `ThemeSelector`, scaffold vide `src/features/diabete/` · modèle: Sonnet,
   effort: high (auto OK : tsc + vite build + vitest verts ; visuel → VALIDATION.md)
 
+### Alimentation-v2 — amélioration module 2 diabète (2026-07-10) · plan: → plans/alimentation-v2/ (index + S1-S4)
+- [x] S1 — Données : champs qualitatifs + paliers dérivés + 3 aliments oméga-3 · modèle: Sonnet, effort: medium · plan: → plans/alimentation-v2/S1.md (auto OK : tsc+vite build+vitest 61 tests verts)
+- [x] S2 — Composants partagés : `InfoHover` survol+clic · extensions optionnelles `CourbeGlycemie` · modèle: Sonnet, effort: high · plan: → plans/alimentation-v2/S2.md (auto OK : tsc+vite build+vitest 61 tests verts)
+- [x] S3 — Module Alimentation : déroulé guide + lisibilité défi ② + 2ᵉ niveau InfoHover · modèle: Sonnet, effort: high · plan: → plans/alimentation-v2/S3.md (auto OK : tsc+vite build+vitest 61 tests verts)
+- [x] S4 — Consolidation : contexte (index/STATUS/TASKS/VALIDATION/DECISIONS/PROJECT_MAP) + commits (S1/S2/S3/contexte) · modèle: Haiku, effort: low · plan: → plans/alimentation-v2/S4.md (auto OK : tsc+vite build+vitest 61 tests verts)
+  - Vagues : V1 = S1·S2 (parallèles, zones disjointes) → V2 = S3 (solo) → V3 = S4 (solo). **Chantier clos 2026-07-10.**
+  - ⚠️ Points ouverts Thibault : valeurs qualitatives sel/graisses/oméga-3 (à revalider), bande moyen étroite défi ② (recalibrage futur), illustrations 3 aliments (placeholders).
+
 ### Reliquat v1
 - [~] C10 — Compléter le contenu non bloquant · modèle: Sonnet, effort: low · plan: → plans/PLAN_corrections-ux.md
   - [ ] Références de sources par module (HAS / Tabac Info Service) dans `registry.ts`

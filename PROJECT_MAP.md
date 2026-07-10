@@ -33,7 +33,7 @@ src/
     ModuleCard.tsx / .module.css  # carte cliquable (icône + titre + résumé)
     FicheOverlay.tsx / .module.css    # fiche à emporter générique (aperçu A4 + impression, X1)
     ModuleFooterNav.tsx / .module.css # porte de fin de module générique « Continuer l'exploration » (X6)
-    InfoHover.tsx / .module.css       # 2ᵉ niveau de lecture générique, survol/focus (X6, créé non câblé)
+    InfoHover.tsx / .module.css       # 2ᵉ niveau de lecture générique, survol/focus+clic verrouillant (X6, créé ; câblé diabète/alimentation)
   features/
     types.ts                # ModuleId/FamilleId (string génériques), Hue, ModuleDef, FamilleDef, ThemeDef, exergue?
     registry.ts              # THEMES: ThemeDef[] — registre des thèmes (tabac + diabete)
@@ -60,7 +60,7 @@ src/
       lib/
         glycemieCurve.ts / .test.ts  # logique pure diabète : paramsFromAssiette/sampleRepas/sampleActivite/sampleRecuperation/sampleJournee/tempsDansCible (S2, 50 tests)
       mecanisme/MecanismeModule.tsx / .module.css  # Module 1 — C'est quoi le diabète (clé/serrure, 4 temps, S4)
-      alimentation/AlimentationModule.tsx / .module.css / data.ts  # Module 2 — Alimentation (garde-manger, 4 défis + synthèse, fiche, S5)
+      alimentation/AlimentationModule.tsx / .module.css / data.ts  # Module 2 — Alimentation (déroulé guidé, 4 défis + synthèse, fiche + 2ᵉ niveau, S5 + alimentation-v2 S1-S3)
       activite/ActiviteModule.tsx / .module.css / data.ts         # Module 3 — Activité physique (rayonnement, jauge, timing, S6)
       risque-cardio/RisqueCardioModule.tsx / .module.css          # Module 4 — Risque cardiovasculaire (5 feux, artère, anatomie, fiche, S7)
       complications/ComplicationsModule.tsx / .module.css / data.ts  # Module 5 — Complications (silhouette, « évitable », fiche pied, S8)
