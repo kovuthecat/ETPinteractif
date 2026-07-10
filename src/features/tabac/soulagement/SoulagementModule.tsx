@@ -215,7 +215,7 @@ export default function SoulagementModule({ onNavigate }: ModuleProps) {
       <ModuleFooterNav
         items={[
           { id: 'substituts', label: 'Sortir du yo-yo : les substituts' },
-          { id: 'craving', label: "Tenir pendant l'envie : les 4D" },
+          { id: 'boite-a-outils', label: 'Stratégies et outils' },
         ]}
         onNavigate={onNavigate}
       />

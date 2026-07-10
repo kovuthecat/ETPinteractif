@@ -4,7 +4,9 @@ import type { LucideIcon } from 'lucide-react';
 export type ModuleId = string;
 
 export interface ModuleProps {
-  onNavigate: (id: ModuleId) => void;
+  onNavigate: (id: ModuleId, context?: unknown) => void;
+  /** Contexte opaque transmis par le module appelant (le moteur n'en connaît pas la forme). */
+  context?: unknown;
 }
 
 export type FamilleId = string;

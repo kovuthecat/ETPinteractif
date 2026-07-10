@@ -8,7 +8,7 @@ import ModuleShell from './components/ModuleShell';
 type View =
   | { type: 'themes' }
   | { type: 'home'; themeId: ThemeId }
-  | { type: 'module'; themeId: ThemeId; moduleId: ModuleId };
+  | { type: 'module'; themeId: ThemeId; moduleId: ModuleId; context?: unknown };
 
 const initialView: View =
   THEMES.length > 1 ? { type: 'themes' } : { type: 'home', themeId: THEMES[0].id };
@@ -22,9 +22,9 @@ function App() {
     setHistory([...history, { type: 'home', themeId }]);
   };
 
-  const navigateToModule = (moduleId: ModuleId) => {
+  const navigateToModule = (moduleId: ModuleId, context?: unknown) => {
     if (currentView.type === 'themes') return;
-    setHistory([...history, { type: 'module', themeId: currentView.themeId, moduleId }]);
+    setHistory([...history, { type: 'module', themeId: currentView.themeId, moduleId, context }]);
   };
 
   const handleBack = () => {
@@ -50,7 +50,7 @@ function App() {
   const { Component, titre, sources } = module;
   return (
     <ModuleShell titre={titre} sources={sources} onBack={handleBack}>
-      <Component onNavigate={navigateToModule} />
+      <Component onNavigate={navigateToModule} context={currentView.context} />
     </ModuleShell>
   );
 }

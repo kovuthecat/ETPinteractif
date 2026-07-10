@@ -1,11 +1,11 @@
-import { Brain, Activity, Pill, Scale, Repeat, Waves, Compass, Flag, HeartPulse, MessageCircleQuestion } from 'lucide-react';
+import { Brain, Activity, Pill, Scale, Repeat, Wrench, Compass, Flag, HeartPulse, MessageCircleQuestion } from 'lucide-react';
 import type { ModuleDef } from '../types';
 import AddictionModule from './addiction/AddictionModule';
 import NicotineModule from './nicotine/NicotineModule';
 import SubstitutsModule from './substituts/SubstitutsModule';
 import NicotineToxiqueModule from './nicotine-toxique/NicotineToxiqueModule';
 import SoulagementModule from './soulagement/SoulagementModule';
-import CravingModule from './craving/CravingModule';
+import BoiteAOutilsModule from './boite-a-outils/BoiteAOutilsModule';
 import MotivationModule from './motivation/MotivationModule';
 import PlanArretModule from './plan-arret/PlanArretModule';
 import BeneficesArretModule from './benefices-arret/BeneficesArretModule';
@@ -68,13 +68,19 @@ export const MODULES: ModuleDef[] = [
     hue: 'confort',
   },
   {
-    id: 'craving',
+    id: 'boite-a-outils',
     famille: 'agir',
-    titre: 'Gérer le craving (4D)',
-    resume: "Montrer que l'envie est une vague de quelques minutes qui retombe, et donner des techniques immédiates.",
-    Icon: Waves,
-    Component: CravingModule,
+    titre: 'Stratégies & outils',
+    resume: 'Choisir, situation par situation, des techniques simples pour faire face sans fumer — et emporter sa boîte à outils.',
+    Icon: Wrench,
+    Component: BoiteAOutilsModule,
     hue: 'vigilance',
+    sources: [
+      'HAS — Arrêt de la consommation de tabac (2014)',
+      'Tabac Info Service',
+      'ACC — Tobacco Cessation Treatment Pathway (2018)', // à revalider (Thibault)
+      'Cochrane — revues sevrage tabagique', // à revalider (Thibault)
+    ],
   },
   {
     id: 'plan-arret',
