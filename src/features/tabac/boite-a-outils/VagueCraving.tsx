@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
-import type { ModuleProps } from '../../types';
+import { ChevronLeft } from 'lucide-react';
 import FicheOverlay from '../../../components/FicheOverlay';
-import ModuleFooterNav from '../../../components/ModuleFooterNav';
-import styles from './CravingModule.module.css';
+import styles from './VagueCraving.module.css';
 
 const CRAVING_DURATION = 180;
 
@@ -104,7 +103,20 @@ function formatClock(seconds: number): string {
   return `${m}:${String(s).padStart(2, '0')}`;
 }
 
-export default function CravingModule({ onNavigate }: ModuleProps) {
+interface VagueCravingProps {
+  /** Retour à la grille des outils — remplace l'ancien ModuleFooterNav interne. */
+  onBack: () => void;
+}
+
+/**
+ * Outil interactif « Laisser passer la vague — les 4D » (`outil-vague-4d`).
+ * Déplacé quasi tel quel depuis l'ancien module `craving` (plans/boite-a-outils/S2.md) :
+ * mêmes phases idle/active/done, même minuteur 3 min, mêmes 4D, même animation de
+ * respiration, même fiche « Ma carte anti-envie » (X2, ne pas modifier les textes).
+ * Seules adaptations : pas de ModuleFooterNav interne (il vit dans BoiteAOutilsModule),
+ * bouton de retour vers la grille.
+ */
+export default function VagueCraving({ onBack }: VagueCravingProps) {
   const [phase, setPhase] = useState<Phase>('idle');
   const [timeLeft, setTimeLeft] = useState(CRAVING_DURATION);
   const [activeDs, setActiveDs] = useState<Set<DKey>>(new Set());
@@ -171,6 +183,10 @@ export default function CravingModule({ onNavigate }: ModuleProps) {
 
   return (
     <div className={styles.module}>
+      <button type="button" className={styles.backBtn} onClick={onBack}>
+        <ChevronLeft aria-hidden="true" /> Retour aux outils
+      </button>
+
       <p className={styles.intro}>
         L'envie de fumer est une vague : elle monte, puis redescend d'elle-même — même sans
         cigarette. Les 4D aident à tenir pendant ce temps.
@@ -265,14 +281,6 @@ export default function CravingModule({ onNavigate }: ModuleProps) {
       <p className={styles.aparte}>
         En parler — Tabac Info Service <strong>39 89</strong>.
       </p>
-
-      <ModuleFooterNav
-        items={[
-          { id: 'motivation', label: "Explorer mes raisons d'arrêter" },
-          { id: 'plan-arret', label: 'Préparer mon plan d\'arrêt' },
-        ]}
-        onNavigate={onNavigate}
-      />
 
       {ficheOpen && (
         <FicheOverlay

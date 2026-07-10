@@ -4,6 +4,27 @@
   gap: var(--space-lg);
 }
 
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  min-height: var(--target-min);
+  padding: 8px 14px;
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  font: inherit;
+}
+
+.backBtn:hover,
+.backBtn:focus-visible {
+  border-color: var(--color-nav);
+  color: var(--color-nav);
+}
+
 .intro {
   margin: 0;
   font-size: var(--font-size-small);
@@ -183,10 +204,10 @@
 .respirationCercle {
   fill: var(--d-color);
   transform-origin: 60px 60px;
-  animation: etp-breathe 10s ease-in-out infinite;
+  animation: etp-breathe-outil 10s ease-in-out infinite;
 }
 
-@keyframes etp-breathe {
+@keyframes etp-breathe-outil {
   0%,
   100% {
     transform: scale(0.55);
