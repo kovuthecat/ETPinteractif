@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { DragEvent, KeyboardEvent as ReactKeyboardEvent } from 'react';
-import { Check } from 'lucide-react';
+import { Check, X } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import FicheOverlay from '../../../components/FicheOverlay';
 import ModuleFooterNav from '../../../components/ModuleFooterNav';
+import InfoHover from '../../../components/InfoHover';
 import IllustrationSlot from '../components/IllustrationSlot';
 import CourbeGlycemie, {
   COURBE_GRAPH_WIDTH,
   COURBE_GRAPH_HEIGHT,
+  DUO_CSS_COLOR,
   type CourbeDef,
 } from '../components/CourbeGlycemie';
 import {
@@ -15,10 +17,26 @@ import {
   sampleRepas,
   toSvgPath,
   mgFromLevel,
+  LEVEL_MAX,
   type Assiette,
   type AlimentRepas,
 } from '../lib/glycemieCurve';
-import { FOODS, FAMILIES, foodById, cgTier, CG_TIER_COLOR_VAR, CG_TIER_LABEL, type Food } from './data';
+import {
+  FOODS,
+  FAMILIES,
+  foodById,
+  cgTier,
+  CG_TIER_COLOR_VAR,
+  CG_TIER_LABEL,
+  fibresPalier,
+  proteinesPalier,
+  PALIER_FIBRES_LABEL,
+  PALIER_PROTEINES_LABEL,
+  SEL_LABEL,
+  GRAISSES_LABEL,
+  type Food,
+  type Palier3,
+} from './data';
 import styles from './AlimentationModule.module.css';
 
 /**
@@ -44,6 +62,20 @@ const DEFI_ORDER: DefiId[] = [1, 2, 3, 4, 5];
 
 const NIVEAU_LABEL: Record<Niveau, string> = { bas: 'Bas', moyen: 'Moyen', haut: 'Haut' };
 const NIVEAUX: Niveau[] = ['bas', 'moyen', 'haut'];
+/** Couleur du badge verdict (B3) — sémantique santé, double encodage (le libellé écrit le niveau). */
+const NIVEAU_COLOR_VAR: Record<Niveau, string> = {
+  bas: '--color-confort',
+  moyen: '--color-vigilance',
+  haut: '--color-toxique',
+};
+
+/** Duels suggérés du défi ② (A4) — chaque duel isole un principe de comparaison. */
+const D2_DUELS: { id: string; label: string; a: string; b: string }[] = [
+  { id: 'raffinage', label: 'Baguette vs Pain complet', a: 'baguette', b: 'pain-complet' },
+  { id: 'variete', label: 'Riz blanc vs Riz basmati', a: 'riz-blanc', b: 'riz-basmati' },
+  { id: 'legumineuses', label: 'Riz blanc vs Lentilles', a: 'riz-blanc', b: 'lentilles' },
+  { id: 'piege-cg', label: 'Dattes vs Pastèque', a: 'dattes', b: 'pasteque' },
+];
 
 // Domaine temporel commun à toutes les courbes du module (repas à t=0 → +3h, cf. S3).
 const T_START = 0;
@@ -71,17 +103,34 @@ function toAliment(food: Food): AlimentRepas {
   return { cg: food.cg, fibres: food.fibres, proteines: food.proteines, lipides: food.lipides };
 }
 
-function buildCourbe(assiette: Assiette): { d: string; peak: number; mg: number } {
+/** Coordonnées locales du graphe (B2) : reproduit exactement la convention de `toSvgPath`
+ *  (x = fraction du domaine temporel × largeur ; y = hauteur − fraction du niveau × hauteur,
+ *  domaine niveau [0, LEVEL_MAX] par défaut, comme `toSvgPath` sans `vMin`/`vMax` explicites). */
+function picAtFromPeak(tPeak: number, peak: number): { x: number; y: number } {
+  return {
+    x: ((tPeak - T_START) / (T_END - T_START)) * COURBE_GRAPH_WIDTH,
+    y: COURBE_GRAPH_HEIGHT - (peak / LEVEL_MAX) * COURBE_GRAPH_HEIGHT,
+  };
+}
+
+function buildCourbe(assiette: Assiette): { d: string; peak: number; mg: number; picAt: { x: number; y: number } } {
   const params = paramsFromAssiette(assiette);
   const points = sampleRepas(params, { tStart: T_START, tEnd: T_END, stepMinutes: 1 });
-  const peak = points.reduce((max, p) => Math.max(max, p.v), 0);
+  let peak = 0;
+  let tPeak = T_START;
+  for (const p of points) {
+    if (p.v > peak) {
+      peak = p.v;
+      tPeak = p.t;
+    }
+  }
   const d = toSvgPath(points, {
     width: COURBE_GRAPH_WIDTH,
     height: COURBE_GRAPH_HEIGHT,
     tMin: T_START,
     tMax: T_END,
   });
-  return { d, peak, mg: Math.round(mgFromLevel(peak)) };
+  return { d, peak, mg: Math.round(mgFromLevel(peak)), picAt: picAtFromPeak(tPeak, peak) };
 }
 
 function allowDrop(e: DragEvent<HTMLElement>): void {
@@ -120,16 +169,89 @@ const D4_CATEGORIES: { id: D4Category; label: string; colorVar: string; repFoodI
 /** Écart maximal à l'assiette-modèle (½ · ¼ · ¼) pour la considérer atteinte (règle maquette). */
 const D4_ACHIEVED_TOLERANCE = 0.14;
 
+/** Points de palier (●●○, C3) — glyphe sans contenu textuel, décoratif (le libellé porte le sens). */
+function PalierDots({ level }: { level: Palier3 }) {
+  return (
+    <span className={styles.palierDots} aria-hidden="true">
+      {([1, 2, 3] as const).map((i) => (
+        <span key={i} className={i <= level ? styles.palierDotFilled : styles.palierDot} />
+      ))}
+    </span>
+  );
+}
+
+/**
+ * Panneau détail d'un aliment (C3, 2ᵉ niveau de lecture) — rendu dans `content` d'`InfoHover`.
+ * Paliers qualitatifs uniquement, jamais de grammes (garde-fou index.md). Pied « vaisseaux » :
+ * pont fil rouge vers le module Risque cardio.
+ */
+function FoodDetail({ food }: { food: Food }) {
+  const tier = cgTier(food.cg);
+  const fibresP = fibresPalier(food.fibres);
+  const proteinesP = proteinesPalier(food.proteines);
+
+  const vaisseauxLines: string[] = [];
+  if (food.sel === 'eleve' || food.graisses === 'saturees') {
+    vaisseauxLines.push('Ne change pas la courbe — mais compte pour vos vaisseaux.');
+  }
+  if (food.omega3) {
+    vaisseauxLines.push('Bon pour vos vaisseaux (oméga-3).');
+  }
+
+  return (
+    <div className={styles.foodDetail}>
+      <p className={styles.foodDetailTitle}>
+        {food.name} <span className={styles.foodDetailPortion}>· {food.portion}</span>
+      </p>
+      <p className={styles.foodDetailCg}>
+        <span
+          className={styles.cgDot}
+          style={{ background: `var(${CG_TIER_COLOR_VAR[tier]})` }}
+          aria-hidden="true"
+        />
+        CG {food.cg} — {CG_TIER_LABEL[tier]}
+      </p>
+      <ul className={styles.foodDetailPaliers}>
+        <li>
+          <PalierDots level={fibresP} /> Fibres — {PALIER_FIBRES_LABEL[fibresP]}
+        </li>
+        <li>
+          <PalierDots level={proteinesP} /> Protéines — {PALIER_PROTEINES_LABEL[proteinesP]}
+        </li>
+        <li>
+          Graisses — {food.graisses ? GRAISSES_LABEL[food.graisses] : '—'}
+          {food.omega3 && <span className={styles.omega3Badge}>oméga-3</span>}
+        </li>
+        <li>Sel — {food.sel ? SEL_LABEL[food.sel] : '—'}</li>
+      </ul>
+      {food.atout && <p className={styles.foodDetailAtout}>{food.atout}</p>}
+      {vaisseauxLines.length > 0 && (
+        <div className={styles.foodDetailVaisseaux}>
+          {vaisseauxLines.map((line) => (
+            <p key={line} className={styles.foodDetailVaisseauxLine}>
+              {line}
+            </p>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 interface FoodVignetteProps {
   food: Food;
   onActivate: () => void;
 }
 
-/** Vignette du garde-manger : glisser-déposer natif (draggable) + fallback clic/clavier. */
+/**
+ * Vignette du garde-manger : conteneur `draggable` (glisser-déposer natif inchangé).
+ * L'image (`foodImageWrap`) est le déclencheur « ajouter » (clic/clavier, C2) ; le nom
+ * (`foodName`) est le déclencheur `InfoHover` du 2ᵉ niveau de lecture — il n'ajoute rien.
+ */
 function FoodVignette({ food, onActivate }: FoodVignetteProps) {
   const tier = cgTier(food.cg);
 
-  function handleKeyDown(e: ReactKeyboardEvent<HTMLDivElement>) {
+  function handleImageKeyDown(e: ReactKeyboardEvent<HTMLDivElement>) {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       onActivate();
@@ -137,17 +259,15 @@ function FoodVignette({ food, onActivate }: FoodVignetteProps) {
   }
 
   return (
-    <div
-      className={styles.foodVignette}
-      draggable
-      onDragStart={dragStartFood(food.id)}
-      onClick={onActivate}
-      onKeyDown={handleKeyDown}
-      role="button"
-      tabIndex={0}
-      aria-label={`${food.name} — ${CG_TIER_LABEL[tier]} (CG ${food.cg}). Glisser vers l'assiette, ou activer pour l'ajouter directement.`}
-    >
-      <div className={styles.foodImageWrap}>
+    <div className={styles.foodVignette} draggable onDragStart={dragStartFood(food.id)}>
+      <div
+        className={styles.foodImageWrap}
+        role="button"
+        tabIndex={0}
+        onClick={onActivate}
+        onKeyDown={handleImageKeyDown}
+        aria-label={`${food.name} — ${CG_TIER_LABEL[tier]} (CG ${food.cg}). Glisser vers l'assiette, ou activer pour l'ajouter directement.`}
+      >
         <IllustrationSlot id={`aliment-${food.id}`} label={food.name} shape="rounded" size={72} />
         <span
           className={styles.cgDot}
@@ -155,10 +275,9 @@ function FoodVignette({ food, onActivate }: FoodVignetteProps) {
           aria-hidden="true"
         />
       </div>
-      <span className={styles.foodName}>{food.name}</span>
-      <span className={styles.foodTooltip} role="tooltip">
-        CG {food.cg}
-      </span>
+      <InfoHover label={`En savoir plus sur ${food.name}`} content={<FoodDetail food={food} />}>
+        <span className={styles.foodName}>{food.name}</span>
+      </InfoHover>
     </div>
   );
 }
@@ -166,14 +285,22 @@ function FoodVignette({ food, onActivate }: FoodVignetteProps) {
 interface CourbeSectionProps {
   courbes: CourbeDef[];
   onNavigateActivite: () => void;
+  /** Tracé animé au montage (B4) — passé `true` uniquement au révèle du défi ②. */
+  animerTrace?: boolean;
 }
 
 /** Porte 2↔3 (S5) : présente sous chaque courbe, défis comme synthèse. */
-function CourbeSection({ courbes, onNavigateActivite }: CourbeSectionProps) {
+function CourbeSection({ courbes, onNavigateActivite, animerTrace }: CourbeSectionProps) {
   return (
     <div className={`card ${styles.courbeCard}`}>
       <p className={styles.courbeEyebrow}>Glycémie après le repas</p>
-      <CourbeGlycemie courbes={courbes} marqueurs={MARQUEUR_REPAS} axeLabels={AXE_LABELS} hoverLegend />
+      <CourbeGlycemie
+        courbes={courbes}
+        marqueurs={MARQUEUR_REPAS}
+        axeLabels={AXE_LABELS}
+        hoverLegend
+        animerTrace={animerTrace}
+      />
       <button type="button" className={`btn btn--ghost ${styles.bougerBtn}`} onClick={onNavigateActivite}>
         Et si on bougeait après ce repas ?
       </button>
@@ -184,6 +311,13 @@ function CourbeSection({ courbes, onNavigateActivite }: CourbeSectionProps) {
 export default function AlimentationModule({ onNavigate }: ModuleProps) {
   const [defi, setDefi] = useState<DefiId>(1);
   const [gmFamily, setGmFamily] = useState(FAMILIES[0].id);
+
+  // ── Progression douce (A2) — état éphémère, jamais persisté (perdu à la sortie du module). ──
+  const [playedDefis, setPlayedDefis] = useState<Set<DefiId>>(new Set());
+
+  function markPlayed(n: DefiId) {
+    setPlayedDefis((prev) => (prev.has(n) ? prev : new Set(prev).add(n)));
+  }
 
   // ── Défi 1 — Composition ──────────────────────────────────────────────
   // Assiette libre (même patron que la synthèse ★, B1) : vide au montage, toutes les
@@ -212,6 +346,16 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
     (f) => f.famille === 'proteines' || f.famille === 'lipides' || f.famille === 'legumes',
   ).length;
   const d1Courbe = buildCourbe({ aliments: d1Foods.map(toAliment) });
+  // A3 : courbe fantôme « féculents seuls » — visible dès qu'il y a au moins un féculent
+  // ET au moins un frein (sinon la courbe assiette = la courbe féculents, redondant).
+  const d1ShowFantome = d1Feculents.length >= 1 && d1FreinCount >= 1;
+  const d1CourbeFeculents = d1ShowFantome ? buildCourbe({ aliments: d1Feculents.map(toAliment) }) : null;
+
+  // A2 · critère défi ① : ≥ 1 féculent ET ≥ 2 freins.
+  useEffect(() => {
+    if (d1Feculents.length >= 1 && d1FreinCount >= 2) markPlayed(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [d1Feculents.length, d1FreinCount]);
 
   // ── Défi 2 — Qualité (devine → révèle) ────────────────────────────────
   const [d2Slots, setD2Slots] = useState<{ A: string; B: string }>({ A: 'baguette', B: 'pain-complet' });
@@ -236,10 +380,18 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
   }
   function handleD2Reveal() {
     setD2Revealed(true);
+    markPlayed(2);
   }
   function handleD2Reset() {
     setD2Guess({ A: null, B: null });
     setD2Revealed(false);
+  }
+  /** A4 : chip duel suggéré — même chemin que `d2AssignFood` (reset prédictions + révèle). */
+  function handleD2Duel(duel: { a: string; b: string }) {
+    setD2Slots({ A: duel.a, B: duel.b });
+    setD2Guess({ A: null, B: null });
+    setD2Revealed(false);
+    setD2NextSlot('A');
   }
 
   function computeD2Card(slot: 'A' | 'B') {
@@ -297,6 +449,7 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
       const from = Number.parseInt(reorderMatch[1], 10);
       if (Number.isNaN(from) || from === index) return;
       setD3Hint(null);
+      markPlayed(3);
       setD3Order((prev) => {
         const arr = [...prev];
         const [item] = arr.splice(from, 1);
@@ -310,6 +463,7 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
     setD3Order((prev) => {
       const target = index + dir;
       if (target < 0 || target >= prev.length) return prev;
+      markPlayed(3);
       const arr = [...prev];
       [arr[index], arr[target]] = [arr[target], arr[index]];
       return arr;
@@ -369,6 +523,12 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
   };
   const d4Diff = Math.abs(d4Pct.legumes - 0.5) + Math.abs(d4Pct.proteines - 0.25) + Math.abs(d4Pct.feculents - 0.25);
   const d4Achieved = d4Touched && d4Diff < D4_ACHIEVED_TOLERANCE && d4CountsTotal >= 3;
+
+  // A2 · critère défi ④ : l'assiette-modèle est atteinte.
+  useEffect(() => {
+    if (d4Achieved) markPlayed(4);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [d4Achieved]);
 
   // B3 : portions réelles — chaque catégorie apporte son aliment représentatif répété
   // `d4Counts[cat]` fois (plus de paramètre `proportions` : l'effet émerge de la composition).
@@ -490,25 +650,44 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
     setDefi(DEFI_ORDER[nextIndex]);
   }
 
+  // A2 · CTA « Défi suivant → » : jamais bloquant, les onglets restent tous cliquables
+  // (invariant : aucun enchaînement forcé). N'apparaît jamais sur ★ (pas de « suivant »).
+  const showNextCta = defi !== 5 && playedDefis.has(defi);
+  function handleNextDefi() {
+    const index = DEFI_ORDER.indexOf(defi);
+    const next = DEFI_ORDER[index + 1];
+    if (next) setDefi(next);
+  }
+
   const showShelf = defi === 1 || defi === 2 || defi === 3 || defi === 5;
 
   return (
     <div className={styles.module}>
       <div className={styles.tabs} role="tablist" aria-label="Les 4 défis et la synthèse">
-        {DEFI_ORDER.map((n, index) => (
-          <button
-            key={n}
-            type="button"
-            role="tab"
-            aria-selected={defi === n}
-            tabIndex={defi === n ? 0 : -1}
-            className={defi === n ? `${styles.tab} ${styles.tabActive}` : styles.tab}
-            onClick={() => setDefi(n)}
-            onKeyDown={(e) => handleTabKeyDown(e, index)}
-          >
-            {DEFI_LABELS[n]}
-          </button>
-        ))}
+        {DEFI_ORDER.map((n, index) => {
+          const played = playedDefis.has(n);
+          return (
+            <button
+              key={n}
+              type="button"
+              role="tab"
+              aria-selected={defi === n}
+              tabIndex={defi === n ? 0 : -1}
+              className={defi === n ? `${styles.tab} ${styles.tabActive}` : styles.tab}
+              onClick={() => setDefi(n)}
+              onKeyDown={(e) => handleTabKeyDown(e, index)}
+              aria-label={played ? `${DEFI_LABELS[n]} — défi joué` : undefined}
+            >
+              {DEFI_LABELS[n]}
+              {played && (
+                <span className={styles.tabCheck} aria-hidden="true">
+                  {' '}
+                  ✓
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
 
       <div className={styles.layout}>
@@ -537,6 +716,18 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
         )}
 
         <div className={styles.stage}>
+          <div className={styles.captionRow}>
+            <div className={styles.captionBlock}>
+              <p className={styles.captionEyebrow}>{caption.eyebrow}</p>
+              <p className={styles.captionText}>{caption.text}</p>
+            </div>
+            {showNextCta && (
+              <button type="button" className={`btn btn--ghost ${styles.nextDefiBtn}`} onClick={handleNextDefi}>
+                Défi suivant →
+              </button>
+            )}
+          </div>
+
           {defi === 1 && (
             <>
               <div className={styles.d1Layout}>
@@ -575,9 +766,34 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
                 </div>
               </div>
               <CourbeSection
-                courbes={[
-                  { id: 'd1', d: d1Courbe.d, label: 'Votre assiette', mg: `${d1Courbe.mg} mg/dL`, variante: 'principale' },
-                ]}
+                courbes={
+                  d1ShowFantome && d1CourbeFeculents
+                    ? [
+                        {
+                          id: 'd1',
+                          d: d1Courbe.d,
+                          label: 'Votre assiette',
+                          mg: `${d1Courbe.mg} mg/dL`,
+                          variante: 'principale',
+                        },
+                        {
+                          id: 'feculents-seuls',
+                          d: d1CourbeFeculents.d,
+                          label: 'Vos féculents seuls',
+                          mg: `${d1CourbeFeculents.mg} mg/dL`,
+                          variante: 'fantome',
+                        },
+                      ]
+                    : [
+                        {
+                          id: 'd1',
+                          d: d1Courbe.d,
+                          label: 'Votre assiette',
+                          mg: `${d1Courbe.mg} mg/dL`,
+                          variante: 'principale',
+                        },
+                      ]
+                }
                 onNavigateActivite={() => onNavigate('activite')}
               />
             </>
@@ -585,20 +801,40 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
 
           {defi === 2 && (
             <>
+              <div className={styles.d2Duels} role="group" aria-label="Duels suggérés">
+                {D2_DUELS.map((duel) => {
+                  const active = d2Slots.A === duel.a && d2Slots.B === duel.b;
+                  return (
+                    <button
+                      key={duel.id}
+                      type="button"
+                      className={active ? `${styles.familyTab} ${styles.familyTabActive}` : styles.familyTab}
+                      aria-pressed={active}
+                      onClick={() => handleD2Duel(duel)}
+                    >
+                      {duel.label}
+                    </button>
+                  );
+                })}
+              </div>
               <div className={styles.d2Layout}>
                 {(['A', 'B'] as const).map((slot) => {
                   const card = slot === 'A' ? d2CardA : d2CardB;
+                  const duoKey = slot === 'A' ? 'duoA' : 'duoB';
                   return (
                     <div
                       key={slot}
                       className={styles.d2Card}
+                      style={{ borderTopColor: DUO_CSS_COLOR[duoKey] }}
                       onDragOver={allowDrop}
                       onDrop={handleD2Drop(slot)}
                     >
                       <div className={styles.d2ImageWrap}>
                         <IllustrationSlot id={`aliment-${card.food.id}`} label={card.food.name} shape="rounded" size={112} />
                       </div>
-                      <p className={styles.d2Name}>{card.food.name}</p>
+                      <InfoHover label={`En savoir plus sur ${card.food.name}`} content={<FoodDetail food={card.food} />}>
+                        <span className={styles.d2Name}>{card.food.name}</span>
+                      </InfoHover>
                       <div className={styles.d2Levels}>
                         {NIVEAUX.map((level) => {
                           const isGuess = d2Guess[slot] === level;
@@ -625,12 +861,24 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
                         })}
                       </div>
                       {d2Revealed && (
-                        <p className={d2Guess[slot] === card.correct ? styles.resultOk : styles.resultOff}>
-                          Réponse : {NIVEAU_LABEL[card.correct]}
-                          {d2Guess[slot] === card.correct
-                            ? ' — bonne prédiction ✓'
-                            : ` — votre prédiction : ${d2Guess[slot] ? NIVEAU_LABEL[d2Guess[slot] as Niveau] : '—'}`}
-                        </p>
+                        <div className={styles.d2Verdict}>
+                          <span
+                            className={styles.verdictBadge}
+                            style={{ background: `var(${NIVEAU_COLOR_VAR[card.correct]})` }}
+                          >
+                            Pic {NIVEAU_LABEL[card.correct].toLowerCase()}
+                          </span>
+                          {d2Guess[slot] === card.correct ? (
+                            <p className={styles.verdictOk}>
+                              <Check size={18} aria-hidden="true" /> Bonne prédiction
+                            </p>
+                          ) : (
+                            <p className={styles.verdictOff}>
+                              <X size={18} aria-hidden="true" /> Vous aviez dit :{' '}
+                              {d2Guess[slot] ? NIVEAU_LABEL[d2Guess[slot] as Niveau] : '—'}
+                            </p>
+                          )}
+                        </div>
                       )}
                     </div>
                   );
@@ -660,17 +908,22 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
                       d: d2CardA.courbe.d,
                       label: d2CardA.food.name,
                       mg: `${d2CardA.courbe.mg} mg/dL`,
-                      variante: 'principale',
+                      variante: 'duoA',
+                      picAt: d2CardA.courbe.picAt,
+                      etiquette: d2CardA.food.name,
                     },
                     {
                       id: 'B',
                       d: d2CardB.courbe.d,
                       label: d2CardB.food.name,
                       mg: `${d2CardB.courbe.mg} mg/dL`,
-                      variante: 'estompee',
+                      variante: 'duoB',
+                      picAt: d2CardB.courbe.picAt,
+                      etiquette: d2CardB.food.name,
                     },
                   ]}
                   onNavigateActivite={() => onNavigate('activite')}
+                  animerTrace
                 />
               )}
             </>
@@ -865,11 +1118,6 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
             </>
           )}
         </div>
-      </div>
-
-      <div className={styles.captionBlock}>
-        <p className={styles.captionEyebrow}>{caption.eyebrow}</p>
-        <p className={styles.captionText}>{caption.text}</p>
       </div>
 
       <ModuleFooterNav

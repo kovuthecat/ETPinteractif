@@ -30,6 +30,16 @@
   border-color: var(--color-text);
 }
 
+/* A2 : coche de progression sur l'onglet d'un défi joué — le ✓ EST le signe (pas de couleur seule). */
+.tabCheck {
+  color: var(--color-confort-strong);
+  font-weight: 700;
+}
+
+.tabActive .tabCheck {
+  color: inherit;
+}
+
 /* --- Layout garde-manger + scène --- */
 
 .layout {
@@ -100,7 +110,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 2px;
   cursor: grab;
   position: relative;
   padding: 4px;
@@ -109,15 +119,20 @@
   background: transparent;
 }
 
-.foodVignette:hover,
-.foodVignette:focus-visible {
+.foodVignette:hover {
   background: var(--color-bg);
-  outline: 2px solid var(--color-nav);
-  outline-offset: 2px;
 }
 
+/* C2 : l'image est désormais le déclencheur « ajouter » (clic/clavier). */
 .foodImageWrap {
   position: relative;
+  cursor: pointer;
+  border-radius: var(--radius);
+}
+
+.foodImageWrap:focus-visible {
+  outline: 2px solid var(--color-nav);
+  outline-offset: 2px;
 }
 
 .cgDot {
@@ -130,33 +145,20 @@
   border: 2px solid var(--color-surface);
 }
 
+/* C2 : le nom est le déclencheur `InfoHover` (2ᵉ niveau) — cible ≥ 44 px de haut via padding,
+   souligné pointillé fourni par `InfoHover` lui-même (affordance générique). */
 .foodName {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--target-min);
+  padding: 8px 6px;
+  box-sizing: border-box;
   font-size: 13px;
   text-align: center;
   line-height: 1.25;
   font-weight: 500;
   color: var(--color-text);
-}
-
-.foodTooltip {
-  opacity: 0;
-  position: absolute;
-  top: -28px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--color-text);
-  color: var(--color-bg);
-  font-size: 12px;
-  padding: 4px 10px;
-  border-radius: 8px;
-  white-space: nowrap;
-  pointer-events: none;
-  transition: opacity 0.15s ease;
-}
-
-.foodVignette:hover .foodTooltip,
-.foodVignette:focus-visible .foodTooltip {
-  opacity: 1;
 }
 
 /* --- Scène (contenu du défi actif) --- */
@@ -256,6 +258,14 @@
   justify-content: center;
 }
 
+/* A4 : duels suggérés, style proche des `familyTab` (réutilisées telles quelles). */
+.d2Duels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: var(--space-sm);
+}
+
 .d2Card {
   width: 320px;
   display: flex;
@@ -264,6 +274,9 @@
   gap: var(--space-sm);
   background: var(--color-surface);
   border: 2px dashed var(--color-line);
+  /* B1 : liseré d'identité (couleur assortie à la courbe), posé via `border-top-color` inline
+     (DUO_CSS_COLOR exporté par S2 — jamais de valeur dupliquée en dur). */
+  border-top: 5px solid var(--color-line);
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
 }
@@ -323,18 +336,43 @@
   border-color: var(--color-nav);
 }
 
-.resultOk {
+/* B3 : verdict visuel au révèle — badge niveau (double encodage : libellé + couleur) puis
+   résultat de prédiction (jamais rouge : se tromper fait partie du jeu). */
+.d2Verdict {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.verdictBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 6px 20px;
+  border-radius: var(--radius-pill);
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.verdictOk,
+.verdictOff {
   margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: 15px;
   font-weight: 600;
+}
+
+.verdictOk {
   color: var(--color-confort-strong);
 }
 
-.resultOff {
-  margin: 0;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--color-vigilance);
+.verdictOff {
+  color: var(--color-text);
 }
 
 .d2Actions {
@@ -605,26 +643,41 @@
   align-self: flex-start;
 }
 
-/* --- Bandeau de caption (bas d'écran) --- */
+/* --- A1 : consigne en haut de la scène (déplacée du bas — écart maquette assumé) --- */
+
+.captionRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
 
 .captionBlock {
-  text-align: center;
+  text-align: left;
+  flex: 1 1 320px;
 }
 
 .captionEyebrow {
-  margin: 0 0 6px;
-  font-size: 15px;
+  margin: 0 0 4px;
+  font-size: 14px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--color-text-soft);
 }
 
 .captionText {
-  margin: 0 auto;
-  max-width: 900px;
-  font-size: 20px;
+  margin: 0;
+  max-width: 640px;
+  font-size: 18px;
   line-height: 1.35;
   font-weight: 500;
+}
+
+/* A2 : CTA « Défi suivant → », à droite du bloc consigne — jamais bloquant. */
+.nextDefiBtn {
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 /* --- Fiche --- */
@@ -661,6 +714,108 @@
   gap: 8px;
 }
 
+/* --- C3 : panneau détail d'un aliment (contenu `InfoHover`, garde-manger + cartes défi ②) --- */
+
+.foodDetail {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.foodDetailTitle {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.foodDetailPortion {
+  font-weight: 400;
+  color: var(--color-text-soft);
+}
+
+.foodDetailCg {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.foodDetailCg .cgDot {
+  position: static;
+  border: none;
+}
+
+.foodDetailPaliers {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.foodDetailPaliers li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.palierDots {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.palierDot,
+.palierDotFilled {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.palierDot {
+  background: var(--color-line);
+}
+
+.palierDotFilled {
+  background: var(--color-text-soft);
+}
+
+.omega3Badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 4px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--color-nav);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.foodDetailAtout {
+  margin: 0;
+  font-style: italic;
+  color: var(--color-text-soft);
+}
+
+.foodDetailVaisseaux {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 4px;
+  border-top: 1px solid var(--color-line);
+}
+
+.foodDetailVaisseauxLine {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-text-soft);
+}
+
 @media (max-width: 900px) {
   .layout {
     flex-direction: column;
@@ -669,5 +824,10 @@
   .shelf {
     max-width: none;
     width: 100%;
+  }
+
+  .captionRow {
+    flex-direction: column;
+    align-items: stretch;
   }
 }
