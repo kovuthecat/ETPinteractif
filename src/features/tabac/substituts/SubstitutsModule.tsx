@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AlertTriangle, Flame, Moon, Sun } from 'lucide-react';
+import { AlertTriangle, Flame, Info, Moon, Sun } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import FicheOverlay from '../../../components/FicheOverlay';
 import ModuleFooterNav from '../../../components/ModuleFooterNav';
@@ -11,7 +11,8 @@ type FormeId =
   | 'gomme'
   | 'pastille'
   | 'sublingual'
-  | 'spray';
+  | 'spray'
+  | 'vapoteuse';
 
 type FormeContent = { label: string; bonnesPratiques: string[]; erreurs: string[] };
 
@@ -77,6 +78,22 @@ const FORMES_DATA: Record<FormeId, FormeContent> = {
       "Viser le fond de la gorge / inhaler la pulvérisation.",
     ],
   },
+  vapoteuse: {
+    label: 'Vapoteuse',
+    bonnesPratiques: [
+      "Choisir le dosage de nicotine avec un professionnel : assez dosé pour calmer réellement les envies — un dosage trop faible est la première cause de retour à la cigarette.",
+      "Tirer lentement, en bouffées longues et espacées : la nicotine arrive plus progressivement qu'avec une cigarette (quelques minutes).",
+      "Vapoter dès les premiers signes d'envie, sans attendre que le manque soit intense, autant que nécessaire dans la journée.",
+      "Objectif : remplacer complètement le tabac fumé. Ensuite, à distance et sans se presser, réduire progressivement le dosage de nicotine.",
+    ],
+    erreurs: [
+      "Sous-doser la nicotine « pour faire moins fort » : l'envie revient, et la cigarette avec.",
+      "Continuer à fumer en parallèle durablement : le bénéfice n'existe que si la vapoteuse remplace complètement le tabac (piège du double usage).",
+      "Reproduire les bouffées courtes et rapides de la cigarette.",
+      "Acheter du matériel ou des e-liquides hors des circuits contrôlés (normes UE/AFNOR).",
+    ],
+  },
+  // Contenu vapoteuse rédigé d'après HAS/HCSP + rapport OE — à revalider (Thibault)
 };
 
 const QUARTS_PAR_PATCH = 4;
@@ -179,9 +196,27 @@ export default function SubstitutsModule({ onNavigate }: ModuleProps) {
             >
               <span className={styles.formeDot} aria-hidden="true" />
               <span className={styles.formeLabel}>{FORMES_DATA[forme].label}</span>
+              {forme === 'vapoteuse' && (
+                <span className={styles.formeBadge}>
+                  <Info size={12} aria-hidden="true" />
+                  Réduction des risques
+                </span>
+              )}
             </button>
           ))}
         </div>
+
+        {selectedForme === 'vapoteuse' && (
+          <div className={styles.vapoteuseNote}>
+            <Info size={18} aria-hidden="true" />
+            <p>
+              La vapoteuse n'est pas un médicament : c'est un outil de réduction des risques, utile
+              aux personnes qui n'ont pas réussi avec les traitements validés. Les substituts
+              restent le premier choix. À discuter avec un professionnel.
+              {/* à revalider (Thibault) */}
+            </p>
+          </div>
+        )}
 
         {formeData && (
           <div className={styles.panels}>
