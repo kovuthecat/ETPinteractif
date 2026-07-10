@@ -82,8 +82,13 @@ seuls Cigarette, Patch et Substitut sont manipulables ici.)*
 
 **Messages clés** : pic rapide = renforcement ; chute sous le seuil = craving ; bon usage des substituts = rester dans la zone sans combustion.
 
-**Modèle de courbe** : logique pure dans `src/features/tabac/lib/nicotineCurve.ts` (`sampleCurve`,
-`classifyZone`, `toSvgPath`), testée Vitest — ne jamais la dupliquer dans un composant.
+**Modèle de courbe** (refonte S3, 2026-07-09) : logique pure dans `src/features/tabac/lib/nicotineCurve.ts` avec invariants testés Vitest. Le modèle reflète les ordres de grandeur réels (demi-vie plasmatique ≈ 2 h, pic cigarette < 10 min, patch montée 2-4 h) tout en restant pédagogique :
+- **Élimination commune** (~2 h) : même molécule, même demi-vie quelle que soit la forme.
+- **Profils d'absorption par source** : cigarette (pic < 10 min, bolus rapide), forme orale (pic ~30 min), patch (montée exponentielle, plateau ~3-4 h).
+- **Saturation (tolérance)** : l'accumulation de brutes contributions plafonne, reflétant le plafonnement réel de la tolérance aux récepteurs — enchaînement de cigarettes ne fait pas exploser la courbe mais la maintient en haut zone confort/surdosage.
+- **Tension du manque dérivée du niveau** : le craving suit la nicotinémie (bas niveau = tension haute, haut niveau = tension basse), renforçant la cohérence entre Modules 2 et 5.
+
+Invariants garantis (voir `nicotineCurve.test.ts`, 37+ tests) : clairance nocturne complète (~6 h), accumulation progressive en journée, mono-cigarette en zone confort moitié haute, titration de patch par quarts visible, pic patch+cigarette bien dosé en surdosage.
 
 **Vigilance** : courbes **pédagogiques, non pharmacocinétiques** (mention « schéma illustratif »). Renvois → Modules 3 et 5 (portes de fin de module, `ModuleFooterNav`).
 **Sources** : HAS / Tabac Info Service *(à compléter)*.
@@ -160,6 +165,8 @@ Interaction : cliquer un composant pour afficher son rôle/effet.
 **Objectif** : déconstruire le « plaisir » — la cigarette soulage surtout le manque qu'elle a elle-même créé.
 
 **Structure interactive** : réutilise le **moteur de courbe du Module 2**. Bascule **non-fumeur** (ligne stable, jamais en manque) vs **fumeur** (yo-yo : la cigarette ne fait que ramener au niveau « normal »). Annotation : le « plaisir » ressenti = soulagement du manque, pas un gain réel.
+
+**Modèle de tension** (refonte S3, 2026-07-09) : tiré de la nicotinémie réelle via la fonction `tensionLevelAt()`. Tension au plancher quand la nicotinémie est haute (juste après cigarette), remontée progressive vers `TENSION_HIGH` quand elle redescend (craving qui grandit). Fumeur régulier débute sa journée avec une tension élevée (TENSION_VIRTUAL_START), non-fumeur constant (TENSION_NONSMOKER bas). Invariant 15 en `nicotineCurve.test.ts` valide la cohérence : creux de tension = pic de niveau, pic de tension = creux de niveau. Délai de remontée de tension ~2 h (TENSION_TAU).
 
 **Renvois** ↔ Modules 1 et 2.
 **Vigilance** : ton **non culpabilisant**.
@@ -242,6 +249,71 @@ Contenu détaillé, décisions et libellés exacts : `docs/BRIEF_TABAC.md` §3.2
 dupliqué ici). **Aucune porte de fin de module** : la fiche imprimée est la sortie du module.
 **Sources** : aucune (pas de contenu clinique chiffré — reprend, en chips, des libellés déjà validés des
 modules Substituts, Addiction, Craving et Motivation).
+
+---
+
+### Module 9 — Ce que l'arrêt répare
+
+**Objectif** : visualiser concrètement et positivement les bénéfices de l'arrêt, organe par organe, dès les premières heures et tout au long de la vie. Registre **exclusivement positif** — jamais l'organe malade, seulement ce qui va mieux. Famille Se motiver.
+
+**Structure interactive** : réutilise la **silhouette générique** (promue en S2) avec 7 zones cliquables (cerveau, bouche, cœur, poumons, sang/vaisseaux, peau, jambes). Une **frise de 10 jalons** (20 minutes → 10-15 ans) affiche l'échéance en chip cliquable, les zones du jalon courant s'allument, celles des jalons passés se verrouillent « acquis ». Clic sur une zone → détail avec vignette (illustration par zone) et liste de **tous** les bénéfices de cette zone (leurs dates, les acquis cochés).
+
+| # | Échéance | Zones | Texte du bénéfice |
+| --- | --- | --- | --- |
+| 1 | 20 minutes | cœur | La pression artérielle et la fréquence cardiaque redeviennent normales. |
+| 2 | 8 heures | sang | Le monoxyde de carbone dans le sang diminue de moitié. L'oxygénation des cellules redevient normale. |
+| 3 | 24 heures | poumons, cœur | Le monoxyde de carbone est totalement éliminé. Les poumons commencent à évacuer le mucus et les résidus de fumée. Le risque d'infarctus commence déjà à baisser. |
+| 4 | 48 heures | bouche | Le goût et l'odorat s'améliorent : les terminaisons nerveuses du goût commencent à repousser. |
+| 5 | 72 heures | poumons | Respirer devient plus facile : les bronches se relâchent, l'énergie augmente. |
+| 6 | 2 semaines à 3 mois | jambes, peau | La circulation sanguine s'améliore, la marche et l'effort deviennent plus faciles. Le teint s'éclaircit. |
+| 7 | 1 à 9 mois | poumons | La toux et la fatigue diminuent. Les cils bronchiques repoussent, le souffle revient. |
+| 8 | 1 an | cœur | Le risque d'infarctus du myocarde diminue de moitié. |
+| 9 | 5 ans | cerveau, bouche | Le risque d'accident vasculaire cérébral rejoint celui d'une personne n'ayant jamais fumé. Le risque de cancers de la bouche, de la gorge et de l'œsophage diminue de moitié. |
+| 10 | 10 à 15 ans | poumons, cœur | Le risque de cancer du poumon diminue de moitié. Le risque de maladie cardiaque et l'espérance de vie rejoignent ceux des personnes n'ayant jamais fumé. |
+
+*(Chiffres à revalider par Thibault — source : Tabac Info Service / OMS.)*
+
+**Message transverse permanent** : « Ces étapes se déclenchent quel que soit l'âge, le nombre d'années de tabac ou de tentatives précédentes. Il n'est jamais trop tard — ni trop tôt. »
+
+**Vigilance** : ton positivement frais (aucune menace, aucun organe malade, aucun compte à rebours anxiogène). Renvois → Module Motivation, Plan d'arrêt (portes fin de module, `ModuleFooterNav`).
+**Sources** : Tabac Info Service — Les bénéfices de l'arrêt du tabac · OMS — Sevrage tabagique.
+
+---
+
+### Module 10 — Vrai ou faux ?
+
+**Objectif** : module de la famille Comprendre — explorer les idées reçues les plus fréquentes sur le tabac et le sevrage en révélant le verdict factuel, nuancé et sourcé. Registre **informatif, jamais culpabilisant ni infantilisant** — on discute des idées, jamais de la personne.
+
+**Structure interactive** : une **carte à la fois**, l'affirmation en serif entre guillemets + vignette d'illustration (placeholder). Deux gros boutons **« Vrai »** / **« Faux »** (≥ 44 px, pictos ✓/✗ + libellé, jamais couleur seule). Révélation : badge verdict (**VRAI** vert confort / **FAUX** ambre nav — jamais rouge, une croyance n'est pas un danger) + badge secondaire « …et c'est plus nuancé » si applicable, puis explication 2-4 phrases, source en petit, bouton « Approfondir → [module] » si un renvoi existe. Aucun « Bonne réponse ! » / « Perdu ! » — verdict porte sur l'affirmation, pas sur la personne.
+
+Navigation : points cliquables (cible ≥ 44 px) + boutons ‹ › ; compteur sobrement placé ; « Recommencer » réinitialise. On peut passer une carte sans répondre. Consigne d'ouverture : « À votre avis, vrai ou faux ? Répondez, puis regardons ce qu'en disent les faits. »
+
+**Les 15 affirmations** (toutes livrées actives — à revalider par Thibault après usage) :
+
+| # | Affirmation | Verdict | Explication (+ nuance) | Source | Renvoi |
+| --- | --- | --- | --- | --- | --- |
+| 1 | « Fumer me détend. » | FAUX | La nicotine est un stimulant, pas un calmant. La sensation de détente vient surtout du soulagement du manque — créé par la cigarette précédente. Après le sevrage, le niveau moyen de stress et d'anxiété diminue chez la plupart des personnes. | Tabac Info Service | Module 5 |
+| 2 | « Les substituts nicotiniques sont dangereux pour le cœur. » | FAUX | Ce qui abîme le cœur et les vaisseaux, c'est la fumée (monoxyde de carbone, particules) — pas la nicotine seule. Les substituts délivrent la nicotine sans combustion : ils sont utilisables, y compris en cas de maladie cardiaque, avec l'avis d'un professionnel. | HAS · Tabac Info Service | Module 4 |
+| 3 | « J'ai fumé trop longtemps, ça ne sert plus à rien d'arrêter. » | FAUX | Les bénéfices commencent 20 minutes après la dernière cigarette et s'accumulent pendant des années, quel que soit l'âge et l'ancienneté du tabagisme. Arrêter après 60 ans améliore encore la santé et l'espérance de vie. | Tabac Info Service · OMS | Module 9 |
+| 4 | « Quelques cigarettes par jour, ce n'est pas vraiment dangereux. » | FAUX *(nuancé)* | Il n'existe pas de seuil sans risque : même 1 à 5 cigarettes par jour exposent à une part importante du risque d'infarctus et d'AVC — le risque cardiovasculaire n'est pas proportionnel au nombre de cigarettes. Réduire reste un pas — mais c'est l'arrêt qui protège. | Santé publique France | — |
+| 5 | « Les cigarettes "light" ou roulées sont moins nocives. » | FAUX | Les « light » n'ont jamais réduit le risque : on compense en tirant plus fort et plus profondément (l'appellation est d'ailleurs interdite depuis 2003). Le tabac à rouler délivre au moins autant — souvent plus — de goudrons et de monoxyde de carbone. | Tabac Info Service | Module 4 |
+| 6 | « Si j'arrête, je vais forcément prendre beaucoup de poids. » | FAUX | La prise moyenne est de 2 à 4 kg, et environ une personne sur trois n'en prend pas. La nicotine augmentait les dépenses d'énergie : le corps se rééquilibre. Les substituts bien dosés et l'activité physique limitent nettement cette prise — et rien n'oblige à tout mener de front. | Tabac Info Service · HAS | Module 3 |
+| 7 | « Arrêter de fumer, c'est juste une question de volonté. » | FAUX | La dépendance est un mécanisme neurobiologique (les récepteurs à la nicotine du cerveau), pas un trait de caractère. La volonté compte, mais un accompagnement et des substituts bien dosés multiplient par 1,5 à 2 les chances de réussite. Demander de l'aide n'est pas un aveu de faiblesse. | HAS · Cochrane | Module 1 |
+| 8 | « J'ai déjà essayé les patchs : ça ne marche pas sur moi. » | FAUX *(nuancé)* | Le plus souvent, ce n'est pas le patch qui a échoué : c'est la dose qui était trop faible, ou la durée trop courte. La dose s'ajuste au ressenti (par quarts de patch) et se complète d'une forme orale pour les envies. Une tentative « ratée » renseigne surtout sur le bon réglage pour la prochaine. | HAS | Module 3 |
+| 9 | « Une cigarette pendant le sevrage, et tout est à refaire. » | FAUX | Un écart n'est pas une rechute : il n'efface ni les bénéfices déjà acquis, ni ce que vous avez appris. Ce qui compte, c'est la trajectoire d'ensemble, pas la perfection. Comprendre ce qui a déclenché l'écart prépare la suite. | Tabac Info Service | Module 6 |
+| 10 | « Le corps commence à se réparer moins d'une heure après la dernière cigarette. » | VRAI | Dès 20 minutes, la pression artérielle et la fréquence cardiaque redeviennent normales. En 24 à 48 heures, le monoxyde de carbone est éliminé, le goût et l'odorat reviennent. La réparation démarre tout de suite — et continue pendant des années. | Tabac Info Service | Module 9 |
+| 11 | « On peut utiliser un patch et une gomme en même temps. » | VRAI | C'est même recommandé quand les envies persistent : le patch assure un fond stable, la forme orale (gomme, pastille, spray) répond aux pics d'envie. Cette association augmente les chances de réussite — elle se règle avec un professionnel. | HAS · Cochrane | Module 3 |
+| 12 | « Il faut souvent plusieurs tentatives avant d'arrêter pour de bon. » | VRAI | La plupart des ex-fumeurs ont fait plusieurs tentatives avant l'arrêt durable. Chaque tentative n'est pas un échec : c'est un entraînement qui augmente les chances de la suivante. | Tabac Info Service | Module 7 |
+| 13 | « Une envie de fumer finit toujours par passer, même sans fumer. » | VRAI | Une envie est une vague de quelques minutes : elle monte, culmine, puis retombe d'elle-même — qu'on fume ou non. Les techniques des 4D aident à la laisser passer, et les vagues s'espacent avec le temps. | Tabac Info Service | Module 6 |
+| 14 | « La vapoteuse est aussi dangereuse que la cigarette. » | FAUX *(nuancé)* | En l'état des connaissances, la vapoteuse est nettement moins nocive que la cigarette, car il n'y a pas de combustion — donc ni goudrons ni monoxyde de carbone. Elle n'est pas anodine pour autant, et l'objectif reste de s'en libérer aussi. À discuter avec un professionnel. | Santé publique France *(à revalider Thibault)* | Module 4 |
+| 15 | « Réduire sa consommation sans arrêter protège déjà la santé. » | FAUX *(nuancé)* | Réduire seul protège peu : on compense souvent en tirant davantage sur chaque cigarette, et le risque cardiovasculaire persiste même à faible consommation. En revanche, réduire **avec des substituts**, comme étape préparant l'arrêt complet, est une stratégie valable. | HAS *(à revalider Thibault)* | Module 8 |
+
+**Cartes 4, 14 et 15** : contenu à revalider par Thibault après usage (marqué `// à revalider (Thibault)` dans le code — statut `actif: true` actuellement, pour permettre une revue clinique en conditions réelles ; retrait possible sans code change).
+
+**Vigilance** : jamais de jugement (« il faut »), jamais d'humour moqueur, aucune formulation « raté/perdu/gagné ». Badges verdict en couleur + picto, jamais couleur seule (double encodage).
+
+**Renvois** → Modules selon l'explication (voir tableau).
+**Sources** : Tabac Info Service · HAS — Arrêt de la consommation de tabac (2014).
 
 ---
 
