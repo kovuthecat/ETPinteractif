@@ -42,6 +42,88 @@
   pointer-events: none;
 }
 
+/* Variantes duo (défi ② alimentation, S2 2026-07-09) — identité à poids égal (même
+   épaisseur/opacité que .courbePrincipale). duoA = bleu nav (token global) ; duoB = prune
+   LOCALE (pas un token global, pas confort/vigilance/toxique). Garder en synchronisation
+   manuelle avec l'export `DUO_CSS_COLOR` de CourbeGlycemie.tsx. */
+.courbeDuoA {
+  stroke: var(--color-nav);
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.courbeDuoB {
+  stroke: oklch(50% 0.11 330);
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+/* Tracé animé (2.d, optionnel, prop `animerTrace`) : `pathLength={1}` côté JSX rend
+   stroke-dasharray unitaire ; on anime le dashoffset 1 → 0 au montage. */
+.traceAnimee {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: courbe-trace 900ms ease-out forwards;
+}
+
+@keyframes courbe-trace {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .traceAnimee {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Marqueur de pic (2.b, optionnel, `CourbeDef.picAt`). */
+.picHalo {
+  opacity: 0.22;
+  pointer-events: none;
+}
+
+.picDot {
+  stroke: var(--color-surface);
+  stroke-width: 1.5;
+  pointer-events: none;
+}
+
+/* Étiquette directe (2.c, optionnel, `CourbeDef.etiquette` + `picAt`). */
+.etiquette {
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Fondu du marqueur de pic + étiquette après le tracé animé (delay ≈ durée du tracé). */
+.picFade {
+  opacity: 0;
+  animation: courbe-fade-in 300ms ease-out 900ms forwards;
+}
+
+@keyframes courbe-fade-in {
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .picFade {
+    opacity: 1;
+    animation: none;
+  }
+}
+
 .courbeHit {
   cursor: help;
   outline: none;
