@@ -1,4 +1,4 @@
-import { Brain, Activity, Pill, Scale, Repeat, Waves, Compass, Flag } from 'lucide-react';
+import { Brain, Activity, Pill, Scale, Repeat, Waves, Compass, Flag, HeartPulse, MessageCircleQuestion } from 'lucide-react';
 import type { ModuleDef } from '../types';
 import AddictionModule from './addiction/AddictionModule';
 import NicotineModule from './nicotine/NicotineModule';
@@ -8,6 +8,8 @@ import SoulagementModule from './soulagement/SoulagementModule';
 import CravingModule from './craving/CravingModule';
 import MotivationModule from './motivation/MotivationModule';
 import PlanArretModule from './plan-arret/PlanArretModule';
+import BeneficesArretModule from './benefices-arret/BeneficesArretModule';
+import IdeesRecuesModule from './idees-recues/IdeesRecuesModule';
 
 export const MODULES: ModuleDef[] = [
   {
@@ -47,6 +49,16 @@ export const MODULES: ModuleDef[] = [
     hue: 'toxique',
   },
   {
+    id: 'idees-recues',
+    famille: 'comprendre',
+    titre: 'Vrai ou faux ?',
+    resume: 'Passer en revue les idées reçues sur le tabac et le sevrage — sans jugement, avec les faits.',
+    Icon: MessageCircleQuestion,
+    Component: IdeesRecuesModule,
+    hue: 'nav',
+    sources: ['Tabac Info Service', 'HAS — Arrêt de la consommation de tabac (2014)'],
+  },
+  {
     id: 'substituts',
     famille: 'agir',
     titre: 'Utilisation des substituts & titration du patch',
@@ -81,5 +93,15 @@ export const MODULES: ModuleDef[] = [
     Icon: Compass,
     Component: MotivationModule,
     hue: 'nav',
+  },
+  {
+    id: 'benefices-arret',
+    famille: 'motivation',
+    titre: "Ce que l'arrêt répare",
+    resume: "Visualiser, organe par organe, les bénéfices de l'arrêt — dès 20 minutes, et à tout âge.",
+    Icon: HeartPulse,
+    Component: BeneficesArretModule,
+    hue: 'confort',
+    sources: ['Tabac Info Service — Les bénéfices de l\'arrêt du tabac', 'OMS — Sevrage tabagique'],
   },
 ];
