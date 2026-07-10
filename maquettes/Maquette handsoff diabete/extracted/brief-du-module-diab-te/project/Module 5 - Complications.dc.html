@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta name="viewport" content="width=1920">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="./image-slot.js"></script>
+  <style>
+    *{ box-sizing: border-box; }
+    body{ margin:0; }
+    .m5-zone:hover .m5-zone-hover{ opacity:1 !important; }
+    .m5-locked:hover .m5-locked-hover{ opacity:1 !important; }
+    .m5-badge:hover .m5-badge-hover{ opacity:1 !important; }
+    .m5-fade{ animation: m5in 0.35s ease; }
+    @keyframes m5in{ from{ opacity:0; transform:translateY(6px); } to{ opacity:1; transform:translateY(0); } }
+  </style>
+</helmet>
+
+<div style="width:100%;height:100vh;display:flex;align-items:center;justify-content:center;background:#F7F3EC;overflow:hidden;">
+<div data-screen-label="Module 5" style="width:1920px;height:1080px;background:#F7F3EC;font-family:'Public Sans',sans-serif;color:#26221B;position:relative;overflow:hidden;display:flex;flex-direction:column;flex-shrink:0;transform:scale({{ scale }});">
+
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:36px 64px 0;">
+    <div style="font-size:18px;letter-spacing:0.12em;color:#8B8478;font-weight:600;">MODULE 5 · COMPLICATIONS</div>
+    <div style="font-size:16px;letter-spacing:0.08em;color:#8B8478;font-weight:600;">Touchez un organe — refermez quand c'est assez</div>
+  </div>
+
+  <div style="flex:1;display:flex;gap:56px;padding:28px 64px 0;min-height:0;align-items:stretch;">
+
+    <div style="width:420px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+      <div style="position:relative;width:340px;height:760px;">
+        <image-slot id="m5-silhouette" shape="rect" placeholder="Silhouette du corps (tête / cœur / reins / pieds)" style="width:100%;height:100%;"></image-slot>
+
+        <sc-for list="{{ lockedZones }}" as="z" hint-placeholder-count="2">
+          <div class="m5-locked" style="position:absolute;left:{{ z.left }}px;top:{{ z.top }}px;width:{{ z.size }}px;height:{{ z.size }}px;transform:translate(-50%,-50%);border-radius:50%;background:rgba(216,210,196,0.55);border:3px solid #D8D2C4;display:flex;align-items:center;justify-content:center;">
+            <div class="m5-locked-hover" style="opacity:0;transition:opacity 0.15s;position:absolute;bottom:-34px;left:50%;transform:translateX(-50%);background:#26221B;color:#F7F3EC;font-size:12px;padding:6px 12px;border-radius:8px;white-space:nowrap;pointer-events:none;">Déjà vu — module 4</div>
+          </div>
+        </sc-for>
+
+        <sc-for list="{{ zones }}" as="z" hint-placeholder-count="4">
+          <div class="m5-zone" onclick="{{ z.onClick }}" style="position:absolute;left:{{ z.left }}px;top:{{ z.top }}px;width:{{ z.size }}px;height:{{ z.size }}px;transform:translate(-50%,-50%);border-radius:50%;background:{{ z.bg }};border:3px solid {{ z.border }};cursor:pointer;display:flex;align-items:center;justify-content:center;">
+            <div class="m5-zone-hover" style="opacity:0;transition:opacity 0.15s;position:absolute;bottom:-34px;left:50%;transform:translateX(-50%);background:#26221B;color:#F7F3EC;font-size:12px;padding:6px 12px;border-radius:8px;white-space:nowrap;pointer-events:none;">{{ z.name }}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:8px;max-width:360px;">
+        <sc-for list="{{ zones }}" as="z" hint-placeholder-count="4">
+          <div onclick="{{ z.onClick }}" style="cursor:pointer;padding:10px 18px;border-radius:999px;font-size:15px;font-weight:600;background:{{ z.chipBg }};color:{{ z.chipFg }};border:2px solid {{ z.border }};">{{ z.name }}</div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;">
+
+      <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ true }}">
+        <div class="m5-fade" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;text-align:center;padding:0 60px;">
+          <div style="width:96px;height:96px;border-radius:50%;background:#FFFFFF;border:2px solid #E7E2D5;display:flex;align-items:center;justify-content:center;">
+            <svg width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="18" fill="none" stroke="#B54B3D" stroke-width="3" opacity="0.55"></circle><circle cx="24" cy="24" r="6" fill="#B54B3D" opacity="0.55"></circle></svg>
+          </div>
+          <div style="font-size:24px;font-weight:500;max-width:640px;line-height:1.4;">Le diabète est une maladie des vaisseaux, pas seulement du sucre — la même plaque, ailleurs, abîme d'autres organes.</div>
+          <div style="font-size:18px;color:#8B8478;">Choisissez un organe pour voir ce qu'on surveille.</div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isLockedOpen }}">
+        <div class="m5-fade" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding:0 60px;">
+          <div style="font-size:20px;letter-spacing:0.08em;text-transform:uppercase;color:#8B8478;font-weight:600;">{{ lockedOrgan.name }}</div>
+          <div style="font-size:24px;font-weight:500;max-width:640px;line-height:1.4;">Déjà vu au module 4 : la même maladie des vaisseaux, à plus grande échelle.</div>
+          <div style="font-size:18px;color:#8B8478;max-width:600px;">Ici, on regarde les petits vaisseaux — yeux, reins, nerfs, pieds.</div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isOrganOpen }}">
+        <div class="m5-fade" style="display:flex;flex-direction:column;gap:22px;max-width:1050px;">
+
+          <div style="font-size:20px;letter-spacing:0.08em;text-transform:uppercase;color:#8B8478;font-weight:600;">{{ organ.name }}</div>
+
+          <div style="background:#FFFFFF;border-radius:22px;border:1.5px solid #E7E2D5;padding:26px 34px;display:flex;align-items:center;gap:24px;">
+            <div style="width:14px;height:14px;border-radius:999px;background:#C98A2E;flex-shrink:0;"></div>
+            <div style="font-size:21px;line-height:1.45;">{{ organ.threat }}</div>
+          </div>
+
+          <div class="m5-badge" style="position:relative;background:#F3F8F4;border-radius:22px;border:1.5px solid #CFE3D5;padding:26px 34px;display:flex;align-items:center;gap:24px;">
+            <svg width="52" height="52" viewBox="0 0 52 52" style="flex-shrink:0;">
+              <circle cx="26" cy="26" r="21" fill="none" stroke="#3F8F5C" stroke-width="3" stroke-dasharray="4 5"></circle>
+              <path d="M16 27 L23 34 L37 18" fill="none" stroke="#3F8F5C" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+            <div>
+              <div style="font-size:15px;font-weight:700;letter-spacing:0.04em;color:#3F8F5C;text-transform:uppercase;margin-bottom:6px;">Évitable et dépistable</div>
+              <div style="font-size:21px;line-height:1.45;">{{ organ.avoidable }}</div>
+            </div>
+            <div class="m5-badge-hover" style="opacity:0;transition:opacity 0.15s;position:absolute;bottom:-36px;left:34px;background:#26221B;color:#F7F3EC;font-size:13px;padding:8px 14px;border-radius:10px;max-width:520px;pointer-events:none;">{{ organ.stat }}</div>
+          </div>
+
+          <div style="background:#FFFFFF;border-radius:22px;border:1.5px solid #E7E2D5;padding:26px 34px;display:flex;align-items:center;gap:24px;">
+            <div style="width:14px;height:14px;border-radius:999px;background:#26221B;flex-shrink:0;"></div>
+            <div style="font-size:21px;font-weight:600;line-height:1.45;">{{ organ.action }}</div>
+          </div>
+
+          <sc-if value="{{ organ.hasExtra }}">
+            <div style="background:#FFFFFF;border-radius:22px;border:1.5px solid #E7E2D5;padding:26px 34px;display:flex;gap:28px;align-items:center;">
+              <image-slot id="m5-pied-illu" shape="rect" placeholder="Points de contrôle du pied" style="width:150px;height:110px;flex-shrink:0;border-radius:14px;"></image-slot>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <sc-for list="{{ pointsControle }}" as="p" hint-placeholder-count="3">
+                  <div style="font-size:18px;">— {{ p }}</div>
+                </sc-for>
+              </div>
+              <div onclick="{{ openFiche }}" style="cursor:pointer;margin-left:auto;padding:14px 26px;border-radius:999px;background:#26221B;color:#F7F3EC;font-size:17px;font-weight:600;white-space:nowrap;">Voir la fiche</div>
+            </div>
+          </sc-if>
+
+        </div>
+      </sc-if>
+
+    </div>
+  </div>
+
+  <div style="padding:16px 64px 36px;text-align:center;">
+    <div style="font-size:20px;letter-spacing:0.08em;text-transform:uppercase;color:#8B8478;margin-bottom:10px;">{{ caption.eyebrow }}</div>
+    <div style="font-size:30px;line-height:1.35;font-weight:500;max-width:1500px;margin:0 auto;">{{ caption.text }}</div>
+  </div>
+
+  <sc-if value="{{ showFiche }}">
+    <div style="position:absolute;inset:0;background:rgba(38,34,27,0.55);display:flex;align-items:center;justify-content:center;z-index:10;">
+      <div style="width:1000px;max-height:920px;overflow:auto;background:#FFFFFF;border-radius:28px;padding:56px 64px;position:relative;">
+        <div onclick="{{ closeFiche }}" style="position:absolute;top:28px;right:32px;cursor:pointer;width:44px;height:44px;border-radius:50%;background:#F7F3EC;border:2px solid #E7E2D5;display:flex;align-items:center;justify-content:center;font-size:20px;color:#8B8478;">✕</div>
+        <div style="font-size:16px;letter-spacing:0.1em;text-transform:uppercase;color:#8B8478;font-weight:700;margin-bottom:10px;">Fiche — référence</div>
+        <div style="font-size:36px;font-weight:700;margin-bottom:6px;">Le pied : l'auto-examen quotidien</div>
+        <div style="font-size:18px;color:#8B8478;margin-bottom:34px;">Un geste, chaque jour — c'est le plus grand levier contre l'amputation.</div>
+
+        <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:34px;">
+          <sc-for list="{{ ficheItems }}" as="it" hint-placeholder-count="6">
+            <div style="display:flex;align-items:center;gap:18px;padding:16px 22px;border-radius:16px;background:#F7F3EC;">
+              <div style="width:26px;height:26px;border-radius:50%;border:2px solid #3F8F5C;flex-shrink:0;"></div>
+              <div style="font-size:20px;">{{ it }}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="background:#F3F8F4;border-radius:18px;padding:22px 28px;border:1.5px solid #CFE3D5;">
+          <div style="font-size:19px;font-weight:600;line-height:1.5;">Ce geste, répété chaque jour, réduit jusqu'à 2/3 le risque d'amputation.</div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const LOCKED = [
+  { id: 'cerveau', name: 'Cerveau', left: 170, top: 60, size: 78 },
+  { id: 'coeur', name: 'Cœur', left: 170, top: 260, size: 100 }
+];
+
+const ORGANS = [
+  {
+    id: 'yeux', name: 'Yeux', left: 205, top: 105, size: 42,
+    threat: "De petits vaisseaux de la rétine s'abîment avec le temps — la vue peut se troubler, parfois sans prévenir.",
+    avoidable: "Un dépistage repère l'atteinte avant qu'elle ne gêne la vue.",
+    action: "Fond d'œil (dilaté), 1 fois par an.",
+    stat: "DCCT/UKPDS : jusqu'à -76 % de rétinopathie sévère avec un bon contrôle glycémique.",
+    hasExtra: false
+  },
+  {
+    id: 'reins', name: 'Reins', left: 170, top: 390, size: 86,
+    threat: "Les reins filtrent un peu moins bien — souvent sans aucun signe pendant longtemps.",
+    avoidable: "Une prise de sang et une analyse d'urine la repèrent tôt.",
+    action: "Bilan rénal (créatinine + albuminurie), 1 fois par an.",
+    stat: "Un dépistage précoce permet d'adapter le traitement avant toute perte de fonction.",
+    hasExtra: false
+  },
+  {
+    id: 'nerfs', name: 'Nerfs', left: 170, top: 520, size: 76,
+    threat: "Les sensations diminuent peu à peu aux pieds et aux mains — on peut se blesser sans le sentir.",
+    avoidable: "Un simple test au fil (monofilament) la repère avant la perte de sensibilité.",
+    action: "Test de sensibilité des pieds, 1 fois par an chez le soignant.",
+    stat: "DCCT/UKPDS : -60 % de neuropathie avec un bon contrôle glycémique.",
+    hasExtra: false
+  },
+  {
+    id: 'pied', name: 'Pied', left: 170, top: 690, size: 96,
+    threat: "Une petite plaie au pied peut passer inaperçue si la sensibilité a diminué — et s'infecter sans douleur qui prévient.",
+    avoidable: "Regardé chaque jour, un problème se repère avant de s'aggraver — c'est le geste qui protège le plus.",
+    action: "Auto-examen quotidien : dessus, dessous (au miroir), entre les orteils.",
+    stat: "Les programmes d'éducation réduisent jusqu'à -2/3 le risque d'amputation.",
+    hasExtra: true
+  }
+];
+
+const FICHE_ITEMS = [
+  "Regarder le dessus du pied",
+  "Regarder le dessous, à l'aide d'un miroir",
+  "Regarder entre les orteils",
+  "Vérifier qu'aucun objet n'est resté dans la chaussure",
+  "Ne jamais marcher pieds nus",
+  "Consulter rapidement en cas de plaie, rougeur ou coupure qui ne cicatrise pas"
+];
+
+const POINTS_CONTROLE = ["Dessus du pied", "Dessous, au miroir", "Entre les orteils"];
+
+class Component extends DCLogic {
+  state = {
+    scale: 1,
+    selected: null,
+    showFiche: false
+  };
+
+  componentDidMount() {
+    this.updateScale();
+    this._onResize = () => this.updateScale();
+    window.addEventListener('resize', this._onResize);
+  }
+  componentWillUnmount() {
+    if (this._onResize) window.removeEventListener('resize', this._onResize);
+  }
+  updateScale() {
+    const s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+    this.setState({ scale: s > 0 ? s : 1 });
+  }
+
+  selectOrgan = id => () => this.setState(s => ({ selected: s.selected === id ? null : id, showFiche: false }));
+  openFiche = () => this.setState({ showFiche: true });
+  closeFiche = () => this.setState({ showFiche: false });
+
+  renderVals() {
+    const s = this.state;
+
+    const lockedZones = LOCKED.map(z => ({
+      id: z.id, name: z.name, left: z.left, top: z.top, size: z.size
+    }));
+
+    const zones = ORGANS.map(o => {
+      const active = s.selected === o.id;
+      return {
+        id: o.id, name: o.name, left: o.left, top: o.top, size: o.size,
+        onClick: this.selectOrgan(o.id),
+        bg: active ? '#F3F8F4' : 'rgba(255,255,255,0.6)',
+        border: active ? '#3F8F5C' : '#D8D2C4',
+        chipBg: active ? '#26221B' : '#FFFFFF',
+        chipFg: active ? '#F7F3EC' : '#26221B'
+      };
+    });
+
+    const lockedOrgan = LOCKED.find(z => z.id === s.selected);
+    const organ = ORGANS.find(o => o.id === s.selected);
+
+    let caption;
+    if (organ) {
+      caption = { eyebrow: organ.name, text: "Ce qu'on surveille pour que ça n'arrive pas — jamais ce qui vous attend." };
+    } else if (lockedOrgan) {
+      caption = { eyebrow: lockedOrgan.name, text: "Cœur et cerveau : déjà vus au module 4, la même maladie, à plus grande échelle." };
+    } else {
+      caption = { eyebrow: 'Complications', text: "Le diabète est une maladie des vaisseaux, pas seulement du sucre — agir sur tout ensemble protège." };
+    }
+
+    return {
+      scale: s.scale,
+      lockedZones,
+      zones,
+      isEmpty: !s.selected,
+      isLockedOpen: !!lockedOrgan,
+      isOrganOpen: !!organ,
+      lockedOrgan: lockedOrgan || { name: '' },
+      organ: organ || { name: '', threat: '', avoidable: '', action: '', stat: '', hasExtra: false },
+      pointsControle: POINTS_CONTROLE,
+      ficheItems: FICHE_ITEMS,
+      showFiche: s.showFiche,
+      openFiche: this.openFiche,
+      closeFiche: this.closeFiche,
+      caption
+    };
+  }
+}
+
+</script>
+</body>
+</html>

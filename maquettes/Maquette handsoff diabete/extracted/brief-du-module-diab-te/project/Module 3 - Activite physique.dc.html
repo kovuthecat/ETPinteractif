@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta name="viewport" content="width=1920">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="./image-slot.js"></script>
+  <style>
+    *{ box-sizing: border-box; }
+    body{ margin:0; }
+    .m3-act:hover .m3-act-hover{ opacity:1 !important; }
+    .m3-curvewrap:hover .m3-curve-hover{ opacity:1 !important; }
+    .m3-ray:hover .m3-ray-label{ opacity:1 !important; }
+    input[type="range"].m3-slider{ -webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:999px;background:#E7E2D5;outline:none; }
+    input[type="range"].m3-slider::-webkit-slider-thumb{ -webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;background:#26221B;cursor:pointer;border:3px solid #F7F3EC;box-shadow:0 0 0 1.5px #26221B; }
+    input[type="range"].m3-slider::-moz-range-thumb{ width:26px;height:26px;border-radius:50%;background:#26221B;cursor:pointer;border:3px solid #F7F3EC;box-shadow:0 0 0 1.5px #26221B; }
+  </style>
+</helmet>
+
+<div style="width:100%;height:100vh;display:flex;align-items:center;justify-content:center;background:#F7F3EC;overflow:hidden;">
+<div data-screen-label="Module 3" style="width:1920px;height:1080px;background:#F7F3EC;font-family:'Public Sans',sans-serif;color:#26221B;position:relative;overflow:hidden;display:flex;flex-direction:column;flex-shrink:0;transform:scale({{ scale }});">
+
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:36px 64px 0;">
+    <div style="font-size:18px;letter-spacing:0.12em;color:#8B8478;font-weight:600;">MODULE 3 · ACTIVITÉ PHYSIQUE</div>
+    <div style="display:flex;gap:10px;">
+      <sc-for list="{{ tempsTabs }}" as="tab" hint-placeholder-count="3">
+        <div onclick="{{ tab.onClick }}" style="padding:12px 22px;border-radius:999px;font-size:18px;font-weight:600;cursor:pointer;user-select:none;background:{{ tab.bg }};color:{{ tab.color }};border:2px solid {{ tab.border }};white-space:nowrap;">{{ tab.label }}</div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="flex:1;display:flex;flex-direction:column;padding:24px 64px 0;min-height:0;">
+
+    <sc-if value="{{ isTemps1 }}">
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;min-height:0;">
+      <div style="position:relative;width:800px;height:600px;flex-shrink:0;">
+        <svg width="800" height="600" viewBox="0 0 800 600" style="position:absolute;left:0;top:0;pointer-events:none;">
+          <sc-for list="{{ rays }}" as="ray" hint-placeholder-count="4">
+            <line x1="{{ ray.x1 }}" y1="{{ ray.y1 }}" x2="{{ ray.x2 }}" y2="{{ ray.y2 }}" stroke="{{ ray.stroke }}" stroke-width="{{ ray.width }}"></line>
+          </sc-for>
+        </svg>
+
+        <div onclick="{{ centerNode.onClick }}" style="position:absolute;left:308px;top:208px;width:184px;height:184px;border-radius:50%;background:{{ centerNode.fill }};border:4px solid {{ centerNode.stroke }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;">
+          <image-slot id="m3-center-activite" shape="circle" placeholder="Illustration : personne active" style="width:66px;height:66px;pointer-events:none;"></image-slot>
+          <div style="font-size:22px;font-weight:600;">Activité</div>
+          <div style="font-size:13px;color:#8B8478;">cliquez : un effort, tous les bénéfices</div>
+        </div>
+
+        <div onclick="{{ nodeSucre.onClick }}" style="position:absolute;left:326px;top:18px;width:148px;height:148px;border-radius:50%;background:{{ nodeSucre.fill }};border:{{ nodeSucre.strokeWidth }}px solid {{ nodeSucre.stroke }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;padding:8px;">
+          <image-slot id="m3-node-sucre" shape="circle" placeholder="Courbe de glycémie" style="width:74px;height:74px;pointer-events:none;"></image-slot>
+          <div style="font-size:14px;font-weight:600;text-align:center;line-height:1.15;">Sucre</div>
+        </div>
+
+        <div onclick="{{ nodeCoeur.onClick }}" style="position:absolute;left:618px;top:226px;width:148px;height:148px;border-radius:50%;background:{{ nodeCoeur.fill }};border:{{ nodeCoeur.strokeWidth }}px solid {{ nodeCoeur.stroke }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;padding:8px;">
+          <image-slot id="m3-node-coeur" shape="circle" placeholder="Cœur et vaisseaux" style="width:74px;height:74px;pointer-events:none;"></image-slot>
+          <div style="font-size:14px;font-weight:600;text-align:center;line-height:1.15;">Cœur &amp; vaisseaux</div>
+        </div>
+
+        <div onclick="{{ nodeTete.onClick }}" style="position:absolute;left:326px;top:434px;width:148px;height:148px;border-radius:50%;background:{{ nodeTete.fill }};border:{{ nodeTete.strokeWidth }}px solid {{ nodeTete.stroke }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;padding:8px;">
+          <image-slot id="m3-node-tete" shape="circle" placeholder="Moral, sommeil, stress" style="width:74px;height:74px;pointer-events:none;"></image-slot>
+          <div style="font-size:14px;font-weight:600;text-align:center;line-height:1.15;">Tête</div>
+        </div>
+
+        <div onclick="{{ nodeAutonomie.onClick }}" style="position:absolute;left:34px;top:226px;width:148px;height:148px;border-radius:50%;background:{{ nodeAutonomie.fill }};border:{{ nodeAutonomie.strokeWidth }}px solid {{ nodeAutonomie.stroke }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;padding:8px;">
+          <image-slot id="m3-node-autonomie" shape="circle" placeholder="Force, équilibre" style="width:74px;height:74px;pointer-events:none;"></image-slot>
+          <div style="font-size:14px;font-weight:600;text-align:center;line-height:1.15;">Autonomie</div>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isTemps2 }}">
+    <div style="flex:1;display:flex;gap:36px;min-height:0;">
+      <div style="flex:1;display:flex;flex-direction:column;gap:14px;min-height:0;">
+        <div style="font-size:16px;letter-spacing:0.08em;text-transform:uppercase;color:#8B8478;font-weight:600;">Ce que je fais déjà — cochez ce qui compte pour vous</div>
+        <div style="flex:1;background:#FFFFFF;border-radius:24px;border:1.5px solid #E7E2D5;padding:22px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;align-content:start;overflow:auto;min-height:0;">
+          <sc-for list="{{ activities }}" as="act" hint-placeholder-count="8">
+            <div class="m3-act" style="cursor:default;position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 10px;border-radius:18px;background:{{ act.cardBg }};border:2px solid {{ act.cardBorder }};">
+              <div onclick="{{ act.onClick }}" style="width:64px;height:64px;position:relative;cursor:pointer;">
+                <image-slot id="{{ act.slotId }}" shape="rounded" radius="14" placeholder="{{ act.name }}" style="width:64px;height:64px;pointer-events:none;"></image-slot>
+                <sc-if value="{{ act.muscle }}"><div style="position:absolute;top:-4px;right:-4px;width:14px;height:14px;border-radius:50%;background:#A9823A;border:2px solid #FFFFFF;"></div></sc-if>
+              </div>
+              <div onclick="{{ act.onClick }}" style="font-size:13px;text-align:center;line-height:1.25;font-weight:500;cursor:pointer;">{{ act.name }}</div>
+              <div style="display:flex;align-items:center;gap:5px;">
+                <div onclick="{{ act.onDec }}" style="width:22px;height:22px;border-radius:50%;background:#FFFFFF;border:1.5px solid #D8D2C4;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;font-weight:600;">−</div>
+                <div style="font-size:13px;font-weight:600;min-width:50px;text-align:center;">{{ act.minutes }} min</div>
+                <div onclick="{{ act.onInc }}" style="width:22px;height:22px;border-radius:50%;background:#FFFFFF;border:1.5px solid #D8D2C4;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;font-weight:600;">+</div>
+              </div>
+              <div onclick="{{ act.onClick }}" style="width:22px;height:22px;border-radius:50%;background:{{ act.checkBg }};border:2px solid {{ act.checkBorder }};display:flex;align-items:center;justify-content:center;color:#FFFFFF;font-size:13px;font-weight:700;cursor:pointer;">{{ act.checkMark }}</div>
+              <div class="m3-act-hover" style="opacity:0;position:absolute;top:-24px;left:50%;transform:translateX(-50%);background:#26221B;color:#F7F3EC;font-size:12px;padding:5px 10px;border-radius:8px;white-space:nowrap;pointer-events:none;transition:opacity 0.15s;">intensité {{ act.intensity }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="width:480px;flex-shrink:0;display:flex;flex-direction:column;gap:18px;">
+        <div style="font-size:16px;letter-spacing:0.08em;text-transform:uppercase;color:#8B8478;font-weight:600;">Le total du jour</div>
+        <div style="background:#FFFFFF;border-radius:24px;border:1.5px solid #E7E2D5;padding:28px;display:flex;flex-direction:column;gap:20px;">
+          <div style="font-size:52px;font-weight:700;">{{ totalMinutes }} <span style="font-size:22px;font-weight:500;color:#8B8478;">minutes</span></div>
+          <div style="position:relative;height:26px;background:#F1ECE1;border-radius:999px;overflow:hidden;">
+            <div style="position:absolute;left:0;top:0;bottom:0;width:{{ jaugePct }}%;background:#3F8F5C;border-radius:999px;transition:width 0.25s;"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:14px;color:#8B8478;">
+            <div>0</div>
+            <div style="display:flex;align-items:center;gap:6px;">et ça continue <span style="letter-spacing:0.1em;">···→</span></div>
+          </div>
+          <div style="font-size:15px;color:#8B8478;line-height:1.5;">Pas de plafond : marcher, jardiner, porter les courses, danser — tout compte, à la même hauteur.</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:14px;height:14px;border-radius:50%;background:#A9823A;flex-shrink:0;"></div>
+          <div style="font-size:14px;color:#8B8478;">bon aussi pour les muscles, l'équilibre</div>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isTemps3 }}">
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;min-height:0;">
+      <div style="display:flex;gap:12px;">
+        <sc-for list="{{ regimeTabs }}" as="r" hint-placeholder-count="2">
+          <div onclick="{{ r.onClick }}" style="padding:12px 24px;border-radius:999px;font-size:17px;font-weight:600;cursor:pointer;background:{{ r.bg }};color:{{ r.color }};border:2px solid {{ r.border }};">{{ r.label }}</div>
+        </sc-for>
+      </div>
+
+      <div class="m3-curvewrap" style="width:1100px;background:#FFFFFF;border-radius:24px;border:1.5px solid #E7E2D5;padding:24px 32px;position:relative;">
+        <div style="font-size:14px;letter-spacing:0.08em;text-transform:uppercase;color:#8B8478;font-weight:600;margin-bottom:6px;">Glycémie après le repas</div>
+        <svg width="100%" height="220" viewBox="0 0 1000 240" preserveAspectRatio="none">
+          <line x1="20" y1="212" x2="980" y2="212" stroke="#D8D2C4" stroke-width="2"></line>
+          <path d="{{ baselinePath }}" fill="none" stroke="#C9BFA9" stroke-width="4" stroke-linecap="round" stroke-dasharray="9 8"></path>
+          <path d="{{ activePath }}" fill="none" stroke="#26221B" stroke-width="5" stroke-linecap="round"></path>
+        </svg>
+        <div class="m3-curve-hover" style="opacity:0;transition:opacity 0.15s;position:absolute;top:20px;right:32px;display:flex;flex-direction:column;gap:4px;align-items:flex-end;">
+          <div style="font-size:13px;color:#C9BFA9;font-weight:600;">sans activité · {{ baselineMg }} mg/dL</div>
+          <div style="font-size:13px;color:#26221B;font-weight:600;">avec activité · {{ activeMg }} mg/dL</div>
+        </div>
+
+        <sc-if value="{{ showSlider }}">
+        <div style="margin-top:18px;padding:0 20px;">
+          <input class="m3-slider" type="range" min="0" max="180" step="5" value="{{ delayMin }}" onInput="{{ onSlide }}"></input>
+          <div style="display:flex;justify-content:space-between;font-size:13px;color:#8B8478;margin-top:8px;">
+            <div>repas</div><div>30 min</div><div>60 min</div><div>90 min</div><div>120 min</div><div>150 min</div><div>180 min</div>
+          </div>
+        </div>
+        </sc-if>
+        <sc-if value="{{ showMicro }}">
+        <div style="margin-top:18px;padding:0 20px;display:flex;flex-direction:column;align-items:center;gap:12px;">
+          <div style="display:flex;align-items:center;justify-content:center;gap:10px;">
+            <sc-for list="{{ microTicks }}" as="t" hint-placeholder-count="6">
+              <div onclick="{{ t.onClick }}" style="width:26px;height:26px;border-radius:50%;background:{{ t.bg }};border:2px solid {{ t.border }};cursor:pointer;"></div>
+            </sc-for>
+          </div>
+          <div style="font-size:13px;color:#8B8478;">cliquez les coupures faites aujourd'hui · {{ microCount }}/6</div>
+        </div>
+        </sc-if>
+      </div>
+
+      <div style="font-size:18px;color:#8B8478;text-align:center;max-width:900px;">{{ timingHint }}</div>
+    </div>
+    </sc-if>
+
+  </div>
+
+  <div style="padding:16px 64px 36px;text-align:center;">
+    <div style="font-size:20px;letter-spacing:0.08em;text-transform:uppercase;color:#8B8478;margin-bottom:10px;">{{ caption.eyebrow }}</div>
+    <div style="font-size:30px;line-height:1.35;font-weight:500;max-width:1500px;margin:0 auto;">{{ caption.text }}</div>
+  </div>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const ACTIVITIES = [
+  { id:'marche', name:'Marche', minutes:20, intensity:'légère', muscle:false },
+  { id:'velo', name:'Vélo', minutes:30, intensity:'modérée', muscle:false },
+  { id:'menage', name:'Ménage', minutes:15, intensity:'légère', muscle:false },
+  { id:'bricolage', name:'Bricolage', minutes:25, intensity:'modérée', muscle:false },
+  { id:'jardinage', name:'Jardinage', minutes:30, intensity:'modérée', muscle:false },
+  { id:'courses', name:'Porter les courses', minutes:10, intensity:'légère', muscle:true },
+  { id:'escaliers', name:'Prendre les escaliers', minutes:5, intensity:'modérée', muscle:true },
+  { id:'chaise', name:'Se lever d\u2019une chaise', minutes:5, intensity:'légère', muscle:true },
+  { id:'danse', name:'Danser', minutes:20, intensity:'modérée', muscle:false },
+  { id:'petitsenfants', name:'Jouer avec les enfants', minutes:15, intensity:'légère', muscle:false },
+  { id:'voiture', name:'Laver la voiture', minutes:20, intensity:'modérée', muscle:false },
+  { id:'chien', name:'Marcher le chien', minutes:15, intensity:'légère', muscle:false }
+];
+
+function curvePath(score, w, h){
+  w = w || 700; h = h || 220;
+  score = Math.max(0, Math.min(0.85, score));
+  const baseline = h - 24;
+  const peakH = baseline - (1 - score) * (baseline - 40);
+  const peakX = w * (0.24 + score * 0.16);
+  const smooth = 40 + score * 100;
+  return 'M 20 ' + baseline +
+    ' C ' + (20 + peakX * 0.35) + ' ' + baseline + ', ' + (peakX - smooth * 0.4) + ' ' + peakH + ', ' + peakX + ' ' + peakH +
+    ' C ' + (peakX + smooth) + ' ' + peakH + ', ' + (w - 40 - smooth * 0.5) + ' ' + baseline + ', ' + (w - 20) + ' ' + baseline;
+}
+function mgFromScore(score){ return Math.round(90 + (1 - score) * 150); }
+
+class Component extends DCLogic {
+  state = {
+    scale: 1,
+    temps: 1,
+    t1_active: null,
+    checked: {},
+    act_minutes: {},
+    regime: 'marche',
+    delay: 15,
+    micro: {}
+  };
+
+  componentDidMount() {
+    this.updateScale();
+    this._onResize = () => this.updateScale();
+    window.addEventListener('resize', this._onResize);
+  }
+  componentWillUnmount() {
+    if (this._onResize) window.removeEventListener('resize', this._onResize);
+  }
+  updateScale() {
+    const s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+    this.setState({ scale: s > 0 ? s : 1 });
+  }
+
+  setTemps = n => () => this.setState({ temps: n });
+  selectNode = id => () => {
+    if (id === 'sucre') { this.setState({ temps: 2, t1_active: 'sucre' }); return; }
+    this.setState({ t1_active: id });
+  };
+  toggleAllNodes = () => this.setState(s => ({ t1_active: s.t1_active === 'all' ? null : 'all' }));
+  toggleAct = id => () => this.setState(s => ({ checked: { ...s.checked, [id]: !s.checked[id] } }));
+  actInc = (id, base) => () => this.setState(s => {
+    const current = s.act_minutes[id] ?? base;
+    return { act_minutes: { ...s.act_minutes, [id]: Math.min(180, current + 5) } };
+  });
+  actDec = (id, base) => () => this.setState(s => {
+    const current = s.act_minutes[id] ?? base;
+    return { act_minutes: { ...s.act_minutes, [id]: Math.max(5, current - 5) } };
+  });
+  setRegime = r => () => this.setState({ regime: r });
+  onSlide = e => this.setState({ delay: parseInt(e.target.value, 10) });
+  toggleMicro = idx => () => this.setState(s => ({ micro: { ...s.micro, [idx]: !s.micro[idx] } }));
+
+  renderVals() {
+    const s = this.state;
+    const temps = s.temps;
+
+    const tempsTabs = [
+      { n: 1, label: '① Le rayonnement' },
+      { n: 2, label: '② Le volume' },
+      { n: 3, label: '③ Le timing' }
+    ].map(t => ({
+      label: t.label, onClick: this.setTemps(t.n),
+      bg: t.n === temps ? '#26221B' : '#FFFFFF',
+      color: t.n === temps ? '#F7F3EC' : '#26221B',
+      border: t.n === temps ? '#26221B' : '#D8D2C4'
+    }));
+
+    // ---- Temps 1 : rayonnement ----
+    const NODE_DEFS = [
+      { id: 'sucre', cx: 400, cy: 92, label1: 'Sucre', desc: 'Écrête le pic de glycémie après le repas — porte vers la suite.' },
+      { id: 'coeur', cx: 692, cy: 300, label1: 'Cœur &', label2: 'vaisseaux', desc: 'Protège le cœur et les vaisseaux.' },
+      { id: 'tete', cx: 400, cy: 508, label1: 'Tête', desc: 'Moral, sommeil et stress apaisés.' },
+      { id: 'autonomie', cx: 108, cy: 300, label1: 'Autonomie', desc: 'Force, équilibre, moins de chutes.' }
+    ];
+    const allActive = s.t1_active === 'all';
+    const nodeById = {};
+    NODE_DEFS.forEach(n => {
+      const active = s.t1_active === n.id;
+      const isSucre = n.id === 'sucre';
+      const lit = active || allActive;
+      nodeById[n.id] = {
+        id: n.id, cx: n.cx, cy: n.cy,
+        ty1: n.label2 ? n.cy - 2 : n.cy + 7, ty2: n.cy + 22,
+        onClick: this.selectNode(n.id),
+        fill: lit ? '#F3F8F4' : (isSucre ? '#FDF6E8' : '#FFFFFF'),
+        stroke: lit ? '#3F8F5C' : (isSucre ? '#A9823A' : '#D8D2C4'),
+        strokeWidth: lit ? 4 : (isSucre ? 3 : 2)
+      };
+    });
+    const nodeSucre = nodeById.sucre, nodeCoeur = nodeById.coeur, nodeTete = nodeById.tete, nodeAutonomie = nodeById.autonomie;
+    const centerNode = {
+      onClick: this.toggleAllNodes,
+      fill: allActive ? '#F3F8F4' : '#FFFFFF',
+      stroke: allActive ? '#3F8F5C' : '#26221B'
+    };
+    const rays = NODE_DEFS.map(n => {
+      const dx = n.cx - 400, dy = n.cy - 300;
+      const len = Math.sqrt(dx * dx + dy * dy);
+      const ux = dx / len, uy = dy / len;
+      const lit = s.t1_active === n.id || n.id === 'sucre' || allActive;
+      return {
+        id: n.id, x1: 400 + ux * 92, y1: 300 + uy * 92, x2: n.cx - ux * 72, y2: n.cy - uy * 72,
+        stroke: allActive ? '#3F8F5C' : (n.id === 'sucre' ? '#A9823A' : (s.t1_active === n.id ? '#26221B' : '#D8D2C4')),
+        width: lit ? 3 : 2
+      };
+    });
+    const t1Node = NODE_DEFS.find(n => n.id === s.t1_active);
+
+    // ---- Temps 2 : volume ----
+    const activities = ACTIVITIES.map(a => {
+      const on = !!s.checked[a.id];
+      const minutes = s.act_minutes[a.id] ?? a.minutes;
+      return {
+        id: a.id, name: a.name, slotId: 'm3-act-' + a.id, minutes: minutes, intensity: a.intensity, muscle: a.muscle,
+        onClick: this.toggleAct(a.id),
+        onInc: this.actInc(a.id, a.minutes),
+        onDec: this.actDec(a.id, a.minutes),
+        cardBg: on ? '#F3F8F4' : '#F7F3EC',
+        cardBorder: on ? '#3F8F5C' : '#E7E2D5',
+        checkBg: on ? '#3F8F5C' : '#FFFFFF',
+        checkBorder: on ? '#3F8F5C' : '#D8D2C4',
+        checkMark: on ? '✓' : ''
+      };
+    });
+    const totalMinutes = ACTIVITIES.reduce((sum, a) => sum + (s.checked[a.id] ? (s.act_minutes[a.id] ?? a.minutes) : 0), 0);
+    const jaugePct = totalMinutes > 0 ? (92 * totalMinutes / (totalMinutes + 90)) : 0;
+
+    // ---- Temps 3 : timing ----
+    const regimeTabs = [
+      { id: 'marche', label: 'Marche post-repas' },
+      { id: 'microcoupures', label: 'Micro-coupures' }
+    ].map(r => ({
+      id: r.id, label: r.label, onClick: this.setRegime(r.id),
+      bg: r.id === s.regime ? '#26221B' : '#FFFFFF',
+      color: r.id === s.regime ? '#F7F3EC' : '#26221B',
+      border: r.id === s.regime ? '#26221B' : '#D8D2C4'
+    }));
+    let activeScore;
+    let timingHint;
+    if (s.regime === 'marche') {
+      activeScore = Math.max(0, 0.82 * (1 - s.delay / 150));
+      timingHint = s.delay <= 20
+        ? "Marcher juste après le repas : l'écrêtage du pic est le plus net."
+        : (s.delay <= 90
+          ? "Plus on attend après le repas, moins la marche écrête le pic."
+          : "Trop tardive, la marche n'a presque plus d'effet sur ce pic-ci.");
+    } else {
+      const microCount0 = [0, 1, 2, 3, 4, 5].reduce((n, i) => n + (s.micro[i] ? 1 : 0), 0);
+      activeScore = 0.65 * (microCount0 / 6);
+      timingHint = microCount0 === 0
+        ? "Cliquez les coupures faites aujourd'hui : 2 à 3 minutes de mouvement toutes les 30 minutes."
+        : "2 à 3 minutes de mouvement toutes les 30 minutes, tout au long de la journée : un effet régulier sur la glycémie.";
+    }
+    const baselinePath = curvePath(0, 1000, 240);
+    const activePath = curvePath(activeScore, 1000, 240);
+    const baselineMg = mgFromScore(0);
+    const activeMg = mgFromScore(activeScore);
+    const microCount = [0, 1, 2, 3, 4, 5].reduce((n, i) => n + (s.micro[i] ? 1 : 0), 0);
+    const microTicks = [0, 1, 2, 3, 4, 5].map(i => ({
+      id: i, onClick: this.toggleMicro(i),
+      bg: s.micro[i] ? '#3F8F5C' : '#FFFFFF',
+      border: s.micro[i] ? '#3F8F5C' : '#D8D2C4'
+    }));
+
+    let caption;
+    if (temps === 1) {
+      caption = allActive
+        ? { eyebrow: '① Le rayonnement', text: "Un seul effort, quatre bénéfices en même temps : sucre, cœur & vaisseaux, tête, autonomie." }
+        : (t1Node
+          ? { eyebrow: '① Le rayonnement', text: t1Node.desc }
+          : { eyebrow: '① Le rayonnement', text: "Cliquez au centre pour voir tous les bénéfices s'allumer ensemble, ou un rayon pour le détailler." });
+    } else if (temps === 2) {
+      caption = { eyebrow: '② Le volume — sans plafond', text: "Tout compte pareil, en minutes : marcher, jardiner, porter les courses. Il n'y a pas de seuil à atteindre." };
+    } else {
+      caption = { eyebrow: '③ Le timing — la même courbe, un curseur en plus', text: "Ce que vous faites déjà compte ; quand vous le faites change encore le pic." };
+    }
+
+    return {
+      scale: s.scale,
+      tempsTabs,
+      isTemps1: temps === 1, isTemps2: temps === 2, isTemps3: temps === 3,
+      rays, nodeSucre, nodeCoeur, nodeTete, nodeAutonomie, centerNode,
+      activities, totalMinutes, jaugePct,
+      regimeTabs,
+      showSlider: s.regime === 'marche', showMicro: s.regime === 'microcoupures',
+      delayMin: s.delay, onSlide: this.onSlide,
+      baselinePath, activePath, baselineMg, activeMg, microTicks, microCount,
+      timingHint,
+      caption
+    };
+  }
+}
+</script>
+</body>
+</html>

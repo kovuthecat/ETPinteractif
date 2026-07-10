@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta name="viewport" content="width=1920">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="./image-slot.js"></script>
+  <style>
+    *{ box-sizing: border-box; }
+    body{ margin:0; }
+    .m8-chip:hover .m8-chip-hover{ opacity:1 !important; }
+    .m8-fade{ animation: m8in 0.3s ease; }
+    @keyframes m8in{ from{ opacity:0; transform:translateY(6px); } to{ opacity:1; transform:translateY(0); } }
+  </style>
+</helmet>
+
+<div style="width:100%;height:100vh;display:flex;align-items:center;justify-content:center;background:#F7F3EC;overflow:hidden;">
+<div data-screen-label="Module 8" style="width:1920px;height:1080px;background:#F7F3EC;font-family:'Public Sans',sans-serif;color:#26221B;position:relative;overflow:hidden;display:flex;flex-direction:column;flex-shrink:0;transform:scale({{ scale }});">
+
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:36px 64px 0;">
+    <div style="font-size:18px;letter-spacing:0.12em;color:#8B8478;font-weight:600;">MODULE 8 · HYPOGLYCÉMIE</div>
+    <div style="display:flex;gap:10px;">
+      <sc-for list="{{ tempsTabs }}" as="tab" hint-placeholder-count="3">
+        <div onclick="{{ tab.onClick }}" style="padding:12px 22px;border-radius:999px;font-size:18px;font-weight:600;cursor:pointer;user-select:none;background:{{ tab.bg }};color:{{ tab.color }};border:2px solid {{ tab.border }};white-space:nowrap;">{{ tab.label }}</div>
+      </sc-for>
+    </div>
+  </div>
+
+  <sc-if value="{{ isTemps1 }}" hint-placeholder-val="{{ true }}">
+  <div class="m8-fade" style="flex:1;display:flex;gap:56px;padding:24px 64px 0;min-height:0;align-items:center;justify-content:center;">
+    <div style="width:800px;display:flex;flex-direction:column;gap:16px;">
+      <div style="font-size:16px;letter-spacing:0.08em;text-transform:uppercase;color:#8B8478;font-weight:600;">Mes signes précoces — cochez ce que vous ressentez</div>
+
+      <sc-if value="{{ hasPreview }}">
+        <div style="display:flex;align-items:center;gap:20px;background:#FFFFFF;border-radius:20px;border:1.5px solid #E7E2D5;padding:18px 24px;">
+          <image-slot id="{{ previewSlotId }}" shape="rounded" radius="16" placeholder="{{ previewLabel }}" style="width:120px;height:120px;flex-shrink:0;"></image-slot>
+          <div style="font-size:22px;font-weight:700;">{{ previewLabel }}</div>
+        </div>
+      </sc-if>
+
+      <div style="display:flex;flex-wrap:wrap;gap:12px;">
+        <sc-for list="{{ signes }}" as="sg" hint-placeholder-count="6">
+          <div onclick="{{ sg.onClick }}" style="cursor:pointer;padding:16px 22px;border-radius:16px;font-size:18px;font-weight:600;background:{{ sg.bg }};color:{{ sg.fg }};border:2px solid {{ sg.border }};">{{ sg.label }}</div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="width:640px;display:flex;flex-direction:column;gap:16px;">
+      <div style="font-size:16px;letter-spacing:0.08em;text-transform:uppercase;color:#8B8478;font-weight:600;">Mon resucrage — ce que j'ai sur moi</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <sc-for list="{{ resucrages }}" as="r" hint-placeholder-count="4">
+          <div onclick="{{ r.onClick }}" style="cursor:pointer;display:flex;align-items:center;gap:16px;padding:14px 20px;border-radius:16px;background:{{ r.bg }};border:2px solid {{ r.border }};">
+            <image-slot id="{{ r.slotId }}" shape="circle" placeholder="{{ r.label }}" style="width:44px;height:44px;flex-shrink:0;pointer-events:none;"></image-slot>
+            <div style="font-size:18px;font-weight:600;flex:1;">{{ r.label }}</div>
+            <div style="font-size:13px;font-weight:700;color:{{ r.fg }};">{{ r.check }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isTemps2 }}">
+  <div class="m8-fade" style="flex:1;display:flex;flex-direction:column;gap:22px;padding:20px 64px 0;min-height:0;align-items:center;justify-content:center;">
+
+    <div style="display:flex;gap:0;align-items:center;">
+      <sc-for list="{{ loopSteps }}" as="st" hint-placeholder-count="4">
+        <div style="display:flex;align-items:center;">
+          <div style="width:190px;display:flex;flex-direction:column;align-items:center;gap:10px;padding:22px 16px;border-radius:22px;background:{{ st.bg }};border:2px solid {{ st.border }};">
+            <div style="font-size:30px;font-weight:800;color:{{ st.numColor }};">{{ st.num }}</div>
+            <div style="font-size:17px;font-weight:600;text-align:center;line-height:1.3;">{{ st.label }}</div>
+          </div>
+          <sc-if value="{{ st.showArrow }}"><div style="font-size:26px;color:#D8D2C4;padding:0 10px;">→</div></sc-if>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display:flex;gap:20px;">
+      <div onclick="{{ toggleOvershoot }}" style="cursor:pointer;padding:12px 22px;border-radius:999px;font-size:15px;font-weight:600;background:{{ overshootBg }};color:{{ overshootFg }};border:2px solid {{ overshootBorder }};">Et si on ne patiente pas ?</div>
+    </div>
+
+    <div style="background:#FFFFFF;border-radius:24px;border:1.5px solid #E7E2D5;padding:20px 32px;position:relative;width:1100px;">
+      <div style="font-size:14px;letter-spacing:0.08em;text-transform:uppercase;color:#8B8478;font-weight:600;margin-bottom:8px;">Ce que fait le sucre après le resucrage</div>
+      <svg width="100%" height="200" viewBox="0 0 900 220" preserveAspectRatio="none">
+        <rect x="20" y="70" width="860" height="60" fill="#F3F8F4"></rect>
+        <line x1="20" y1="196" x2="880" y2="196" stroke="#D8D2C4" stroke-width="2"></line>
+        <path d="{{ recoveryPath }}" fill="none" stroke="#3F8F5C" stroke-width="5" stroke-linecap="round"></path>
+        <sc-if value="{{ showOvershoot }}">
+          <path d="{{ overshootPath }}" fill="none" stroke="#C98A2E" stroke-width="5" stroke-linecap="round" stroke-dasharray="10 8"></path>
+        </sc-if>
+        <line x1="{{ waitMarkX }}" y1="20" x2="{{ waitMarkX }}" y2="196" stroke="#8B8478" stroke-width="2" stroke-dasharray="4 5"></line>
+        <text x="{{ waitMarkX }}" y="14" text-anchor="middle" font-size="15" font-weight="700" fill="#8B8478" font-family="'Public Sans',sans-serif">~15 min</text>
+      </svg>
+      <div style="display:flex;gap:24px;margin-top:6px;">
+        <div style="font-size:14px;font-weight:600;color:#3F8F5C;">— On attend : ça remonte, sans excès</div>
+        <sc-if value="{{ showOvershoot }}"><div style="font-size:14px;font-weight:600;color:#C98A2E;">- - On remange trop tôt : ça remonte trop haut</div></sc-if>
+      </div>
+    </div>
+
+    <div style="font-size:22px;font-weight:500;max-width:1100px;text-align:center;">{{ patienceMessage }}</div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isTemps3 }}">
+  <div class="m8-fade" style="flex:1;display:flex;align-items:center;justify-content:center;padding:16px 64px 8px;min-height:0;">
+    <div style="width:1200px;background:#FFFFFF;border-radius:28px;border:2px solid #E7E2D5;padding:44px 56px;">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:20px;">
+        <div style="font-size:32px;font-weight:800;">Ma carte-réflexe 15 / 15</div>
+        <div style="font-size:14px;color:#8B8478;">À garder sur soi</div>
+      </div>
+
+      <div style="display:flex;gap:32px;margin-bottom:30px;">
+        <div style="flex:1;background:#F7F3EC;border-radius:18px;padding:22px 26px;">
+          <div style="font-size:13px;letter-spacing:0.08em;text-transform:uppercase;color:#8B8478;font-weight:700;margin-bottom:10px;">Mes signes</div>
+          <sc-if value="{{ hasMySignes }}">
+            <div style="display:flex;flex-wrap:wrap;gap:8px;">
+              <sc-for list="{{ mySignes }}" as="ms" hint-placeholder-count="3">
+                <div style="padding:8px 14px;border-radius:999px;background:#FFFFFF;border:2px solid #D8D2C4;font-size:15px;font-weight:600;">{{ ms }}</div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ !hasMySignes }}"><div style="font-size:15px;color:#8B8478;">À définir avec le soignant</div></sc-if>
+        </div>
+        <div style="flex:1;background:#F7F3EC;border-radius:18px;padding:22px 26px;">
+          <div style="font-size:13px;letter-spacing:0.08em;text-transform:uppercase;color:#8B8478;font-weight:700;margin-bottom:10px;">Mon resucrage</div>
+          <div style="font-size:19px;font-weight:600;">{{ myResucrage }}</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:0;align-items:center;justify-content:center;margin-bottom:24px;">
+        <sc-for list="{{ ficheLoop }}" as="st" hint-placeholder-count="4">
+          <div style="display:flex;align-items:center;">
+            <div style="width:220px;display:flex;flex-direction:column;align-items:center;gap:8px;padding:24px 16px;border-radius:20px;background:#F7F3EC;border:2px solid #E7E2D5;">
+              <div style="font-size:34px;font-weight:800;color:#26221B;">{{ st.num }}</div>
+              <div style="font-size:16px;font-weight:600;text-align:center;">{{ st.label }}</div>
+            </div>
+            <sc-if value="{{ st.showArrow }}"><div style="font-size:26px;color:#D8D2C4;padding:0 8px;">→</div></sc-if>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="background:#F3F8F4;border:1.5px solid #CFE3D5;border-radius:16px;padding:18px 24px;font-size:16px;line-height:1.5;">Toujours du sucre pur (jus, sucre, comprimés) — jamais du chocolat ou des aliments gras : ça remonte trop lentement.</div>
+    </div>
+  </div>
+  </sc-if>
+
+  <div style="padding:14px 64px 30px;text-align:center;">
+    <div style="font-size:20px;letter-spacing:0.08em;text-transform:uppercase;color:#8B8478;margin-bottom:8px;">{{ caption.eyebrow }}</div>
+    <div style="font-size:26px;line-height:1.35;font-weight:500;max-width:1500px;margin:0 auto;">{{ caption.text }}</div>
+  </div>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const SIGNES = ['Tremblements', 'Sueurs', 'Palpitations', 'Faim soudaine', 'Irritabilité', 'Vision trouble', 'Difficulté à se concentrer'];
+const RESUCRAGES = [
+  { id: 'jus', label: 'Jus de fruit (150 ml)' },
+  { id: 'sucre', label: '3 morceaux de sucre' },
+  { id: 'comprimes', label: 'Comprimés de glucose (15 g)' },
+  { id: 'soda', label: 'Soda classique (150 ml)' }
+];
+
+function recoveryPath(overshoot) {
+  // baseline low -> rise to normal band, optionally continue rising (overshoot)
+  const startX = 20, startY = 176;
+  const midX = 420, midY = 100;
+  const endX = 880, endY = overshoot ? 40 : 96;
+  return 'M ' + startX + ' ' + startY +
+    ' C ' + (startX + 160) + ' ' + startY + ', ' + (midX - 140) + ' ' + midY + ', ' + midX + ' ' + midY +
+    ' C ' + (midX + 160) + ' ' + midY + ', ' + (endX - 160) + ' ' + endY + ', ' + endX + ' ' + endY;
+}
+
+class Component extends DCLogic {
+  state = {
+    scale: 1,
+    temps: 1,
+    signes: {},
+    lastSigneClicked: null,
+    resucrage: 'comprimes',
+    showOvershoot: false
+  };
+
+  componentDidMount() {
+    this.updateScale();
+    this._onResize = () => this.updateScale();
+    window.addEventListener('resize', this._onResize);
+  }
+  componentWillUnmount() {
+    if (this._onResize) window.removeEventListener('resize', this._onResize);
+  }
+  updateScale() {
+    const s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+    this.setState({ scale: s > 0 ? s : 1 });
+  }
+
+  setTemps = n => () => this.setState({ temps: n });
+  toggleSigne = s => () => this.setState(st => ({ signes: { ...st.signes, [s]: !st.signes[s] }, lastSigneClicked: s }));
+  setResucrage = id => () => this.setState({ resucrage: id });
+  toggleOvershoot = () => this.setState(s => ({ showOvershoot: !s.showOvershoot }));
+
+  renderVals() {
+    const s = this.state;
+
+    const tempsTabs = [
+      { n: 1, label: '① Mon profil hypo' },
+      { n: 2, label: '② Le réflexe 15/15' },
+      { n: 3, label: '③ Ma carte' }
+    ].map(t => ({
+      label: t.label, onClick: this.setTemps(t.n),
+      bg: t.n === s.temps ? '#26221B' : '#FFFFFF',
+      color: t.n === s.temps ? '#F7F3EC' : '#26221B',
+      border: t.n === s.temps ? '#26221B' : '#D8D2C4'
+    }));
+
+    const signes = SIGNES.map(name => {
+      const active = !!s.signes[name];
+      return {
+        label: name, onClick: this.toggleSigne(name),
+        bg: active ? '#26221B' : '#FFFFFF',
+        fg: active ? '#F7F3EC' : '#26221B',
+        border: active ? '#26221B' : '#D8D2C4'
+      };
+    });
+
+    const resucrages = RESUCRAGES.map(r => {
+      const active = s.resucrage === r.id;
+      return {
+        id: r.id, label: r.label, slotId: 'm8-resucrage-' + r.id, onClick: this.setResucrage(r.id),
+        bg: active ? '#F3F8F4' : '#FFFFFF',
+        border: active ? '#3F8F5C' : '#D8D2C4',
+        fg: active ? '#3F8F5C' : '#8B8478',
+        check: active ? '✓ choisi' : ''
+      };
+    });
+
+    const LOOP = [
+      { num: '①', label: 'Signes qui apparaissent' },
+      { num: '15 g', label: 'Sucre pur, tout de suite' },
+      { num: '~15 min', label: 'On attend, sans remanger' },
+      { num: '↻', label: 'Recontrôle : répéter ou récupérer' }
+    ];
+    const loopSteps = LOOP.map((st, i) => ({
+      num: st.num, label: st.label, showArrow: i < LOOP.length - 1,
+      bg: '#FFFFFF', border: '#E7E2D5', numColor: '#26221B'
+    }));
+    const ficheLoop = LOOP.map((st, i) => ({ num: st.num, label: st.label, showArrow: i < LOOP.length - 1 }));
+
+    const patienceMessage = s.showOvershoot
+      ? "Remanger tout de suite fait dépasser la cible — on repart en hyper. Le sucre n'a pas encore eu le temps d'agir : on attend."
+      : "Le temps fort, c'est l'attente : le sucre agit en ~15 minutes. Recontrôler avant de continuer.";
+
+    const mySignesArr = SIGNES.filter(n => s.signes[n]);
+    const resucrageChosen = RESUCRAGES.find(r => r.id === s.resucrage);
+
+    let caption;
+    if (s.temps === 1) {
+      caption = { eyebrow: '① Mon profil hypo', text: "On identifie, avec le patient, ses signes précoces et ce qu'il aura vraiment sur lui." };
+    } else if (s.temps === 2) {
+      caption = { eyebrow: '② Le réflexe 15/15', text: "Une boucle inratable, même sous stress : signes → 15 g → on attend → on recontrôle." };
+    } else {
+      caption = { eyebrow: '③ Ma carte', text: "Gros, simple, personnalisé — se lit en tremblant." };
+    }
+
+    return {
+      scale: s.scale,
+      tempsTabs,
+      isTemps1: s.temps === 1, isTemps2: s.temps === 2, isTemps3: s.temps === 3,
+      hasPreview: !!s.lastSigneClicked,
+      previewSlotId: 'm8-signe-' + (s.lastSigneClicked || 'none'),
+      previewLabel: s.lastSigneClicked || '',
+      signes, resucrages,
+      loopSteps,
+      toggleOvershoot: this.toggleOvershoot,
+      showOvershoot: s.showOvershoot,
+      overshootBg: s.showOvershoot ? '#26221B' : '#FFFFFF',
+      overshootFg: s.showOvershoot ? '#F7F3EC' : '#26221B',
+      overshootBorder: s.showOvershoot ? '#26221B' : '#D8D2C4',
+      recoveryPath: recoveryPath(false),
+      overshootPath: recoveryPath(true),
+      waitMarkX: 420,
+      patienceMessage,
+      hasMySignes: mySignesArr.length > 0,
+      mySignes: mySignesArr,
+      myResucrage: resucrageChosen ? resucrageChosen.label : 'À définir',
+      ficheLoop,
+      caption
+    };
+  }
+}
+
+</script>
+</body>
+</html>

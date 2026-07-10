@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta name="viewport" content="width=1920">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Caveat:wght@600&display=swap" rel="stylesheet">
+  <script src="./image-slot.js"></script>
+  <style>
+    *{ box-sizing: border-box; }
+    body{ margin:0; }
+    .m7-row:hover .m7-row-hover{ opacity:1 !important; }
+    .m7-del{ opacity:0; }
+    .m7-row:hover .m7-del{ opacity:1 !important; }
+    .m7-fade{ animation: m7in 0.35s ease; }
+    .m7-molinput::placeholder{ color:#C7C0AF; }
+    @keyframes m7in{ from{ opacity:0; transform:translateY(6px); } to{ opacity:1; transform:translateY(0); } }
+  </style>
+</helmet>
+
+<div style="width:100%;height:100vh;display:flex;align-items:center;justify-content:center;background:#F7F3EC;overflow:hidden;">
+<div data-screen-label="Module 7" style="width:1920px;height:1080px;background:#F7F3EC;font-family:'Public Sans',sans-serif;color:#26221B;position:relative;overflow:hidden;display:flex;flex-direction:column;flex-shrink:0;transform:scale({{ scale }});">
+
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:36px 64px 0;">
+    <div style="font-size:18px;letter-spacing:0.12em;color:#8B8478;font-weight:600;">MODULE 7 · TRAITEMENTS</div>
+    <div style="font-size:16px;letter-spacing:0.08em;color:#8B8478;font-weight:600;">On transcrit l'ordonnance réelle — puis on allume ce que chaque ligne protège</div>
+  </div>
+
+  <div style="flex:1;display:flex;gap:44px;padding:22px 64px 0;min-height:0;">
+
+    <div style="width:800px;flex-shrink:0;display:flex;flex-direction:column;min-height:0;background:#FFFFFF;border-radius:22px;border:1.5px solid #E7E2D5;padding:30px 38px;">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid #26221B;padding-bottom:14px;margin-bottom:6px;">
+        <div onclick="{{ onShowAll }}" title="Tout allumer sur la silhouette" style="cursor:pointer;font-size:26px;font-weight:700;{{ ordonnanceTitleDeco }}">Ordonnance</div>
+        <div style="font-size:14px;color:#8B8478;">Le ____ /____ /______</div>
+      </div>
+      <div style="font-size:13px;color:#8B8478;padding:10px 0 18px;border-bottom:1px solid #E7E2D5;margin-bottom:14px;">Dr ________________________ &nbsp;·&nbsp; Patient : ________________________</div>
+
+      <div style="flex:1;display:flex;flex-direction:column;gap:4px;overflow:auto;min-height:0;padding-right:4px;">
+        <sc-for list="{{ lignes }}" as="l" hint-placeholder-count="2">
+          <div class="m7-row" style="position:relative;display:flex;align-items:center;gap:14px;padding:16px 4px;border-bottom:1px dashed #E7E2D5;background:{{ l.rowBg }};border-radius:12px;">
+            <div style="width:22px;flex-shrink:0;font-size:16px;color:#8B8478;font-weight:600;">{{ l.index }}.</div>
+
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;">
+              <input class="m7-molinput" value="{{ l.molecule }}" oninput="{{ l.onMoleculeChange }}" placeholder="Nom de la molécule…" style="border:none;outline:none;background:transparent;font-family:'Caveat',cursive;font-size:26px;font-weight:600;color:#26221B;width:100%;padding:0;" />
+              <select value="{{ l.classId }}" onChange="{{ l.onClassChange }}" style="font-family:'Public Sans',sans-serif;font-size:14px;font-weight:600;color:#8B8478;border:1.5px solid #D8D2C4;border-radius:10px;padding:5px 10px;background:#F7F3EC;width:fit-content;">
+                <sc-for list="{{ classOptions }}" as="opt" hint-placeholder-count="8">
+                  <option value="{{ opt.id }}">{{ opt.label }}</option>
+                </sc-for>
+              </select>
+              <div style="font-size:13px;color:#8B8478;">{{ l.freq }}</div>
+            </div>
+
+            <div onclick="{{ l.onSelect }}" style="cursor:pointer;flex-shrink:0;padding:9px 16px;border-radius:999px;background:{{ l.selectBg }};color:{{ l.selectFg }};border:2px solid {{ l.selectBorder }};font-size:14px;font-weight:600;white-space:nowrap;">{{ l.selectLabel }}</div>
+
+            <div onclick="{{ l.onRemove }}" class="m7-del" style="cursor:pointer;flex-shrink:0;width:26px;height:26px;border-radius:50%;background:#F7F3EC;border:1.5px solid #D8D2C4;display:flex;align-items:center;justify-content:center;font-size:13px;color:#8B8478;">✕</div>
+
+            <div class="m7-row-hover" style="opacity:0;transition:opacity 0.15s;position:absolute;bottom:-6px;left:36px;z-index:5;background:#26221B;color:#F7F3EC;font-size:13px;padding:8px 14px;border-radius:10px;white-space:nowrap;pointer-events:none;">{{ l.watchHint }}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div onclick="{{ addLine }}" style="cursor:pointer;align-self:flex-start;margin-top:16px;padding:12px 22px;border-radius:999px;background:#26221B;color:#F7F3EC;font-size:15px;font-weight:600;">+ Ajouter une ligne</div>
+    </div>
+
+    <div style="flex:1;min-width:0;display:flex;gap:48px;align-items:center;justify-content:center;">
+      <div style="position:relative;width:400px;height:760px;flex-shrink:0;">
+
+        <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:{{ halo.size }}px;height:{{ halo.size }}px;border-radius:50%;background:{{ halo.bg }};opacity:{{ halo.opacity }};transition:opacity 0.3s;"></div>
+
+        <image-slot id="m7-silhouette" shape="rect" placeholder="Silhouette du corps (cœur / reins)" style="width:100%;height:100%;position:relative;"></image-slot>
+
+        <sc-for list="{{ zones }}" as="z" hint-placeholder-count="2">
+          <div style="position:absolute;left:{{ z.left }}px;top:{{ z.top }}px;width:{{ z.size }}px;height:{{ z.size }}px;transform:translate(-50%,-50%);border-radius:50%;background:{{ z.bg }};border:3px solid {{ z.border }};transition:all 0.25s;display:flex;align-items:center;justify-content:center;">
+            <div style="font-size:13px;font-weight:700;color:{{ z.labelColor }};text-align:center;">{{ z.short }}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="width:420px;display:flex;flex-direction:column;gap:16px;">
+        <div style="font-size:14px;letter-spacing:0.08em;text-transform:uppercase;color:#8B8478;font-weight:700;">Ce que ce traitement protège</div>
+        <div style="background:#FFFFFF;border-radius:22px;border:1.5px solid #E7E2D5;padding:26px 30px;min-height:140px;display:flex;align-items:center;">
+          <div style="font-size:20px;line-height:1.5;">{{ sideText }}</div>
+        </div>
+        <sc-if value="{{ showDoubleBadge }}">
+          <div style="background:#F3F8F4;border:1.5px solid #CFE3D5;border-radius:18px;padding:16px 20px;font-size:15px;font-weight:600;color:#26221B;">Un seul traitement, plusieurs fronts défendus à la fois.</div>
+        </sc-if>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:16px 64px 32px;text-align:center;">
+    <div style="font-size:20px;letter-spacing:0.08em;text-transform:uppercase;color:#8B8478;margin-bottom:10px;">{{ caption.eyebrow }}</div>
+    <div style="font-size:28px;line-height:1.35;font-weight:500;max-width:1500px;margin:0 auto;">{{ caption.text }}</div>
+  </div>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const CLASSES = [
+  { id: 'metformine', label: 'Metformine (biguanide)', zones: ['sucre'], freq: 'Matin et soir, au repas', watch: 'Quoi surveiller : troubles digestifs possibles au début' },
+  { id: 'sulfamide', label: 'Sulfamide hypoglycémiant', zones: ['sucre'], freq: 'Avant les repas', watch: 'Quoi surveiller : peut faire l\u2019hypoglycémie' },
+  { id: 'idpp4', label: 'iDPP4 (inhibiteur DPP-4)', zones: ['sucre'], freq: '1 fois par jour', watch: 'Quoi surveiller : généralement bien toléré' },
+  { id: 'aglp1', label: 'aGLP1 (agoniste du GLP-1)', zones: ['sucre', 'coeur'], freq: '1 fois par semaine (injection)', watch: 'Quoi surveiller : peut donner des nausées au début' },
+  { id: 'gliflozine', label: 'Gliflozine (iSGLT2)', zones: ['sucre', 'coeur', 'reins'], freq: '1 fois par jour, le matin', watch: 'Quoi surveiller : bien s\u2019hydrater ; risque d\u2019infection urinaire' },
+  { id: 'ieca', label: 'IEC / ARA2', zones: ['coeur', 'reins'], freq: '1 fois par jour', watch: 'Quoi surveiller : tension et fonction rénale contrôlées régulièrement' },
+  { id: 'statine', label: 'Statine', zones: ['coeur'], freq: '1 fois par jour, le soir', watch: 'Quoi surveiller : douleurs musculaires (rares) à signaler' },
+  { id: 'insuline', label: 'Insuline basale', zones: ['sucre'], freq: '1 fois par jour, le soir', watch: 'Quoi surveiller : peut faire l\u2019hypoglycémie — voir module 8' }
+];
+function classById(id) { return CLASSES.find(c => c.id === id) || CLASSES[0]; }
+
+const ZONE_DEFS = {
+  coeur: { left: 200, top: 230, size: 110, short: 'Cœur' },
+  reins: { left: 220, top: 560, size: 90, short: 'Reins' }
+};
+
+const ZONE_MSG = {
+  sucre: "agit sur le sucre : elle aide le corps à mieux le réguler.",
+  coeur: "protège aussi le cœur.",
+  reins: "protège aussi les reins."
+};
+
+let LINE_UID = 0;
+function newLine(molecule, classId) {
+  LINE_UID += 1;
+  return { uid: 'l' + LINE_UID, molecule, classId };
+}
+
+class Component extends DCLogic {
+  state = {
+    scale: 1,
+    lines: [
+      newLine('Metformine 1000', 'metformine'),
+      newLine('Dapagliflozine 10 mg', 'gliflozine')
+    ],
+    selectedUid: null,
+    viewMode: 'line'
+  };
+
+  componentDidMount() {
+    this.updateScale();
+    this._onResize = () => this.updateScale();
+    window.addEventListener('resize', this._onResize);
+  }
+  componentWillUnmount() {
+    if (this._onResize) window.removeEventListener('resize', this._onResize);
+  }
+  updateScale() {
+    const s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+    this.setState({ scale: s > 0 ? s : 1 });
+  }
+
+  addLine = () => this.setState(s => ({ lines: [...s.lines, newLine('', 'metformine')] }));
+  removeLine = uid => () => this.setState(s => ({ lines: s.lines.filter(l => l.uid !== uid) }));
+  changeMolecule = uid => e => {
+    const val = e && e.target ? e.target.value : '';
+    this.setState(s => ({ lines: s.lines.map(l => l.uid === uid ? { ...l, molecule: val } : l) }));
+  };
+  changeClass = uid => e => {
+    const val = e && e.target ? e.target.value : 'metformine';
+    this.setState(s => ({ lines: s.lines.map(l => l.uid === uid ? { ...l, classId: val } : l) }));
+  };
+  selectLine = uid => () => this.setState(s => ({
+    selectedUid: s.selectedUid === uid ? null : uid,
+    viewMode: 'line'
+  }));
+  showAll = () => this.setState({ viewMode: 'all', selectedUid: null });
+
+  renderVals() {
+    const s = this.state;
+
+    const presentLines = s.lines.filter(l => l.molecule && l.molecule.trim());
+    const classOptions = CLASSES.map(c => ({ id: c.id, label: c.label }));
+
+    const selectedLine = s.selectedUid ? s.lines.find(l => l.uid === s.selectedUid) : null;
+    const selectedPresent = selectedLine && selectedLine.molecule && selectedLine.molecule.trim();
+
+    const litZones = { sucre: false, coeur: false, reins: false };
+    if (s.viewMode === 'all') {
+      presentLines.forEach(l => {
+        classById(l.classId).zones.forEach(z => { litZones[z] = true; });
+      });
+    } else if (selectedPresent) {
+      classById(selectedLine.classId).zones.forEach(z => { litZones[z] = true; });
+    }
+
+    const lignes = s.lines.map((l, i) => {
+      const cls = classById(l.classId);
+      const isSelected = s.selectedUid === l.uid;
+      return {
+        uid: l.uid, index: i + 1,
+        molecule: l.molecule,
+        onMoleculeChange: this.changeMolecule(l.uid),
+        classId: l.classId,
+        onClassChange: this.changeClass(l.uid),
+        freq: cls.freq,
+        watchHint: cls.watch,
+        onSelect: this.selectLine(l.uid),
+        onRemove: this.removeLine(l.uid),
+        rowBg: isSelected ? '#F7F3EC' : 'transparent',
+        selectLabel: isSelected ? 'Effet affiché' : 'Voir l\u2019effet',
+        selectBg: isSelected ? '#26221B' : '#FFFFFF',
+        selectFg: isSelected ? '#F7F3EC' : '#26221B',
+        selectBorder: isSelected ? '#26221B' : '#D8D2C4'
+      };
+    });
+
+    const zones = Object.keys(ZONE_DEFS).map(id => {
+      const d = ZONE_DEFS[id];
+      const active = litZones[id];
+      return {
+        id, left: d.left, top: d.top, size: d.size, short: d.short,
+        bg: active ? '#F3F8F4' : 'rgba(255,255,255,0.55)',
+        border: active ? '#3F8F5C' : '#D8D2C4',
+        labelColor: active ? '#3F8F5C' : '#8B8478'
+      };
+    });
+
+    const haloOn = litZones.sucre;
+    const halo = {
+      size: 400,
+      bg: 'radial-gradient(circle, rgba(63,143,92,0.28) 0%, rgba(63,143,92,0) 70%)',
+      opacity: haloOn ? 1 : 0
+    };
+
+    let sideText, showDoubleBadge = false;
+    if (s.viewMode === 'all') {
+      sideText = presentLines.length === 0
+        ? "Écrivez au moins une molécule pour voir la carte de protection."
+        : "Toutes les zones que défend l'ordonnance complète, allumées ensemble.";
+      showDoubleBadge = presentLines.some(l => classById(l.classId).zones.length >= 2);
+    } else if (selectedPresent) {
+      const cls = classById(selectedLine.classId);
+      const parts = cls.zones.map(z => ZONE_MSG[z]);
+      const name = selectedLine.molecule.trim();
+      sideText = name + ' ' + parts.join(' Elle ');
+      showDoubleBadge = cls.zones.length >= 2;
+    } else {
+      sideText = "Cliquez « Voir l'effet » sur une ligne pour voir où elle agit — ou cliquez « Ordonnance » pour tout allumer d'un coup.";
+    }
+
+    const allPresent = s.lines.length > 0 && presentLines.length === s.lines.length;
+
+    let caption;
+    if (s.viewMode === 'all' && allPresent) {
+      caption = { eyebrow: 'Carte de protection', text: "Voici la carte pleinement allumée de ce que vos traitements protègent — pas seulement le sucre." };
+    } else if (s.viewMode === 'all') {
+      caption = { eyebrow: "Vue d'ensemble de l'ordonnance", text: "Toutes les lignes présentes s'allument en même temps sur la silhouette." };
+    } else {
+      caption = { eyebrow: "On transcrit, ligne par ligne", text: "Chaque ligne de l'ordonnance réelle du patient — molécule tapée, classe choisie — jamais un catalogue à comparer." };
+    }
+
+    return {
+      scale: s.scale,
+      lignes,
+      classOptions,
+      addLine: this.addLine,
+      onShowAll: this.showAll,
+      ordonnanceTitleDeco: s.viewMode === 'all' ? 'text-decoration:underline;text-decoration-color:#3F8F5C;' : '',
+      zones, halo,
+      sideText, showDoubleBadge,
+      caption
+    };
+  }
+}
+
+</script>
+</body>
+</html>

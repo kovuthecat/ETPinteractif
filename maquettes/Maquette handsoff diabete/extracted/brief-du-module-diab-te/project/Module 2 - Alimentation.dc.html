@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+  <meta name="viewport" content="width=1920">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="./image-slot.js"></script>
+  <style>
+    *{ box-sizing: border-box; }
+    body{ margin:0; }
+    .m2-food:hover .m2-food-hover{ opacity:1 !important; }
+    .m2-curvewrap:hover .m2-curve-hover{ opacity:1 !important; }
+  </style>
+</helmet>
+
+<div style="width:100%;height:100vh;display:flex;align-items:center;justify-content:center;background:#F7F3EC;overflow:hidden;">
+<div data-screen-label="Module 2" style="width:1920px;height:1080px;background:#F7F3EC;font-family:'Public Sans',sans-serif;color:#26221B;position:relative;overflow:hidden;display:flex;flex-direction:column;flex-shrink:0;transform:scale({{ scale }});">
+
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:36px 64px 0;">
+    <div style="font-size:18px;letter-spacing:0.12em;color:#8B8478;font-weight:600;">MODULE 2 · ALIMENTATION</div>
+    <div style="display:flex;gap:10px;">
+      <sc-for list="{{ defiTabs }}" as="tab" hint-placeholder-count="5">
+        <div onclick="{{ tab.onClick }}" style="padding:12px 22px;border-radius:999px;font-size:18px;font-weight:600;cursor:pointer;user-select:none;background:{{ tab.bg }};color:{{ tab.color }};border:2px solid {{ tab.border }};white-space:nowrap;">{{ tab.label }}</div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="flex:1;display:flex;gap:36px;padding:24px 64px 0;min-height:0;">
+
+    <sc-if value="{{ showShelf }}">
+    <div style="width:400px;flex-shrink:0;display:flex;flex-direction:column;gap:14px;min-height:0;">
+      <div style="font-size:16px;letter-spacing:0.08em;text-transform:uppercase;color:#8B8478;font-weight:600;">Le garde-manger</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;">
+        <sc-for list="{{ familyTabs }}" as="fam" hint-placeholder-count="6">
+          <div onclick="{{ fam.onClick }}" style="padding:8px 16px;border-radius:999px;font-size:15px;font-weight:600;cursor:pointer;user-select:none;background:{{ fam.bg }};color:{{ fam.color }};border:1.5px solid {{ fam.border }};">{{ fam.label }}</div>
+        </sc-for>
+      </div>
+      <div style="flex:1;background:#FFFFFF;border-radius:24px;border:1.5px solid #E7E2D5;padding:18px;display:flex;flex-wrap:wrap;align-content:flex-start;gap:14px;min-height:0;overflow:auto;">
+        <sc-for list="{{ shelfFoods }}" as="food" hint-placeholder-count="6">
+          <div class="m2-food" draggable="true" onDragStart="{{ food.onDragStart }}" style="width:96px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:grab;position:relative;">
+            <div style="width:80px;height:80px;position:relative;">
+              <image-slot id="{{ food.slotId }}" shape="rounded" radius="16" placeholder="{{ food.name }}" style="width:80px;height:80px;pointer-events:none;"></image-slot>
+              <div style="position:absolute;top:-4px;right:-4px;width:16px;height:16px;border-radius:50%;background:{{ food.cgColor }};border:2px solid #FFFFFF;"></div>
+            </div>
+            <div style="font-size:13px;text-align:center;line-height:1.25;font-weight:500;">{{ food.name }}</div>
+            <div class="m2-food-hover" style="opacity:0;position:absolute;top:-30px;left:50%;transform:translateX(-50%);background:#26221B;color:#F7F3EC;font-size:12px;padding:5px 10px;border-radius:8px;white-space:nowrap;pointer-events:none;transition:opacity 0.15s;">CG {{ food.cgValue }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    </sc-if>
+
+    <div style="flex:1;display:flex;flex-direction:column;gap:18px;min-height:0;">
+
+      <sc-if value="{{ isDefi1 }}">
+      <div style="flex:1;display:flex;gap:28px;min-height:0;">
+        <div onDragOver="{{ allowDrop }}" onDrop="{{ d1Drop }}" style="width:400px;height:400px;flex-shrink:0;align-self:center;border-radius:50%;background:#FFFFFF;border:3px dashed #D8D2C4;display:flex;align-items:center;justify-content:center;position:relative;">
+          <div style="width:120px;height:120px;border-radius:50%;background:#FFFFFF;border:3px solid #A9823A;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;">
+            <image-slot id="{{ d1BaseSlotId }}" shape="circle" placeholder="{{ d1BaseName }}" style="width:70px;height:70px;pointer-events:none;"></image-slot>
+          </div>
+          <sc-for list="{{ d1Chips }}" as="chip" hint-placeholder-count="3">
+            <div style="position:absolute;left:{{ chip.x }};top:{{ chip.y }};width:78px;height:78px;border-radius:50%;background:#FFFFFF;border:2px solid #3F8F5C;display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="{{ chip.onRemove }}">
+              <image-slot id="{{ chip.slotId }}" shape="circle" placeholder="{{ chip.name }}" style="width:60px;height:60px;pointer-events:none;"></image-slot>
+            </div>
+          </sc-for>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px;">
+          <div style="font-size:16px;color:#8B8478;font-weight:600;">Féculent : {{ d1BaseName }}</div>
+          <div style="font-size:15px;color:#8B8478;">Glissez un autre féculent pour le remplacer (aperçu qualité).</div>
+          <div style="font-size:16px;color:#8B8478;font-weight:600;margin-top:8px;">Ajouts dans l'assiette ({{ d1Additions }}/3)</div>
+          <div style="font-size:15px;color:#8B8478;">Glissez protéine, lipide ou légume sur l'assiette.</div>
+          <div onclick="{{ d1Reset }}" style="font-size:15px;color:#8B8478;cursor:pointer;text-decoration:underline;width:fit-content;">Recommencer</div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isDefi2 }}">
+      <div style="flex:1;display:flex;gap:36px;align-items:center;justify-content:center;min-height:0;">
+        <sc-for list="{{ d2Cards }}" as="c" hint-placeholder-count="2">
+          <div onDragOver="{{ allowDrop }}" onDrop="{{ c.onDrop }}" style="width:400px;display:flex;flex-direction:column;align-items:center;gap:14px;background:#FFFFFF;border:2px dashed #E7E2D5;border-radius:24px;padding:24px;">
+            <div style="width:140px;height:140px;border-radius:24px;background:#F7F3EC;border:2px solid #E7E2D5;display:flex;align-items:center;justify-content:center;">
+              <image-slot id="{{ c.slotId }}" shape="rounded" radius="18" placeholder="{{ c.name }}" style="width:112px;height:112px;pointer-events:none;"></image-slot>
+            </div>
+            <div style="font-size:20px;font-weight:600;">{{ c.name }}</div>
+            <div style="display:flex;gap:8px;">
+              <sc-for list="{{ c.levels }}" as="lvl" hint-placeholder-count="3">
+                <div onclick="{{ lvl.onClick }}" style="padding:10px 16px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;background:{{ lvl.bg }};color:{{ lvl.color }};border:2px solid {{ lvl.border }};">{{ lvl.label }}</div>
+              </sc-for>
+            </div>
+            <sc-if value="{{ c.showResult }}">
+              <div style="font-size:15px;font-weight:600;color:{{ c.resultColor }};">{{ c.resultText }}</div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:flex;justify-content:center;gap:16px;">
+        <sc-if value="{{ d2CanReveal }}"><div onclick="{{ d2Reveal }}" style="padding:14px 30px;border-radius:999px;background:#26221B;color:#F7F3EC;font-size:18px;font-weight:600;cursor:pointer;">Révéler les courbes</div></sc-if>
+        <sc-if value="{{ d2_revealed }}"><div onclick="{{ d2Reset }}" style="padding:14px 30px;border-radius:999px;background:transparent;color:#8B8478;font-size:16px;cursor:pointer;border:2px solid #D8D2C4;">Recommencer</div></sc-if>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isDefi3 }}">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;min-height:0;">
+        <div style="font-size:16px;color:#8B8478;font-weight:600;">Glissez pour changer l'ordre des bouchées</div>
+        <div style="display:flex;gap:28px;">
+          <sc-for list="{{ d3Slots }}" as="slot" hint-placeholder-count="3">
+            <div draggable="true" onDragStart="{{ slot.onDragStart }}" onDragOver="{{ allowDrop }}" onDrop="{{ slot.onDrop }}" style="width:180px;display:flex;flex-direction:column;align-items:center;gap:10px;cursor:grab;">
+              <div style="font-size:14px;color:#8B8478;font-weight:600;">{{ slot.ordinal }}</div>
+              <div style="width:140px;height:140px;border-radius:20px;background:#FFFFFF;border:2px solid #E7E2D5;display:flex;align-items:center;justify-content:center;">
+                <image-slot id="{{ slot.slotId }}" shape="rounded" radius="16" placeholder="{{ slot.name }}" style="width:110px;height:110px;pointer-events:none;"></image-slot>
+              </div>
+              <div style="font-size:15px;font-weight:600;">{{ slot.name }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isDefi4 }}">
+      <div style="flex:1;display:flex;gap:40px;align-items:center;justify-content:center;min-height:0;">
+        <svg width="360" height="360" viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="92" fill="none" stroke="#D8D2C4" stroke-width="2" stroke-dasharray="3 5"></circle>
+          <sc-for list="{{ pieSlices }}" as="slice" hint-placeholder-count="3">
+            <path d="{{ slice.d }}" fill="{{ slice.color }}" opacity="0.92"></path>
+          </sc-for>
+          <circle cx="100" cy="100" r="34" fill="#F7F3EC"></circle>
+        </svg>
+        <div style="display:flex;flex-direction:column;gap:16px;width:480px;">
+          <div style="font-size:15px;color:#8B8478;">Ajustez les portions avec + / −.</div>
+          <sc-for list="{{ d4Zones }}" as="zone" hint-placeholder-count="3">
+            <div onDragOver="{{ allowDrop }}" onDrop="{{ zone.onDrop }}" style="display:flex;align-items:center;gap:14px;background:#FFFFFF;border:2px dashed #D8D2C4;border-radius:16px;padding:12px 18px;">
+              <div style="width:14px;height:14px;border-radius:50%;background:{{ zone.color }};flex-shrink:0;"></div>
+              <div style="flex:1;font-size:17px;font-weight:600;">{{ zone.label }}</div>
+              <div style="font-size:15px;color:#8B8478;width:56px;text-align:right;">{{ zone.pct }}%</div>
+              <div onclick="{{ zone.onDec }}" style="width:30px;height:30px;border-radius:50%;background:#F7F3EC;border:1.5px solid #D8D2C4;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;font-weight:600;">−</div>
+              <div onclick="{{ zone.onInc }}" style="width:30px;height:30px;border-radius:50%;background:#F7F3EC;border:1.5px solid #D8D2C4;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;font-weight:600;">+</div>
+            </div>
+          </sc-for>
+          <sc-if value="{{ d4Achieved }}"><div style="font-size:15px;color:#3F8F5C;font-weight:600;">✓ Proche de l'assiette-modèle ½ légumes · ¼ protéines · ¼ féculents</div></sc-if>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isSynth }}">
+      <div onDragOver="{{ allowDrop }}" onDrop="{{ synthDrop }}" style="flex:1;border-radius:24px;background:#FFFFFF;border:3px dashed #A9823A;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:16px;padding:24px;position:relative;min-height:0;">
+        <sc-for list="{{ synthChips }}" as="chip" hint-placeholder-count="4">
+          <div style="width:100px;height:100px;border-radius:16px;background:#F7F3EC;border:2px solid #3F8F5C;display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="{{ chip.onRemove }}">
+            <image-slot id="{{ chip.slotId }}" shape="rounded" radius="12" placeholder="{{ chip.name }}" style="width:78px;height:78px;pointer-events:none;"></image-slot>
+          </div>
+        </sc-for>
+        <sc-if value="{{ synthEmpty }}"><div style="font-size:16px;color:#8B8478;text-align:center;width:340px;">Composez et testez librement : glissez des aliments depuis le garde-manger.</div></sc-if>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div style="display:flex;gap:20px;flex-wrap:wrap;">
+          <sc-for list="{{ principleTicks }}" as="p" hint-placeholder-count="4">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:22px;height:22px;border-radius:50%;background:{{ p.bg }};color:#FFFFFF;font-size:13px;display:flex;align-items:center;justify-content:center;font-weight:700;">{{ p.mark }}</div>
+              <div style="font-size:15px;font-weight:600;color:{{ p.textColor }};">{{ p.label }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div onclick="{{ synthReset }}" style="font-size:15px;color:#8B8478;cursor:pointer;text-decoration:underline;">Recommencer</div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ showCurve }}">
+      <div class="m2-curvewrap" style="background:#FFFFFF;border-radius:24px;border:1.5px solid #E7E2D5;padding:18px 28px;position:relative;flex-shrink:0;">
+        <div style="font-size:14px;letter-spacing:0.08em;text-transform:uppercase;color:#8B8478;font-weight:600;margin-bottom:6px;">Glycémie après le repas</div>
+        <svg width="100%" height="170" viewBox="0 0 700 220" preserveAspectRatio="none">
+          <line x1="20" y1="196" x2="680" y2="196" stroke="#D8D2C4" stroke-width="2"></line>
+          <sc-for list="{{ curves }}" as="cv" hint-placeholder-count="1">
+            <path d="{{ cv.d }}" fill="none" stroke="{{ cv.stroke }}" stroke-width="5" stroke-linecap="round" stroke-dasharray="{{ cv.dash }}"></path>
+          </sc-for>
+        </svg>
+        <div class="m2-curve-hover" style="opacity:0;transition:opacity 0.15s;position:absolute;top:14px;right:28px;display:flex;flex-direction:column;gap:4px;align-items:flex-end;">
+          <sc-for list="{{ curveLegend }}" as="lg" hint-placeholder-count="1">
+            <div style="font-size:13px;color:{{ lg.color }};font-weight:600;">{{ lg.label }} · {{ lg.mg }} mg/dL</div>
+          </sc-for>
+        </div>
+      </div>
+      </sc-if>
+
+    </div>
+  </div>
+
+  <div style="padding:16px 64px 36px;text-align:center;">
+    <div style="font-size:20px;letter-spacing:0.08em;text-transform:uppercase;color:#8B8478;margin-bottom:10px;">{{ caption.eyebrow }}</div>
+    <div style="font-size:30px;line-height:1.35;font-weight:500;max-width:1500px;margin:0 auto;">{{ caption.text }}</div>
+  </div>
+
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const FOODS = [
+  { id:'riz', name:'Riz blanc', family:'feculents', cg:'rouge', cgValue:78 },
+  { id:'complet', name:'Pain complet', family:'feculents', cg:'orange', cgValue:55 },
+  { id:'baguette', name:'Baguette', family:'feculents', cg:'rouge', cgValue:85 },
+  { id:'lentilles', name:'Lentilles', family:'feculents', cg:'vert', cgValue:25 },
+  { id:'poulet', name:'Poulet', family:'proteines', cg:'vert', cgValue:5 },
+  { id:'oeuf', name:'Œuf', family:'proteines', cg:'vert', cgValue:5 },
+  { id:'avocat', name:'Avocat', family:'lipides', cg:'vert', cgValue:3 },
+  { id:'huile', name:"Huile d'olive", family:'lipides', cg:'vert', cgValue:0 },
+  { id:'brocoli', name:'Brocoli', family:'legumes', cg:'vert', cgValue:5 },
+  { id:'carotte', name:'Carotte', family:'legumes', cg:'vert', cgValue:8 },
+  { id:'pomme', name:'Pomme', family:'fruits', cg:'vert', cgValue:15 },
+  { id:'yaourt', name:'Yaourt nature', family:'laitiers', cg:'vert', cgValue:8 }
+];
+const FAMILIES = [
+  { id:'feculents', label:'Féculents' },
+  { id:'legumes', label:'Légumes' },
+  { id:'proteines', label:'Protéines' },
+  { id:'lipides', label:'Lipides' },
+  { id:'fruits', label:'Fruits' },
+  { id:'laitiers', label:'Laitiers' }
+];
+const CG_COLOR = { vert:'#3F8F5C', orange:'#C9A227', rouge:'#B54A3F' };
+const LEVEL_COLOR = { bas:'#3F8F5C', moyen:'#C9A227', haut:'#B54A3F' };
+const DEFI_LABELS = { 1:'① Composition', 2:'② Qualité', 3:'③ Ordre', 4:'④ Proportion', 5:'★ Repas complet' };
+
+function foodById(id){ return FOODS.find(f => f.id === id); }
+function foodScore(cgValue){ return Math.max(0, Math.min(1, 1 - cgValue / 100)); }
+function levelFromScore(score){ return score < 0.35 ? 'haut' : (score < 0.65 ? 'moyen' : 'bas'); }
+
+function curvePath(score, w, h){
+  w = w || 700; h = h || 220;
+  score = Math.max(0, Math.min(0.85, score)); // never fully flat — always a visible bump
+  const baseline = h - 24;
+  const peakH = baseline - (1 - score) * (baseline - 40);
+  const peakX = w * (0.24 + score * 0.16);
+  const smooth = 40 + score * 100;
+  return 'M 20 ' + baseline +
+    ' C ' + (20 + peakX * 0.35) + ' ' + baseline + ', ' + (peakX - smooth * 0.4) + ' ' + peakH + ', ' + peakX + ' ' + peakH +
+    ' C ' + (peakX + smooth) + ' ' + peakH + ', ' + (w - 40 - smooth * 0.5) + ' ' + baseline + ', ' + (w - 20) + ' ' + baseline;
+}
+
+function mgFromScore(score){ return Math.round(90 + (1 - score) * 150); }
+
+class Component extends DCLogic {
+  state = {
+    scale: 1,
+    defi: 1,
+    gmFamily: 'feculents',
+    d1_base: 'riz',
+    d1_additions: [],
+    d2_slots: { A: 'baguette', B: 'complet' },
+    d2_guess: { A: null, B: null },
+    d2_revealed: false,
+    d3_order: ['riz', 'poulet', 'brocoli'],
+    d4_counts: { legumes: 1, proteines: 0, feculents: 3 },
+    d4_touched: false,
+    synth_plate: []
+  };
+
+  componentDidMount() {
+    this.updateScale();
+    this._onResize = () => this.updateScale();
+    window.addEventListener('resize', this._onResize);
+  }
+  componentWillUnmount() {
+    if (this._onResize) window.removeEventListener('resize', this._onResize);
+  }
+  updateScale() {
+    const s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+    this.setState({ scale: s > 0 ? s : 1 });
+  }
+
+  setDefi = n => () => this.setState({ defi: n });
+  selectFamily = id => () => this.setState({ gmFamily: id });
+
+  allowDrop = e => e.preventDefault();
+  dragStartFood = id => e => { e.dataTransfer.setData('text/plain', id); e.dataTransfer.effectAllowed = 'move'; };
+
+  d1Drop = e => {
+    e.preventDefault();
+    const id = e.dataTransfer.getData('text/plain');
+    const f = foodById(id);
+    if (!f) return;
+    if (f.family === 'feculents') {
+      this.setState({ d1_base: id });
+      return;
+    }
+    if (f.family === 'fruits' || f.family === 'laitiers') return;
+    this.setState(s => {
+      if (s.d1_additions.includes(id) || s.d1_additions.length >= 3) return null;
+      return { d1_additions: [...s.d1_additions, id] };
+    });
+  };
+  d1Remove = id => () => this.setState(s => ({ d1_additions: s.d1_additions.filter(x => x !== id) }));
+  d1Reset = () => this.setState({ d1_base: 'riz', d1_additions: [] });
+
+  d2SlotDrop = slot => e => {
+    e.preventDefault();
+    const id = e.dataTransfer.getData('text/plain');
+    const f = foodById(id);
+    if (!f) return;
+    this.setState(s => {
+      if (s.d2_slots[slot] === id) return null;
+      return {
+        d2_slots: { ...s.d2_slots, [slot]: id },
+        d2_guess: { ...s.d2_guess, [slot]: null },
+        d2_revealed: false
+      };
+    });
+  };
+  d2Guess = (slot, level) => () => this.setState(s => ({ d2_guess: { ...s.d2_guess, [slot]: level } }));
+  d2Reveal = () => this.setState({ d2_revealed: true });
+  d2Reset = () => this.setState(s => ({ d2_guess: { A: null, B: null }, d2_revealed: false }));
+
+  d3DragStart = idx => e => { e.dataTransfer.setData('text/plain', String(idx)); };
+  d3Drop = idx => e => {
+    e.preventDefault();
+    const from = parseInt(e.dataTransfer.getData('text/plain'), 10);
+    if (isNaN(from) || from === idx) return;
+    this.setState(s => {
+      const arr = [...s.d3_order];
+      const [item] = arr.splice(from, 1);
+      arr.splice(idx, 0, item);
+      return { d3_order: arr };
+    });
+  };
+
+  d4Inc = category => () => this.setState(s => {
+    const counts = { ...s.d4_counts };
+    if (counts[category] >= 8) return null;
+    counts[category] += 1;
+    return { d4_counts: counts, d4_touched: true };
+  });
+  d4Dec = category => () => this.setState(s => {
+    const counts = { ...s.d4_counts };
+    if (counts[category] <= 0) return null;
+    counts[category] -= 1;
+    return { d4_counts: counts, d4_touched: true };
+  });
+
+  synthDrop = e => {
+    e.preventDefault();
+    const id = e.dataTransfer.getData('text/plain');
+    const f = foodById(id);
+    if (!f) return;
+    this.setState(s => (s.synth_plate.length >= 10 ? null : { synth_plate: [...s.synth_plate, { id: f.id, family: f.family, uid: Date.now() + Math.random() }] }));
+  };
+  synthRemove = uid => () => this.setState(s => ({ synth_plate: s.synth_plate.filter(c => c.uid !== uid) }));
+  synthReset = () => this.setState({ synth_plate: [] });
+
+  getCaption(defi, ctx) {
+    if (defi === 1) {
+      const n = ctx.d1_additions.length;
+      const texts = [
+        "Un féculent seul provoque un grand pic de glycémie.",
+        "Un premier ajout (protéine, lipide ou légume) : le pic commence à s'aplatir.",
+        "Deux ajouts : le pic s'aplatit encore.",
+        "Trois ajouts : à féculent constant, le pic est nettement plus doux."
+      ];
+      return { eyebrow: '① Composition — un ajout à la fois', text: texts[Math.min(n, 3)] };
+    }
+    if (defi === 2) {
+      return { eyebrow: '② Qualité — devine puis révèle', text: "Glissez deux aliments à comparer, prédisez leur pic, puis révélez les courbes réelles." };
+    }
+    if (defi === 3) {
+      return { eyebrow: '③ Ordre — même assiette, ordre différent', text: "Manger le féculent en dernier réduit le pic — mêmes aliments, ordre différent." };
+    }
+    if (defi === 4) {
+      return { eyebrow: '④ Proportion — construisez l\u2019assiette-modèle', text: "½ légumes, ¼ protéines, ¼ féculents : la proportion qui aplatit durablement la courbe." };
+    }
+    return { eyebrow: '★ Repas complet — validez et expérimentez', text: "Composez librement votre repas : la courbe et les principes valident ce que vous avez appris." };
+  }
+
+  renderVals() {
+    const s = this.state;
+    const defi = s.defi;
+
+    const defiTabs = [1, 2, 3, 4, 5].map(n => ({
+      id: n, label: DEFI_LABELS[n],
+      onClick: this.setDefi(n),
+      bg: n === defi ? '#26221B' : '#FFFFFF',
+      color: n === defi ? '#F7F3EC' : '#26221B',
+      border: n === defi ? '#26221B' : '#D8D2C4'
+    }));
+
+    const familyTabs = FAMILIES.map(f => ({
+      id: f.id, label: f.label,
+      onClick: this.selectFamily(f.id),
+      bg: f.id === s.gmFamily ? '#26221B' : '#F7F3EC',
+      color: f.id === s.gmFamily ? '#F7F3EC' : '#26221B',
+      border: f.id === s.gmFamily ? '#26221B' : '#E7E2D5'
+    }));
+
+    const shelfFoods = FOODS.filter(f => f.family === s.gmFamily).map(f => ({
+      id: f.id, name: f.name, slotId: 'm2-food-' + f.id,
+      cgColor: CG_COLOR[f.cg], cgValue: f.cgValue,
+      onDragStart: this.dragStartFood(f.id)
+    }));
+
+    // ---- Défi 1 ----
+    const d1BaseFood = foodById(s.d1_base) || foodById('riz');
+    const d1Positions = [
+      { x: '38px', y: '18px' }, { x: '242px', y: '18px' }, { x: '140px', y: '240px' }
+    ];
+    const d1Chips = s.d1_additions.map((id, i) => {
+      const f = foodById(id);
+      return { id, name: f.name, slotId: 'm2-food-' + f.id, x: d1Positions[i].x, y: d1Positions[i].y, onRemove: this.d1Remove(id) };
+    });
+    const score1 = Math.min(1, foodScore(d1BaseFood.cgValue) * 0.5 + s.d1_additions.length * 0.22);
+
+    // ---- Défi 2 ----
+    const LEVELS = ['bas', 'moyen', 'haut'];
+    const d2Cards = ['A', 'B'].map(slot => {
+      const food = foodById(s.d2_slots[slot]);
+      const score = foodScore(food.cgValue);
+      const correct = levelFromScore(score);
+      const guess = s.d2_guess[slot];
+      const revealed = s.d2_revealed;
+      return {
+        id: slot, name: food.name, slotId: 'm2-food-' + food.id,
+        onDrop: this.d2SlotDrop(slot),
+        levels: LEVELS.map(l => {
+          const isGuess = guess === l;
+          const isCorrect = l === correct;
+          let bg = '#FFFFFF', color = '#26221B', border = '#D8D2C4';
+          if (revealed) {
+            if (isCorrect) { bg = LEVEL_COLOR[l]; color = '#FFFFFF'; border = LEVEL_COLOR[l]; }
+            else if (isGuess) { bg = '#FFFFFF'; color = LEVEL_COLOR[l]; border = LEVEL_COLOR[l]; }
+          } else if (isGuess) {
+            bg = LEVEL_COLOR[l]; color = '#FFFFFF'; border = LEVEL_COLOR[l];
+          }
+          return { id: l, label: l.charAt(0).toUpperCase() + l.slice(1), onClick: this.d2Guess(slot, l), bg, color, border };
+        }),
+        showResult: revealed,
+        resultText: revealed ? ('Réponse : ' + correct.charAt(0).toUpperCase() + correct.slice(1) + (guess === correct ? ' — bonne prédiction ✓' : ' — votre prédiction : ' + (guess ? guess.charAt(0).toUpperCase() + guess.slice(1) : '—'))) : '',
+        resultColor: revealed ? (guess === correct ? '#3F8F5C' : '#A9823A') : '#26221B',
+        _score: score
+      };
+    });
+    const d2CanReveal = !s.d2_revealed && s.d2_guess.A && s.d2_guess.B;
+
+    // ---- Défi 3 ----
+    const ORDINALS = ['1ère bouchée', '2e bouchée', '3e bouchée'];
+    const d3Slots = s.d3_order.map((id, i) => {
+      const f = foodById(id);
+      return {
+        id, ordinal: ORDINALS[i], name: f.name, slotId: 'm2-food-' + f.id,
+        onDragStart: this.d3DragStart(i), onDrop: this.d3Drop(i)
+      };
+    });
+    const d3RizIdx = s.d3_order.indexOf('riz');
+    const score3 = [0, 0.35, 0.75][d3RizIdx] ?? 0;
+
+    // ---- Défi 4 ----
+    const D4_DEFS = [
+      { id: 'legumes', label: 'Légumes', color: '#3F8F5C' },
+      { id: 'proteines', label: 'Protéines', color: '#A9823A' },
+      { id: 'feculents', label: 'Féculents', color: '#B54A3F' }
+    ];
+    const d4Total = s.d4_counts.legumes + s.d4_counts.proteines + s.d4_counts.feculents || 1;
+    const d4Pcts = {
+      legumes: s.d4_counts.legumes / d4Total,
+      proteines: s.d4_counts.proteines / d4Total,
+      feculents: s.d4_counts.feculents / d4Total
+    };
+    const d4Zones = D4_DEFS.map(z => ({
+      id: z.id, label: z.label, color: z.color,
+      pct: Math.round(d4Pcts[z.id] * 100),
+      onInc: this.d4Inc(z.id), onDec: this.d4Dec(z.id)
+    }));
+    let angle = -90;
+    const pieSlices = D4_DEFS.map(z => {
+      const frac = d4Pcts[z.id];
+      const start = angle;
+      const sweep = frac * 360;
+      angle += sweep;
+      const end = start + sweep;
+      const toXY = a => {
+        const rad = a * Math.PI / 180;
+        return [100 + 92 * Math.cos(rad), 100 + 92 * Math.sin(rad)];
+      };
+      const [x1, y1] = toXY(start);
+      const [x2, y2] = toXY(end);
+      const largeArc = sweep > 180 ? 1 : 0;
+      const d = frac > 0.001 ? ('M 100 100 L ' + x1.toFixed(1) + ' ' + y1.toFixed(1) + ' A 92 92 0 ' + largeArc + ' 1 ' + x2.toFixed(1) + ' ' + y2.toFixed(1) + ' Z') : '';
+      return { id: z.id, d, color: z.color };
+    });
+    const d4Diff = Math.abs(d4Pcts.legumes - 0.5) + Math.abs(d4Pcts.proteines - 0.25) + Math.abs(d4Pcts.feculents - 0.25);
+    const score4 = Math.max(0, 1 - d4Diff / 0.6);
+    const d4Achieved = s.d4_touched && d4Diff < 0.14 && d4Total >= 3;
+
+    // ---- Synthèse ----
+    const synthChips = s.synth_plate.map(c => {
+      const f = foodById(c.id);
+      return { uid: c.uid, name: f.name, slotId: 'm2-food-' + f.id, onRemove: this.synthRemove(c.uid) };
+    });
+    const synthFamilies = new Set(s.synth_plate.map(c => c.family));
+    const synthFeculents = s.synth_plate.filter(c => c.family === 'feculents').length;
+    const synthTotal = s.synth_plate.length || 1;
+    const diversityScore = Math.min(1, synthFamilies.size / 4);
+    const feculentFrac = synthFeculents / synthTotal;
+    const balanceScore = s.synth_plate.length ? Math.max(0, 1 - Math.abs(feculentFrac - 0.25) * 2) : 0;
+    const scoreSynth = s.synth_plate.length ? Math.min(1, diversityScore * 0.6 + balanceScore * 0.4) : 0;
+
+    const principleTicks = [
+      { id: 'composition', label: 'Composition', ok: synthFamilies.size >= 2 },
+      { id: 'proportion', label: 'Proportion', ok: balanceScore > 0.5 },
+      { id: 'qualite', label: 'Qualité', ok: synthFamilies.has('feculents') },
+      { id: 'diversite', label: 'Diversité', ok: synthFamilies.size >= 4 }
+    ].map(p => ({
+      id: p.id, label: p.label,
+      mark: p.ok ? '✓' : '·',
+      bg: p.ok ? '#3F8F5C' : '#D8D2C4',
+      textColor: p.ok ? '#26221B' : '#8B8478'
+    }));
+
+    // ---- Courbes ----
+    let curves = [];
+    let curveLegend = [];
+    if (defi === 1) {
+      curves = [{ id: 'a', d: curvePath(score1), stroke: '#26221B', dash: '0' }];
+      curveLegend = [{ color: '#26221B', label: 'Votre assiette', mg: mgFromScore(score1) }];
+    } else if (defi === 2) {
+      if (s.d2_revealed) {
+        curves = [
+          { id: 'A', d: curvePath(d2Cards[0]._score), stroke: '#26221B', dash: '0' },
+          { id: 'B', d: curvePath(d2Cards[1]._score), stroke: '#A9823A', dash: '0' }
+        ];
+        curveLegend = [
+          { color: '#26221B', label: d2Cards[0].name, mg: mgFromScore(d2Cards[0]._score) },
+          { color: '#A9823A', label: d2Cards[1].name, mg: mgFromScore(d2Cards[1]._score) }
+        ];
+      }
+    } else if (defi === 3) {
+      curves = [{ id: 'a', d: curvePath(score3), stroke: '#26221B', dash: '0' }];
+      curveLegend = [{ color: '#26221B', label: 'Ordre actuel', mg: mgFromScore(score3) }];
+    } else if (defi === 4) {
+      curves = [{ id: 'a', d: curvePath(score4), stroke: '#26221B', dash: '0' }];
+      curveLegend = [{ color: '#26221B', label: 'Votre assiette', mg: mgFromScore(score4) }];
+    } else {
+      curves = [{ id: 'synth', d: curvePath(scoreSynth), stroke: '#26221B', dash: '0' }];
+      curveLegend = [{ color: '#26221B', label: 'Votre repas', mg: mgFromScore(scoreSynth) }];
+    }
+
+    return {
+      scale: s.scale,
+      defiTabs,
+      showShelf: defi === 1 || defi === 2 || defi === 5,
+      isDefi1: defi === 1, isDefi2: defi === 2, isDefi3: defi === 3, isDefi4: defi === 4, isSynth: defi === 5,
+      familyTabs, shelfFoods,
+      allowDrop: this.allowDrop,
+      d1Drop: this.d1Drop, d1Chips,
+      d1BaseSlotId: 'm2-food-' + d1BaseFood.id, d1BaseName: d1BaseFood.name,
+      d1Additions: s.d1_additions.length, d1Reset: this.d1Reset,
+      d2Cards, d2CanReveal, d2_revealed: s.d2_revealed, d2Reveal: this.d2Reveal, d2Reset: this.d2Reset,
+      d3Slots,
+      pieSlices, d4Zones, d4Achieved,
+      synthChips, synthEmpty: s.synth_plate.length === 0, synthDrop: this.synthDrop, synthReset: this.synthReset,
+      principleTicks,
+      showCurve: defi !== 2 || s.d2_revealed,
+      curves, curveLegend,
+      caption: this.getCaption(defi, s)
+    };
+  }
+}
+
+</script>
+</body>
+</html>
