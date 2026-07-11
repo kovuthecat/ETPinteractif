@@ -4,7 +4,7 @@
 
 > **Frontières** — STATUS : état actuel · `TASKS.md` : backlog + tâches · `plans/` : plan d'une tâche active · `VALIDATION.md` : checklist visuelle.
 >
-> **Dernière mise à jour :** 2026-07-11 (corrections-visuelles-diabete S1-S8 — chantier clos : silhouette, courbe, layouts, texte allégé)
+> **Dernière mise à jour :** 2026-07-11 (corrections-visuelles-diabete-v2 S1-S6 — 2ᵉ tour de revue visuelle par-dessus S1-S8, chantier clos)
 
 ## Phase actuelle
 
@@ -355,6 +355,48 @@ push groupés en fin de plan (cf. `index.md`).
 (validation visuelle humaine requise, `npm run dev`) : intensité du halo « allumé » de la
 silhouette (S1), amplitudes de la courbe glycémie et seuils du défi ② (S2), alignement de la
 plaque d'athérome dans la lumière de l'artère (S7).
+
+## Phase 12 (suite) — 2ᵉ tour (`plans/corrections-visuelles-diabete-v2/`)
+
+**Chantier `corrections-visuelles-diabete-v2` (2026-07-11)** — 2ᵉ revue visuelle de Thibault sur
+le déployé, par-dessus S1-S8 ci-dessus (déjà committés) : le tour 1 a atterri mais reste
+**insuffisant** sur les tailles (« encore trop petite »), + nouveaux points (feux cardio, Suivi
+side-by-side, dégraissage Insuline). Mode solo (Sonnet), 6 sessions S1-S6, commits par tâche en
+fin de plan, push en attente de validation Thibault.
+
+- **S1-v2** — Silhouettes vraiment dominantes : `.wrapImage` 460→640px (composant partagé
+  `SilhouetteCorps`), hosts Traitements/Complications/Risque cardio ③ 420/400/400→560px.
+  Traitements : le panneau texte (eyebrow + carte) disparaît entièrement tant qu'aucune ligne
+  n'est sélectionnée, au lieu de garder une phrase de guidage ambiante. Risque cardio ③ :
+  correction de bug — la plaque (`plaque.png`) se déposait sur les 3 territoires dès qu'un feu
+  passait au rouge au lieu du seul territoire sélectionné (`zoneActive`).
+- **S2-v2** — Feux cardio : `feuIconFrame` devient le `<button>` cliquable (icône colorée par
+  état + bordure d'épaisseur croissante 2/3/4px selon vert/orange/rouge, repère non
+  chromatique), bouton texte séparé retiré. Artère : dépôt bilatéral recalibré
+  (`oppositeDepthFactor(e) = 0.5 + 0.5·e`, continu au seuil existant) pour qu'au score max la
+  lumière visuelle corresponde enfin aux ~30 % déjà annoncés par `plaquePassagePct`.
+- **S3-v2** — Suivi : repasse en côte-à-côte (`flex-direction: row` ≥860px, l'inverse du tour 1
+  S4) ; lignes d'examen dégraissées (libellés de fréquence raccourcis, colonne « statut » texte
+  → pastille compacte `examStatusDot`) pour tenir dans la demi-largeur ; boutons « Placer/Retirer
+  du cadran » → icône Lucide `MapPin`/`MapPinOff` (`aria-label` complet conservé).
+- **S4-v2** — Insuline : l'onglet ① Zone-cible disparaît, remplacé par un toggle de profil
+  permanent près de la courbe (2 onglets restants renumérotés ①/②) ; narration retirée (titre du
+  graphique raccourci, bloc `.caption` supprimé) ; barre TIR cantonnée à l'onglet ② Décider ;
+  titre trompeur retiré de la carte des 3 situations (présentées à plat).
+- **S5-v2** — Activité : `.rayonWrap` 480→640px (icônes 104/128→140/176px en proportion) ;
+  débordement de la grille Volume corrigé (cause identifiée : grid `auto-fill` dans un enfant
+  flex sans `min-width: 0`, blowout classique) ; rythme visuel introduit (cartes « modérée »
+  légèrement plus grandes) ; micro-coupures 30→44px.
+- **S6-v2** — Alimentation : passe défensive sur défis ②/③ (largeurs fixes redondantes avec
+  `flex-basis` retirées, `min-width: 0`) — mécanisme exact du débordement **non confirmé** par
+  analyse statique (pas de navigateur côté Claude), signalé comme point prioritaire à revalider.
+  LA COURBE : plancher partagé `min-width: 440px` posé dans `CourbeGlycemie.module.css` (profite
+  aux 4 modules consommateurs sans duplication) + plafond Alimentation 760→900px.
+
+**Points ouverts** (non bloquants sauf mention contraire) : tailles cibles exactes « à caler à
+l'œil » par décision Thibault (silhouettes/courbe/rayonnement, cf. index v2 §4) ; **S3-v2 et
+S6-v2 portent chacun un critère explicitement bloqué du plan** (non-débordement à 1024×768) non
+vérifiable par Claude — priorité de revue à `npm run dev`.
 
 ## Ce qui fonctionne
 

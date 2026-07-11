@@ -796,3 +796,107 @@ amplitudes et seuils du défi ② sont `// à revalider (Thibault)`.
 alignement de la plaque d'athérome (S7, jamais vérifié à l'écran), amplitudes de la courbe
 glycémie (S2, à revalider), intensité du halo « allumé » de la silhouette (S1, à calibrer).
 
+## Corrections visuelles diabète, tour 2 (revue Thibault, 2026-07-11) · plan: → plans/corrections-visuelles-diabete-v2/
+
+> 2ᵉ revue visuelle, par-dessus le tour 1 (S1-S8 ci-dessus, déjà committé) : le tour 1 a atterri
+> mais reste insuffisant sur les tailles (« encore trop petite »), + nouveaux points (feux
+> cardio, Suivi side-by-side, dégraissage Insuline). Détail par session dans
+> `plans/corrections-visuelles-diabete-v2/S<n>.md`. Statut global dans `index.md` du plan.
+
+### S1-v2 — Silhouettes vraiment dominantes + plaque localisée + texte Traitements retiré
+
+**Statut** : [ ] à valider par Thibault (code livré 2026-07-11)
+
+- [ ] Traitements, Complications, Risque cardio ③ : la silhouette **domine** l'écran (élément
+      principal, pas une vignette) — nettement plus grande qu'au tour 1 (hosts 420/400/400px
+      → 560px, `.wrapImage` 460→640px).
+- [ ] L'organe « allumé »/actif est franchement visible (halo + surface suffisants à la
+      nouvelle taille).
+- [ ] Traitements : plus de bloc de texte narratif dans le panneau latéral quand rien n'est
+      sélectionné (le panneau entier disparaît, eyebrow compris).
+- [ ] Risque cardio ③ Anatomie : le dépôt de plaque (`plaque.png`) n'apparaît **que** sur le
+      territoire cliqué (cou/cœur/jambes) — plus sur les 3 en même temps dès qu'un feu est rouge.
+- [ ] Pas de recouvrement à grande largeur (≥1800px) ni sur mobile.
+- [ ] **Tabac `benefices-arret` strictement inchangé**.
+
+### S2-v2 — Feux cardio : icône-bouton + artère à 70% au max
+
+**Statut** : [ ] à valider par Thibault (code livré 2026-07-11)
+
+- [ ] Onglet ① Leviers : chaque icône de feu est elle-même le bouton cliquable, colorée selon
+      l'état (vert/orange/rouge) — plus de bouton texte « Vert/Orange/Rouge » séparé en dessous.
+- [ ] Bordure de l'icône plus épaisse à mesure que l'état s'aggrave (2/3/4px) — repère non
+      chromatique en plus de la couleur.
+- [ ] Survol/focus d'un feu : la fourchette de valeurs s'affiche toujours (2ᵉ niveau).
+- [ ] Lecteur d'écran : chaque icône-feu annonce « {nom} : {état} » (ex. « Tension : orange »)
+      distinctement — plus 5 cibles nommées « Vert » indistinctement.
+- [ ] Onglet ② Artère : au niveau max (tous les feux au rouge), la lumière est nettement plus
+      obstruée qu'avant (~30% visible, contre ~39% avant recalibration).
+- [ ] Les 4 vues (Leviers/Artère/Anatomie/Fiche) restent cohérentes (même état des 5 feux partagé).
+
+### S3-v2 — Suivi : side-by-side sans déborder + icône « placer »
+
+**Statut** : [ ] à valider par Thibault (code livré 2026-07-11)
+
+- [ ] Cadran et panneau d'examens sont **côte à côte** (≥860px) — le tour 1 les avait empilés
+      pour tuer un débordement ; placer un examen doit se voir en direct sur le cadran visible.
+- [ ] **Critère bloquant** : aucun débordement horizontal à 1024×768 (le piège exact du tour 1).
+- [ ] Lignes de consultation/examen lisibles (≥14px), pas de texte tronqué.
+- [ ] « Placer sur le cadran »/« Retirer du cadran » : icône Lucide (MapPin/MapPinOff) au lieu
+      d'un bouton texte, cible ≥44px, `aria-label` complet au survol/lecteur d'écran.
+- [ ] Statut d'examen (fait/à programmer/à venir) : pastille compacte à côté du nom, toujours
+      lisible malgré la disparition de la colonne texte.
+- [ ] En dessous de 860px : repli propre en empilé (cadran au-dessus).
+
+### S4-v2 — Insuline : profil en toggle, onglet lecture dégraissé, décider sans titre
+
+**Statut** : [ ] à valider par Thibault (code livré 2026-07-11)
+
+- [ ] Le choix de profil (jeune/actif vs âgé/fragile) n'est plus un onglet plein écran : toggle
+      compact visible en permanence au-dessus de la courbe, sur les 2 onglets restants.
+- [ ] Onglet ① Lire la courbe : plus de narration (« Cliquez un segment… ») ni de titre bavard ;
+      titre du graphique raccourci à « Courbe du capteur ».
+- [ ] La barre « Temps dans la cible » n'apparaît plus que dans l'onglet ② Décider.
+- [ ] Onglet ② Décider : les 3 situations (nuits qui montent / descend la nuit / haut stable
+      après repas) sont présentées à plat, sans titre de section qui n'en décrivait qu'une.
+- [ ] Changer de profil modifie toujours la bande-cible affichée sur la courbe.
+- [ ] Le refrain de sécurité (« Dans le doute, on ne monte pas… ») reste visible en permanence.
+
+### S5-v2 — Activité : rayonnement agrandi, volume dé-grillé, micro-coupures ≥44px
+
+**Statut** : [ ] à valider par Thibault (code livré 2026-07-11)
+
+- [ ] Onglet ① Rayonnement : le schéma en étoile remplit nettement plus l'espace qu'au tour 1
+      (`.rayonWrap` 480→640px, icônes agrandies en proportion) — sans recouvrement des labels.
+- [ ] Onglet ② Volume : plus de débordement horizontal de la grille d'activités.
+- [ ] Onglet ② Volume : moins « effet tableur » — les activités d'intensité modérée ont une
+      carte légèrement plus généreuse (rythme visuel), sans devenir décoratif ou chargé.
+- [ ] Onglet ③ Timing : les boutons de micro-coupures sont passés de 30×30 à 44×44px,
+      espacement suffisant pour ne pas cliquer la mauvaise coupure.
+- [ ] Le filtre « Activités toniques uniquement » et le total du jour restent fonctionnels.
+
+### S6-v2 — Alimentation : débordements Qualité/Ordre corrigés + courbe agrandie
+
+**Statut** : [ ] à valider par Thibault (code livré 2026-07-11)
+
+> ⚠️ Point le plus incertain de cette session : le mécanisme exact du débordement (#14/#15)
+> n'a pas pu être confirmé par analyse statique seule (pas de navigateur côté Claude). Le
+> correctif est une passe défensive (largeurs fixes redondantes retirées, plancher/plafond de
+> la courbe) — **à vérifier en priorité**, cf. `S6.md` §Écart.
+
+- [ ] **Critère bloquant** : aucun débordement horizontal dans les onglets Qualité et Ordre, à
+      1024×768 **et** 1440×900.
+- [ ] Onglets ③ Ordre et ④ Proportion : LA COURBE est nettement plus grande, la différence de
+      pic entre les deux traces est lisible sans plisser les yeux.
+- [ ] Défi ③ : si le nouveau plancher de largeur de la courbe (440px) force le garde-manger à
+      passer sous la courbe plutôt qu'à côté sur un écran contraint, vérifier que ce repli reste
+      acceptable visuellement.
+- [ ] Aucune régression de la courbe dans les modules 3 (Activité, onglet Timing), 8
+      (Hypoglycémie), 9 (Insuline) — tous en layout pleine largeur, ne devraient pas changer.
+
+**Chantier `corrections-visuelles-diabete-v2` (S1-S6) clos ce jour** — voir
+`plans/corrections-visuelles-diabete-v2/` pour le détail complet. Points ouverts non bloquants :
+mécanisme exact du débordement Alimentation ②/③ non confirmé visuellement (S6), alignement de
+l'artère au score max (S2), tailles cibles exactes des silhouettes/courbe/rayonnement laissées
+« à caler à l'œil » par décision Thibault (§3 de l'index).
+
