@@ -58,14 +58,14 @@
   stroke-width: 1.8;
 }
 
+/* S5 : le nœud n'est plus un disque crème qui écrase l'image (capture #4) — `.node` est
+   désormais un simple point d'ancrage (position + z-index), `.nodeButton` est le cadre
+   circulaire réel (bordure = état, image plein cadre `overflow: hidden`), et le libellé
+   sort du cercle pour rester lisible en dessous. */
 .node {
   position: absolute;
   aspect-ratio: 1;
   transform: translate(-50%, -50%);
-  border-radius: 50%;
-  border: 3px solid var(--color-line);
-  background: var(--color-surface);
-  box-shadow: var(--shadow-1);
 }
 
 .node:hover,
@@ -73,65 +73,82 @@
   z-index: 6; /* passe au-dessus de .nodeCenter (z-index: 1) le temps du survol/focus (B4) */
 }
 
-/* Le cercle lui-même n'est plus l'élément cliquable (cf. .nodeButton) : un badge info
-   (`.nodeInfo`) peut lui être posé en frère sans imbriquer deux contrôles interactifs. */
+.nodeCenter {
+  z-index: 1;
+}
+
+/* L'anneau porte l'état (repos `--color-line`, allumé `--color-confort`, sucre
+   `--color-vigilance`) — l'image remplit tout le cadre, clippée en cercle. */
 .nodeButton {
   width: 100%;
   height: 100%;
-  border: none;
-  background: transparent;
+  flex-shrink: 0;
+  position: relative;
+  border: 3px solid var(--color-line);
   border-radius: 50%;
+  overflow: hidden;
+  background: var(--color-bg);
+  box-shadow: var(--shadow-1);
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  padding: 6px;
+  padding: 0;
   cursor: pointer;
   color: inherit;
   min-width: unset;
   min-height: unset;
 }
 
-.nodeCenter {
+.nodeButtonCenter {
   border-width: 4px;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  padding: 6px;
-  cursor: pointer;
-  min-width: unset;
-  min-height: unset;
 }
 
 .nodeSucre {
   border-color: var(--color-vigilance);
-  background: var(--color-vigilance-soft);
 }
 
 .nodeLit {
   border-color: var(--color-confort);
-  background: var(--color-confort-soft);
+  box-shadow:
+    0 0 0 4px var(--color-confort-soft),
+    var(--shadow-1);
+}
+
+/* Label/hint/suite : regroupés dans un seul bloc positionné sous le cercle, sans agrandir
+   la boîte de `.node` (qui doit rester carrée pour que le centrage `translate(-50%, -50%)`
+   cible bien le cercle, pas un bloc plus haut — sinon les rayons SVG, tracés vers
+   `pos.x/pos.y`, viseraient à côté). Empilement naturel (flex column), pas de décalages
+   devinés au pixel près. */
+.nodeBelow {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 6px;
+  width: max-content;
+  max-width: 130px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
 }
 
 .nodeLabel {
   display: flex;
   flex-direction: column;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
-  line-height: 1.15;
+  line-height: 1.2;
   text-align: center;
+  color: var(--color-text);
 }
 
-.nodeCenter .nodeLabel {
-  font-size: 14px;
+.nodeCenterLabel {
+  font-size: 15px;
 }
 
 .nodeHint {
-  font-size: 9px;
+  font-size: 10px;
   color: var(--color-text-faint);
   text-align: center;
   line-height: 1.2;
@@ -141,7 +158,7 @@
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  font-size: 9px;
+  font-size: 10px;
   color: var(--color-text-soft);
   font-weight: 600;
 }
@@ -426,12 +443,6 @@
   color: var(--color-text-soft);
 }
 
-.totalNote {
-  margin: 0;
-  font-size: 13.5px;
-  color: var(--color-text-soft);
-  line-height: 1.5;
-}
 
 .muscleLegend {
   display: flex;

@@ -239,8 +239,10 @@ export default function ActiviteModule({ onNavigate }: ModuleProps) {
         : '2 à 3 minutes de mouvement toutes les 30 minutes, tout au long de la journée : un effet régulier sur la glycémie.';
   }
 
-  // Bandeau de légende (bas d'écran), commun aux 3 temps — verbatim maquette.
-  let caption: { eyebrow: string; text: string };
+  // Bandeau de légende (bas d'écran), commun aux 3 temps (S8, passe « moins de texte ») :
+  // eyebrow court partout, texte réservé à la sortie d'une interaction (temps ① : détail du
+  // rayon/centre cliqué). Plus de paragraphe ambiant sur ②/③, le soignant narre.
+  let caption: { eyebrow: string; text?: string };
   if (temps === 1) {
     const activeNode = t1Active && t1Active !== 'all' ? RAYONS.find((r) => r.id === t1Active) : undefined;
     caption =
@@ -251,20 +253,11 @@ export default function ActiviteModule({ onNavigate }: ModuleProps) {
           }
         : activeNode
           ? { eyebrow: '① Le rayonnement', text: activeNode.desc }
-          : {
-              eyebrow: '① Le rayonnement',
-              text: "Cliquez au centre pour voir tous les bénéfices s'allumer ensemble, ou un rayon pour le détailler.",
-            };
+          : { eyebrow: '① Le rayonnement' };
   } else if (temps === 2) {
-    caption = {
-      eyebrow: '② Le volume — sans plafond',
-      text: "Tout compte pareil, en minutes : marcher, jardiner, porter les courses. Il n'y a pas de seuil à atteindre.",
-    };
+    caption = { eyebrow: '② Le volume' };
   } else {
-    caption = {
-      eyebrow: '③ Le timing — la même courbe, un curseur en plus',
-      text: 'Ce que vous faites déjà compte ; quand vous le faites change encore le pic.',
-    };
+    caption = { eyebrow: '③ Le timing' };
   }
 
   return (
@@ -303,17 +296,24 @@ export default function ActiviteModule({ onNavigate }: ModuleProps) {
             })}
           </svg>
 
-          <button
-            type="button"
-            className={`${styles.node} ${styles.nodeCenter} ${t1Active === 'all' ? styles.nodeLit : ''}`}
+          <div
+            className={`${styles.node} ${styles.nodeCenter}`}
             style={{ left: `${CENTER_PCT.x}%`, top: `${CENTER_PCT.y}%`, width: `${CENTER_R_PCT * 2}%` }}
-            onClick={toggleAllNodes}
-            aria-pressed={t1Active === 'all'}
           >
-            <IllustrationSlot id="activite-centre" label="Personne active" shape="circle" size={56} />
-            <span className={styles.nodeLabel}>Activité</span>
-            <span className={styles.nodeHint}>cliquez : un effort, tous les bénéfices</span>
-          </button>
+            <button
+              type="button"
+              className={`${styles.nodeButton} ${styles.nodeButtonCenter} ${t1Active === 'all' ? styles.nodeLit : ''}`}
+              onClick={toggleAllNodes}
+              aria-pressed={t1Active === 'all'}
+              aria-label="Activité — tous les bénéfices"
+            >
+              <IllustrationSlot id="activite-centre" label="Personne active" shape="circle" size={128} />
+            </button>
+            <span className={styles.nodeBelow}>
+              <span className={`${styles.nodeLabel} ${styles.nodeCenterLabel}`}>Activité</span>
+              <span className={styles.nodeHint}>cliquez : un effort, tous les bénéfices</span>
+            </span>
+          </div>
 
           {RAYONS.map((r) => {
             const pos = NODE_POS[r.id];
@@ -321,16 +321,19 @@ export default function ActiviteModule({ onNavigate }: ModuleProps) {
             return (
               <div
                 key={r.id}
-                className={`${styles.node} ${r.id === 'sucre' ? styles.nodeSucre : ''} ${lit ? styles.nodeLit : ''}`}
+                className={styles.node}
                 style={{ left: `${pos.x}%`, top: `${pos.y}%`, width: `${NODE_R_PCT * 2}%` }}
               >
                 <button
                   type="button"
-                  className={styles.nodeButton}
+                  className={`${styles.nodeButton} ${r.id === 'sucre' ? styles.nodeSucre : ''} ${lit ? styles.nodeLit : ''}`}
                   onClick={() => selectNode(r.id)}
                   aria-pressed={lit}
+                  aria-label={r.label.join(' ')}
                 >
-                  <IllustrationSlot id={`activite-rayon-${r.id}`} label={r.label.join(' ')} shape="circle" size={44} />
+                  <IllustrationSlot id={`activite-rayon-${r.id}`} label={r.label.join(' ')} shape="circle" size={104} />
+                </button>
+                <span className={styles.nodeBelow}>
                   <span className={styles.nodeLabel}>
                     {r.label.map((line, i) => (
                       <span key={i}>{line}</span>
@@ -341,7 +344,7 @@ export default function ActiviteModule({ onNavigate }: ModuleProps) {
                       voir la suite <ArrowRight size={12} aria-hidden="true" />
                     </span>
                   )}
-                </button>
+                </span>
                 {r.source && (
                   <span className={styles.nodeInfo}>
                     <InfoHover content={r.source} label={`En savoir plus : ${r.label.join(' ')}`}>
@@ -360,7 +363,7 @@ export default function ActiviteModule({ onNavigate }: ModuleProps) {
       {temps === 2 && (
         <div className={styles.volumeLayout}>
           <div className={styles.volumeMain}>
-            <p className="eyebrow">Ce que je fais déjà — cochez ce qui compte pour vous</p>
+            <p className="eyebrow">Ce que je fais déjà</p>
             <div className={styles.switchRow}>
               <span id="toniques-switch-label" className={styles.switchCaption}>
                 Activités toniques uniquement
@@ -437,10 +440,6 @@ export default function ActiviteModule({ onNavigate }: ModuleProps) {
                 <span>0</span>
                 <span>et ça continue ···→</span>
               </div>
-              <p className={styles.totalNote}>
-                Pas de plafond : marcher, jardiner, porter les courses, danser — tout compte, à la même
-                hauteur.
-              </p>
             </div>
             <div className={styles.muscleLegend}>
               <span className={styles.muscleDot} aria-hidden="true" />
@@ -535,7 +534,7 @@ export default function ActiviteModule({ onNavigate }: ModuleProps) {
 
       <div className={styles.captionBand}>
         <p className="eyebrow">{caption.eyebrow}</p>
-        <p className={styles.captionText}>{caption.text}</p>
+        {caption.text && <p className={styles.captionText}>{caption.text}</p>}
       </div>
 
       <ModuleFooterNav
