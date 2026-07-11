@@ -1,6 +1,6 @@
 import { useReducer, useState } from 'react';
 import type { ComponentType } from 'react';
-import { Stethoscope, TestTube, Droplet, Heart, Eye, Footprints, Smile, Syringe } from 'lucide-react';
+import { Stethoscope, TestTube, Droplet, Heart, Eye, Footprints, Smile, Syringe, MapPin, MapPinOff } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import FicheOverlay from '../../../components/FicheOverlay';
 import ModuleFooterNav from '../../../components/ModuleFooterNav';
@@ -309,7 +309,7 @@ export default function SuiviModule({ onNavigate }: ModuleProps) {
     const cycles = longCycleYears(cfg, state.consultConfig.interval);
     const info = PROTECTS_INFO[def.protects];
     const freqOptions = [
-      { n: 1, label: 'Chaque consult.' },
+      { n: 1, label: '1×/consult.' },
       { n: annualN, label: '1×/an' },
       { n: annualN * 2, label: '1×/2 ans' },
       { n: annualN * 5, label: '1×/5 ans' },
@@ -506,9 +506,12 @@ export default function SuiviModule({ onNavigate }: ModuleProps) {
                 type="button"
                 className={styles.revealToggle}
                 aria-pressed={state.consultRevealed}
+                aria-label={
+                  state.consultRevealed ? 'Retirer les consultations du cadran' : 'Placer les consultations sur le cadran'
+                }
                 onClick={() => dispatch({ type: 'TOGGLE_CONSULT_REVEAL' })}
               >
-                {state.consultRevealed ? 'Retirer du cadran' : 'Placer sur le cadran'}
+                {state.consultRevealed ? <MapPin size={20} aria-hidden /> : <MapPinOff size={20} aria-hidden />}
               </button>
             </div>
 
@@ -527,7 +530,19 @@ export default function SuiviModule({ onNavigate }: ModuleProps) {
                       <StationIcon kind={def.protects} label={info.name} size={34} />
                     </button>
                     <span className={styles.examName}>
-                      <span className={styles.examNameLabel}>{def.name}</span>
+                      <span className={styles.examNameLabel}>
+                        {def.name}
+                        <span
+                          className={styles.examStatusDot}
+                          data-status={longCycle ? 'longcycle' : cfg.status}
+                          role="img"
+                          aria-label={
+                            longCycle
+                              ? `Cycle long, tous les ${cycles} ans`
+                              : statusLabelFor(cfg.status)
+                          }
+                        />
+                      </span>
                       <span className={styles.examProtects}>protège : {info.name}</span>
                     </span>
 
@@ -573,19 +588,14 @@ export default function SuiviModule({ onNavigate }: ModuleProps) {
                       </InfoHover>
                     </div>
 
-                    <span className={styles.examStatus} data-status={longCycle ? 'longcycle' : cfg.status}>
-                      {longCycle
-                        ? `Tous les ${cycles} ans — prochain : ${longCycleNextYear(cfg, state.consultConfig.interval, currentYear)}`
-                        : statusLabelFor(cfg.status)}
-                    </span>
-
                     <button
                       type="button"
                       className={styles.revealToggle}
                       aria-pressed={revealed}
+                      aria-label={revealed ? `Retirer ${def.name} du cadran` : `Placer ${def.name} sur le cadran`}
                       onClick={() => dispatch({ type: 'TOGGLE_EXAM_REVEAL', id: def.id })}
                     >
-                      {revealed ? 'Retirer du cadran' : 'Placer sur le cadran'}
+                      {revealed ? <MapPin size={20} aria-hidden /> : <MapPinOff size={20} aria-hidden />}
                     </button>
                   </div>
                 );

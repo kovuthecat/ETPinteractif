@@ -98,10 +98,11 @@ export const MONTHS_FULL = [
 
 /** Crans fermés de fréquence des consultations (mois). // à revalider (Thibault) */
 export const CONSULT_INTERVAL_OPTIONS = [3, 4, 6];
+// S3-v2 : libellés courts (repasse side-by-side, la colonne examens doit tenir en demi-largeur).
 export const CONSULT_INTERVAL_LABELS: Record<number, string> = {
-  3: 'Tous les 3 mois',
-  4: 'Tous les 4 mois',
-  6: 'Tous les 6 mois',
+  3: '3 mois',
+  4: '4 mois',
+  6: '6 mois',
 };
 
 /**

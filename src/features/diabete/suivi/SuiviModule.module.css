@@ -68,13 +68,21 @@
 
 /* ── Mise en page parcours : cadran + panneau ───────────────────────────── */
 
-/* S4 : cadran toujours au-dessus, panneau toujours pleine largeur en dessous — plus de
-   côte-à-côte (largeur cumulée > écran, débordement du panneau, cf. index.md §S4). */
+/* S3-v2 : repasse côte-à-côte (cadran + examens visibles ensemble) — le tour 1 (S4) avait
+   empilé pour tuer un débordement causé par des lignes trop chargées ; ce tour-ci corrige la
+   cause (lignes dégraissées ci-dessous) plutôt que la disposition. Empilé sous 860px. */
 .parcours {
   display: flex;
   flex-direction: column;
   gap: var(--space-xl);
   align-items: center;
+}
+
+@media (min-width: 860px) {
+  .parcours {
+    flex-direction: row;
+    align-items: flex-start;
+  }
 }
 
 /* ── Le cadran (SVG + stations HTML positionnées en %, cf. Silhouette.tsx) ── */
@@ -84,6 +92,13 @@
   width: 100%;
   max-width: 480px;
   flex-shrink: 0;
+}
+
+@media (min-width: 860px) {
+  .dialWrap {
+    width: 420px;
+    max-width: 420px;
+  }
 }
 
 .dialSvg {
@@ -275,6 +290,13 @@
   min-width: 0;
 }
 
+@media (min-width: 860px) {
+  .panel {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
 .panelHeader {
   display: flex;
   align-items: baseline;
@@ -316,16 +338,18 @@
   padding: 12px 18px;
 }
 
+/* S3-v2 : plus de colonne « statut » en toutes lettres (superflu en côte-à-côte) — le statut
+   passe en pastille compacte à côté du nom (`.examStatusDot`), même code couleur que le cadran. */
 .examRow {
   display: grid;
-  grid-template-columns: auto minmax(140px, 1fr) auto minmax(90px, 160px) auto;
-  grid-template-areas: 'icon name stepper status reveal';
+  grid-template-columns: auto minmax(120px, 1fr) auto auto;
+  grid-template-areas: 'icon name stepper reveal';
   align-items: center;
-  gap: var(--space-md);
+  gap: var(--space-sm);
   background: var(--color-surface);
   border: 1.5px solid var(--color-line);
   border-radius: var(--radius-lg);
-  padding: 10px 16px;
+  padding: 10px 14px;
 }
 
 .consultRow > .rowIcon,
@@ -344,10 +368,6 @@
 .consultRow > .stepper,
 .examRow > .stepper {
   grid-area: stepper;
-}
-
-.examRow > .examStatus {
-  grid-area: status;
 }
 
 .consultRow > .revealToggle,
@@ -371,8 +391,8 @@
   .examRow {
     grid-template-columns: auto minmax(140px, 1fr) auto;
     grid-template-areas:
-      'icon name status'
-      'stepper stepper reveal';
+      'icon name reveal'
+      'stepper stepper stepper';
   }
 }
 
@@ -461,38 +481,47 @@
   font-size: 15px;
   font-weight: 700;
   color: var(--color-text);
-  min-width: 110px;
+  min-width: 76px;
   text-align: center;
   white-space: nowrap;
 }
 
-.examStatus {
-  min-width: 90px;
-  text-align: right;
-  font-size: 15px;
-  font-weight: 700;
-  white-space: nowrap;
-  color: var(--color-text-soft);
+/* Statut d'examen en pastille compacte (à côté du nom) — même code couleur que les stations
+   du cadran, remplace l'ancienne colonne texte qui allongeait trop la ligne. */
+.examStatusDot {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 9px;
+  height: 9px;
+  margin-left: 8px;
+  border-radius: 50%;
+  background: var(--color-line);
+  vertical-align: middle;
 }
 
-.examStatus[data-status='fait'] {
-  color: var(--color-confort-strong);
+.examStatusDot[data-status='fait'] {
+  background: var(--color-confort);
 }
 
-.examStatus[data-status='a_programmer'] {
-  color: var(--color-vigilance);
+.examStatusDot[data-status='a_programmer'] {
+  background: var(--color-vigilance);
 }
 
-.examStatus[data-status='longcycle'] {
-  color: var(--color-text-faint);
+.examStatusDot[data-status='longcycle'] {
+  background: var(--color-text-faint);
 }
 
+/* S3-v2 : bouton texte → icône Lucide (MapPin posé / MapPinOff à poser), cible ≥ 44 px,
+   `aria-label` complet porte toujours l'action + le nom (jamais une icône muette). */
 .revealToggle {
-  padding: 8px 16px;
-  border-radius: var(--radius-pill);
-  font-size: 14px;
-  font-weight: 700;
-  white-space: nowrap;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 50%;
   border: 2px solid var(--color-line);
   background: var(--color-bg);
   color: var(--color-text-soft);
@@ -500,9 +529,14 @@
 }
 
 .revealToggle[aria-pressed='true'] {
-  background: var(--color-text);
-  color: var(--color-bg);
-  border-color: var(--color-text);
+  background: var(--color-confort-soft);
+  border-color: var(--color-confort);
+  color: var(--color-confort-strong);
+}
+
+.revealToggle:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
 }
 
 .examListLabel {
