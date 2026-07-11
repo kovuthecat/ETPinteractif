@@ -4,6 +4,34 @@
   gap: var(--space-lg);
 }
 
+/* ── Icônes de station (lucide, S6 illustrations-diabete) ───────────────── */
+
+.iconFrame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: var(--color-bg);
+  border: 1px solid var(--color-line);
+  color: var(--color-nav);
+}
+
+.iconImg {
+  display: block;
+  flex-shrink: 0;
+  object-fit: cover;
+  background: var(--color-bg);
+  border: 1px solid var(--color-line);
+}
+
+.iconShapeCircle {
+  border-radius: var(--radius-pill);
+}
+
+.iconShapeRounded {
+  border-radius: var(--radius-lg);
+}
+
 /* ── Onglets ①/② ─────────────────────────────────────────────────────────── */
 
 .tabs {

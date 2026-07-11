@@ -1,11 +1,12 @@
 import { useReducer, useState } from 'react';
+import type { ComponentType } from 'react';
+import { Stethoscope, TestTube, Droplet, Heart, Eye, Footprints, Smile, Syringe } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import FicheOverlay from '../../../components/FicheOverlay';
 import ModuleFooterNav from '../../../components/ModuleFooterNav';
 import InfoHover from '../../../components/InfoHover';
 import Silhouette from '../components/Silhouette';
 import type { ZoneId } from '../components/Silhouette';
-import IllustrationSlot from '../components/IllustrationSlot';
 import {
   EXAM_DEFS,
   PROTECTS_INFO,
@@ -39,6 +40,61 @@ const PROTECTS_TO_ZONE: Partial<Record<ProtectsId, ZoneId>> = {
   yeux: 'yeux',
   pied: 'pied',
 };
+
+// Stations/organes du cadran → lucide (index illustrations-diabete §4), plus nettes que des
+// illustrations à 34-44 px et thématisables. Seul le rein n'a pas d'équivalent lucide (décidé
+// Thibault 2026-07-11) : il réutilise l'illustration `organe-reins.png` déjà produite en S1.
+// Dentiste (protège « bouche ») : substitut lucide simple (Smile), plus propre qu'un mini-SVG dent.
+const PROTECTS_ICON: Partial<Record<ProtectsId, ComponentType<{ size?: number; 'aria-hidden'?: boolean }>>> = {
+  vaisseaux: Droplet,
+  coeur: Heart,
+  yeux: Eye,
+  pied: Footprints,
+  bouche: Smile,
+  defenses: Syringe,
+};
+
+type StationIconKind = 'stethoscope' | 'bio' | ProtectsId;
+
+const BASE_ILLUSTRATIONS = `${import.meta.env.BASE_URL}illustrations/diabete/`;
+
+interface StationIconProps {
+  kind: StationIconKind;
+  label: string;
+  size: number;
+  shape?: 'circle' | 'rounded';
+}
+
+/** Icône de station (dial 34-44 px, panneau de réglage, ou porte 160 px) : lucide dans un cadre
+ *  neutre, sauf le rein qui reste une image (seule exception au « tout lucide », cf. décision). */
+function StationIcon({ kind, label, size, shape = 'circle' }: StationIconProps) {
+  const shapeClass = shape === 'circle' ? styles.iconShapeCircle : styles.iconShapeRounded;
+
+  if (kind === 'reins') {
+    return (
+      <img
+        src={`${BASE_ILLUSTRATIONS}organe-reins.png`}
+        alt={label}
+        className={`${styles.iconImg} ${shapeClass}`}
+        style={{ width: size, height: size }}
+      />
+    );
+  }
+
+  const Icon = kind === 'stethoscope' ? Stethoscope : kind === 'bio' ? TestTube : PROTECTS_ICON[kind];
+  if (!Icon) return null;
+
+  return (
+    <span
+      className={`${styles.iconFrame} ${shapeClass}`}
+      style={{ width: size, height: size }}
+      role="img"
+      aria-label={label}
+    >
+      <Icon size={Math.round(size * 0.55)} aria-hidden />
+    </span>
+  );
+}
 
 type Temps = 'parcours' | 'fiche';
 
@@ -377,7 +433,7 @@ export default function SuiviModule({ onNavigate }: ModuleProps) {
                 aria-label={`Consultation — ${MONTHS_FULL[c.month]} — ${statusLabelFor(c.status)} — cliquer pour changer`}
               >
                 <span className={styles.stationIcon}>
-                  <IllustrationSlot id="suivi-stethoscope" label="Stéthoscope" shape="circle" size={44} />
+                  <StationIcon kind="stethoscope" label="Stéthoscope" size={44} />
                 </span>
                 <span className={styles.stationBadge} aria-hidden="true">
                   {c.status === 'fait' ? '✓' : c.status === 'a_programmer' ? '⏳' : ''}
@@ -398,7 +454,7 @@ export default function SuiviModule({ onNavigate }: ModuleProps) {
                 aria-label={`${b.label} — ${statusLabelFor(b.status)} — cliquer pour changer`}
               >
                 <span className={styles.stationIcon}>
-                  <IllustrationSlot id="suivi-prise-de-sang" label="Prise de sang" shape="circle" size={38} />
+                  <StationIcon kind="bio" label="Prise de sang" size={38} />
                 </span>
                 <span className={styles.stationBadge} aria-hidden="true">
                   {b.status === 'fait' ? '✓' : b.status === 'a_programmer' ? '⏳' : ''}
@@ -421,12 +477,7 @@ export default function SuiviModule({ onNavigate }: ModuleProps) {
                 } — cliquer pour changer`}
               >
                 <span className={styles.stationIcon}>
-                  <IllustrationSlot
-                    id={`suivi-organe-${e.protects}`}
-                    label={PROTECTS_INFO[e.protects].name}
-                    shape="circle"
-                    size={44}
-                  />
+                  <StationIcon kind={e.protects} label={PROTECTS_INFO[e.protects].name} size={44} />
                 </span>
                 <span className={styles.stationBadge} aria-hidden="true">
                   {!e.longCycle && (e.status === 'fait' ? '✓' : e.status === 'a_programmer' ? '⏳' : '')}
@@ -448,7 +499,7 @@ export default function SuiviModule({ onNavigate }: ModuleProps) {
 
             <div className={styles.consultRow}>
               <span className={styles.rowIcon}>
-                <IllustrationSlot id="suivi-stethoscope" label="Stéthoscope" shape="circle" size={38} />
+                <StationIcon kind="stethoscope" label="Stéthoscope" size={38} />
               </span>
               <span className={styles.rowLabel}>Consultations</span>
               <div className={styles.chipGroup}>
@@ -488,7 +539,7 @@ export default function SuiviModule({ onNavigate }: ModuleProps) {
               {examRows.map(({ def, cfg, revealed, snapped, longCycle, cycles, info, freqOptions }) => (
                 <div key={def.id} className={styles.examRow} data-revealed={revealed}>
                   <span className={styles.rowIcon}>
-                    <IllustrationSlot id={`suivi-organe-${def.protects}`} label={info.name} shape="circle" size={34} />
+                    <StationIcon kind={def.protects} label={info.name} size={34} />
                   </span>
                   <span className={styles.examName}>
                     <span className={styles.examNameLabel}>{def.name}</span>
@@ -602,12 +653,7 @@ export default function SuiviModule({ onNavigate }: ModuleProps) {
               {doorZone ? (
                 <Silhouette zones={[{ id: doorZone, etat: 'ouvert' }]} />
               ) : (
-                <IllustrationSlot
-                  id={`suivi-organe-${state.doorOpen}`}
-                  label={doorInfo.name}
-                  shape="rounded"
-                  size={160}
-                />
+                <StationIcon kind={state.doorOpen!} label={doorInfo.name} shape="rounded" size={160} />
               )}
             </div>
             <div className={styles.doorText}>
