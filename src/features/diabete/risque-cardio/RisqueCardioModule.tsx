@@ -64,10 +64,12 @@ const STATE_LABELS: Record<FeuEtat, string> = { vert: 'Vert', orange: 'Orange', 
 // Convention sémantique du projet (tokens.css) : vert = confort, ambre = vigilance, rouge = toxique.
 // Fonds toujours en teinte « soft », texte/bord en teinte pleine — la couleur n'est jamais seule,
 // le libellé Vert/Orange/Rouge double toujours l'information.
-const FEU_TOKENS: Record<FeuEtat, { fg: string; soft: string }> = {
-  vert: { fg: 'var(--color-confort-strong)', soft: 'var(--color-confort-soft)' },
-  orange: { fg: 'var(--color-vigilance)', soft: 'var(--color-vigilance-soft)' },
-  rouge: { fg: 'var(--color-toxique)', soft: 'var(--color-toxique-soft)' },
+// S2-v2 : bordure plus épaisse à mesure que l'état s'aggrave — repère non chromatique
+// complémentaire à la couleur (garde-fou accessibilité : jamais la couleur seule).
+const FEU_TOKENS: Record<FeuEtat, { fg: string; soft: string; borderWidth: string }> = {
+  vert: { fg: 'var(--color-confort-strong)', soft: 'var(--color-confort-soft)', borderWidth: '2px' },
+  orange: { fg: 'var(--color-vigilance)', soft: 'var(--color-vigilance-soft)', borderWidth: '3px' },
+  rouge: { fg: 'var(--color-toxique)', soft: 'var(--color-toxique-soft)', borderWidth: '4px' },
 };
 
 interface ZoneDef {
@@ -108,7 +110,11 @@ function nextEtat(etat: FeuEtat): FeuEtat {
 }
 
 function feuTokenStyle(etat: FeuEtat): CSSProperties {
-  return { '--feu-fg': FEU_TOKENS[etat].fg, '--feu-soft': FEU_TOKENS[etat].soft } as CSSProperties;
+  return {
+    '--feu-fg': FEU_TOKENS[etat].fg,
+    '--feu-soft': FEU_TOKENS[etat].soft,
+    '--feu-border-width': FEU_TOKENS[etat].borderWidth,
+  } as CSSProperties;
 }
 
 export default function RisqueCardioModule({ onNavigate }: ModuleProps) {
@@ -188,22 +194,24 @@ export default function RisqueCardioModule({ onNavigate }: ModuleProps) {
               const etat = factors[f.id];
               return (
                 <div key={f.id} className={styles.feuCard} style={feuTokenStyle(etat)}>
-                  <div className={styles.feuIconFrame}>
-                    <f.Icon size={38} aria-hidden />
-                  </div>
-                  <p className={styles.feuNom}>{f.nom}</p>
+                  {/* S2-v2 : l'icône EST le bouton (couleur = état), plus de bouton texte
+                      « Vert/Orange/Rouge » séparé — nom accessible discriminant conservé. */}
                   <button
                     type="button"
-                    className={styles.feuState}
+                    className={styles.feuIconFrame}
                     onClick={() => cycleFactor(f.id)}
                     onMouseEnter={() => setHoverFeu(f.id)}
                     onMouseLeave={() => setHoverFeu(null)}
                     onFocus={() => setHoverFeu(f.id)}
                     onBlur={() => setHoverFeu(null)}
+                    aria-label={`${f.nom} : ${STATE_LABELS[etat]}`}
                     aria-describedby={hoverFeu === f.id ? `feu-seuil-${f.id}` : undefined}
                   >
-                    {STATE_LABELS[etat]}
+                    <f.Icon size={38} aria-hidden />
                   </button>
+                  <p className={styles.feuNom} aria-hidden="true">
+                    {f.nom}
+                  </p>
                   {hoverFeu === f.id && (
                     <p id={`feu-seuil-${f.id}`} role="tooltip" className={styles.feuTooltip}>
                       {SEUILS[f.id]}
@@ -266,12 +274,14 @@ export default function RisqueCardioModule({ onNavigate }: ModuleProps) {
           <div className={styles.anatomieRow}>
             <div className={styles.silhouetteWrap}>
               <Silhouette zones={zonesForSilhouette} onZoneClick={handleZoneClick}>
+                {/* S1-v2 (#3) : la plaque ne se dépose que sur le territoire sélectionné —
+                    avant, elle apparaissait sur les 3 territoires dès qu'un feu était rouge. */}
                 {rougeCount > 0 &&
-                  ZONES.map((z) => {
-                    const p = PLAQUE_OVERLAYS[z.id];
+                  zoneActive &&
+                  (() => {
+                    const p = PLAQUE_OVERLAYS[zoneActive];
                     return (
                       <img
-                        key={z.id}
                         src={`${import.meta.env.BASE_URL}illustrations/diabete/plaque.png`}
                         alt=""
                         aria-hidden="true"
@@ -279,7 +289,7 @@ export default function RisqueCardioModule({ onNavigate }: ModuleProps) {
                         style={{ left: `${p.x}%`, top: `${p.y}%`, transform: `translate(-50%, -50%) rotate(${p.rotDeg}deg)` }}
                       />
                     );
-                  })}
+                  })()}
               </Silhouette>
             </div>
             <div className={styles.zonesCol}>

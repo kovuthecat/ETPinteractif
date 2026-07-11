@@ -43,6 +43,15 @@ function crescentPath(edgeY: number, peakY: number): string {
  *  bilatéral aux stades avancés seulement (la plupart des sténoses réelles sont excentrées). */
 const BILATERAL_THRESHOLD = 0.5;
 
+// S2-v2 (index v2 §3 point 6) : au score max, le dépôt opposé rejoint la même profondeur que le
+// dépôt principal (symétrie complète) au lieu de rester à 75 % — sinon la lumière résiduelle au
+// centre du croissant (~39 %) restait visuellement plus ouverte que les ~30 % annoncés par
+// `plaquePassagePct`. Continuité douce avec l'ancien palier (0.75 pile au seuil `e = 0.5`).
+// `// à revalider (Thibault)`.
+function oppositeDepthFactor(e: number): number {
+  return 0.5 + 0.5 * e;
+}
+
 export default function PlaqueArtere({ encrassement, className }: PlaqueArtereProps) {
   const e = clamp01(encrassement);
   const pot = Math.pow(e, 0.75);
@@ -58,7 +67,11 @@ export default function PlaqueArtere({ encrassement, className }: PlaqueArterePr
     <svg className={`${styles.overlaySvg} ${className ?? ''}`} viewBox="0 0 100 100" aria-hidden="true">
       {e > 0 && <path d={crescentPath(0, wallDepth)} className={styles.plaque} style={{ fill }} />}
       {showOpposite && (
-        <path d={crescentPath(100, 100 - wallDepth * 0.75)} className={styles.plaque} style={{ fill }} />
+        <path
+          d={crescentPath(100, 100 - wallDepth * oppositeDepthFactor(e))}
+          className={styles.plaque}
+          style={{ fill }}
+        />
       )}
     </svg>
   );
