@@ -106,7 +106,7 @@
 }
 
 .foodVignette {
-  width: 92px;
+  width: 104px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -184,12 +184,6 @@
   color: var(--color-text-soft);
 }
 
-.sideHint {
-  margin: 0;
-  font-size: 14px;
-  color: var(--color-text-soft);
-}
-
 .linkReset {
   align-self: flex-start;
   min-height: var(--target-min);
@@ -206,14 +200,15 @@
 
 .d1Layout {
   display: flex;
-  gap: var(--space-lg);
+  gap: var(--space-md);
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
 }
 
 .d1Plate {
-  width: 300px;
-  height: 300px;
+  width: 400px;
+  height: 400px;
   flex-shrink: 0;
   border-radius: 50%;
   background: var(--color-surface);
@@ -223,8 +218,8 @@
   justify-content: center;
   align-content: center;
   flex-wrap: wrap;
-  gap: 8px;
-  padding: 28px;
+  gap: 10px;
+  padding: 32px;
   box-sizing: border-box;
 }
 
@@ -233,12 +228,12 @@
   font-size: 15px;
   color: var(--color-text-soft);
   text-align: center;
-  max-width: 200px;
+  max-width: 220px;
 }
 
 .d1Chip {
-  width: 64px;
-  height: 64px;
+  width: 84px;
+  height: 84px;
   border-radius: 50%;
   background: var(--color-surface);
   border: 2px solid var(--color-confort);
@@ -253,9 +248,9 @@
 
 .d2Layout {
   display: flex;
-  gap: var(--space-lg);
+  gap: var(--space-xl);
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: space-around;
 }
 
 /* A4 : duels suggérés, style proche des `familyTab` (réutilisées telles quelles). */
@@ -267,7 +262,9 @@
 }
 
 .d2Card {
-  width: 320px;
+  width: 380px;
+  max-width: 100%;
+  flex: 1 1 340px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -282,8 +279,8 @@
 }
 
 .d2ImageWrap {
-  width: 140px;
-  height: 140px;
+  width: 168px;
+  height: 168px;
   border-radius: var(--radius-lg);
   background: var(--color-bg);
   border: 2px solid var(--color-line);
@@ -387,11 +384,13 @@
   display: flex;
   gap: var(--space-lg);
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: space-around;
 }
 
 .d3Slot {
-  width: 150px;
+  width: 190px;
+  flex: 1 1 170px;
+  max-width: 220px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -411,8 +410,8 @@
 }
 
 .d3ImageWrap {
-  width: 96px;
-  height: 96px;
+  width: 120px;
+  height: 120px;
   border-radius: var(--radius-lg);
   background: var(--color-bg);
   border: 2px solid var(--color-line);
@@ -458,20 +457,22 @@
   gap: var(--space-xl);
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
 }
 
 .d4Pie {
-  width: 240px;
-  height: 240px;
+  width: 300px;
+  height: 300px;
   flex-shrink: 0;
 }
 
 .d4Zones {
   flex: 1;
-  min-width: 300px;
+  min-width: 340px;
+  max-width: 480px;
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--space-md);
 }
 
 .d4Zone {
@@ -549,8 +550,8 @@
 }
 
 .synthChip {
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   border-radius: var(--radius-lg);
   background: var(--color-bg);
   border: 2px solid var(--color-confort);

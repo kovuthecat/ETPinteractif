@@ -10,6 +10,7 @@ import CourbeGlycemie, {
   COURBE_GRAPH_WIDTH,
   COURBE_GRAPH_HEIGHT,
   DUO_CSS_COLOR,
+  bandeToY,
   type CourbeDef,
 } from '../components/CourbeGlycemie';
 import {
@@ -18,6 +19,7 @@ import {
   toSvgPath,
   mgFromLevel,
   LEVEL_MAX,
+  BANDE_CIBLE_DEFAUT,
   type Assiette,
   type AlimentRepas,
 } from '../lib/glycemieCurve';
@@ -82,16 +84,23 @@ const T_START = 0;
 const T_END = 180;
 const AXE_LABELS = ['Repas', '+1h', '+2h', '+3h'];
 const MARQUEUR_REPAS = [{ t: 0, type: 'repas' as const, label: 'Repas' }];
+/** Bande-cible (S2) : donne un repère de hauteur à la courbe — sans elle, un pic à 80/100
+ *  ne « se lit » pas comme haut (capture #9). Même bande que le module 9 (Insuline). */
+const BANDES_Y = bandeToY(BANDE_CIBLE_DEFAUT, LEVEL_MAX);
 
 /**
  * Seuils de classification du pic (défi 2, décision S5 : « la prédiction bas/moyen/haut
- * se compare au pic de la courbe, seuils sur le max, pas sur un score »). Recalibrés S14
- * §0.c.5 en ré-échantillonnant `paramsFromAssiette`/`sampleRepas` sur l'ensemble du
- * garde-manger avec le modèle par composition réelle, pour différencier les comparaisons
- * intra-famille visées par le brief (baguette vs pain complet, riz blanc vs basmati/complet…).
+ * se compare au pic de la courbe, seuils sur le max, pas sur un score »). Recalibrés
+ * corrections-visuelles S2 (2026-07-11) après désaturation de `K_CHARGE`/`K_FREIN`
+ * (60/6 → 20/20, `glycemieCurve.ts`) qui relève tous les pics : ré-échantillonnage du
+ * garde-manger complet (33 aliments) au nouveau modèle. Résultat : ~15 aliments bas
+ * (protéines/lipides/légumes/pastèque/lentilles/pois-chiches — plancher ~30-51), ~14 moyens
+ * (féculents complets/mixtes — ~60-72), ~4 hauts (baguette/semoule/dattes/riz blanc — ~75-81).
+ * Les 4 duels du brief restent différenciés : baguette(haut)≠pain complet(moyen),
+ * riz blanc(haut)≠basmati(moyen), riz blanc(haut)≠lentilles(bas), dattes(haut)≠pastèque(bas).
  */
-const PEAK_BAS_MAX = 47;
-const PEAK_HAUT_MIN = 50;
+const PEAK_BAS_MAX = 55;
+const PEAK_HAUT_MIN = 74;
 
 function classifyPeak(peak: number): Niveau {
   if (peak < PEAK_BAS_MAX) return 'bas';
@@ -150,10 +159,10 @@ function readDropId(e: DragEvent<HTMLElement>): string {
 }
 
 const D1_CAPTIONS = [
-  'Un féculent seul provoque un grand pic de glycémie.',
-  "Un premier ajout (protéine, lipide ou légume) : le pic commence à s'aplatir.",
-  "Deux ajouts : le pic s'aplatit encore.",
-  'Trois ajouts : à féculent constant, le pic est nettement plus doux.',
+  'Un féculent seul : grand pic.',
+  'Premier ajout : le pic s’aplatit.',
+  'Deuxième ajout : encore plus doux.',
+  'Trois ajouts : pic nettement aplati.',
 ];
 
 const D1_PLATE_MAX = 10;
@@ -268,7 +277,7 @@ function FoodVignette({ food, onActivate }: FoodVignetteProps) {
         onKeyDown={handleImageKeyDown}
         aria-label={`${food.name} — ${CG_TIER_LABEL[tier]} (CG ${food.cg}). Glisser vers l'assiette, ou activer pour l'ajouter directement.`}
       >
-        <IllustrationSlot id={`aliment-${food.id}`} label={food.name} shape="rounded" size={72} />
+        <IllustrationSlot id={`aliment-${food.id}`} label={food.name} shape="rounded" size={84} />
         <span
           className={styles.cgDot}
           style={{ background: `var(${CG_TIER_COLOR_VAR[tier]})` }}
@@ -296,6 +305,7 @@ function CourbeSection({ courbes, onNavigateActivite, animerTrace }: CourbeSecti
       <p className={styles.courbeEyebrow}>Glycémie après le repas</p>
       <CourbeGlycemie
         courbes={courbes}
+        bandes={BANDES_Y}
         marqueurs={MARQUEUR_REPAS}
         axeLabels={AXE_LABELS}
         hoverLegend
@@ -346,9 +356,10 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
     (f) => f.famille === 'proteines' || f.famille === 'lipides' || f.famille === 'legumes',
   ).length;
   const d1Courbe = buildCourbe({ aliments: d1Foods.map(toAliment) });
-  // A3 : courbe fantôme « féculents seuls » — visible dès qu'il y a au moins un féculent
-  // ET au moins un frein (sinon la courbe assiette = la courbe féculents, redondant).
-  const d1ShowFantome = d1Feculents.length >= 1 && d1FreinCount >= 1;
+  // S2 : courbe fantôme « féculents seuls » — visible dès qu'il y a au moins un féculent,
+  // sauf le seul cas dégénéré où l'assiette ne contient QUE des féculents (les deux courbes
+  // coïncideraient alors exactement, cf. index.md §S2 point 4).
+  const d1ShowFantome = d1Feculents.length >= 1 && d1Foods.length > d1Feculents.length;
   const d1CourbeFeculents = d1ShowFantome ? buildCourbe({ aliments: d1Feculents.map(toAliment) }) : null;
 
   // A2 · critère défi ① : ≥ 1 féculent ET ≥ 2 freins.
@@ -494,8 +505,15 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
   const d3AlimentsBase = d3Foods.map(toAliment);
   const d3CourbeActuel = buildCourbe({ aliments: d3AlimentsBase, ordreFeculent: d3OrdreFrac });
   const d3CourbeRef = buildCourbe({ aliments: d3AlimentsBase, ordreFeculent: d3OrdreFracFantome });
-  const d3ActuelLabel = `Féculent en ${D3_ORDINALS[d3FeculentIdx] ?? D3_ORDINALS[0]}`;
-  const d3RefLabel = d3OrdreFrac >= 0.5 ? 'Si féculent en premier' : 'Si féculent en dernier';
+  // S2 : libellés explicites premier/dernier (capture #6) — plus de simple ordinal de
+  // bouchée, qui ne disait pas où se situe le féculent par rapport aux autres aliments.
+  function ordreLabel(frac: number): string {
+    if (frac <= 0) return 'Féculent en premier';
+    if (frac >= 1) return 'Féculent en dernier';
+    return 'Féculent au milieu';
+  }
+  const d3ActuelLabel = ordreLabel(d3OrdreFrac);
+  const d3RefLabel = `Si ${ordreLabel(d3OrdreFracFantome).toLowerCase()}`;
 
   // ── Défi 4 — Proportion ───────────────────────────────────────────────
   const [d4Counts, setD4Counts] = useState<Record<D4Category, number>>({
@@ -537,6 +555,18 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
     return food ? Array.from({ length: d4Counts[cat.id] }, () => toAliment(food)) : [];
   });
   const d4Courbe = buildCourbe({ aliments: d4Aliments });
+  // S2 : courbe fantôme « féculents seuls » — même principe que le défi ①, pour donner un
+  // contraste à la courbe unique du défi ④ (capture #5). Masquée si l'assiette ne contient
+  // aucun féculent (fantôme plat et vide, sans intérêt).
+  const d4FeculentFood = foodById(D4_CATEGORIES.find((c) => c.id === 'feculents')!.repFoodId);
+  const d4ShowFantome = d4Counts.feculents >= 1 && !!d4FeculentFood;
+  const d4CourbeFeculents =
+    d4ShowFantome && d4FeculentFood
+      ? buildCourbe({
+          aliments: Array.from({ length: d4Counts.feculents }, () => toAliment(d4FeculentFood)),
+          ordreFeculent: 0,
+        })
+      : null;
 
   let d4Angle = -90;
   const d4PieSlices = D4_CATEGORIES.map((cat) => {
@@ -604,35 +634,19 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
     ordreFeculent: 0,
   });
 
-  // ── Caption (verbatim maquette, cf. « Écrans, gestes, textes = maquette ») ────
-  function getCaption(): { eyebrow: string; text: string } {
+  // ── Caption : eyebrow court par défi + texte réservé aux sorties interactives (S8, passe
+  // « moins de texte ») — défi ① narre l'état de l'assiette (D1_CAPTIONS), défi ③ affiche
+  // l'erreur de manipulation le cas échéant (d3Hint) ; les autres défis n'ont plus de
+  // paragraphe ambiant, l'eyebrow + l'interaction elle-même suffisent.
+  function getCaption(): { eyebrow: string; text?: string } {
     if (defi === 1) {
-      const text =
-        d1Foods.length === 0 ? 'Glissez un premier aliment depuis le garde-manger.' : D1_CAPTIONS[Math.min(d1FreinCount, 3)];
-      return { eyebrow: '① Composition — construisez votre assiette', text };
+      const text = d1Foods.length === 0 ? 'Glissez un premier aliment.' : D1_CAPTIONS[Math.min(d1FreinCount, 3)];
+      return { eyebrow: '① Composition', text };
     }
-    if (defi === 2) {
-      return {
-        eyebrow: '② Qualité — devine puis révèle',
-        text: 'Glissez deux aliments à comparer, prédisez leur pic, puis révélez les courbes réelles.',
-      };
-    }
-    if (defi === 3) {
-      return {
-        eyebrow: '③ Ordre — même assiette, ordre différent',
-        text: d3Hint ?? 'Manger le féculent en dernier réduit le pic — mêmes aliments, ordre différent.',
-      };
-    }
-    if (defi === 4) {
-      return {
-        eyebrow: "④ Proportion — construisez l'assiette-modèle",
-        text: '½ légumes, ¼ protéines, ¼ féculents : la proportion qui aplatit durablement la courbe.',
-      };
-    }
-    return {
-      eyebrow: '★ Repas complet — validez et expérimentez',
-      text: 'Composez librement votre repas : la courbe et les principes valident ce que vous avez appris.',
-    };
+    if (defi === 2) return { eyebrow: '② Qualité' };
+    if (defi === 3) return { eyebrow: '③ Ordre', text: d3Hint ?? undefined };
+    if (defi === 4) return { eyebrow: '④ Proportion' };
+    return { eyebrow: '★ Repas complet' };
   }
   const caption = getCaption();
 
@@ -719,7 +733,7 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
           <div className={styles.captionRow}>
             <div className={styles.captionBlock}>
               <p className={styles.captionEyebrow}>{caption.eyebrow}</p>
-              <p className={styles.captionText}>{caption.text}</p>
+              {caption.text && <p className={styles.captionText}>{caption.text}</p>}
             </div>
             {showNextCta && (
               <button type="button" className={`btn btn--ghost ${styles.nextDefiBtn}`} onClick={handleNextDefi}>
@@ -746,7 +760,7 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
                         onClick={() => handleD1Remove(chip.uid)}
                         aria-label={`Retirer ${food.name} de l'assiette`}
                       >
-                        <IllustrationSlot id={`aliment-${food.id}`} label={food.name} shape="circle" size={56} />
+                        <IllustrationSlot id={`aliment-${food.id}`} label={food.name} shape="circle" size={72} />
                       </button>
                     );
                   })}
@@ -755,10 +769,6 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
                   <p className={styles.sideLabel}>
                     Dans l'assiette : {d1Foods.length} aliment{d1Foods.length > 1 ? 's' : ''}, dont {d1Feculents.length}{' '}
                     féculent{d1Feculents.length > 1 ? 's' : ''}
-                  </p>
-                  <p className={styles.sideHint}>
-                    Glissez des aliments du garde-manger sur l'assiette (ou activez-les) — toutes les familles sont
-                    acceptées, plusieurs fois si besoin.
                   </p>
                   <button type="button" className={styles.linkReset} onClick={handleD1Reset}>
                     Recommencer
@@ -830,7 +840,7 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
                       onDrop={handleD2Drop(slot)}
                     >
                       <div className={styles.d2ImageWrap}>
-                        <IllustrationSlot id={`aliment-${card.food.id}`} label={card.food.name} shape="rounded" size={112} />
+                        <IllustrationSlot id={`aliment-${card.food.id}`} label={card.food.name} shape="rounded" size={132} />
                       </div>
                       <InfoHover label={`En savoir plus sur ${card.food.name}`} content={<FoodDetail food={card.food} />}>
                         <span className={styles.d2Name}>{card.food.name}</span>
@@ -884,10 +894,6 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
                   );
                 })}
               </div>
-              <p className={styles.sideHint}>
-                Glissez un aliment du garde-manger sur une carte pour le comparer (ou activez-le : il se place dans
-                la carte libre).
-              </p>
               <div className={styles.d2Actions}>
                 {d2CanReveal && (
                   <button type="button" className="btn btn--primary" onClick={handleD2Reveal}>
@@ -931,10 +937,6 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
 
           {defi === 3 && (
             <>
-              <p className={styles.sideHint}>
-                Glissez pour changer l'ordre des bouchées (ou utilisez les flèches) — ou glissez un aliment du
-                garde-manger sur une bouchée pour la remplacer.
-              </p>
               <div className={styles.d3Row}>
                 {d3Foods.map((food, index) => (
                   <div
@@ -947,7 +949,7 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
                   >
                     <p className={styles.d3Ordinal}>{D3_ORDINALS[index]}</p>
                     <div className={styles.d3ImageWrap}>
-                      <IllustrationSlot id={`aliment-${food.id}`} label={food.name} shape="rounded" size={96} />
+                      <IllustrationSlot id={`aliment-${food.id}`} label={food.name} shape="rounded" size={112} />
                     </div>
                     <p className={styles.d3Name}>{food.name}</p>
                     <div className={styles.d3Nudge}>
@@ -1007,7 +1009,6 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
                   <circle cx="100" cy="100" r="34" fill="var(--color-bg)" />
                 </svg>
                 <div className={styles.d4Zones}>
-                  <p className={styles.sideHint}>Ajustez les portions avec + / −.</p>
                   {D4_CATEGORIES.map((cat) => (
                     <div key={cat.id} className={styles.d4Zone}>
                       <span className={styles.d4Dot} style={{ background: `var(${cat.colorVar})` }} aria-hidden="true" />
@@ -1039,9 +1040,34 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
                 </div>
               </div>
               <CourbeSection
-                courbes={[
-                  { id: 'd4', d: d4Courbe.d, label: 'Votre assiette', mg: `${d4Courbe.mg} mg/dL`, variante: 'principale' },
-                ]}
+                courbes={
+                  d4ShowFantome && d4CourbeFeculents
+                    ? [
+                        {
+                          id: 'd4',
+                          d: d4Courbe.d,
+                          label: 'Votre assiette',
+                          mg: `${d4Courbe.mg} mg/dL`,
+                          variante: 'principale',
+                        },
+                        {
+                          id: 'd4-feculents-seuls',
+                          d: d4CourbeFeculents.d,
+                          label: 'Vos féculents seuls',
+                          mg: `${d4CourbeFeculents.mg} mg/dL`,
+                          variante: 'fantome',
+                        },
+                      ]
+                    : [
+                        {
+                          id: 'd4',
+                          d: d4Courbe.d,
+                          label: 'Votre assiette',
+                          mg: `${d4Courbe.mg} mg/dL`,
+                          variante: 'principale',
+                        },
+                      ]
+                }
                 onNavigateActivite={() => onNavigate('activite')}
               />
             </>
@@ -1066,7 +1092,7 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
                       onClick={() => handleSynthRemove(chip.uid)}
                       aria-label={`Retirer ${food.name} de l'assiette`}
                     >
-                      <IllustrationSlot id={`aliment-${food.id}`} label={food.name} shape="rounded" size={78} />
+                      <IllustrationSlot id={`aliment-${food.id}`} label={food.name} shape="rounded" size={96} />
                     </button>
                   );
                 })}
@@ -1155,6 +1181,7 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
             <span className="fiche-bloc-eyebrow">Ma courbe</span>
             <CourbeGlycemie
               courbes={[{ id: 'fiche', d: synthCourbePrincipale.d, label: 'Votre repas', variante: 'principale' }]}
+              bandes={BANDES_Y}
               marqueurs={MARQUEUR_REPAS}
               axeLabels={AXE_LABELS}
             />
