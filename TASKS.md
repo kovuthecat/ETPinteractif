@@ -173,3 +173,25 @@ Index des tâches : backlog + actives. Historique des tâches faites : `git log`
 - [x] CVD2-S5 — Activité : rayonnement 480→640px, volume dé-grillé (rythme visuel) + débordement corrigé, micro-coupures 44px · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete-v2/S5.md (auto OK : tsc + vite build + npm test 80/80 verts ; visuel → VALIDATION.md)
 - [x] CVD2-S6 — Alimentation : débordements Qualité/Ordre (passe défensive CSS) + plancher/plafond partagé de LA COURBE · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete-v2/S6.md (auto OK : tsc + vite build + npm test 80/80 verts ; visuel → VALIDATION.md, critère bloquant non-débordement à revalider en priorité — cause exacte non confirmée sans navigateur)
   - Ordre : S1 → S2 (même fichier), puis S3/S4/S5/S6 indépendants. **Chantier clos 2026-07-11** (les 6 sessions faites). Mode solo (Sonnet), commits par tâche en fin de plan, push en attente de validation Thibault.
+
+### Corrections visuelles diabète, tour 3 (audit Chrome déployé 2026-07-11, par-dessus S1-S6 tour 2) · plan: → plans/corrections-visuelles-diabete-v3/ (index + S1-S10)
+- [x] CVD3-S1 — Fondation chrome diabète : `ModuleShell` gagne `nav`/`wide` (agnostiques) ; 9 modules diabète câblés (barre d'onglets → header pour 6 d'entre eux, `wide` partout) · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete-v3/S1.md (auto OK : tsc + vite build + npm test 80/80 verts ; visuel → VALIDATION.md)
+- [x] CVD3-S2 — Retrait de `ModuleFooterNav` partout (9 diabète + 8 tabac) + suppression composant/CSS/données · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete-v3/S2.md (auto OK : tsc + vite build + npm test 80/80 verts, grep 0 résultat ; visuel → VALIDATION.md)
+- [x] CVD3-S3 — Risque cardio : feux 3/2, fix Bézier plaque (lumière ~30% réelle), pin découplé des feux · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete-v3/S3.md (auto OK : tsc + vite build + npm test 80/80 verts ; visuel → VALIDATION.md)
+- [x] CVD3-S4 — Alimentation : courbe pleine largeur, Qualité côte à côte, Ordre sur une ligne · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete-v3/S4.md (auto OK : tsc + vite build + npm test 80/80 verts ; visuel → VALIDATION.md)
+- [x] CVD3-S5 — Activité ② Volume : grille pleine largeur + total en bandeau, tient sans scroll · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete-v3/S5.md (auto OK : tsc + vite build + npm test 80/80 verts ; visuel → VALIDATION.md)
+- [x] CVD3-S6 — Suivi ① Parcours : cadran agrandi + plus de double scroll (breakpoint remonté) · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete-v3/S6.md (auto OK : tsc + vite build + npm test 80/80 verts ; visuel → VALIDATION.md)
+- [x] CVD3-S7 — Traitements : ordonnance élargie (colonne grid) + picto clé/serrure par mécanisme · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete-v3/S7.md (auto OK : tsc + vite build + npm test 80/80 verts ; visuel → VALIDATION.md, classement clinique iDPP4/aGLP1 à valider)
+- [x] CVD3-S8 — Hypoglycémie : preview affiche tous les signes sélectionnés (retrait état mort) · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete-v3/S8.md (auto OK : tsc + vite build + npm test 80/80 verts ; visuel → VALIDATION.md)
+- [x] CVD3-S9 — Insuline : retrait propre de « Temps dans la cible » · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete-v3/S9.md (auto OK : tsc + vite build + npm test 80/80 verts ; visuel → VALIDATION.md)
+- [x] CVD3-S10 — Nouveau module « Insuline rapide (pré-prandial) » — implémenté sur feu vert explicite de
+  Thibault (2026-07-11), **avant la relecture finale formelle** du contenu `docs/diabete/10-insuline-rapide.md`
+  (statut du doc encore « en attente de relecture » — reste à confirmer a posteriori) : modèle
+  `sampleRepasAvecBolus` (`lib/glycemieCurve.ts`, PK/PD qualitative d'un bolus rapide, `BOLUS_DUREE`
+  recalibré 240→180 min pour qu'une dose unique bien dosée ne creuse pas artificiellement sous la baseline),
+  10ᵉ module `insuline-rapide/InsulineRapideModule.tsx` (4 temps : couvrir le repas / le bon moment /
+  corriger avant le repas / le piège du cumul), enregistré dans `registry.ts` (famille « soigner », après
+  le module 9) · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete-v3/S10.md +
+  S10-implementation.md (auto OK : tsc + vite build + npm test 86/86 verts ; visuel → VALIDATION.md ;
+  contenu → relecture finale Thibault toujours attendue)
+  - Ordre : S1 (fondation, fait) → S2 indépendante → S3-S9 indépendantes entre elles (fichiers disjoints) → S10 en dernier (contenu à sourcer). Mode solo (Sonnet). **S1-S9 faites et gates verts (2026-07-11) ; S10 bloquée en attente de validation du contenu par Thibault.** Commit/push en fin de plan une fois toutes les sessions faites et validées par Thibault.

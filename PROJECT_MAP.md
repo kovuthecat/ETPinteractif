@@ -81,6 +81,10 @@ src/
       traitements/TraitementsModule.tsx / .module.css / data.ts   # Module 7 — Traitements (ordonnance ↔ silhouette, S10)
       hypoglycemie/HypoglycemieModule.tsx / .module.css           # Module 8 — Hypoglycémie (15/15, récupération/overshoot, carte, S11)
       insuline/InsulineModule.tsx / .module.css / scenarios.ts    # Module 9 — Insuline (traces capteur, TIR vivant, S12)
+      insuline-rapide/InsulineRapideModule.tsx / .module.css      # Module 10 — Insuline rapide pré-prandiale (4 temps : couvrir
+                                                                    # le repas / bon moment / corriger / cumul → hypo ;
+                                                                    # CVD3-S10, 2026-07-11 ; contenu : docs/diabete/10-insuline-rapide.md,
+                                                                    # relecture finale Thibault encore attendue)
 docs/
   architecture.md
   BRIEF_TABAC.md               # brief design & pédagogie tabac (Fable, 2026-07-09) — §2 fiches rétroactives des 7

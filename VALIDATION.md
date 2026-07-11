@@ -900,3 +900,170 @@ mécanisme exact du débordement Alimentation ②/③ non confirmé visuellement
 l'artère au score max (S2), tailles cibles exactes des silhouettes/courbe/rayonnement laissées
 « à caler à l'œil » par décision Thibault (§3 de l'index).
 
+
+## Chantier `corrections-visuelles-diabete-v3` (audit Chrome déployé, 2026-07-11)
+
+### S1-v3 — Fondation chrome diabète (onglets dans le header + contenu élargi)
+
+**Statut** : [ ] à valider par Thibault (code livré 2026-07-11)
+
+- [ ] Diabète : contenu nettement plus large (~1240px), marges mortes très réduites par rapport
+      à avant (qui plafonnait à 980px sur tout écran).
+- [ ] Diabète, 6 modules (risque-cardio, alimentation, suivi, hypoglycémie, insuline, activité) :
+      la barre d'onglets est sur la même ligne que le titre, pas empilée dessous ; repli propre
+      sous le titre si la fenêtre est trop étroite pour tenir les deux sur une ligne.
+- [ ] État actif de l'onglet toujours visible/cohérent après le déplacement dans le header.
+- [ ] **Critère bloquant — Tabac : rendu strictement inchangé au pixel** (comparer 1-2 modules
+      tabac avant/après, ex. Nicotine et Substituts) : c'est le garde-fou clé de cette session,
+      le mécanisme `ModuleShell` étant partagé entre les deux thèmes.
+- [ ] Mécanisme (« C'est quoi le diabète ? ») : la scène (pancréas/cellules/clés) est
+      visiblement plus grande grâce à l'élargissement, sans décalage de position ni scroll
+      horizontal.
+- [ ] Aucun module diabète ne déborde horizontalement à 1024×768.
+- [ ] Largeur cible ~1240px et comportement de repli de la barre d'onglets : provisoires,
+      à caler à l'œil (cf. index v3 §5) — remonter tout réglage souhaité.
+
+### S2-v3 — Retrait de `ModuleFooterNav` partout
+
+**Statut** : [ ] à valider par Thibault (code livré 2026-07-11)
+
+- [ ] Plus aucun bloc « Continuer l'exploration » en bas d'écran, sur les 9 modules diabète
+      (mecanisme, alimentation, activite, risque-cardio, complications, suivi, traitements,
+      hypoglycemie, insuline) et les 8 modules tabac (benefices-arret, boite-a-outils,
+      idees-recues, motivation, nicotine, nicotine-toxique, soulagement, substituts).
+- [ ] La navigation d'un module à l'autre reste possible via l'accueil/carte de chaque thème.
+- [ ] Aucun espace vide résiduel disgracieux en bas des modules où le bloc a disparu.
+
+### S3-v3 — Risque cardio : feux 3/2, plaque qui obstrue vraiment, anatomie découplée
+
+**Statut** : [ ] à valider par Thibault (code livré 2026-07-11)
+
+- [ ] Feux (vue ① Les leviers) : 3 cartes sur la première ligne, 2 sur la seconde, centrées.
+- [ ] **Critère clé** : artère (vue ② L'artère) au score maximal (tous les feux au rouge) — la
+      lumière est nettement réduite, la plaque en croissant empiète vraiment sur le passage du
+      sang (à comparer à l'ancien rendu où les croissants restaient timides, collés aux parois).
+      Progression douce et continue de 0 au score max.
+- [ ] Anatomie (vue ③) : cliquer une zone du corps **sans avoir touché aucun feu** (tous au
+      vert) affiche bien un pin — avant, il fallait au moins un feu rouge.
+- [ ] Anatomie : le texte de résultat est nettement plus grand et lisible ; à côté de la
+      silhouette sur un écran large, repasse en dessous sur un écran étroit.
+- [ ] Rien ne déborde à 1024×768.
+- [ ] À caler/revalider (Thibault) : amplitude finale de la plaque au score max (30 % de
+      lumière = réaliste sans caricature ?) ; calage de l'overlay de la plaque sur l'image
+      `artere-saine.png` maintenant que le dépôt est visuellement plus profond qu'avant.
+
+### S4-v3 — Alimentation : courbe pleine largeur, Qualité côte à côte, Ordre sur une ligne
+
+**Statut** : [ ] à valider par Thibault (code livré 2026-07-11)
+
+- [ ] **Résultat clé** : LA COURBE est pleine largeur sous shelf/assiette, nettement plus haute
+      qu'avant, visible sans scroll.
+- [ ] La lecture « interaction → résultat » reste-t-elle claire malgré le changement d'ordre
+      (interaction au-dessus, courbe dessous, au lieu de côte à côte) ?
+- [ ] Qualité (défi ②) : les 2 cartes sont côte à côte (plus empilées).
+- [ ] Ordre (défi ③) : les 3 cartes sont sur une seule ligne (plus 2+1).
+- [ ] Défi ① : remplir l'assiette jusqu'à 10 aliments — vérifier qu'aucun chip ne déborde du
+      cercle malgré sa réduction de taille (point identifié comme sensible par le plan).
+- [ ] Espace en haut d'écran resserré (défis ① Composition et ④ Proportion).
+- [ ] Garde-manger toujours lisible ; rien ne déborde à 1024×768.
+
+### S5-v3 — Activité ② Volume : grille sans scroll
+
+**Statut** : [ ] à valider par Thibault (code livré 2026-07-11)
+
+- [ ] **Critère bloquant** : les 13 cartes d'activité + le bandeau total tiennent sans scroll
+      (ni H ni V) à 1024×768.
+- [ ] Bandeau total : gros nombre + jauge lisibles côte à côte ; en dessous de ~600px de large,
+      repasse proprement en colonne sans chevauchement.
+- [ ] Steppers : cible tactile confortable malgré le cercle visuel réduit à 24px ; « 180 min »
+      non tronqué.
+- [ ] Le filtre « Activités toniques uniquement » et le total du jour restent fonctionnels.
+
+### S6-v3 — Suivi ① Parcours : cadran agrandi, plus de double scroll
+
+**Statut** : [ ] à valider par Thibault (code livré 2026-07-11)
+
+- [ ] Cadran nettement plus grand (480→560px) ; icônes de station proportionnées.
+- [ ] **Critère bloquant** : aucun scroll (H ni V) sur la liste d'examens à 1024×768 ; tous les
+      examens visibles/atteignables.
+- [ ] Lignes d'examen lisibles, tiennent sur une seule ligne dès que la largeur le permet.
+- [ ] À ≥1200px : cadran et panneau d'examens côte à côte, rien ne se chevauche.
+- [ ] Empilement conservé jusqu'à 1200px (au lieu de 860px) — vérifier que ça reste cohérent
+      visuellement sur les tailles d'écran intermédiaires (900-1199px).
+
+### S7-v3 — Traitements : ordonnance élargie + picto clé/serrure
+
+**Statut** : [ ] à valider par Thibault — dont un point clinique (voir ci-dessous)
+
+- [ ] Chaque traitement sur une ligne sans troncature ; pas de débordement horizontal à
+      1024×768.
+- [ ] « Voir l'effet » sur Metformine → cellule verrouillée (Lock) + cercle vert.
+- [ ] « Voir l'effet » sur un sécrétagogue (sulfamide, iDPP4, aGLP1) ou l'insuline → clé
+      (KeyRound) + cercle vert.
+- [ ] Gliflozine / IEC-ARA2 / Statine → pas d'icône (hors métaphore clé/serrure, volontaire).
+- [ ] Cohérence visuelle avec la métaphore clé/serrure du module Mécanisme.
+- [ ] **À valider cliniquement** (bloquant contenu) : le classement iDPP4/aGLP1 en « sécrétion »
+      (`picto: 'cle'`, effet incrétine) — cf. `data.ts`, marqué `// à revalider`.
+
+### S8-v3 — Hypoglycémie : preview affiche tous les signes sélectionnés
+
+**Statut** : [ ] à valider par Thibault (code livré 2026-07-11)
+
+- [ ] Sélectionner 4 signes → 4 vignettes affichées.
+- [ ] Désélectionner un signe → sa vignette disparaît.
+- [ ] Aucun signe sélectionné → pas de panneau preview.
+- [ ] Jusqu'à 7 signes (tous sélectionnés) : rendu correct, retour à la ligne propre.
+- [ ] Les `signe-*.png` sont encore des placeholders : plusieurs vignettes crème avec libellé
+      est le comportement attendu (pas une erreur).
+- [ ] Lisibilité du libellé réduit à 14px (déviation par rapport au 20px d'origine, cf. S8.md).
+
+### S9-v3 — Insuline : retrait de « Temps dans la cible »
+
+**Statut** : [ ] à valider par Thibault (code livré 2026-07-11)
+
+- [ ] Plus de barre « Temps dans la cible » dans l'onglet ② Décider.
+- [ ] L'onglet ② reste cohérent (courbe + 2 cartes de situations) sans ce bloc.
+- [ ] Onglets ①/③ intacts, aucune régression sur la courbe ou le toggle de profil.
+
+### S10-v3 — Nouveau module « Insuline rapide (pré-prandial) »
+
+**Statut** : [ ] à valider par Thibault (code livré 2026-07-11, implémenté sur instruction
+explicite de Thibault — **avant** que la relecture finale du contenu source n'ait été
+formellement actée, cf. `DECISIONS.md` § 2026-07-11 « S10 »)
+
+- [ ] **Contenu** — relire `docs/diabete/10-insuline-rapide.md` (périmètre DT2 basal-bolus,
+      déroulé 4 temps, sources OpenEvidence §5) et confirmer/corriger ; le fichier porte encore
+      la mention « en attente de relecture finale » en tête.
+- [ ] Le module apparaît sur la carte diabète (famille « Se soigner », juste après « Insuline :
+      adapter les doses »), s'ouvre, est interactif, sobre, **sans aucun chiffre à l'écran**
+      (ni dose, ni minutes, ni mg/dL).
+- [ ] **① Couvrir le repas** : sélectionner « peu / repas moyen / beaucoup » de glucides → la
+      courbe « avec rapide » reste nettement plus basse que « sans rapide », l'écart croît avec
+      la quantité de glucides.
+- [ ] **② Le bon moment** : déplacer le curseur d'injection de « bien avant » à « après le
+      repas » → la courbe « avec rapide » couvre mieux le pic quand l'injection est avant le
+      repas, moins bien en retard ; le curseur n'affiche aucun chiffre (ticks qualitatifs
+      uniquement).
+- [ ] **③ Corriger avant le repas** : les 3 états (basse/cible/haute) déplacent visiblement
+      toute la courbe ; l'état « basse » affiche le message de prudence et le bouton « Traiter
+      l'hypo d'abord » qui ouvre le module Hypoglycémie.
+- [ ] **④ Le piège du cumul** : le bouton « Et si j'en remets trop tôt ? » ajoute une 2ᵉ courbe
+      qui plonge nettement sous la bande-cible ; un bouton apparaît alors vers le module
+      Hypoglycémie.
+- [ ] Chrome `wide` + barre d'onglets dans le header (comme les autres modules à onglets) ;
+      lisible à ~1 m ; cibles ≥ 44 px ; pas de scroll horizontal à 1024×768.
+- [ ] Distinct du module 9 (insuline basale) : pas de confusion de contenu ni de doublon visuel.
+- [ ] Refrain de sécurité visible en pied de module (« La bonne dose, c'est celle de votre
+      protocole… ») — libellé à confirmer.
+
+### Insuline basale (module 9) — message d'accompagnement (2026-07-11, hors chantier v3)
+
+**Statut** : [ ] à valider par Thibault (code livré 2026-07-11)
+
+- [ ] En pied du module Insuline (« adapter les doses »), sous le refrain de sécurité « Dans le
+      doute, on ne monte pas — on traite l'hypo d'abord. », une note plus discrète apparaît :
+      « Régler la lente, c'est un travail d'équipe avec votre soignant — pas une décision à
+      prendre seul. »
+- [ ] La note est visuellement secondaire (plus petite, gris doux) — le refrain de sécurité
+      reste le message dominant.
+- [ ] Présent sur les deux onglets (① Lire la courbe, ② Décider), comme le refrain.

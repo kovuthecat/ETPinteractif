@@ -1655,3 +1655,188 @@ unique identifiée**. Signalé comme point prioritaire de revalidation dans `VAL
 **Impact IA** — Si Thibault confirme que le débordement persiste après cette passe, la cause
 réelle reste à investiguer avec un audit Playwright (Codex) plutôt qu'une nouvelle passe de
 calcul manuel côté Claude — cf. `WORKFLOW.md` §2 (audit visuel = toujours Codex, jamais Claude).
+
+## 2026-07-11 — Corrections visuelles diabète, tour 3 (audit Chrome sur le déployé) — S1 : chrome élargi via délégation du rendu du shell
+
+**Contexte** — Décision Thibault : côté diabète uniquement, la barre d'onglets de chaque module
+doit vivre sur la même ligne que le titre (pas empilée dessous) et le contenu doit être
+nettement plus large (~1240px cible provisoire au lieu de 980px partout). `ModuleShell` est
+partagé avec le tabac et doit rester thème-agnostique (invariant 4) : la largeur et le slot de
+navigation devaient donc être des props génériques, jamais un test sur le nom du thème.
+
+**Découverte en cours de route** — Le plan supposait que chaque module diabète appelait déjà
+`<ModuleShell>` lui-même. En réalité, seul `App.tsx` le fait : il enveloppe génériquement
+`<Component>` (le module) dans `<ModuleShell>`, et la barre d'onglets de chaque module vit à
+l'intérieur du `Component`, donc dans les `children` de `ModuleShell` — pas dans son `header`.
+Pour remonter cette barre dans un slot `nav` rendu par le `header` (un ancêtre), il fallait soit
+un portail DOM (complexité/fragilité de timing), soit inverser qui rend `ModuleShell`.
+
+**Décision** — `ModuleDef` gagne un champ générique optionnel `rendersOwnShell?: boolean`
+(aucun nom de thème). Quand il est vrai, `App.tsx` ne wrap plus le module : il lui passe
+`titre`/`sources`/`onBack` via un nouveau champ optionnel `ModuleProps.shell`, et c'est le module
+qui appelle lui-même `<ModuleShell shell.titre ... wide nav={<sa barre d'onglets>}>`. Les 9
+modules diabète passent `rendersOwnShell: true` ; le tabac ne le passe jamais (`undefined` →
+falsy) donc `App.tsx` garde exactement son ancien chemin (`<ModuleShell><Component/></ModuleShell>`)
+— rendu tabac inchangé au pixel par construction, pas seulement par CSS inchangée.
+
+**Largeur retenue** — `wide` (prop booléenne de `ModuleShell`) porte une classe CSS
+`.headerWide`/`.contentWide` à `max-width: 1240px` (contre 980px par défaut), marquée
+`// à caler visuellement (Thibault)` — valeur de départ, pas un choix définitif validé.
+
+**Modules avec barre remontée dans `nav`** (6/9, ceux qui ont une bascule de vue de premier
+niveau) : risque-cardio, alimentation, suivi, hypoglycémie, insuline, activité. **Modules qui
+gardent leur contrôle dans le contenu** (3/9, profitent seulement de `wide`) : mécanisme (les
+boutons de mode sont du contenu pédagogique, pas une bascule de vue), complications (pas de
+barre de premier niveau), traitements (bascule ligne/tous = contrôle interne au module).
+
+**Conséquences** — Toute future prop de mise en page pour un thème passera par ce même schéma
+(champ générique sur `ModuleDef`/`ModuleProps`, jamais un `theme === 'x'` dans
+`src/components/`). Un nouveau module diabète (cf. S10) doit passer `rendersOwnShell: true` et
+suivre le même patron pour bénéficier de `wide`/`nav`.
+
+## 2026-07-11 — Corrections visuelles diabète, tour 3 — S3 : bug Bézier de la plaque d'artère identifié et corrigé
+
+**Contexte** — L'audit Chrome pointait que la plaque d'athérome (module Risque cardio, vue
+« L'artère ») ne réduisait jamais visiblement la lumière du vaisseau, même au score maximal, bien
+que le texte annonce correctement « Passage du sang : 30 % ». Le tour 2 avait corrigé la
+**symétrie** des deux dépôts (`oppositeDepthFactor`) sans jamais identifier la cause réelle.
+
+**Cause** — `crescentPath(edgeY, peakY)` (`PlaqueArtere.tsx`) construisait une Bézier
+quadratique `Q P0(0,edgeY) P1(50,peakY) P2(100,edgeY)` en passant l'apex **voulu** comme point de
+**contrôle**. Pour une quadratique, le point réel au milieu (t=0.5) vaut `(edgeY + ctrl) / 2` —
+la profondeur réelle du dépôt n'atteignait donc que la **moitié** de la valeur visée. À
+`e = 1` (`wallDepth = 35`), l'apex réel n'était qu'à 17,5 au lieu de 35, laissant les deux
+croissants collés aux parois quel que soit le score.
+
+**Correctif** — `crescentPath` calcule maintenant le point de contrôle qui produit l'apex
+demandé (`ctrl = 2*apexY - edgeY`) au lieu d'utiliser l'apex directement comme point de
+contrôle. Les appels restent sémantiquement inchangés (`crescentPath(0, wallDepth)` etc.) :
+c'est la fonction, pas ses appelants, qui était fausse. `plaquePassagePct` (source de vérité du
+texte) n'est pas touchée — la géométrie est désormais alignée sur elle.
+
+**Impact IA** — Ce bug n'était détectable que par lecture attentive de la géométrie Bézier
+(calcul manuel du point médian) ; il n'était pas visible dans le code sans faire ce calcul. À
+garder en tête pour toute future modification de tracés SVG à base de courbes de Bézier dans ce
+projet : vérifier si un paramètre nommé « apex »/« peak » est utilisé comme point de contrôle ou
+comme point réel du tracé, ce ne sont pas interchangeables.
+
+## 2026-07-11 — Corrections visuelles diabète, tour 3 — S6 : breakpoint Suivi remonté 860→1200px
+
+**Contexte** — Le module Suivi (onglet Parcours) passe en côte-à-côte (cadran + panneau
+d'examens) dès 860px de large (décision tour 2, `S3-v2`). L'audit Chrome montre qu'à 881px
+(viewport testé), le cadran agrandi ET le panneau d'examens larges ne tiennent pas ensemble sur
+2 colonnes : soit le cadran est étranglé (v2, `.dialWrap` rétréci à 420px en côte-à-côte —
+contre-intuitif, passer côte-à-côte réduisait le cadran), soit le panneau déborde
+horizontalement, provoquant un double scroll (H et V, `.examList` avait aussi
+`max-height:480px; overflow:auto`).
+
+**Décision** — Remonter le breakpoint `.parcours`/`.panel` de 860px à 1200px : à 881-1199px, le
+layout reste empilé (cadran centré pleine largeur au-dessus, panneau d'examens pleine largeur
+dessous). Combiné au retrait de `max-height`/`overflow` sur `.examList`, ce scénario satisfait
+littéralement les deux objectifs du plan (« cadran plus grand » ET « pas de scroll ») : à pleine
+largeur, un `.examRow` déjà dégraissé (tour 2) tient sur une ligne, la hauteur totale de la
+liste redevient gérable sans scroll interne.
+
+**Conséquences** — Le côte-à-côte ne se déclenche plus qu'à partir de 1200px (grands écrans).
+Si Thibault juge que des écrans intermédiaires (900-1199px) bénéficieraient d'un côte-à-côte
+plutôt que de l'empilement, le seuil est isolé dans une seule règle CSS (`.parcours`, `.panel`)
+et peut être ajusté sans toucher au reste. `// à revalider (Thibault)`.
+
+## 2026-07-11 — Corrections visuelles diabète, tour 3 — S7 : axe clé/serrure ajouté à `data.ts` (classement à revalider)
+
+**Contexte** — Le module Traitements manquait d'un lien visuel avec la métaphore clé/serrure du
+module Mécanisme (« C'est quoi le diabète ? ») : rien ne distinguait, dans le panneau d'effet,
+les traitements qui agissent sur l'insulinorésistance (serrure rouillée) de ceux qui agissent
+sur la sécrétion d'insuline (manque de clés).
+
+**Décision** — Nouveau champ optionnel `ClasseTraitement.picto?: 'serrure' | 'cle'` dans
+`data.ts`. Classement retenu : `metformine` → `serrure` (sensibilisateur, insulinorésistance) ;
+`sulfamide`, `idpp4`, `aglp1`, `insuline` → `cle` (sécrétion / effet incrétine gluco-dépendant) ;
+`gliflozine` (action rénale), `ieca`, `statine` (cardio/lipidique) → **aucun picto**, elles sont
+hors métaphore et on ne force pas un classement qui n'a pas de sens clinique pour elles
+(invariant 5 : ne rien inventer).
+
+**Point ouvert (bloquant clinique, pas bloquant code)** — Le classement d'iDPP4/aGLP1 en
+« sécrétion » est défendable (effet incrétine → sécrétion gluco-dépendante d'insuline) mais
+n'a pas été validé par Thibault. Marqué `// à revalider (Thibault)` dans `data.ts`. Ne pas
+présenter ce classement comme validé cliniquement tant que ce point n'est pas tranché.
+
+## 2026-07-11 — S10 : nouveau module « Insuline rapide (pré-prandial) », implémenté sur feu vert explicite avant relecture finale formelle du contenu
+
+**Contexte** — `S10.md` posait un gate de contenu bloquant : le fichier
+`docs/diabete/10-insuline-rapide.md` (périmètre DT2 basal-bolus, déroulé 4 temps, sources
+OpenEvidence ADA 2026/ADA-EASD/AACE/Endocrine Society) devait recevoir une **relecture finale**
+de Thibault avant tout code. Un plan d'implémentation détaillé (`S10-implementation.md`) avait
+été préparé en amont pour exécution « de bout en bout » une fois ce feu vert donné.
+
+**Décision** — Thibault a explicitement demandé l'implémentation (« implemente S10 ») avec le
+fichier `S10.md` ouvert dans l'IDE, sans que le statut du document de contenu ait été changé de
+« en attente de relecture finale » à « validé ». Cette instruction directe a été interprétée
+comme le feu vert attendu par le plan, et l'implémentation a suivi `S10-implementation.md` sans
+autre changement de périmètre. Le statut de relecture du contenu (§ en tête de
+`10-insuline-rapide.md`) n'a **pas** été modifié par cette session — il reste à confirmer
+a posteriori par Thibault que le contenu livré est bien celui qu'il valide.
+
+**Réalisé** :
+
+- `sampleRepasAvecBolus` (`src/features/diabete/lib/glycemieCurve.ts`) : modèle PK/PD qualitatif
+  d'un bolus rapide (latence/pic/durée/amplitude en cloche, cf. plan §1.2), avec correction du
+  point de départ (temps ③) et 2ᵉ dose de cumul optionnelle (temps ④). 6 nouveaux tests
+  d'invariants qualitatifs (`glycemieCurve.test.ts`, describe « invariant 10 »).
+- **Recalibrage `BOLUS_DUREE` 240→180 min** (borne basse de la fourchette sourcée « activité
+  clinique 3-4h », toujours `// à revalider (Thibault)`) : avec 240 min, une dose unique
+  correctement dosée/timée laissait une traîne résiduelle qui creusait artificiellement sous la
+  baseline après le retour à baseline du repas, brouillant la distinction pédagogique avec le
+  cumul (temps ④). À 180 min, une dose unique reste proche de la baseline (tolérance testée
+  ±8 points) tandis qu'un cumul rapproché creuse nettement (>15 points sous baseline).
+- `InsulineRapideModule.tsx` + `.module.css` (`src/features/diabete/insuline-rapide/`) : 4 temps
+  à onglets (pattern S1 `wide`/`nav`, calqué sur `HypoglycemieModule.tsx`), `CourbeGlycemie`
+  réutilisée sans modification de son viewBox, domaine temporel commun -60→+180 min (« Repas »
+  aligné exactement sur l'étiquette d'axe médiane). **Zéro chiffre à l'écran** : le curseur de
+  temps ② (délai d'injection) pilote un `<input type="range">` avec ticks qualitatifs
+  (« bien avant / juste avant / au moment du repas / après le repas »), jamais de minutes
+  affichées — plus strict que le module 3 Activité qui affiche des minutes sur son slider
+  équivalent (ici explicitement interdit par le plan, contenu contraint par le sujet dose/insuline).
+  Pas de `FicheOverlay` (interdiction explicite du contenu : fiche d'ajustement de dose de repas
+  jugée dangereuse hors contexte).
+- Enregistré dans `registry.ts` (id `insuline-rapide`, famille `soigner`, juste après `insuline`,
+  icône `Utensils`).
+
+**Conséquences** — Le thème diabète compte désormais 10 modules. `tsc --noEmit` + `npm run
+build` + `npm test` (86/86, dont les 6 nouveaux) verts. Reste ouvert : (1) la relecture finale du
+contenu par Thibault (le document n'a pas changé de statut) ; (2) tous les paramètres cliniques
+du modèle (`BOLUS_LATENCE`/`BOLUS_PIC`/`BOLUS_DUREE`/`BOLUS_EFFET_MAX`, valeurs de `depart` par
+palier, offset de la 2ᵉ dose) restent `// à revalider (Thibault)` ; (3) validation visuelle du
+module (checklist `VALIDATION.md § S10-v3`).
+
+**Impact IA** — Si une session future doit retravailler le modèle `sampleRepasAvecBolus`, lire
+d'abord ce journal + les tests « invariant 10 » : le choix `BOLUS_DUREE=180` (plutôt que 240,
+sourcé) est une calibration pédagogique délibérée, pas une erreur à « corriger » vers la valeur
+sourcée sans revérifier l'invariant temps unique vs cumul qu'il protège.
+
+## 2026-07-11 — Insuline basale (module 9) : ajout d'un message d'accompagnement
+
+**Contexte** — Interrogation OpenEvidence sur l'insuline basale DT2 (rapport archivé
+`Downloads/Rapport OE insuline basale.txt`). Le rapport **valide fortement** la conception
+existante du module 9 (bande individualisée jeune/âgé, pente sur 3 nuits, hypo prioritaire, hypo
+nocturne invisible via capteur, cadence ~3 jours) — aucune correction de fond nécessaire.
+
+**Décision Thibault** — Parmi 3 pistes d'enrichissement, deux (concept de surbasalisation ;
+visualisation du croisement nocturne BeAM) **écartées** : elles supposent un niveau d'autonomie
+que la patientèle de Thibault atteint rarement. Retenue : la 3ᵉ, un simple **message
+d'accompagnement**. Formulation validée par Thibault (choix parmi 3 propositions) :
+« Régler la lente, c'est un travail d'équipe avec votre soignant — pas une décision à prendre
+seul. »
+
+**Justification par les données** — L'auto-titration guidée est au moins aussi efficace que la
+titration médicale, mais **uniquement avec accompagnement humain** (« l'application seule ne
+suffit pas », méta-analyse Boonpattharatthiti 2025 ; l'éducation structurée réduit les hypos
+sévères ~75 %, OR 0,25). Le message insiste donc sur l'accompagnement (« jamais seul »), ce qui
+est à la fois honnête cliniquement et adapté à une patientèle peu autonome — plutôt qu'un message
+d'autonomie qui serait en tension avec la réalité de terrain.
+
+**Implémentation** — Une phrase en note discrète (`.accompagnement`, `--font-size-small`,
+`--color-text-soft`) sous le refrain de sécurité existant (`.filrouge`, dominant), regroupés dans
+un `.piedRefrain`. `InsulineModule.tsx` + `.module.css`. Aucun chiffre, aucun nouvel écran, aucune
+régression (gates verts, 86 tests). Hors périmètre du chantier v3 (S1-S10) : enrichissement
+ponctuel du module 9.

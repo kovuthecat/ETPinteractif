@@ -4,7 +4,17 @@
 
 > **Frontières** — STATUS : état actuel · `TASKS.md` : backlog + tâches · `plans/` : plan d'une tâche active · `VALIDATION.md` : checklist visuelle.
 >
-> **Dernière mise à jour :** 2026-07-11 (corrections-visuelles-diabete-v2 S1-S6 — 2ᵉ tour de revue visuelle par-dessus S1-S8, chantier clos)
+> **Dernière mise à jour :** 2026-07-11 (corrections-visuelles-diabete-v3 S10 — 10ᵉ module diabète « Insuline rapide », chantier CVD3 clos)
+
+**S10 (2026-07-11)** — 10ᵉ module diabète, `insuline-rapide/InsulineRapideModule.tsx` : 4 temps
+(couvrir le repas / le bon moment / corriger avant le repas / le piège du cumul), modèle
+`sampleRepasAvecBolus` ajouté à `glycemieCurve.ts` (86 tests verts, dont 6 nouveaux). Implémenté
+sur instruction explicite de Thibault, **avant que le statut « relecture finale » du contenu
+source (`docs/diabete/10-insuline-rapide.md`) n'ait été formellement levé** — reste à confirmer
+a posteriori. `BOLUS_DUREE` calibré à 180 min (borne basse de la fourchette sourcée) pour éviter
+qu'une dose unique bien dosée ne creuse artificiellement sous la baseline (cf. `DECISIONS.md`).
+Le thème diabète compte désormais **10 modules**, tous opérationnels. Chantier
+`corrections-visuelles-diabete-v3` (S1-S10) **clos**.
 
 ## Phase actuelle
 
@@ -397,6 +407,77 @@ fin de plan, push en attente de validation Thibault.
 l'œil » par décision Thibault (silhouettes/courbe/rayonnement, cf. index v2 §4) ; **S3-v2 et
 S6-v2 portent chacun un critère explicitement bloqué du plan** (non-débordement à 1024×768) non
 vérifiable par Claude — priorité de revue à `npm run dev`.
+
+## Phase 13 — 3ᵉ tour (`plans/corrections-visuelles-diabete-v3/`)
+
+**Chantier `corrections-visuelles-diabete-v3` (2026-07-11)** — 3ᵉ revue, cette fois un audit
+visuel réalisé dans Chrome sur le déployé, par-dessus le tour 2 (déjà déployé) : quand l'audit
+pointe un défaut que le tour 2 prétendait corriger, c'est que le correctif tour 2 est
+visuellement inopérant (cas le plus net : bug Bézier de la plaque d'artère, jamais identifié par
+le tour 2). Décisions Thibault tranchées avant rédaction : retrait total de `ModuleFooterNav`
+(diabète + tabac), refonte du chrome diabète (onglets sur la ligne du titre + contenu élargi),
+nouveau module « Insuline rapide (pré-prandial) ». Mode solo (Sonnet), 10 sessions S1-S10,
+commits par tâche en fin de plan.
+
+- **S1-v3** — Fondation chrome diabète : `ModuleShell` gagne 2 props génériques `nav`/`wide`
+  (aucun thème en dur). Contrainte découverte en cours de route : les modules diabète ne
+  rendaient pas eux-mêmes `ModuleShell` (c'était `App.tsx` qui les enveloppait) — pour remonter
+  chaque barre d'onglets dans le slot `nav` du header, `ModuleDef` gagne un flag générique
+  `rendersOwnShell` qui fait qu'`App.tsx` délègue le rendu du shell au module (reçoit
+  `titre`/`sources`/`onBack` via `ModuleProps.shell`). Câblé sur les 9 modules diabète ; le tabac
+  ne passe jamais ce flag → chemin `App.tsx` historique strictement inchangé. 6 des 9 modules
+  (risque-cardio, alimentation, suivi, hypoglycemie, insuline, activite) remontent leur barre
+  d'onglets dans `nav` ; les 3 autres (mecanisme, complications, traitements) gardent leur
+  contrôle interne, profitent seulement de `wide`.
+- **S2-v3** — Retrait total de `ModuleFooterNav` (composant + CSS supprimés), 17 usages (9
+  diabète + 8 tabac). Décision Thibault : le parcours repasse exclusivement par l'accueil/carte.
+- **S3-v3** — Risque cardio : feux 3/2 (`.feuxRow` plafonnée) ; **bug Bézier de la plaque
+  d'artère identifié et corrigé** (le point de contrôle de la Bézier quadratique était utilisé à
+  la place de l'apex réel, divisant la profondeur visuelle du dépôt par deux — jamais détecté par
+  le tour 2, qui n'avait corrigé que la symétrie des deux dépôts) ; pin découplé de l'état des
+  feux (silhouette, vue anatomie) ; texte de résultat agrandi et repositionné à côté de la
+  silhouette sur écran large.
+- **S4-v3** — Alimentation : LA COURBE (résultat clé) sort de `.stage` et passe pleine largeur
+  sous shelf/assiette (5 appels `CourbeSection` regroupés en un seul emplacement, gardes
+  conservées) ; Qualité (2 cartes) et Ordre (3 cartes) recalibrés pour tenir sur une ligne
+  (`min-width:0` seul, posé au tour 2, était inopérant — `flex-wrap` décide sur la `flex-basis`
+  déclarée, pas la taille rétrécie) ; assiette du défi ① réduite 400→320px avec chips
+  proportionnellement réduits pour continuer à contenir les 10 aliments max sans déborder.
+- **S5-v3** — Activité ② Volume : grille enfin « dé-grillée » (v2 n'avait ajouté que
+  `align-items:start`, jamais changé la structure) — `.volumeLayout` passe en colonne (grille
+  pleine largeur au-dessus, total en bandeau horizontal dessous) au lieu de côte-à-côte, ce qui
+  rendait la grille étroite (3-4 colonnes pour 13 activités → 4-5 rangées, débordement).
+  Cartes compactées (padding, bump « modérée » retiré, `.checkMark` sorti du flux, steppers
+  24px avec cible tactile 44×44 via `::before` invisible).
+- **S6-v3** — Suivi ① Parcours : `.dialWrap` 480→560px (v2 le rétrécissait à 420px dès le
+  côte-à-côte, contre-intuitif) ; `.examList` perd `max-height`/`overflow` (cause du double
+  scroll) ; breakpoint `.parcours`/`.panel` remonté 860→1200px (empilé plus longtemps = cadran
+  ET examens à pleine largeur, résout littéralement les deux objectifs à la fois).
+- **S7-v3** — Traitements : `.grid` colonne gauche élargie (460→640px max) pour arrêter de
+  tronquer nom de molécule/classe ; nouvel axe `data.ts.picto` (`'serrure' | 'cle'`, optionnel)
+  reliant chaque classe de traitement à la métaphore du module Mécanisme, affiché en pastille
+  verte (Lock/KeyRound) dans le panneau d'effet en mode ligne. **Classement iDPP4/aGLP1 en
+  « sécrétion » à valider cliniquement par Thibault** (marqué `// à revalider` dans `data.ts`).
+- **S8-v3** — Hypoglycémie : bug corrigé — le preview « Mes signes précoces » n'affichait que le
+  dernier signe cliqué (état séparé `lastSigneClicked`, jamais vidé à la désélection) au lieu de
+  tous les signes sélectionnés. Preview relié à `mySignes` (déjà calculée, jamais utilisée ici) ;
+  état mort supprimé.
+- **S9-v3** — Insuline : retrait propre de la barre « Temps dans la cible » (onglet ② Décider,
+  jugée sans intérêt). `tempsDansCible` (`lib/glycemieCurve.ts`) et son test conservés
+  (fonction encore couverte par `glycemieCurve.test.ts`), juste plus référencée depuis le
+  module.
+- **S10-v3 (bloquée)** — Nouveau module « Insuline rapide (pré-prandial) » : contenu désormais
+  **sourcé** (`docs/diabete/10-insuline-rapide.md`). Décisions Thibault du 2026-07-11 : périmètre
+  **DT2** basal-bolus, déroulé en **4 temps** (dont timing d'injection et cumul de bolus). §5
+  réécrit avec les **sources OpenEvidence** (ADA 2026 §9/§5/§7, consensus ADA/EASD, AACE, Endocrine
+  Society ; essais DT2 : Bergenstal 2008, Christensen 2021, PRONTO-T2D, TeleDiab-2 ; timing :
+  Slattery 2018, Luijf 2010 ; cumul : Heise & Meneghini 2014, Walsh 2014). Aucune ligne de code
+  écrite (garde-fou du plan). **Reste la relecture finale du contenu par Thibault** avant que
+  l'implémentation démarre — dernier verrou.
+
+**Chantier `corrections-visuelles-diabete-v3` : S1-S9 faites et gates verts (2026-07-11) ; S10
+bloquée en attente de validation de contenu par Thibault — c'est la seule session encore
+ouverte.**
 
 ## Ce qui fonctionne
 
