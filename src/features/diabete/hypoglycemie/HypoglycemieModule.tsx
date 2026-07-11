@@ -197,7 +197,7 @@ export default function HypoglycemieModule({ onNavigate }: ModuleProps) {
       >
         <div className={styles.profilGrid}>
           <div className={styles.profilCol}>
-            <p className={styles.sectionLabel}>Mes signes précoces — cochez ce que vous ressentez</p>
+            <p className={styles.sectionLabel}>Mes signes précoces</p>
 
             {lastSigneClicked && (
               <div className={styles.preview}>
@@ -226,7 +226,7 @@ export default function HypoglycemieModule({ onNavigate }: ModuleProps) {
           </div>
 
           <div className={styles.profilCol}>
-            <p className={styles.sectionLabel}>Mon resucrage — ce que j’ai sur moi</p>
+            <p className={styles.sectionLabel}>Mon resucrage</p>
             <div className={styles.resucrageList} role="radiogroup" aria-label="Mon resucrage habituel">
               {RESUCRAGES.map((r) => {
                 const active = resucrage === r.id;
