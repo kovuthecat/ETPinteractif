@@ -6,7 +6,7 @@
 
 .grid {
   display: grid;
-  grid-template-columns: minmax(320px, 640px) 1fr;
+  grid-template-columns: minmax(320px, 460px) minmax(480px, 1fr);
   gap: var(--space-xl);
   align-items: start;
 }
@@ -265,7 +265,7 @@
 .silhouetteHost {
   position: relative;
   width: 100%;
-  max-width: 420px;
+  max-width: 560px;
 }
 
 /* Halo positif uniquement (systémique, « sucre ») — jamais de rouge, jamais de clignotement :

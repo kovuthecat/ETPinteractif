@@ -96,7 +96,9 @@ export default function TraitementsModule({ onNavigate }: ModuleProps) {
 
   const haloActif = litZones.sucre;
 
-  let sideText: string;
+  // S1-v2 : plus de texte de guidage ambiant (« Cliquez "Voir l'effet"… ») — le panneau
+  // ne s'affiche que comme sortie d'une interaction (ligne sélectionnée ou vue d'ensemble).
+  let sideText: string | null;
   let badgeMultiFronts = false;
   if (viewMode === 'all') {
     if (presentes.length === 0) {
@@ -111,8 +113,7 @@ export default function TraitementsModule({ onNavigate }: ModuleProps) {
     sideText = `${selectedLigne.molecule.trim()} ${phrases.join(' Elle ')}`;
     badgeMultiFronts = cls.zones.length >= 2;
   } else {
-    sideText =
-      "Cliquez « Voir l'effet » sur une ligne pour voir où elle agit — ou cliquez « Ordonnance » pour tout allumer d'un coup.";
+    sideText = null;
   }
 
   // S8 (passe « moins de texte ») : eyebrow seul en pied de module, plus de paragraphe
@@ -241,15 +242,17 @@ export default function TraitementsModule({ onNavigate }: ModuleProps) {
             <Silhouette zones={silhouetteZones} />
           </div>
 
-          <div className={styles.panel}>
-            <span className="eyebrow">Ce que ce traitement protège</span>
-            <div className={`card ${styles.panelCard}`}>
-              <p className={styles.panelText}>{sideText}</p>
+          {sideText && (
+            <div className={styles.panel}>
+              <span className="eyebrow">Ce que ce traitement protège</span>
+              <div className={`card ${styles.panelCard}`}>
+                <p className={styles.panelText}>{sideText}</p>
+              </div>
+              {badgeMultiFronts && (
+                <div className={styles.multiFrontBadge}>Un seul traitement, plusieurs fronts défendus à la fois.</div>
+              )}
             </div>
-            {badgeMultiFronts && (
-              <div className={styles.multiFrontBadge}>Un seul traitement, plusieurs fronts défendus à la fois.</div>
-            )}
-          </div>
+          )}
         </section>
       </div>
 
