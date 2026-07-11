@@ -107,7 +107,9 @@ export default function SilhouetteCorps({
           const leftPct = bodyImage ? z.x : (z.x / VB_W) * 100;
           const topPct = bodyImage ? z.y : (z.y / VB_H) * 100;
           const isLocked = z.etat === 'verrouille';
-          const ariaLabel = isLocked ? `${z.label} — déjà vu, verrouillé` : z.label;
+          // Mode hotspot (bodyImage) : une zone « déjà vue » reste cliquable (elle ouvre son
+          // panneau récapitulatif) — seul le mode pastille (corps codé tabac) désactive le clic.
+          const ariaLabel = isLocked ? `${z.label} — déjà vu` : z.label;
 
           if (bodyImage) {
             return (
@@ -116,7 +118,6 @@ export default function SilhouetteCorps({
                 type="button"
                 className={`${styles.hotspot} ${styles[`hotspot--${z.etat}`]}`}
                 style={{ left: `${leftPct}%`, top: `${topPct}%`, width: size, height: size }}
-                disabled={isLocked}
                 aria-label={ariaLabel}
                 onClick={onZoneClick ? () => onZoneClick(z.id) : undefined}
               />

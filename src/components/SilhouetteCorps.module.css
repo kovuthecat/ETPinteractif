@@ -12,6 +12,7 @@
 
 .wrapImage {
   aspect-ratio: 1 / 1;
+  max-width: 460px;
 }
 
 .bodyImg {
@@ -135,8 +136,9 @@
   white-space: nowrap;
 }
 
-/* Mode hotspot (bodyImage) : bouton transparent épousant l'organe, aucun cercle permanent —
-   le retour visuel passe uniquement par un halo radial doux. */
+/* Mode hotspot (bodyImage) : bouton transparent épousant l'organe. Découvrabilité discrète et
+   permanente au repos (fin anneau pointillé) + retour « allumé » franc (halo large + anneau plein
+   + léger scale) quand la zone est ouverte/allumée (S1, index.md §A). */
 .hotspot {
   position: absolute;
   transform: translate(-50%, -50%);
@@ -146,21 +148,32 @@
   padding: 0;
   border-radius: 50%;
   cursor: pointer;
+  transition: transform 0.15s ease;
 }
 
 .hotspot::before {
   content: '';
   position: absolute;
-  inset: -30%;
+  inset: -50%;
   border-radius: 50%;
   background: radial-gradient(circle, var(--color-nav-soft) 0%, transparent 65%);
-  opacity: 0;
+  opacity: 0.22;
   transition: opacity 0.15s ease;
+}
+
+.hotspot::after {
+  content: '';
+  position: absolute;
+  inset: 6%;
+  border-radius: 50%;
+  border: 2px dotted var(--color-nav-soft);
+  opacity: 0.35;
+  transition: opacity 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
 .hotspot:hover::before,
 .hotspot:focus-visible::before {
-  opacity: 1;
+  opacity: 0.75;
 }
 
 .hotspot--ouvert::before,
@@ -169,12 +182,25 @@
   opacity: 1;
 }
 
-.hotspot--verrouille {
-  cursor: not-allowed;
+.hotspot--ouvert::after,
+.hotspot--allume::after {
+  border-style: solid;
+  border-color: var(--color-confort);
+  box-shadow: 0 0 0 6px var(--color-confort-soft);
+  opacity: 1;
+}
+
+.hotspot--ouvert,
+.hotspot--allume {
+  transform: translate(-50%, -50%) scale(1.05);
 }
 
 .hotspot--verrouille::before {
-  content: none;
+  background: radial-gradient(circle, var(--color-line) 0%, transparent 65%);
+}
+
+.hotspot--verrouille::after {
+  border-color: var(--color-line);
 }
 
 .hotspot:focus-visible {
@@ -182,6 +208,11 @@
   outline-offset: 4px;
 }
 
-.hotspot:disabled {
-  outline: none;
+@media (prefers-reduced-motion: reduce) {
+  .hotspot,
+  .hotspot--ouvert,
+  .hotspot--allume {
+    transition: none;
+    transform: translate(-50%, -50%);
+  }
 }
