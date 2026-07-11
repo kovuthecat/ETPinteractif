@@ -10,6 +10,19 @@
   height: auto;
 }
 
+.wrapImage {
+  aspect-ratio: 1 / 1;
+}
+
+.bodyImg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 .corps {
   fill: var(--color-bg);
   stroke: var(--color-line);
@@ -120,4 +133,55 @@
   border-radius: var(--radius-pill);
   box-shadow: var(--shadow-1);
   white-space: nowrap;
+}
+
+/* Mode hotspot (bodyImage) : bouton transparent épousant l'organe, aucun cercle permanent —
+   le retour visuel passe uniquement par un halo radial doux. */
+.hotspot {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: block;
+  border: none;
+  background: transparent;
+  padding: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.hotspot::before {
+  content: '';
+  position: absolute;
+  inset: -30%;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--color-nav-soft) 0%, transparent 65%);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.hotspot:hover::before,
+.hotspot:focus-visible::before {
+  opacity: 1;
+}
+
+.hotspot--ouvert::before,
+.hotspot--allume::before {
+  background: radial-gradient(circle, var(--color-confort-soft) 0%, transparent 65%);
+  opacity: 1;
+}
+
+.hotspot--verrouille {
+  cursor: not-allowed;
+}
+
+.hotspot--verrouille::before {
+  content: none;
+}
+
+.hotspot:focus-visible {
+  outline: 3px dotted var(--color-nav);
+  outline-offset: 4px;
+}
+
+.hotspot:disabled {
+  outline: none;
 }

@@ -24,24 +24,28 @@ export interface SilhouetteProps {
   zones: SilhouetteZoneState[];
   onZoneClick?: (id: ZoneId) => void;
   /** Annotations posées par le module consommateur (ex. pastille PlaqueArtere), positionnées
-   *  par le module lui-même à l'aide de `SILHOUETTE_ANCHORS`/`SILHOUETTE_VIEWBOX` exportés. */
+   *  par le module lui-même à l'aide de `SILHOUETTE_ANCHORS` (x/y en % de l'image). */
   children?: ReactNode;
 }
 
 /** Repère fixe du dessin (partagé par tous les modules consommateurs). */
 export { SILHOUETTE_VIEWBOX };
 
-/** Position (centre) et rayon de chaque ancre nommée, dans le repère SILHOUETTE_VIEWBOX. */
+/** Position (centre, en % de l'image carrée `bodyImage`) et rayon (px, taille d'emprise du
+ *  hotspot) de chaque ancre nommée — valeurs calées au diagnostic, cf.
+ *  plans/illustrations-diabete/index.md §7. Le nerf est positionné sur la main (validé). */
 export const SILHOUETTE_ANCHORS: Record<ZoneId, { x: number; y: number; r: number }> = {
-  cerveau: { x: 170, y: 55, r: 24 },
-  yeux: { x: 190, y: 70, r: 22 },
-  cou: { x: 170, y: 108, r: 22 },
-  coeur: { x: 150, y: 230, r: 30 },
-  nerfs: { x: 258, y: 300, r: 24 },
-  reins: { x: 170, y: 340, r: 26 },
-  jambes: { x: 170, y: 520, r: 30 },
-  pied: { x: 170, y: 700, r: 28 },
+  cerveau: { x: 50, y: 7, r: 24 },
+  yeux: { x: 50, y: 10, r: 22 },
+  cou: { x: 50, y: 16, r: 22 },
+  coeur: { x: 49, y: 26, r: 30 },
+  reins: { x: 50, y: 39, r: 26 },
+  nerfs: { x: 31, y: 54, r: 24 },
+  jambes: { x: 46, y: 63, r: 30 },
+  pied: { x: 50, y: 94, r: 28 },
 };
+
+const BODY_IMAGE = `${import.meta.env.BASE_URL}illustrations/diabete/silhouette.png`;
 
 const ZONE_LABELS: Record<ZoneId, string> = {
   cerveau: 'Cerveau',
@@ -71,6 +75,7 @@ export default function Silhouette({ zones, onZoneClick, children }: SilhouetteP
     <SilhouetteCorps
       zones={zonesGeneriques}
       onZoneClick={onZoneClick ? (id) => onZoneClick(id as ZoneId) : undefined}
+      bodyImage={BODY_IMAGE}
     >
       {children}
     </SilhouetteCorps>
