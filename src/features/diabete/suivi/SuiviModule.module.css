@@ -70,7 +70,14 @@
 
 /* S3-v2 : repasse côte-à-côte (cadran + examens visibles ensemble) — le tour 1 (S4) avait
    empilé pour tuer un débordement causé par des lignes trop chargées ; ce tour-ci corrige la
-   cause (lignes dégraissées ci-dessous) plutôt que la disposition. Empilé sous 860px. */
+   cause (lignes dégraissées ci-dessous) plutôt que la disposition.
+   S6-v3 : breakpoint remonté 860→1200px — à 881px (viewport de l'audit), un cadran agrandi
+   ET une box d'examens large ne tenaient pas ensemble en 2 colonnes (un gros cadran CÔTÉ À
+   CÔTÉ avec les examens était justement ce qui forçait à rétrécir l'un des deux, cf. audit v3
+   #6). Empilé jusqu'à 1200px : cadran centré pleine largeur au-dessus, examens à pleine
+   largeur dessous — plus de double scroll (H et V) à 1024×768. `// à caler` : au-delà de
+   1200px, le côte-à-côte pourrait redevenir tenable sur un très grand écran ; en cas de doute,
+   garder l'empilement (priorité : « pas de scroll »). */
 .parcours {
   display: flex;
   flex-direction: column;
@@ -78,7 +85,7 @@
   align-items: center;
 }
 
-@media (min-width: 860px) {
+@media (min-width: 1200px) {
   .parcours {
     flex-direction: row;
     align-items: flex-start;
@@ -87,18 +94,14 @@
 
 /* ── Le cadran (SVG + stations HTML positionnées en %, cf. Silhouette.tsx) ── */
 
+/* S6-v3 : 480→560px — l'ancien override `@media (min-width:860px)` RÉTRÉCISSAIT le cadran à
+   420px dès qu'on passait côte-à-côte (contre-intuitif : passer côte-à-côte réduisait le
+   cadran). Supprimé : le cadran garde sa taille max quel que soit le layout. */
 .dialWrap {
   position: relative;
   width: 100%;
-  max-width: 480px;
+  max-width: 560px;
   flex-shrink: 0;
-}
-
-@media (min-width: 860px) {
-  .dialWrap {
-    width: 420px;
-    max-width: 420px;
-  }
 }
 
 .dialSvg {
@@ -290,7 +293,8 @@
   min-width: 0;
 }
 
-@media (min-width: 860px) {
+/* S6-v3 : aligné sur le nouveau breakpoint de `.parcours` (860→1200px). */
+@media (min-width: 1200px) {
   .panel {
     flex: 1;
     min-width: 0;
@@ -379,7 +383,11 @@
   opacity: 0.72;
 }
 
-@media (max-width: 1100px) {
+/* S6-v3 : 1100→640px — depuis que `.parcours` s'empile jusqu'à 1200px (ci-dessus), `.examList`
+   reçoit la pleine largeur du module bien avant 1100px ; la ligne d'examen (déjà dégraissée,
+   v2) tient sur une seule ligne dès que la place réelle le permet, réduisant encore la
+   hauteur totale (~64px/ligne au lieu de ~104px). */
+@media (max-width: 640px) {
   /* Repli maximum 2 lignes (jamais plus), grille explicite plutôt qu'un flex-wrap libre. */
   .consultRow {
     grid-template-columns: auto minmax(120px, 1fr) auto;
@@ -548,13 +556,13 @@
   font-weight: 700;
 }
 
+/* S6-v3 : retrait de `max-height`/`overflow` — cause du double scroll (vertical, 7 examens sur
+   ~776px écrasés dans 480px ; horizontal, le cadran de 420px étranglait la box à ~341px avant
+   ce correctif). La liste s'étend naturellement sur toute sa hauteur. */
 .examList {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  max-height: 480px;
-  overflow: auto;
-  padding-right: 4px;
 }
 
 

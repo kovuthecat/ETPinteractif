@@ -2,8 +2,8 @@ import { useReducer, useState } from 'react';
 import type { ComponentType } from 'react';
 import { Stethoscope, TestTube, Droplet, Heart, Eye, Footprints, Smile, Syringe, MapPin, MapPinOff } from 'lucide-react';
 import type { ModuleProps } from '../../types';
+import ModuleShell from '../../../components/ModuleShell';
 import FicheOverlay from '../../../components/FicheOverlay';
-import ModuleFooterNav from '../../../components/ModuleFooterNav';
 import InfoHover from '../../../components/InfoHover';
 import Silhouette from '../components/Silhouette';
 import type { ZoneId } from '../components/Silhouette';
@@ -211,7 +211,7 @@ function cycleValue<T>(options: T[], current: T, delta: number): T {
   return options[next];
 }
 
-export default function SuiviModule({ onNavigate }: ModuleProps) {
+export default function SuiviModule({ shell }: ModuleProps) {
   const now = new Date();
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
@@ -352,32 +352,37 @@ export default function SuiviModule({ onNavigate }: ModuleProps) {
   const doorInfo = state.doorOpen ? PROTECTS_INFO[state.doorOpen] : null;
   const doorZone = state.doorOpen ? PROTECTS_TO_ZONE[state.doorOpen] : undefined;
 
-  return (
-    <div className={styles.module}>
-      <div className={styles.tabs} role="tablist" aria-label="Étapes du module Suivi">
-        <button
-          type="button"
-          role="tab"
-          aria-selected={state.temps === 'parcours'}
-          className={state.temps === 'parcours' ? `${styles.tab} ${styles.tabActive}` : styles.tab}
-          onClick={() => dispatch({ type: 'SET_TEMPS', temps: 'parcours' })}
-        >
-          ① Le parcours
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={state.temps === 'fiche'}
-          className={state.temps === 'fiche' ? `${styles.tab} ${styles.tabActive}` : styles.tab}
-          onClick={() => {
-            dispatch({ type: 'SET_TEMPS', temps: 'fiche' });
-            setFicheOpen(true);
-          }}
-        >
-          ② La fiche
-        </button>
-      </div>
+  if (!shell) return null;
 
+  const navBar = (
+    <div className={styles.tabs} role="tablist" aria-label="Étapes du module Suivi">
+      <button
+        type="button"
+        role="tab"
+        aria-selected={state.temps === 'parcours'}
+        className={state.temps === 'parcours' ? `${styles.tab} ${styles.tabActive}` : styles.tab}
+        onClick={() => dispatch({ type: 'SET_TEMPS', temps: 'parcours' })}
+      >
+        ① Le parcours
+      </button>
+      <button
+        type="button"
+        role="tab"
+        aria-selected={state.temps === 'fiche'}
+        className={state.temps === 'fiche' ? `${styles.tab} ${styles.tabActive}` : styles.tab}
+        onClick={() => {
+          dispatch({ type: 'SET_TEMPS', temps: 'fiche' });
+          setFicheOpen(true);
+        }}
+      >
+        ② La fiche
+      </button>
+    </div>
+  );
+
+  return (
+    <ModuleShell titre={shell.titre} sources={shell.sources} onBack={shell.onBack} wide nav={navBar}>
+    <div className={styles.module}>
       {state.temps === 'parcours' && (
         <div className={styles.parcours}>
           <div className={styles.dialWrap}>
@@ -416,7 +421,8 @@ export default function SuiviModule({ onNavigate }: ModuleProps) {
                 aria-label={`Consultation — ${MONTHS_FULL[c.month]} — ${statusLabelFor(c.status)} — cliquer pour changer`}
               >
                 <span className={styles.stationIcon}>
-                  <StationIcon kind="stethoscope" label="Stéthoscope" size={44} />
+                  {/* S6-v3 : 44→50px, cadran 480→560px (~×1,17) — // à caler */}
+                  <StationIcon kind="stethoscope" label="Stéthoscope" size={50} />
                 </span>
                 <span className={styles.stationBadge} aria-hidden="true">
                   {c.status === 'fait' ? '✓' : c.status === 'a_programmer' ? '⏳' : ''}
@@ -437,7 +443,8 @@ export default function SuiviModule({ onNavigate }: ModuleProps) {
                 aria-label={`${b.label} — ${statusLabelFor(b.status)} — cliquer pour changer`}
               >
                 <span className={styles.stationIcon}>
-                  <StationIcon kind="bio" label="Prise de sang" size={38} />
+                  {/* S6-v3 : 38→44px, même ratio que les autres stations du cadran. */}
+                  <StationIcon kind="bio" label="Prise de sang" size={44} />
                 </span>
                 <span className={styles.stationBadge} aria-hidden="true">
                   {b.status === 'fait' ? '✓' : b.status === 'a_programmer' ? '⏳' : ''}
@@ -460,7 +467,7 @@ export default function SuiviModule({ onNavigate }: ModuleProps) {
                 } — cliquer pour changer`}
               >
                 <span className={styles.stationIcon}>
-                  <StationIcon kind={e.protects} label={PROTECTS_INFO[e.protects].name} size={44} />
+                  <StationIcon kind={e.protects} label={PROTECTS_INFO[e.protects].name} size={50} />
                 </span>
                 <span className={styles.stationBadge} aria-hidden="true">
                   {!e.longCycle && (e.status === 'fait' ? '✓' : e.status === 'a_programmer' ? '⏳' : '')}
@@ -605,13 +612,6 @@ export default function SuiviModule({ onNavigate }: ModuleProps) {
         </div>
       )}
 
-
-      <ModuleFooterNav
-        titre="Continuer l'exploration"
-        items={[{ id: 'traitements', label: 'Les surveillances liées aux médicaments' }]}
-        onNavigate={onNavigate}
-      />
-
       {doorInfo && (
         <div
           className={styles.doorOverlay}
@@ -685,5 +685,6 @@ export default function SuiviModule({ onNavigate }: ModuleProps) {
         </FicheOverlay>
       )}
     </div>
+    </ModuleShell>
   );
 }
