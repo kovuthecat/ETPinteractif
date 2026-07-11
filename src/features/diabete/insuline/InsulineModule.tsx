@@ -30,7 +30,7 @@ type TempsId = 1 | 2 | 3;
 const TEMPS_TABS: { id: TempsId; label: string }[] = [
   { id: 1, label: '① Zone-cible' },
   { id: 2, label: '② Lire la courbe' },
-  { id: 3, label: '③ 2 situations' },
+  { id: 3, label: '③ Décider' },
 ];
 
 const TON_VAR: Record<ActionTon, string> = {
@@ -75,30 +75,23 @@ export default function InsulineModule({ onNavigate }: ModuleProps) {
   let caption: { eyebrow: string; text: string };
   if (temps === 1) {
     caption = {
-      eyebrow: '① Zone-cible réglée par le soignant',
-      text: 'On règle la bande verte selon le patient — geste de sécurité, jamais un chiffre imposé au patient.',
+      eyebrow: '① Zone-cible',
+      text: 'La bande verte se règle selon le patient — jamais un chiffre imposé.',
     };
   } else if (temps === 2) {
     caption = {
-      eyebrow: '② Lire la tendance, pas un chiffre',
-      text: "Cliquez un segment de la courbe : il s'allume et parle à une insuline — la nuit à la lente, les repas au bolus.",
+      eyebrow: '② Lire la tendance',
+      text: 'Cliquez un segment de la courbe — nuit ↔ lente, repas ↔ bolus.',
     };
   } else {
     caption = {
-      eyebrow: '③ Deux situations, trois lectures de la nuit',
-      text: situation
-        ? situation.desc
-        : 'Choisissez une lecture de la nuit, ou la situation basse, pour voir la décision qui en découle.',
+      eyebrow: '③ Décider',
+      text: situation ? situation.desc : 'Choisissez une lecture, ou la situation basse.',
     };
   }
 
   return (
     <div className={styles.module}>
-      <p className={styles.consigne}>
-        Trois temps pour lire sa courbe de capteur et savoir, sans jamais chiffrer, quand ajuster
-        une dose d'insuline.
-      </p>
-
       <div className={styles.tabs}>
         {TEMPS_TABS.map((t) => (
           <button
@@ -234,10 +227,7 @@ export default function InsulineModule({ onNavigate }: ModuleProps) {
         <p className={styles.captionText}>{caption.text}</p>
       </div>
 
-      <p className="filrouge">
-        Refrain de sécurité : dans le doute, on ne monte pas — et on traite l'hypo d'abord. Votre
-        protocole = votre ordonnance.
-      </p>
+      <p className="filrouge">Dans le doute, on ne monte pas — on traite l'hypo d'abord.</p>
 
       <ModuleFooterNav
         items={[
