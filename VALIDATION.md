@@ -387,6 +387,143 @@ Toutes les valeurs ci-dessous sont des ordres de grandeur qualitatifs (tables Ci
 
 ---
 
+## Illustrations diabète (S1) — validation du 2026-07-10
+
+**Statut** : chantier S1 (pipeline d'assets + silhouette `bodyImage`/hotspot) livré · en attente de
+validation visuelle Thibault (`npm run dev`) — aucune vérification navigateur faite côté Claude
+(règle projet). Les 7 PNG ont été relus à l'œil par Claude (outil Read) : flood-fill propre (aucun
+intérieur troué), palette quantifiée sans perte visible. **Aucun module n'est encore recâblé** (S2+
+posera les overlays/panneaux) : ce qui suit ne concerne que la silhouette-image + hotspots.
+
+- [ ] Silhouette (fond) affichée en carré dans la vue anatomie de M4, dans M5 et dans M7, sans
+      déformation ni dépassement de cadre.
+- [ ] Hotspots visuellement alignés sur les organes de l'illustration (cerveau/yeux/cou/cœur/reins/
+      nerfs-main/jambes/pied — ancres `index.md` §7) ; si un hotspot semble décalé, le signaler (S2+
+      recalibrera au besoin).
+- [ ] Survol d'un hotspot déverrouillé → halo doux bleu-canard, disparaît en sortant ; état
+      `ouvert`/`allume` → halo vert confort persistant même sans survol ; état `verrouille` → aucun
+      halo, curseur « interdit ».
+- [ ] Aucun cercle permanent ni icône superposée sur l'illustration en mode hotspot (contrairement au
+      mode pastille tabac, qui doit rester identique à l'existant).
+- [ ] **Tabac non régressé** : le module « Ce que l'arrêt répare » (`benefices-arret/`, silhouette
+      générique sans `bodyImage`) affiche toujours le corps SVG codé + pastilles pleines avec icônes
+      Lock/CheckCircle2/ShieldCheck, strictement comme avant S1.
+- [ ] M4 (`RisqueCardioModule`, vue ③ « anatomie ») : les pastilles de plaque (encore codées à ce
+      stade) restent visuellement proches des hotspots correspondants — un décalage franc est
+      normal/attendu si le recalibrage fin n'est pas fait, mais aucune ne doit apparaître hors cadre.
+- [ ] Poids des 7 PNG (`public/illustrations/diabete/`) raisonnable au chargement (26-99 Ko chacun).
+
+### S2 — M5 Complications : illustration d'organe
+
+- [ ] Cliquer yeux/reins/nerfs/pied affiche l'illustration de l'organe (104 px, cadre doux) à côté du
+      titre, en tête du panneau détail — la bonne image pour le bon organe, rien de coupé/déformé.
+- [ ] Pied : l'illustration en tête (`pied-auto-examen.png`) et celle plus bas dans le bloc « points de
+      contrôle » sont la même image — pas de doublon choquant à l'écran.
+- [ ] Cœur/cerveau (verrouillés) : toujours pas d'illustration, texte « déjà vu au module 4 » inchangé.
+- [ ] Rien de coupé ni de débordant à ~1 m de lecture, tailles de police inchangées.
+
+### S3 — M4 Risque cardiovasculaire : artère illustrée + plaque image + feux lucide
+
+> ⚠️ Section la plus sensible de S3 : la position/rotation de la plaque overlay a été calculée hors
+> navigateur (analyse de pixels), **jamais vérifiée à l'écran**. Un décalage est possible — signaler
+> précisément ce qui ne colle pas (ex. « la plaque est trop haute », « pas assez tournée ») pour un
+> ajustement ciblé des constantes `.artereOverlay` (CSS) et `PLAQUE_OVERLAYS` (module).
+
+- [ ] Onglet **① Les leviers** : 5 icônes lucide (goutte sucre, jauge tension, gouttes cholestérol,
+      cigarette tabac, fauteuil sédentarité) nettes dans leur cadre rond (74 px) ; cliquer un feu
+      change bien son état (vert/orange/rouge) comme avant.
+- [ ] Onglet **② L'artère** : l'illustration `artere-saine.png` s'affiche entière, non déformée ; une
+      forme colorée (le dépôt) apparaît par-dessus dès qu'un feu passe au rouge, et **grossit**
+      progressivement avec le nombre/l'intensité des feux rouges ; elle semble visuellement posée
+      **dans** le passage du vaisseau (pas à côté, pas hors de l'image) ; le texte « Passage du sang :
+      X % » en dessous varie de façon cohérente (100 % si tout est vert, qui diminue si des feux
+      passent au rouge).
+- [ ] Onglet **③ L'anatomie** : quand au moins un feu est rouge, une petite forme (plaque, ~26 px)
+      apparaît sur le cou, le cœur et les jambes de la silhouette, à peu près à l'endroit de l'artère
+      correspondante (pas flottante loin du corps, pas hors cadre) ; cliquer une zone ouvre bien le
+      texte associé (AVC / infarctus / artérite) comme avant.
+- [ ] Onglet **④ La fiche** : les 5 icônes lucide (plus petites, 56 px) s'affichent dans les cartes de
+      la fiche à l'écran et sur la fiche imprimée (Ctrl+P) sans régression.
+- [ ] Aucune régression : navigation entre les 4 onglets, textes de légende, bouton « Imprimer mes
+      feux » inchangés.
+
+### S4 — M1 Mécanisme : animation illustration-driven à 4 modes
+
+> ⚠️ Positions/rotations des clés volantes calculées sur une boîte de référence 1060×340 (%),
+> **jamais vérifiées à l'écran**. Signaler précisément ce qui ne colle pas (ex. « la clé rate la
+> serrure », « le pancréas est trop loin ») pour un ajustement ciblé des constantes du module
+> (`CELL_LEFT_PCT`, `KEY_TARGET_LEFT_PCT`, `KEY_TARGET_TOP_PCT`, `KEY_REST`).
+
+- [ ] Les 4 boutons de mode (Sans diabète / Insulinopénie / Insulinorésistance / Mixte) changent
+      bien la scène ; le mode actif est visuellement distinct (bordure/fond bleu-canard).
+- [ ] La scène rejoue en boucle (~5 s) : au démarrage d'un mode, les cellules sont fermées, puis
+      une ou plusieurs clés partent du pancréas vers une ou plusieurs serrures (visibles, animées),
+      puis les cellules concernées changent d'image (ouverte/fermée/rouillée selon le mode), puis
+      le nombre de jetons de sucre dans l'artère change et le libellé (bas/encore élevé/élevé)
+      suit la bonne couleur.
+- [ ] **Sans diabète** : 3 cellules ouvertes, 3 clés visibles, peu de jetons (sang bas, vert).
+- [ ] **Insulinopénie** : 1 cellule ouverte + 2 fermées, 1 seule clé visible, jetons nombreux (sang
+      encore élevé, ambre).
+- [ ] **Insulinorésistance** : 3 cellules rouillées, **aucune clé volante** (la clé est déjà
+      dessinée plantée dans l'image de la cellule rouillée), beaucoup de jetons (sang élevé, rouge).
+- [ ] **Mixte** : 1 rouillée + 1 ouverte + 1 fermée, 1 seule clé volante (vers la cellule ouverte),
+      jetons nombreux (sang élevé, rouge).
+- [ ] Réduire les animations (préférence système « mouvement réduit ») : la scène affiche
+      directement l'état final du mode choisi (cellules dans leur état, clé(s) visible(s) et
+      « tournée(s) » dans la serrure si le mode en prévoit, jetons au nombre final) — **plus de
+      cycle qui recommence toutes les ~5 s**, un seul état stable et lisible.
+- [ ] Rien ne déborde du cadre à ~1 m de lecture, y compris sur petit écran (scène responsive).
+- [ ] Bouton « Voir comment l'alimentation joue » en pied de module navigue bien vers le module
+      Alimentation.
+
+### S5 — M7 Traitements : silhouette-image (aucun changement de code, à confirmer visuellement)
+
+- [ ] La silhouette de M7 s'affiche en image carrée (pas de régression suite à S1).
+- [ ] Cliquer « Voir l'effet » sur une ligne allume cœur et/ou reins (halo doux, jamais de rouge)
+      selon la classe de la molécule ; les autres organes ne s'affichent jamais sur ce module.
+- [ ] Bouton « Ordonnance » (tout allumer) allume toutes les zones protégées par les lignes
+      renseignées en même temps.
+- [ ] Le halo « sucre » systémique (overlay doux autour de la silhouette) reste positif et discret.
+
+### S6 — M6 Suivi : stations/organes → lucide
+
+- [ ] Les icônes du cadran (consultation, prise de sang, chaque examen) sont nettes à 34-44 px —
+      pas de flou ni de placeholder texte.
+- [ ] Cohérence visuelle : toutes les icônes lucide partagent le même cadre (rond, fond clair,
+      bordure fine, icône bleu-canard) ; l'icône rein (image) ne détonne pas trop dans l'ensemble.
+- [ ] Icônes attendues : stéthoscope (consultation), tube à essai (prise de sang groupée HbA1c/
+      bilan lipidique/rein), goutte (vaisseaux/HbA1c), cœur (bilan lipidique), œil (fond d'œil),
+      pied (pied complet), sourire (dentiste), seringue (vaccins/défenses) — et le **rein en image**
+      dans la liste des examens et le panneau « Ce que ça garde ».
+- [ ] Le centre du cadran (motif fil rouge) et l'aiguille restent inchangés (toujours codés).
+- [ ] Cliquer un examen dans le panneau « Ce que ça garde » : la porte s'ouvre avec la bonne icône/
+      image à 160 px (silhouette pour cœur/reins/yeux/pied, icône ou image pour vaisseaux/bouche/
+      défenses).
+
+### S7 — Vignettes M2/M3/M8 (62 nouvelles, chantier illustrations-diabete clos)
+
+- [ ] **M2 Garde-manger** : les 33 aliments affichent leur vignette (plus aucun placeholder texte)
+      — en particulier les 5 nouveaux (pâtes blanches, pâtes complètes, couscous complet, banane
+      plantain, haricots rouges) apparaissent dans la liste/le garde-manger avec la bonne image.
+- [ ] **M3 Activité** : centre + 4 rayons illustrés (temps ①) ; les 13 activités (dont « Se relever
+      du sol ») affichent leur vignette dans la jauge ouverte (temps ②).
+- [ ] **M8 Hypoglycémie** : les 7 signes (temps ①, clic sur un signe) et les 4 resucrages affichent
+      leur vignette, plus aucun placeholder.
+- [ ] Rien de coupé/déformé à ~1 m de lecture ; poids de page raisonnable au chargement des
+      garde-mangers/grilles (62 nouveaux PNG, 22-140 Ko chacun).
+- [ ] **Défi ② Alimentation (comparaison)** : ajouter un des 5 nouveaux aliments à une comparaison
+      ne casse rien (pic calculé, badge de verdict cohérent) — pas de recalibrage de seuils attendu.
+
+#### Valeurs à revalider (S7 — 5 nouveaux aliments, ordres de grandeur qualitatifs)
+
+| Aliment | cg | fibres | protéines | lipides | portion | Remarques |
+| --- | --- | --- | --- | --- | --- | --- |
+| Pâtes blanches | 18 | 2 | 5,5 | 1 | 150 g cuites | GI supposé plus bas que le riz blanc |
+| Pâtes complètes | 12 | 4 | 6 | 1,5 | 150 g cuites | — |
+| Couscous complet | 14 | 4 | 5,5 | 1 | 150 g cuit | Écho riz complet/pain complet |
+| Banane plantain | 20 | 3 | 1,5 | 0,3 | 150 g cuite | Classée féculent (cuisinée), pas fruit |
+| Haricots rouges | 7 | 7 | 9 | 0,5 | 150 g cuits | Légumineuse, même pépite pédagogique que lentilles/pois chiches |
+
 ## Thème diabète (9 modules, S1-S12) — validation visuelle
 
 > À valider par Thibault (passe visuelle `npm run dev`).

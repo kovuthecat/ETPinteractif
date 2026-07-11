@@ -4,7 +4,7 @@
 
 > **Frontières** — STATUS : état actuel · `TASKS.md` : backlog + tâches · `plans/` : plan d'une tâche active · `VALIDATION.md` : checklist visuelle.
 >
-> **Dernière mise à jour :** 2026-07-10 (boite-a-outils BO9 — consolidation BO1-BO8 : craving → Stratégies & outils, refonte Composantes, vapoteuse substituts, section « Si j'ai un écart », 6 cartes Vrai/faux, filtre diabète activité, contexte mis à jour)
+> **Dernière mise à jour :** 2026-07-10 (illustrations-diabete S7 — chantier clos : 62 nouvelles vignettes M2/M3/M8 déposées, 75 assets diabète au total)
 
 ## Phase actuelle
 
@@ -120,6 +120,148 @@ Aucun push (attente validation orchestrateur).
 **Gate consolidation BO9 (avant commit)** : `npx tsc --noEmit` ✓ · `npm run build` ✓ · `npm test` ✓.
 Commits BO1-BO8 créés atomiquement (par tâche) + commit contexte
 (docs/STATUS/TASKS/VALIDATION/PROJECT_MAP/DECISIONS/index.md). Aucun push (attente validation Thibault).
+
+## Phase actuelle (suite)
+
+**Phase 11 (`plans/illustrations-diabete/`)** — **S1 : pipeline d'assets + silhouette partagée
+`bodyImage`/hotspots (2026-07-10)**, premier virage « illustration-driven » du thème diabète
+(abandon de la vectorisation, cf. `index.md` §1) :
+
+1. **`design/illustrations/build_assets.py`** (outil local Pillow+numpy, hors `package.json`) :
+   `build_opaque`/`build_transparent` — ré-encodage (élimine les chunks C2PA), recadrage optionnel,
+   flood-fill de transparence (8 points de bord, seuil 42, préserve l'intérieur clair fermé),
+   **palette adaptative 256 couleurs** (RGB seul pour les overlays, alpha préservé en pleine
+   résolution) pour tenir sous ~90 Ko/asset — les illustrations sources étant en aplats, la perte est
+   visuellement nulle (vérifié à l'œil sur chaque sortie).
+2. **7 assets déposés** dans `public/illustrations/diabete/` : `silhouette.png` (26 Ko, opaque),
+   `organe-yeux.png` (39 Ko), `organe-reins.png` (38 Ko), `organe-nerfs.png` (62 Ko),
+   `pied-auto-examen.png` (50 Ko), `plaque.png` (36 Ko), `artere-saine.png` (73 Ko).
+3. **`SilhouetteCorps.tsx`** (générique) : nouvelle prop `bodyImage?string` — si fournie, le
+   conteneur passe en carré (1:1), rend `<img>` au lieu du corps SVG codé, et les zones basculent en
+   **mode hotspot** (bouton transparent, halo radial doux au survol/actif — `--color-nav-soft` puis
+   `--color-confort-soft` si ouvert/allumé —, **aucun cercle ni icône permanents**). Sans `bodyImage`,
+   rendu strictement inchangé (corps SVG + pastilles pleines, tabac intact).
+4. **Wrapper diabète (`Silhouette.tsx`)** : passe `bodyImage={silhouette.png}` ; `SILHOUETTE_ANCHORS`
+   recalibrées en **pourcentages de l'image carrée** (repère différent du pixel `SILHOUETTE_VIEWBOX`
+   340×760 utilisé par le corps codé tabac), valeurs de l'index §7 — le nerf est positionné sur la
+   main (validé au prototypage). `RisqueCardioModule.tsx` (M4) ajusté en conséquence pour son overlay
+   plaque existant (positionnement seulement — le recâblage complet de la plaque en illustration reste
+   S3).
+
+**Points à revalider par Thibault** (non bloquants) : alignement fin des hotspots sur les organes de
+l'illustration (validation visuelle humaine, `npm run dev`, cf. `VALIDATION.md`) ; le recâblage réel
+des modules M4/M5/M7 (overlays, panneaux) reste à faire en S2/S3/S5.
+
+**Gate S1** : `npx tsc --noEmit` ✓ · `npm run build` ✓ · `npm test` ✓ (78/78 tests, aucune régression).
+
+**S2 (2026-07-10) — M5 Complications** : `ComplicationsModule.tsx` affiche désormais l'illustration de
+l'organe (`organe-yeux/reins/nerfs.png` ou `pied-auto-examen.png`) en tête du panneau détail, à côté du
+titre (104 px, cadre doux `--color-bg`/bordure fine — `.organeHead` dans le CSS module), pour les 4
+organes explorables (yeux/reins/nerfs/pied) ; cœur/cerveau restent verrouillés, inchangés. Aucune
+donnée texte modifiée (`complications/data.ts` intact) ; `SignatureEvitable` reste codé. Gate :
+`tsc --noEmit` ✓ · `npm run build` ✓ · `npm test` ✓ (78/78).
+
+**S3 (2026-07-10) — M4 Risque cardiovasculaire** :
+- **`PlaqueArtere.tsx` réécrit** : ne dessine plus le vaisseau (paroi/lumière codées) mais **seulement
+  le dépôt qui grossit** (une ellipse transparente, même courbe `pot = encrassement^0.75` et mêmes
+  paliers de teinte qu'avant), destinée à être posée en overlay sur une illustration. Nouvel export pur
+  `plaquePassagePct(encrassement)` (% de lumière ouverte, indépendant du tracé).
+- **Vue ② « L'artère »** : le vaisseau codé est remplacé par `artere-saine.png` (S1) en fond, avec
+  `PlaqueArtere` en overlay absolu (`.artereOverlay`, rotation ≈ -25° calée sur l'axe de l'illustration
+  par analyse PCA des pixels non transparents) qui grossit par-dessus. Le texte « Passage du sang : X % »
+  reste affiché sous l'image (`plaquePassagePct`).
+- **Vue ③ « L'anatomie »** : les pastilles de plaque codées (variante `pastille` de `PlaqueArtere`,
+  supprimée) sont remplacées par l'image `plaque.png` (26×26 px, transparente), positionnée et pivotée
+  par territoire (`PLAQUE_OVERLAYS` : cou 50/17 rot 90°, cœur 49/26 rot 0°, jambes 46/63 rot 90° —
+  index illustrations-diabete §7) directement sur la silhouette `bodyImage`.
+- **5 feux → lucide** : `IllustrationSlot` remplacé par `Droplet`/`Gauge`/`Droplets`/`Cigarette`/
+  `Armchair` dans un cadre circulaire neutre (`--color-bg`/bordure, icône `--color-nav`) — la
+  sémantique vert/ambre/rouge de l'état reste portée par la carte (bordure + bouton d'état), jamais par
+  l'icône elle-même, conformément au garde-fou du plan.
+
+⚠️ Point à revalider visuellement (Thibault, `npm run dev`) : l'alignement précis de la plaque overlay
+(vue ②, angle/position) et des pastilles `plaque.png` (vue ③) sur l'illustration — calculs faits par
+analyse d'image hors navigateur, jamais vérifiés à l'écran par Claude (règle projet). Un ajustement de
+coordonnées (`.artereOverlay` en %, `PLAQUE_OVERLAYS` en %) peut être nécessaire après cette revue.
+
+Gate S3 : `tsc --noEmit` ✓ · `npm run build` ✓ · `npm test` ✓ (78/78).
+
+**S4 (2026-07-10) — M1 Mécanisme** : `MecanismeModule.tsx` réécrit en intégralité (remplace le
+wizard codé 4-temps/5-cellules par une **animation illustration-driven à 4 modes**, contrôle **par
+cellule** — 3 cellules, pas 5), portée fidèlement du prototype validé `proto-m1-anim2.html` :
+- **Sélecteur de mode** (Sans diabète / Insulinopénie / Insulinorésistance / Mixte) persistant, pas
+  de navigation linéaire next/prev.
+- **Boucle de 3 phases** (400 → 1600 → 2700 ms, relance à 4900 ms) : clés qui partent du pancréas
+  vers les serrures → serrures qui réagissent (ouverte/fermée/rouillée, images crossfadées) →
+  sucre qui se dépose ou se vide dans une artère codée sous les cellules (jetons `sugar.png`,
+  8 max, libellé tricolore confort/vigilance/toxique).
+- **6 nouveaux assets** (`design/illustrations/build_assets.py` étendu, table `ASSETS` avec
+  support multi-dossier source `base=` pour les régénérations 2026-07-11 à la racine de
+  Downloads) : `cell-closed/open/rusty.png`, `key.png`, `sugar.png`, `pancreas.png` (recadré
+  moitié haute « en forme »).
+- **`prefers-reduced-motion`** : un hook dédié (`usePrefersReducedMotion`) coupe la boucle de
+  `setTimeout` et affiche directement l'état final du mode (clés insérées visibles, pas
+  invisibles) — la neutralisation CSS globale seule ne suffisait pas ici (elle accélère les
+  transitions mais la scène aurait continué à changer d'état toutes les ~1 s).
+- **Option écartée** : l'artère sous les cellules reste la **barre codée** (comme le prototype
+  validé), pas `artere-saine.png` étirée — l'idée (notée « à tester » dans le plan) n'a pas été
+  retenue faute de pouvoir A/B tester visuellement (pas de navigateur côté Claude) ; l'illustration
+  compacte du M4 risquait de se déformer sur une largeur ~4× plus grande que sa proportion native.
+
+⚠️ Point à revalider visuellement (Thibault, `npm run dev`) : positions/rotations des clés
+volantes et proportions de la scène (boîte de référence 1060×340 en %, jamais vérifiée à l'écran).
+
+Gate S4 : `tsc --noEmit` ✓ · `npm run build` ✓ · `npm test` ✓ (78/78).
+
+**S5 (2026-07-10) — M7 Traitements** : **vérification, aucun code modifié**. `TraitementsModule.tsx`
+consommait déjà `Silhouette` sans coordonnées en dur ; depuis S1 le wrapper diabète passe
+systématiquement `bodyImage`, donc M7 affichait déjà la silhouette-image + hotspots sans recâblage.
+Confirmé : cœur/reins `allume` (halo confort) selon la ligne d'ordonnance sélectionnée, 6 autres
+zones `masque`, halo « sucre » CSS existant compatible avec le conteneur carré, pictos déjà lucide.
+
+**S6 (2026-07-10) — M6 Suivi** : les 9 icônes de station du cadran (`suivi-stethoscope`,
+`suivi-prise-de-sang`, `suivi-organe-<protects>` ×7) passent d'`IllustrationSlot` (jamais générées)
+à un composant local `StationIcon` — lucide dans un cadre circulaire/arrondi neutre (`--color-bg`/
+bordure, icône `--color-nav`), aux 3 tailles déjà utilisées (34/38/44 px cadran+panneau, 160 px
+porte « Ce que ça garde »). Mapping : stéthoscope/prise de sang/vaisseaux/cœur/yeux/défenses
+(index §4) + **pied → `Footprints`** (non listé dans le plan, ajout évident) + **rein → reste
+l'image `organe-reins.png`** (S1, seule exception « tout lucide », lucide n'a pas de rein) +
+**dentiste (protège « bouche ») → `Smile`** (décidé). `IllustrationSlot` n'est plus importé dans
+ce module ; le cadran, l'aiguille et le centre (motif fil rouge) restent codés (inchangés).
+
+⚠️ Écart mineur au libellé du plan : « vaccins → Syringe » est repris tel quel pour la clé
+`defenses` (le seul examen protégeant les « défenses immunitaires » est justement Vaccins dans le
+code actuel — une seule icône, pas deux) — préféré à `ShieldPlus` (aussi suggéré) pour rester
+littéral avec l'exam concret que voit le patient. Détail dans `DECISIONS.md`.
+
+Gate S6 : `tsc --noEmit` ✓ · `npm run build` ✓ · `npm test` ✓ (78/78).
+
+**S7 (2026-07-10) — Vignettes M2/M3/M8, chantier illustrations-diabete clos** : lot quasi complet
+de sources retrouvé dans Downloads (généré côté Thibault en parallèle des sessions S1-S6) —
+**62 nouvelles vignettes** déposées via `build_assets.py` (table étendue à 75 entrées au total) :
+- **M2 Alimentation** (33) : les 28 aliments déjà en données + **5 nouveaux** ajoutés à
+  `alimentation/data.ts` (`pates-blanches`, `pates-completes`, `couscous-complet`,
+  `banane-plantain`, `haricots-rouges`, famille féculents, `// à revalider (Thibault)`) — seuils
+  du défi ② (`PEAK_BAS_MAX`/`PEAK_HAUT_MIN`) non affectés (constantes indépendantes du nombre
+  d'aliments, comme pour l'ajout oméga-3 C4).
+- **M3 Activité physique** (18) : centre + 4 rayons + les 12 activités existantes + **`sol`**
+  (« Se relever du sol », ajouté à `activite/data.ts`).
+- **M8 Hypoglycémie** (11) : les 7 signes + 4 resucrages, aucune donnée à ajouter (ids déjà présents).
+
+Échantillon relu à l'œil (légumineuses texturées lentilles/haricots rouges, huile d'olive, figure
+activité, signe, resucrage) : flood-fill propre, aucune perte de détail, poids raisonnable (22-140
+Ko, quelques assets riches en couleurs — pâtes complètes 131 Ko, couscous complet 140 Ko —
+légèrement au-dessus de la cible ~90 Ko mais non bloquant). `public/illustrations/diabete/` compte
+désormais **75 fichiers**. Session marquée récurrente dans l'index (§8) : à rouvrir à chaque futur
+lot de vignettes.
+
+Gate S7 : `tsc --noEmit` ✓ · `npm run build` ✓ · `npm test` ✓ (78/78, y compris `glycemieCurve.test.ts`
+inchangé malgré les 5 nouveaux aliments).
+
+**Chantier `illustrations-diabete` (S1-S7) clos ce jour** — voir `plans/illustrations-diabete/`
+pour le détail complet. Points ouverts non bloquants : alignement visuel de la plaque overlay (S3)
+et des clés volantes (S4) jamais vérifié à l'écran par Claude ; toutes les valeurs nutritionnelles
+`// à revalider (Thibault)`.
 
 ## Ce qui fonctionne
 

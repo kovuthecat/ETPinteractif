@@ -1111,4 +1111,333 @@ Conformité à l'invariant sans compromettre l'esthétique du module.
 - Aucune autre modification du module requise.
 - Le pattern (cible invisible > affichage) devient réutilisable pour d'autres modules si besoin.
 - `VALIDATION.md` doit noter : « cibles du module 10 testées ≥44 px ».
+---
 
+## 2026-07-10 — Illustrations diabète S1 : pipeline d'assets + silhouette `bodyImage`/hotspot
+
+### Décision
+
+1. **Pipeline `design/illustrations/build_assets.py`** (Pillow + numpy, outil local, hors
+   `package.json`) : `build_opaque` (fonds décoratifs) et `build_transparent` (overlays) partagent un
+   ré-encodage Pillow (élimine implicitement les chunks C2PA `caBX`), un flood-fill de transparence
+   depuis les 8 points de bord (seuil 42, préserve l'intérieur clair fermé — cellules/organes), puis
+   une **palette adaptative 256 couleurs** : RGB complet pour les fonds opaques, **RGB quantifié +
+   canal alpha préservé en pleine résolution** pour les overlays (l'indexation PNG ne supporte pas un
+   alpha en dégradé, nécessaire pour des bords de détourage nets). Les illustrations sources étant en
+   aplats (peu de couleurs), la perte est visuellement nulle (vérifiée à l'œil sur chaque sortie) pour
+   un gain de 60-85 % de poids (silhouette : 193 Ko -> 26 Ko).
+2. **`SilhouetteCorps.tsx`** (générique) : nouvelle prop `bodyImage?: string`. Si fournie, le
+   conteneur passe en carré (`aspect-ratio: 1/1`), un `<img>` remplace le corps SVG codé, et les
+   zones basculent en **mode hotspot** (bouton transparent, halo radial doux — `--color-nav-soft` au
+   survol/focus, `--color-confort-soft` persistant si `ouvert`/`allume`, rien si `verrouille` —
+   **aucun cercle ni icône permanents**, contrairement au mode pastille). Sans `bodyImage`, le rendu
+   (SVG codé + pastilles pleines + icônes Lock/CheckCircle2/ShieldCheck) reste **strictement
+   inchangé** — non-régression tabac garantie par construction (branche de code distincte).
+3. **Wrapper diabète (`Silhouette.tsx`)** : passe `bodyImage` vers `silhouette.png` et recalibre
+   `SILHOUETTE_ANCHORS` en **pourcentages de l'image carrée** (repère différent du pixel
+   `SILHOUETTE_VIEWBOX` 340×760, propre au corps SVG codé tabac), valeurs de
+   `plans/illustrations-diabete/index.md` §7 — le nerf est positionné sur la main (validé au
+   prototypage, pas sur le flanc comme l'ancien repère pixel le suggérait).
+4. **`RisqueCardioModule.tsx`** (M4) : son overlay de plaque existant (pastille codée `PlaqueArtere`
+   posée près de chaque organe) calculait sa position en divisant les anciennes ancres pixel par
+   `SILHOUETTE_VIEWBOX` — recalé pour lire directement les nouvelles ancres en %. Seul le calcul de
+   position est touché ; le recâblage complet de cet overlay en illustration (plaque en image, cf.
+   index §3) reste S3.
+
+### Contexte
+
+Suite du chantier `plans/illustrations-diabete/` : après analyse de ~70 images générées et une série
+de prototypes cliquables validés visuellement par Thibault (silhouette + hotspots sans cercle,
+plaque en overlay, animation M1 à 4 modes — cf. index §6), le virage « illustration + overlay
+interactif » remplace la vectorisation initialement prévue. S1 industrialise le pipeline et donne à
+la silhouette partagée sa capacité `bodyImage`/hotspot, **sans encore recâbler** les modules
+consommateurs M4/M5/M7 (overlays fins, panneaux détail — S2/S3/S5).
+
+### Alternatives envisagées
+
+- Vectorisation SVG des illustrations → écartée (déjà tranché avant S1, cf. index §1 : testé, 2,1 Mo
+  pour la silhouette seule, sans zones exploitables, inutile aux tailles d'affichage réelles).
+- Garder les ancres diabète en repère pixel `SILHOUETTE_VIEWBOX` et les convertir à la volée dans le
+  composant générique → écarté : le conteneur `bodyImage` est carré (1:1) alors que
+  `SILHOUETTE_VIEWBOX` reflète les proportions du corps codé tabac (340×760) ; exprimer les ancres
+  directement en % est la représentation la plus simple, sans changer l'API des modules consommateurs
+  (toujours des `ZoneId`, jamais des coordonnées).
+- Quantifier aussi le canal alpha des overlays (palette RGBA indexée) → écarté : casserait les bords
+  anti-aliasés du flood-fill (contour visiblement crénelé) ; seul le RGB est quantifié, l'alpha reste
+  en pleine résolution.
+
+### Raison du choix
+
+Minimiser le poids des assets sans dépendance runtime nouvelle (Pillow/numpy = outillage local) ni
+perte visuelle perceptible, tout en gardant `SilhouetteCorps` strictement rétro-compatible tabac —
+la prop `bodyImage` reste neutre (aucun nom de thème dans `src/components/`), conformément à
+l'invariant multi-thèmes.
+
+### Conséquences
+
+- `public/illustrations/diabete/` : 7 PNG committés (silhouette 26 Ko · organe-yeux 39 Ko ·
+  organe-reins 38 Ko · organe-nerfs 62 Ko · pied-auto-examen 50 Ko · plaque 36 Ko · artere-saine
+  73 Ko) — tous sous ou proches de la cible ~90 Ko/asset (index §2).
+- `SILHOUETTE_ANCHORS` (diabète) change définitivement de repère (pixel → % de l'image carrée) :
+  toute évolution future des ancres diabète doit rester en %, ne pas revenir au pixel
+  `SILHOUETTE_VIEWBOX`.
+- `SILHOUETTE_VIEWBOX` reste inchangé et utilisé tel quel par la branche SVG codée (tabac).
+- `build_assets.py` est réutilisable tel quel pour les prochains lots (S2/S3/S7) : ajouter des lignes
+  à la table `ASSETS` en tête de fichier.
+
+### Impact IA
+
+- S2 (M5 Complications), S3 (M4 Risque CV), S5 (M7 Traitements) consomment `bodyImage` déjà câblé :
+  n'ont qu'à poser leurs overlays/panneaux via `children` + `SILHOUETTE_ANCHORS` (%), pas à retoucher
+  `SilhouetteCorps` ni le wrapper diabète, sauf besoin réel non anticipé (à documenter ici si ça arrive).
+- Si Thibault ajuste une ancre (§7 de l'index), modifier uniquement `SILHOUETTE_ANCHORS` dans
+  `src/features/diabete/components/Silhouette.tsx` — aucune reconception du composant générique.
+---
+
+## 2026-07-10 — Illustrations diabète S3 : M4 devient illustration-driven (artère + plaque + feux lucide)
+
+### Décision
+
+1. **`PlaqueArtere.tsx` réduit à sa plus simple expression** : le composant ne dessine plus le
+   vaisseau (paroi + lumière, rectangles codés) — seulement **le dépôt qui grossit** (une ellipse
+   transparente, `viewBox 0 0 100 100`), destinée à être posée en overlay sur une illustration. La
+   courbe de croissance (`pot = encrassement^0.75`) et les paliers de teinte (vigilance-soft →
+   vigilance → toxique) sont conservés à l'identique. Nouvel export pur `plaquePassagePct(encrassement)`
+   qui calcule le « % de lumière ouverte » indépendamment de tout tracé (formule reprise de l'ancien
+   `wallFrac`), pour garder le texte « Passage du sang : X % » sans dépendre de la géométrie SVG.
+2. **Vue « L'artère » (M4)** : `artere-saine.png` (S1) devient le fond de la scène ; `PlaqueArtere`
+   (nouvelle forme) est posé en overlay absolu par-dessus, dimensionné et **pivoté (~-25°)** pour
+   s'aligner sur l'axe long de l'illustration. L'angle a été mesuré par **analyse d'image** (PCA sur
+   les pixels non transparents de `artere-saine.png` — script Python ponctuel, pas conservé dans le
+   repo) plutôt qu'à l'œil, faute d'accès navigateur pendant le développement (règle projet).
+3. **Vue « L'anatomie » (M4)** : les pastilles de plaque codées (ancienne variante `pastille` de
+   `PlaqueArtere`, supprimée) sont remplacées par l'image `plaque.png` (S1), positionnée et pivotée
+   par territoire via une nouvelle table locale `PLAQUE_OVERLAYS` (cou 50/17 rot 90°, cœur 49/26
+   rot 0°, jambes 46/63 rot 90° — valeurs de `plans/illustrations-diabete/index.md` §7).
+4. **5 feux → lucide** : `IllustrationSlot` (placeholders `risque-cardio-feu-*`, jamais générés)
+   remplacé par `Droplet`/`Gauge`/`Droplets`/`Cigarette`/`Armchair` dans un cadre circulaire neutre
+   (fond `--color-bg`, bordure `--color-line`, icône `--color-nav`). La couleur d'état (vert/ambre/
+   rouge) reste portée uniquement par la carte (bordure + bouton), jamais par l'icône — conformément
+   au garde-fou du plan S3.
+
+### Contexte
+
+Suite de S1 (pipeline + silhouette `bodyImage`) et S2 (M5). S3 est la première session qui recâble
+réellement un module consommateur (M4) sur le virage illustration-driven décidé en amont du chantier
+(index §1/§3) : « artère saine (image) + plaque codée qui grossit » et « plaque en overlay sur
+territoire », feux abandonnés au profit de lucide (plus nets à 56-74 px, thématisables).
+
+### Alternatives envisagées
+
+- Garder `PlaqueArtere` capable de dessiner le vaisseau complet (variante `artere`) en plus du nouveau
+  mode overlay → écarté : le vaisseau codé devient un doublon mort dès que l'illustration le remplace,
+  et le projet proscrit le code mort (« si vous êtes certain que quelque chose est inutilisé, vous
+  pouvez le supprimer complètement »).
+- Deviner l'angle de rotation de `artere-saine.png` à l'œil → écarté au profit d'une mesure
+  reproductible (PCA sur les pixels non transparents), documentée ici pour qu'un futur ajustement
+  parte d'une valeur justifiée plutôt que d'un nouveau tâtonnement.
+- Conserver la variante `pastille` de `PlaqueArtere` pour un usage futur hypothétique (M5 ?) → écartée :
+  aucun consommateur actuel ni prévu dans le plan (M5 utilise ses propres illustrations d'organe
+  depuis S2), donc code mort par anticipation — à recréer si un besoin réel apparaît.
+
+### Raison du choix
+
+Aligner M4 sur la décision de fond du chantier (illustration-driven) sans dupliquer de logique : la
+seule partie qui reste « réellement codée » (index §1.6) est le dépôt qui grossit, pas le vaisseau —
+exactement ce que `PlaqueArtere` fait désormais, et rien de plus.
+
+### Conséquences
+
+- `PlaqueArtere` n'a plus qu'une seule forme de rendu (l'overlay) ; toute réintroduction d'un vaisseau
+  codé nécessiterait un nouveau composant, pas une variante de celui-ci.
+- L'alignement visuel précis (angle, position) de la plaque sur `artere-saine.png` et de `plaque.png`
+  sur la silhouette **n'a pas été vérifié à l'écran** par Claude (règle projet : pas de navigateur) —
+  point de revalidation explicite dans `VALIDATION.md` §S3, avec un chemin de correction clair
+  (constantes `.artereOverlay` en CSS, `PLAQUE_OVERLAYS` dans le module).
+- Les ids `risque-cardio-feu-*` (jamais illustrés) disparaissent définitivement du code ; plus aucune
+  référence dans `design/illustrations/prompts-illustrations-diabete.html` (déjà absents).
+
+### Impact IA
+
+- Si Thibault demande un recalage de la plaque (vue artère ou anatomie), modifier uniquement les
+  constantes CSS (`.artereOverlay` : `left`/`top`/`width`/`height`/rotation) ou la table
+  `PLAQUE_OVERLAYS` du module — aucune reconception de `PlaqueArtere.tsx` nécessaire, sauf si la forme
+  du dépôt elle-même doit changer.
+- `plaquePassagePct` est la seule source de vérité pour le texte « passage du sang » : si la formule
+  de croissance change, l'ajuster une fois ici, pas dans le module consommateur.
+---
+
+## 2026-07-10 — Illustrations diabète S4 : M1 devient une animation illustration-driven à 4 modes
+
+### Décision
+
+1. **`MecanismeModule.tsx` réécrit en intégralité** — l'ancien wizard codé (4 temps linéaires,
+   next/prev, 5 cellules-œufs en SVG) est remplacé par une **animation à 4 modes persistants**
+   (Sans diabète / Insulinopénie / Insulinorésistance / Mixte), **3 cellules** contrôlées
+   individuellement, portée fidèlement du prototype validé `proto-m1-anim2.html` (index
+   illustrations-diabete §6, qui fait foi) : boucle de 3 phases (clés qui partent du pancréas →
+   serrures qui réagissent → sucre qui se dépose/se vide), rejouée automatiquement toutes les
+   ~4,9 s tant que le mode reste sélectionné.
+2. **6 nouveaux assets** (`cell-closed/open/rusty.png`, `key.png`, `sugar.png`, `pancreas.png`)
+   ajoutés à `build_assets.py`. Le script gagne un paramètre `base` par entrée de la table
+   `ASSETS`, pour lire deux sources régénérées le 2026-07-11 (`cellule ouverte.png`, `Cellule
+   serrure rouillée.png`) déposées à la **racine** de `Downloads` plutôt que dans le sous-dossier
+   habituel `Downloads\illustration ETP` (nouvelle constante `SRC_DIR_ROOT`).
+3. **Artère sous les cellules : reste codée** (barre CSS + jetons image), **pas**
+   `artere-saine.png` étirée. Le plan proposait explicitement de « tester les deux rendus et
+   garder le plus lisible » — sans accès navigateur pour comparer visuellement, le choix par
+   défaut a été de garder l'option **déjà validée par Thibault au prototypage** (la barre codée du
+   proto) plutôt que de risquer une image compacte déformée sur une largeur ~4× plus grande que sa
+   proportion native.
+4. **`prefers-reduced-motion` géré explicitement en JavaScript** (hook `usePrefersReducedMotion` +
+   court-circuit de la boucle de `setTimeout`), en plus de la neutralisation CSS globale
+   (`global.css`, transitions à 0.01 ms). La neutralisation CSS seule ne suffisait pas : elle
+   accélère les transitions mais la scène aurait continué à changer d'état toutes les ~1,3 s même
+   avec l'préférence système « mouvement réduit » activée — pas un « état statique lisible » au
+   sens de l'étape 5 du plan S4.
+
+### Contexte
+
+Suite de S1 (pipeline + silhouette). S4 est indépendante des silhouettes/organes des autres
+sessions (dépend seulement du pipeline d'assets), mais impose une réécriture complète du module
+car le modèle mental change (temps successifs → modes persistants, 5 cellules → 3, coordonnées
+codées → illustrations positionnées en %).
+
+### Alternatives envisagées
+
+- Garder l'ancien wizard 5-cellules et se contenter d'habiller ses étapes d'illustrations →
+  écarté : le prototype validé par Thibault (index §6) définit un modèle d'interaction
+  différent (mode persistant + boucle), pas une simple habillage visuel du wizard existant.
+- Utiliser `artere-saine.png` sous les cellules (option notée « à tester » dans le plan) → écartée
+  pour cette session par prudence (cf. décision ③) ; reste une piste explicite pour une itération
+  future si Thibault la demande après avoir vu le rendu codé actuel.
+- S'appuyer uniquement sur la règle CSS globale `prefers-reduced-motion` → écarté : elle ne coupe
+  pas la logique de `setTimeout` qui pilote les phases, seulement la durée des transitions
+  visuelles ; sans court-circuit JS, la scène continuerait de changer d'état en boucle.
+
+### Raison du choix
+
+Fidélité au prototype validé (seule source de vérité comportementale explicitement désignée par le
+plan) ; prudence sur l'option d'image non testée visuellement, en cohérence avec la règle projet
+« pas de navigateur côté Claude » — préférer une option déjà validée à une nouveauté non vérifiable
+plutôt que d'introduire un risque visuel supplémentaire dans la même session que S3 (déjà signalée
+comme point sensible).
+
+### Conséquences
+
+- Le composant n'a plus de notion de « temps 1 à 4 » linéaires ; toute référence future à
+  `plans/theme-diabete/S4.md` (D4, l'ancien wizard) est obsolète pour ce module — ce plan-ci
+  (`plans/illustrations-diabete/S4.md`) fait désormais autorité sur M1.
+- `build_assets.py` supporte maintenant des sources multi-dossiers (`base=`) — pattern réutilisable
+  si de futures régénérations d'illustrations atterrissent hors du sous-dossier `illustration ETP`.
+- Positions/rotations des clés volantes (constantes du module) sont une **première approximation**
+  calculée sans rendu visuel — point de revalidation explicite dans `VALIDATION.md` §S4.
+
+### Impact IA
+
+- Si Thibault demande finalement l'option `artere-saine.png` sous les cellules, c'est un
+  changement localisé au bloc `.canalWrap`/`.canal` de `MecanismeModule.tsx`/`.module.css` — pas
+  une reconception du reste de l'animation (modes, phases, clés, cellules inchangés).
+- Si un mode doit changer (nouveau mécanisme, textes de légende), modifier uniquement la table
+  `MODES` du module — la logique de phases/timers est générique et ne connaît pas le contenu des
+  modes.
+---
+
+## 2026-07-10 — Illustrations diabète S6 : M6 stations/organes du cadran → lucide
+
+### Décision
+
+Les 9 icônes de station de `SuiviModule.tsx` (`suivi-stethoscope`, `suivi-prise-de-sang`,
+`suivi-organe-<protects>` × 7) passent d'`IllustrationSlot` (jamais générées, placeholders
+permanents) à un composant local `StationIcon` (lucide dans un cadre neutre circulaire/arrondi),
+avec deux ajustements par rapport au libellé de l'index §4 :
+
+1. **`defenses` → `Syringe`** (pas `ShieldPlus`, pourtant aussi suggéré). Dans le code actuel,
+   `defenses` n'est le `protects` que d'un seul examen (« Vaccins ») — il n'existe pas de slot
+   séparé « défenses immunitaires » vs « vaccins » comme le laissait entendre la formulation à
+   deux entrées de l'index (`défenses → ShieldPlus`, `vaccins → Syringe`). Une seule icône,
+   choisie pour matcher l'examen concret vu par le patient.
+2. **`pied` → `Footprints`**, absent de la liste de l'index (qui ne couvrait pas ce cas) — ajout
+   évident, lucide propose une icône directement adaptée.
+
+Rein et dentiste suivent la décision déjà actée dans l'index §4 : rein reste l'image
+`organe-reins.png` (S1) faute d'icône lucide adaptée ; dentiste (protège « bouche ») → `Smile`.
+
+### Contexte
+
+Suite de S1-S5. Session indépendante (pas de dépendance sur la silhouette ou le pipeline
+d'assets), portant sur le cadran/panneau de réglage/porte « Ce que ça garde » de M6 uniquement.
+
+### Raison du choix
+
+Minimiser l'écart avec l'intention du plan (mêmes familles d'icônes suggérées) tout en respectant
+la structure de données réelle (`ProtectsId`, une seule dimension de clé pour l'icône) plutôt que
+d'introduire une distinction vaccins/défenses qui n'existe nulle part ailleurs dans le code.
+
+### Conséquences
+
+- `IllustrationSlot` n'est plus importé dans `SuiviModule.tsx` ; les ids `suivi-*` ne sont plus
+  référencés (aucune image `suivi-*.png` à produire — ils étaient de toute façon toujours restés
+  au stade placeholder).
+- Le cadran, l'aiguille et le centre (motif fil rouge, `dialCenter*`) restent des tracés SVG codés,
+  inchangés.
+
+### Impact IA
+
+- Si Thibault souhaite distinguer vaccins de « défenses immunitaires » avec deux icônes, cela
+  demande d'abord un changement de modèle de données (`ExamDef` ou une nouvelle clé), pas un
+  changement purement visuel de `StationIcon`.
+---
+
+## 2026-07-10 — Illustrations diabète S7 : 62 vignettes M2/M3/M8, chantier clos
+
+### Décision
+
+Déposer en une seule session les 62 vignettes M2 (33 aliments)/M3 (18 : centre + 4 rayons + 13
+activités)/M8 (11 : 7 signes + 4 resucrages) — le lot de sources générées par Thibault en parallèle
+des sessions S1-S6 s'est avéré quasi complet à l'ouverture de S7 (62/62 fichiers attendus déjà
+présents, vérifiés un par un avant tout traitement). Ajout de 5 nouveaux aliments
+(`alimentation/data.ts` : `pates-blanches`, `pates-completes`, `couscous-complet`,
+`banane-plantain`, `haricots-rouges`) et d'une nouvelle activité (`activite/data.ts` : `sol`),
+tous marqués `// à revalider (Thibault)`. Le chantier `plans/illustrations-diabete/` (S1-S7) est
+déclaré **clos** à l'issue de cette session.
+
+### Contexte
+
+S7 est une session structurellement récurrente (« au fil des générations ») ; elle n'était censée
+couvrir qu'un lot partiel au lancement du chantier. Le rythme réel de génération de Thibault ayant
+dépassé celui des sessions de câblage, la quasi-totalité du travail restant (mentionné §8 de
+l'index comme « à générer encore ») était déjà disponible au moment d'exécuter S7 — traité en une
+seule passe plutôt qu'en plusieurs lots.
+
+### Alternatives envisagées
+
+- Ne traiter que le sous-ensemble explicitement listé dans le plan original (M2 : 16 aliments ;
+  M3 : danse/laver-la-voiture ; M8 : 11) et laisser le reste pour une session future → écarté :
+  toutes les sources étaient déjà là et vérifiées, aucune raison de fractionner artificiellement.
+- Régénérer/retoucher le style des vignettes acceptées avec des écarts visuels (attiéké, igname,
+  plantain) → écarté, conformément à la décision déjà actée dans le plan (« écarts de style
+  tolérés »).
+
+### Raison du choix
+
+Minimiser le nombre de sessions pour un travail mécanique (même pipeline que S1, aucune nouvelle
+décision de conception) une fois toutes les sources disponibles et vérifiées.
+
+### Conséquences
+
+- `public/illustrations/diabete/` passe de 13 à **75 fichiers**.
+- `design/illustrations/build_assets.py` : table `ASSETS` étendue à 75 entrées, réutilisable telle
+  quelle pour tout futur lot (ajouter des lignes).
+- `alimentation/data.ts` (32 → 33 aliments) et `activite/data.ts` (12 → 13 activités) : les seuils
+  du défi ② Alimentation (`PEAK_BAS_MAX`/`PEAK_HAUT_MIN`) restent inchangés — constantes
+  indépendantes du nombre d'aliments, vérifié par les 78 tests existants restés verts.
+- **Chantier `illustrations-diabete` clos** : S1 à S7 toutes exécutées. Reste ouvert : validation
+  visuelle humaine de l'ensemble (`VALIDATION.md`), en particulier les deux points signalés comme
+  jamais vérifiés à l'écran (plaque overlay M4, clés volantes M1).
+
+### Impact IA
+
+- Toute nouvelle vignette future (nouvel aliment, nouvelle activité, nouveau signe/resucrage) suit
+  le même chemin : ajouter la donnée dans le `data.ts`/module concerné (`// à revalider`), ajouter
+  la ligne correspondante à `ASSETS` dans `build_assets.py`, relancer le script.
