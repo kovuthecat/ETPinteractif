@@ -2,6 +2,18 @@
   position: relative;
 }
 
+/* S6-v2 (index v2 §T4) : taille minimale commune de LA COURBE, posée ici une seule fois pour
+   les 4 modules qui la réutilisent (Alimentation/Activité/Hypoglycémie/Insuline) — plutôt que
+   patcher chaque conteneur. En dessous de 480px de viewport (mobile), pas de plancher forcé
+   (évite un débordement réel sur petit écran) ; au-dessus, la courbe ne descend plus sous
+   440px de large — si son conteneur flex est trop étroit (ex. Alimentation défi ③ avec le
+   garde-manger à côté), l'ancêtre `flex-wrap` reflue plutôt que d'écraser la courbe. */
+@media (min-width: 480px) {
+  .wrap {
+    min-width: 440px;
+  }
+}
+
 .svg {
   display: block;
   width: 100%;

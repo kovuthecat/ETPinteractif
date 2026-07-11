@@ -261,9 +261,12 @@
   margin-bottom: var(--space-sm);
 }
 
+/* S6-v2 (#14) : `width: 380px` + `flex-basis: 340px` (redondants, sources potentielles de
+   confusion selon les moteurs de rendu) remplacés par un simple `max-width` + `min-width: 0`
+   qui laisse la carte se réduire jusqu'à son contenu plutôt que forcer une largeur fixe. */
 .d2Card {
-  width: 380px;
-  max-width: 100%;
+  max-width: 380px;
+  min-width: 0;
   flex: 1 1 340px;
   display: flex;
   flex-direction: column;
@@ -387,8 +390,9 @@
   justify-content: space-around;
 }
 
+/* S6-v2 (#15) : même correction qu'en défi ② — `width` fixe retiré au profit de `min-width: 0`. */
 .d3Slot {
-  width: 190px;
+  min-width: 0;
   flex: 1 1 170px;
   max-width: 220px;
   display: flex;
@@ -621,8 +625,12 @@
 
 /* --- Courbe (partagée entre tous les défis + synthèse) --- */
 
+/* S6-v2 (#15, #16) : plafond relevé 760→900px — la courbe des défis ③/④ (pleine largeur,
+   pas de garde-manger à côté) restait capée bien en-dessous de l'espace réellement
+   disponible. Le plancher commun (`CourbeGlycemie.module.css` §S6-v2) couvre le cas inverse
+   (défi ③, garde-manger présent, colonne plus étroite). */
 .courbeCard {
-  max-width: 760px;
+  max-width: 900px;
   margin: 0 auto;
   padding: var(--space-md) var(--space-lg);
   display: flex;
