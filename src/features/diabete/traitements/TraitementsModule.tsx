@@ -115,19 +115,16 @@ export default function TraitementsModule({ onNavigate }: ModuleProps) {
       "Cliquez « Voir l'effet » sur une ligne pour voir où elle agit — ou cliquez « Ordonnance » pour tout allumer d'un coup.";
   }
 
+  // S8 (passe « moins de texte ») : eyebrow seul en pied de module, plus de paragraphe
+  // ambiant (le soignant narre) — la sortie de l'interaction reste `sideText` (panneau).
   const toutesPresentes = lignes.length > 0 && presentes.length === lignes.length;
   let captionEyebrow: string;
-  let captionText: string;
   if (viewMode === 'all' && toutesPresentes) {
     captionEyebrow = 'Carte de protection';
-    captionText = 'Voici la carte pleinement allumée de ce que vos traitements protègent — pas seulement le sucre.';
   } else if (viewMode === 'all') {
     captionEyebrow = "Vue d'ensemble de l'ordonnance";
-    captionText = "Toutes les lignes présentes s'allument en même temps sur la silhouette.";
   } else {
     captionEyebrow = 'On transcrit, ligne par ligne';
-    captionText =
-      "Chaque ligne de l'ordonnance réelle du patient — molécule tapée, classe choisie — jamais un catalogue à comparer.";
   }
 
   return (
@@ -258,7 +255,6 @@ export default function TraitementsModule({ onNavigate }: ModuleProps) {
 
       <div className={styles.caption}>
         <span className="eyebrow">{captionEyebrow}</span>
-        <p className={styles.captionText}>{captionText}</p>
       </div>
 
       <ModuleFooterNav

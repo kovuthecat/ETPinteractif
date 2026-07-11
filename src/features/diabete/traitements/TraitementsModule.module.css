@@ -265,7 +265,7 @@
 .silhouetteHost {
   position: relative;
   width: 100%;
-  max-width: 300px;
+  max-width: 420px;
 }
 
 /* Halo positif uniquement (systémique, « sucre ») — jamais de rouge, jamais de clignotement :
@@ -323,13 +323,6 @@
   gap: var(--space-xs);
 }
 
-.captionText {
-  margin: 0;
-  max-width: 70ch;
-  font-size: 18px;
-  line-height: 1.45;
-  color: var(--color-text);
-}
 
 @media (max-width: 900px) {
   .grid {
