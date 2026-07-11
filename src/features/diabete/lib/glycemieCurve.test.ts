@@ -6,6 +6,7 @@ import {
   paramsFromAssiette,
   sampleRepas,
   sampleActivite,
+  sampleRepasAvecBolus,
   sampleRecuperation,
   sampleJournee,
   sampleNuits,
@@ -314,6 +315,64 @@ describe('invariant 6 — sampleActivite (microcoupures)', () => {
       maxJump = Math.max(maxJump, Math.abs(curve[i].v - curve[i - 1].v));
     }
     expect(maxJump).toBeLessThan(4);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Invariant 10 — sampleRepasAvecBolus (module 10, insuline rapide pré-prandiale).
+// ---------------------------------------------------------------------------
+
+describe('invariant 10 — sampleRepasAvecBolus', () => {
+  const params: RepasParams = { charge: 0.55, frein: 0.35, retard: 0.3 };
+
+  it('dose: 0 -> courbe identique à sampleRepas sur le domaine commun (bolus nul ne change rien)', () => {
+    const sansBolus = sampleRepas(params);
+    const doseNulle = sampleRepasAvecBolus(params, { dose: 0, tInjection: -15 });
+    for (const p of sansBolus) {
+      expect(valueAt(doseNulle, p.t)).toBeCloseTo(p.v, 6);
+    }
+  });
+
+  it('un bolus adéquat (temps ①) : pic strictement plus bas que sans bolus — la rapide couvre le repas', () => {
+    const sansBolus = peakOf(sampleRepas(params)).v;
+    const avecBolus = peakOf(sampleRepasAvecBolus(params, { dose: 0.5, tInjection: -15 })).v;
+    expect(avecBolus).toBeLessThan(sansBolus);
+  });
+
+  it('temps ② : à dose égale, injecter avant (-15) couvre mieux qu\'injecter en retard (+30)', () => {
+    const avant = peakOf(sampleRepasAvecBolus(params, { dose: 0.5, tInjection: -15 })).v;
+    const retard = peakOf(sampleRepasAvecBolus(params, { dose: 0.5, tInjection: 30 })).v;
+    expect(avant).toBeLessThan(retard);
+  });
+
+  it('temps ③ : glycémie de départ élevée décale toute la courbe vers le haut, à bolus égal', () => {
+    const bolus = { dose: 0.5, tInjection: -15 };
+    const departHaut = sampleRepasAvecBolus(params, { ...bolus, depart: BASELINE + 20 });
+    const departDefaut = sampleRepasAvecBolus(params, { ...bolus, depart: BASELINE });
+    // t=-20 : avant le repas (repasLevelAt = BASELINE) et avant l'effet du bolus (latence 15 min
+    // après l'injection à -15, donc pas d'effet avant t=0) -> l'écart lu est exactement le décalage.
+    expect(valueAt(departHaut, -20) - valueAt(departDefaut, -20)).toBeCloseTo(20, 6);
+    expect(peakOf(departHaut).v).toBeGreaterThan(peakOf(departDefaut).v);
+  });
+
+  it('temps ④ : une 2ᵉ dose rapprochée fait plonger la courbe sous la baseline (hypo) ; une dose unique adéquate reste proche de la baseline', () => {
+    const doseUnique = sampleRepasAvecBolus(params, { dose: 0.5, tInjection: -15 });
+    const doubleDose = sampleRepasAvecBolus(params, { dose: 0.5, tInjection: -15, tSecondeDose: 15 });
+
+    const minUnique = Math.min(...doseUnique.map((p) => p.v));
+    const minDouble = Math.min(...doubleDose.map((p) => p.v));
+
+    expect(minUnique).toBeGreaterThanOrEqual(BASELINE - 8);
+    expect(minDouble).toBeLessThan(BASELINE - 15);
+    expect(minDouble).toBeLessThan(minUnique);
+  });
+
+  it('bornes : toutes les valeurs restent dans [0, LEVEL_MAX], y compris dose forte + cumul', () => {
+    const curve = sampleRepasAvecBolus(params, { dose: 1, tInjection: -15, tSecondeDose: 10, depart: BASELINE + 30 });
+    for (const p of curve) {
+      expect(p.v).toBeGreaterThanOrEqual(0);
+      expect(p.v).toBeLessThanOrEqual(LEVEL_MAX);
+    }
   });
 });
 

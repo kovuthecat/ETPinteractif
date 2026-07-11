@@ -24,6 +24,7 @@
  * - paramsFromAssiette(assiette) : RepasParams
  * - sampleRepas(params, opts?) : Point[] — courbe post-repas 0→180 min
  * - sampleActivite(params, activite) : Point[] — courbe + effet d'un mouvement
+ * - sampleRepasAvecBolus(params, bolus) : Point[] — courbe + effet d'un bolus rapide (S10)
  * - sampleRecuperation(opts) : Point[] — courbe de récupération après resucrage(s)
  * - sampleJournee(scenario, seed) : Point[] — trace 24 h (coucher → coucher)
  * - sampleNuits(scenario, n, seed) : Point[][] — n traces superposées
@@ -261,6 +262,71 @@ export function sampleActivite(params: RepasParams, activite: ActiviteParams): P
     const base = repasLevelAt(params, t);
     const mult = activiteMultiplier(t, activite);
     return BASELINE + Math.max(0, base - BASELINE) * mult;
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Bolus rapide / pré-prandial (module 10)
+// ---------------------------------------------------------------------------
+
+export type BolusParams = {
+  /** Quantité de rapide, qualitative [0,1] : 0 = pas de bolus, ~0.5 = couvre un repas moyen,
+   *  1 = forte dose. Jamais convertie en unités affichées. */
+  dose: number;
+  /** Instant d'injection en minutes relatives au repas (t=0). Négatif = avant le repas
+   *  (ex. -15 = 15 min avant). // à revalider (Thibault) : -15 = optimum analogue rapide. */
+  tInjection: number;
+  /** Glycémie de départ avant le repas, échelle 0–100 (défaut BASELINE). Sert au temps ③
+   *  (correction) : point de départ plus haut/bas. */
+  depart?: number;
+  /** Instant d'une 2ᵉ dose de correction (minutes, t=0 = repas). Absent = pas de cumul.
+   *  Sert au temps ④ : une 2ᵉ dose rapprochée creuse sous la cible. */
+  tSecondeDose?: number;
+};
+
+/** Profil PK/PD qualitatif d'un analogue rapide (`// à revalider (Thibault)`, cf.
+ *  `docs/diabete/10-insuline-rapide.md` §5 — Slattery 2018, De Block 2022, Walsh 2014). */
+const BOLUS_LATENCE = 15; // début d'action ~15 min après injection
+const BOLUS_PIC = 60; // pic d'action ~60 min après injection
+// durée d'action ~3 h (borne basse de l'activité clinique 3-4 h) : calibrée à la borne basse
+// plutôt qu'à 4 h pour qu'un bolus unique bien dosé/bien timé ne laisse pas une traîne
+// résiduelle qui creuse artificiellement sous la baseline après le retour à baseline du repas
+// (cf. glycemieCurve.test.ts « invariant 10 », qui distingue dose unique vs cumul) — reste
+// dans la fourchette sourcée, // à revalider (Thibault).
+const BOLUS_DUREE = 180;
+const BOLUS_EFFET_MAX = 55; // baisse max (points d'échelle 0–100) à dose=1 // à caler
+
+/** Effet hypoglycémiant instantané d'un bolus (points 0–100 soustraits), à `dtDepuisInjection`
+ *  minutes de l'injection. Cloche : 0 avant la latence, monte jusqu'au pic, décroît à 0 en fin
+ *  de durée d'action. `dose` [0,1] met à l'échelle l'amplitude. */
+function bolusEffet(dtDepuisInjection: number, dose: number): number {
+  if (dose <= 0 || dtDepuisInjection <= BOLUS_LATENCE || dtDepuisInjection >= BOLUS_DUREE) return 0;
+  const montee = BOLUS_PIC - BOLUS_LATENCE;
+  const descente = BOLUS_DUREE - BOLUS_PIC;
+  const f =
+    dtDepuisInjection <= BOLUS_PIC
+      ? ease((dtDepuisInjection - BOLUS_LATENCE) / montee)
+      : 1 - ease((dtDepuisInjection - BOLUS_PIC) / descente);
+  return dose * BOLUS_EFFET_MAX * f;
+}
+
+/**
+ * Courbe post-repas + effet d'un bolus rapide (avec correction de départ et 2ᵉ dose
+ * optionnelle). Sur le patron de `sampleActivite` : n'altère jamais `repasLevelAt`, se
+ * contente de soustraire l'effet du bolus par-dessus.
+ */
+export function sampleRepasAvecBolus(params: RepasParams, bolus: BolusParams): Point[] {
+  const depart = bolus.depart ?? BASELINE;
+  const decalageDepart = depart - BASELINE; // temps ③ : correction du point de départ
+  const tEnd = Math.max(180, (bolus.tSecondeDose ?? 0) + BOLUS_DUREE);
+  return sampleRange(-20, tEnd, 1, (t) => {
+    const repas = repasLevelAt(params, t) + decalageDepart;
+    let effet = bolusEffet(t - bolus.tInjection, bolus.dose);
+    if (bolus.tSecondeDose !== undefined) {
+      // 2ᵉ dose de correction (même dose qualitative que la principale, à défaut d'un réglage) :
+      effet += bolusEffet(t - bolus.tSecondeDose, bolus.dose);
+    }
+    return clampRange(repas - effet, 0, LEVEL_MAX);
   });
 }
 
