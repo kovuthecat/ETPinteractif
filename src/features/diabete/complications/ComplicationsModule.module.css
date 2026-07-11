@@ -140,6 +140,12 @@
   max-width: 760px;
 }
 
+.organeHead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
 .temps {
   display: flex;
   align-items: center;

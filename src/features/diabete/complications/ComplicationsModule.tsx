@@ -133,7 +133,15 @@ export default function ComplicationsModule({ onNavigate }: ModuleProps) {
 
           {organeOuvert && (
             <div className={`${styles.organe} ${styles.fade}`}>
-              <span className="eyebrow">{organeOuvert.nom}</span>
+              <div className={styles.organeHead}>
+                <IllustrationSlot
+                  id={organeOuvert.id === 'pied' ? 'pied-auto-examen' : `organe-${organeOuvert.id}`}
+                  label={organeOuvert.nom}
+                  shape="rounded"
+                  size={104}
+                />
+                <span className="eyebrow">{organeOuvert.nom}</span>
+              </div>
 
               <div className={`panel ${styles.temps} ${styles.tempsMenace}`}>
                 <span className={styles.pointMenace} aria-hidden="true" />
