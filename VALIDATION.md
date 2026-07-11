@@ -652,3 +652,147 @@ Checklist (S12, mise à jour S14) :
 - [ ] « Plonge bas » mène à hypo d'abord.
 - [ ] Raccord nuit → jour sans saut brutal visible sur la courbe, quel que soit le scénario.
 
+## Corrections visuelles diabète (revue Thibault, 2026-07-11) · plan: → plans/corrections-visuelles-diabete/
+
+> 13 captures annotées par Thibault sur le déployé. Détail par session dans
+> `plans/corrections-visuelles-diabete/S<n>.md`. Statut global dans `index.md` du plan.
+
+### S1 — Silhouette partagée agrandie + halo « allumé » + retrait boutons organe
+
+**Statut** : [ ] à valider par Thibault (code livré 2026-07-11)
+
+- [ ] Silhouette nettement plus grande (élément dominant) dans Traitements, Complications, Risque
+      cardio ③ — plus une vignette latérale.
+- [ ] Zone active/ouverte/allumée : halo large + anneau net + léger `scale`, clairement visible
+      (Traitements cœur/reins, Complications organe ouvert, Risque cardio territoire).
+- [ ] Découvrabilité discrète au repos (fin anneau pointillé) sans « cercle plein ».
+- [ ] Plus aucun bouton/chip organe redondant (Complications, Risque cardio ③) — sélection
+      uniquement sur la silhouette.
+- [ ] Complications : cliquer cœur/cerveau sur la silhouette ouvre bien le panneau « déjà vu —
+      module 4 » (zones grisées mais cliquables, plus de chips).
+- [ ] `prefers-reduced-motion` : pas de `scale` animé.
+- [ ] **Tabac `benefices-arret` strictement inchangé** (corps SVG codé + pastilles pleines, aucune
+      régression) — régression à vérifier explicitement.
+
+### S2 — Courbe glycémie : pic lisible, bande-cible, comparaison fantôme, ordre visible
+
+**Statut** : [ ] à valider par Thibault (code livré 2026-07-11)
+
+- [ ] Module 2 : une bande-cible (zone verte) apparaît derrière toutes les courbes (défis
+      ①-④, synthèse, fiche imprimable) — cohérente avec celle du module 9 (Insuline).
+- [ ] Un repas à base d'un seul féculent « rouge » (ex. riz blanc seul) culmine visiblement
+      haut ; 3 féculents cumulés culminent encore plus haut, proche du plafond.
+- [ ] Défi ① Composition : dès qu'il y a au moins un féculent dans l'assiette, une courbe
+      fantôme « Vos féculents seuls » apparaît (sauf si l'assiette ne contient QUE des
+      féculents — dans ce cas les deux courbes seraient identiques, fantôme masqué).
+- [ ] Défi ④ Proportion : une courbe fantôme « Vos féculents seuls » apparaît dès qu'il y a
+      au moins un féculent dans les réglages (masquée à 0 féculent).
+- [ ] Défi ③ Ordre : l'écart entre la courbe actuelle et la courbe de référence est net et
+      visible (pas juste perceptible) ; les libellés disent explicitement « Féculent en
+      premier / au milieu / en dernier ».
+- [ ] Défi ② Qualité : les 4 duels suggérés donnent des verdicts cohérents — baguette (haut)
+      vs pain complet (moyen), riz blanc (haut) vs basmati (moyen), riz blanc (haut) vs
+      lentilles (bas), dattes (haut) vs pastèque (bas).
+- [ ] Rien ne casse visuellement avec la bande-cible superposée aux courbes fantômes/duo déjà
+      colorées (lisibilité des 3 zones toxique/confort/vigilance).
+
+⚠️ Point sensible (cf. `S2.md` §Écart) : les constantes de courbe ont été recalibrées par
+ré-échantillonnage hors navigateur (script jetable), pas vérifiées à l'écran par Claude —
+amplitudes et seuils du défi ② sont `// à revalider (Thibault)`.
+
+### S3 — Layout Alimentation : scène pleine largeur, éléments agrandis
+
+**Statut** : [ ] à valider par Thibault (code livré 2026-07-11)
+
+- [ ] Sur les 4 défis + synthèse, les éléments (assiette, camembert, cartes, vignettes)
+      occupent l'espace disponible — plus de sensation « petit et vide ».
+- [ ] Défi ② Qualité : les 2 cartes se répartissent sur la largeur de la scène (pas tassées
+      au centre).
+- [ ] Défi ③ Ordre : les 3 bouchées s'étalent sur la largeur, pas serrées.
+- [ ] Garde-manger : vignettes plus grandes, `shelfGrid` toujours propre (scroll interne si
+      besoin).
+- [ ] Responsive < 900 px : garde-manger + scène s'empilent toujours proprement, rien ne
+      déborde horizontalement.
+
+### S4 — Suivi : cadran au-dessus, panneau pleine largeur, lignes lisibles
+
+**Statut** : [ ] à valider par Thibault (code livré 2026-07-11)
+
+- [ ] Le cadran est toujours au-dessus, le panneau de réglage toujours pleine largeur en
+      dessous — plus de côte-à-côte, rien n'est coupé à droite.
+- [ ] Chaque ligne (consultations + 7 examens) tient sur une seule ligne à 1440 px, repli 2
+      lignes max en dessous de 1100 px.
+- [ ] Un seul contrôle de fréquence par ligne (stepper ‹ valeur ›, plus plusieurs chips côte
+      à côte).
+- [ ] Toutes les polices du paramétrage sont lisibles à distance (≥14 px).
+- [ ] Cliquer l'icône d'un examen ouvre le panneau « Ce que ça garde » (nouvel emplacement
+      du déclencheur, plus de bouton texte dédié).
+- [ ] « Placer sur le cadran » reste accessible sur chaque ligne, le cadran se construit
+      correctement au clic.
+- [ ] Responsive mobile : rien ne déborde horizontalement.
+
+### S5 — Activité ① Rayonnement : l'image remplit le nœud
+
+**Statut** : [ ] à valider par Thibault (code livré 2026-07-11)
+
+- [ ] Les 5 nœuds (centre + Sucre/Cœur & vaisseaux/Tête/Autonomie) montrent l'illustration
+      en grand — plus de grand aplat crème vide autour d'une petite image.
+- [ ] Le label reste lisible sous chaque nœud (pas coupé, pas chevauchant les nœuds voisins).
+- [ ] Cliquer le centre ou un rayon allume bien l'anneau (état franc), l'image reste visible
+      sous l'anneau allumé.
+- [ ] Les traits SVG du rayonnement pointent toujours exactement vers le centre des nœuds
+      (pas de décalage visuel après agrandissement).
+
+### S6 — Mécanisme : animation ralentie + état final tenu (option B)
+
+**Statut** : [ ] à valider par Thibault (code livré 2026-07-11)
+
+- [ ] La séquence se lit calmement (plus la sensation de « ça va trop vite »).
+- [ ] L'état final (serrures + jetons de sucre + légende) reste affiché **indéfiniment** —
+      plus de relance automatique qui coupe la lecture.
+- [ ] Changer de mode relance proprement la séquence depuis le début.
+- [ ] Cliquer « Rejouer » (sous la légende) relance la même séquence sans changer de mode.
+- [ ] `prefers-reduced-motion` : pas de bouton « Rejouer », état final affiché directement.
+
+### S7 — Plaque d'athérome : dépôt en croissant collé à la paroi
+
+**Statut** : [ ] à valider par Thibault (code livré 2026-07-11)
+
+> ⚠️ Point le plus sensible de cette session : la géométrie du croissant a été calibrée par
+> le calcul (formule), jamais vérifiée à l'écran par Claude (règle projet). Signaler
+> précisément si le dépôt déborde de la lumière visible de `artere-saine.png` ou semble
+> décalé — un ajustement de `.artereOverlay` (`RisqueCardioModule.module.css`) suffira.
+
+- [ ] Onglet ② L'artère : le dépôt ressemble à un épaississement de paroi qui empiète sur la
+      lumière (pas un disque flottant au milieu du vaisseau comme avant).
+- [ ] Le dépôt grossit de façon cohérente à mesure que les feux passent au rouge (score
+      cumulé) ; à encrassement élevé, un 2ᵉ dépôt apparaît sur la paroi opposée.
+- [ ] Le texte « Passage du sang : X % » reste cohérent avec le rétrécissement visuel au
+      centre du dépôt.
+- [ ] Le dépôt reste dans les limites de la lumière de l'illustration, ne déborde pas sur la
+      paroi peinte ni hors cadre.
+- [ ] Onglet ③ L'anatomie (pastilles `plaque.png` par territoire) : inchangé, aucune
+      régression.
+
+### S8 — Passe « moins de texte » agressive (9 modules) + libellé Insuline ③
+
+**Statut** : [ ] à valider par Thibault (code livré 2026-07-11)
+
+- [ ] Chaque module (Insuline, Alimentation, Activité, Risque cardio, Complications, Suivi,
+      Traitements, Mécanisme, Hypoglycémie) est visiblement allégé — plus de paragraphe
+      d'intro, plus de bande de légende explicative en bas d'écran répétant l'eyebrow.
+- [ ] **Insuline** : onglet ③ dit « Décider » (plus « 2 situations ») ; les 2 cartes
+      situations sont visibles sans scroller loin ; le refrain de sécurité reste visible.
+- [ ] Aucune sortie interactive n'a disparu : `sideText` (Traitements), la décision affichée
+      (Insuline ③), les verdicts/`achieved` (Alimentation), le détail au clic d'un rayon
+      (Activité), le message d'artère (Risque cardio, raccourci mais présent), menace/
+      évitable/geste (Complications), la carte-réflexe (Hypoglycémie).
+- [ ] Les eyebrows/labels de boutons restent clairs même sans le paragraphe qui les
+      accompagnait — le soignant peut narrer sans redondance avec l'écran.
+- [ ] Aucun module ne reste nettement plus verbeux que les 8 autres (registre homogène).
+
+**Chantier `corrections-visuelles-diabete` (S1-S8) clos ce jour** — voir
+`plans/corrections-visuelles-diabete/` pour le détail complet. Points ouverts non bloquants :
+alignement de la plaque d'athérome (S7, jamais vérifié à l'écran), amplitudes de la courbe
+glycémie (S2, à revalider), intensité du halo « allumé » de la silhouette (S1, à calibrer).
+

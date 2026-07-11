@@ -4,7 +4,7 @@
 
 > **Frontières** — STATUS : état actuel · `TASKS.md` : backlog + tâches · `plans/` : plan d'une tâche active · `VALIDATION.md` : checklist visuelle.
 >
-> **Dernière mise à jour :** 2026-07-10 (illustrations-diabete S7 — chantier clos : 62 nouvelles vignettes M2/M3/M8 déposées, 75 assets diabète au total)
+> **Dernière mise à jour :** 2026-07-11 (corrections-visuelles-diabete S1-S8 — chantier clos : silhouette, courbe, layouts, texte allégé)
 
 ## Phase actuelle
 
@@ -262,6 +262,99 @@ inchangé malgré les 5 nouveaux aliments).
 pour le détail complet. Points ouverts non bloquants : alignement visuel de la plaque overlay (S3)
 et des clés volantes (S4) jamais vérifié à l'écran par Claude ; toutes les valeurs nutritionnelles
 `// à revalider (Thibault)`.
+
+## Phase actuelle (suite)
+
+**Phase 12 (`plans/corrections-visuelles-diabete/`)** — **Chantier de correction visuelle en cours
+(2026-07-11)**, issu de la revue de Thibault sur le déployé (13 captures annotées → 5 causes-racines :
+A silhouette trop petite/halo invisible, B courbe glycémie peu lisible, C mise en page petite/vide/
+débordante, D trop de texte, E cercle blanc Activité). Mode solo (Sonnet), 8 sessions S1-S8, commits +
+push groupés en fin de plan (cf. `index.md`).
+
+- **S1 (2026-07-11) — Silhouette partagée** : mode hotspot (`bodyImage`) de `SilhouetteCorps` agrandi
+  (`.wrapImage` 340→460px max-width), halo « allumé » franc (anneau plein `--color-confort` +
+  `box-shadow` + `scale(1.05)`, `prefers-reduced-motion` neutralisé) + anneau pointillé discret au
+  repos (découvrabilité). Zones `verrouille` restent cliquables en mode hotspot (ouvrent leur panneau
+  « déjà vu ») — seul le mode pastille (tabac) garde `disabled`. Traitements/Complications/Risque
+  cardio ③ : silhouette portée à ~400-420px, boutons/chips organe redondants retirés (sélection
+  directe sur la silhouette). Gate : `tsc --noEmit` ✓ · `npm run build` ✓ · `npm test` ✓ (78/78).
+  Visuel → `VALIDATION.md` §Corrections visuelles diabète.
+
+- **S2 (2026-07-11) — Courbe glycémie** : `glycemieCurve.ts` désaturé conjointement
+  (`K_CHARGE` 60→20, `K_FREIN` 6→20, `K_RETARD` 5→14 — baisser `K_CHARGE` seul aurait laissé
+  le frein cumulé rattraper le gain de charge) + effet d'ordre amplifié (`ORDRE_FREIN_BONUS`
+  0.45→0.6, `ORDRE_RETARD_BONUS` 0.35→0.5) : un féculent seul culmine désormais ~80/100, trois
+  cumulés ~90/100 (contre ~55/67 avant). `bandeToY` déplacé de `insuline/scenarios.ts` vers
+  `CourbeGlycemie.tsx` (export générique `levelMax` par défaut 100) et câblé en bande-cible sur
+  toutes les courbes du module 2. Défi ① : fantôme « féculents seuls » visible dès ≥1 féculent
+  (sauf assiette 100% féculents). Défi ④ : nouvelle courbe fantôme « féculents seuls ». Défi ③ :
+  libellés explicites premier/milieu/dernier. `PEAK_BAS_MAX`/`PEAK_HAUT_MIN` (défi ②)
+  recalibrés (47/50 → 55/74) par ré-échantillonnage du garde-manger complet (33 aliments) — les
+  4 duels du brief (baguette/pain complet, riz blanc/basmati, riz blanc/lentilles,
+  dattes/pastèque) donnent désormais des tiers différenciés. 2 tests ajoutés (pic 3 féculents >
+  1 seul ; delta ordre ≥ 15). Gate : `tsc --noEmit` ✓ · `npm run build` ✓ · `npm test` ✓ (80/80).
+  Visuel → `VALIDATION.md` §Corrections visuelles diabète (amplitudes `// à revalider`).
+
+- **S3 (2026-07-11) — Layout Alimentation** : passe purement dimensionnelle (aucune logique
+  touchée) sur `AlimentationModule.module.css`/`.tsx` — assiette défi ① 300→400px, cartes défi
+  ② 320→380px (réparties `space-around` au lieu de `center`), bouchées défi ③ 150→190px
+  (`space-around`), camembert défi ④ 240→300px, vignettes garde-manger 92→104px, jetons
+  synthèse 100→120px ; 5 tailles `size={}` d'`IllustrationSlot` relevées en proportion. Gate :
+  `tsc --noEmit` ✓ · `npm run build` ✓ · `npm test` ✓ (80/80). Visuel → `VALIDATION.md`.
+
+- **S4 (2026-07-11) — Suivi Parcours** : `.parcours` toujours empilé (fin du côte-à-côte
+  `flex-direction: row` ≥860px, qui débordait à droite, capture #3) ; `consultRow`/`examRow`
+  réduits à 4-5 zones lisibles (`icône+nom` · `un seul stepper de fréquence` · `statut` ·
+  `Placer sur le cadran`), les groupes de chips de fréquences (3 puis 4 boutons) remplacés par
+  un stepper `‹ valeur ›` (`cycleValue`) ; polices relevées ≥14px partout (`examProtects`
+  10→14, `stepper span` 12→15, `examStatus` 12→15) ; bouton dédié « Ce que ça garde » retiré,
+  son rôle repris par l'icône de ligne (devenue cliquable). Le réglage fin du mois de départ
+  (steppers `STEP_CONSULT_START`/`STEP_EXAM_MONTH`) est retiré avec son UI — décision
+  documentée dans `DECISIONS.md`. Gate : `tsc --noEmit` ✓ · `npm run build` ✓ · `npm test` ✓
+  (80/80). Visuel → `VALIDATION.md`.
+
+- **S5 (2026-07-11) — Activité ① Rayonnement** : le nœud n'est plus un disque crème qui
+  écrase l'image (capture #4) — `.node` devient un simple point d'ancrage (position +
+  `aspect-ratio` carré, préservé pour ne pas décaler le centrage), `.nodeButton` porte
+  l'anneau d'état (`overflow: hidden`, bordure repos/allumé/sucre) et l'image plein cadre
+  (44→104px rayons, 56→128px centre) ; label/hint/suite regroupés dans un nouveau bloc
+  `.nodeBelow` positionné sous le cercle (n'agrandit plus la boîte centrée). Nœud centre
+  restructuré en `<div>` (ancrage) + `<button>` interne (clic), au lieu d'un seul élément
+  combinant les deux. Gate : `tsc --noEmit` ✓ · `npm run build` ✓ · `npm test` ✓ (80/80).
+  Visuel → `VALIDATION.md`.
+
+- **S6 (2026-07-11) — Mécanisme, option B** : la boucle auto-relancée (relance à 4900ms,
+  ~2,2s de tenue sur l'état final, capture #11) devient une séquence jouée **une fois**
+  (500→2000→3400ms) puis figée sur l'état final indéfiniment ; bouton « Rejouer » sous la
+  légende (masqué si `prefers-reduced-motion`), nouveau state `replayKey` pour permettre de
+  relancer même en recliquant le mode déjà actif. Décision (option B vs A) documentée dans
+  `DECISIONS.md`. Gate : `tsc --noEmit` ✓ · `npm run build` ✓ · `npm test` ✓ (80/80).
+  Visuel → `VALIDATION.md`.
+
+- **S7 (2026-07-11) — Plaque d'athérome en croissant** : `PlaqueArtere.tsx` remplace l'ellipse
+  centrée (blob flottant, capture #13) par un dépôt en **croissant** collé à la paroi
+  (`crescentPath`, Bézier quadratique plate aux extrémités, bombée au centre), 2ᵉ dépôt sur la
+  paroi opposée à `encrassement > 0.5` (rétrécissement bilatéral). Même courbe de croissance
+  (`pot = encrassement^0.75`), mêmes paliers de teinte, `plaquePassagePct` non modifiée (la
+  profondeur du croissant dérive de la même formule pour rester cohérente avec le texte
+  affiché). ⚠️ Alignement dans la lumière de `artere-saine.png` jamais vérifié à l'écran
+  (`.artereOverlay` laissé inchangé, déjà calé en S3 illustrations-diabete). Gate :
+  `tsc --noEmit` ✓ · `npm run build` ✓ · `npm test` ✓ (80/80). Visuel → `VALIDATION.md`.
+
+- **S8 (2026-07-11) — Passe « moins de texte » agressive (9 modules)** : intros/consignes de
+  tête de module, bandes de légende explicatives en bas d'écran et hints redondants retirés
+  sur les 9 modules diabète, selon la règle de tri du plan (coupe l'ambiant, garde les
+  eyebrows courts et tout texte sortie d'une interaction). Onglet ③ Insuline renommé
+  `'③ Décider'` (était `'③ 2 situations'`, trompeur — la carte ① a 3 chips). Bundle JS réduit
+  (459,9→455,0 kB) sans perte de fonctionnalité. Détail des 9 modules et des textes
+  coupés/gardés dans `plans/corrections-visuelles-diabete/S8.md` et `DECISIONS.md`. Gate :
+  `tsc --noEmit` ✓ · `npm run build` ✓ · `npm test` ✓ (80/80). Visuel → `VALIDATION.md`.
+
+**Chantier `corrections-visuelles-diabete` (S1-S8) clos ce jour** — voir
+`plans/corrections-visuelles-diabete/` pour le détail complet. Points ouverts non bloquants
+(validation visuelle humaine requise, `npm run dev`) : intensité du halo « allumé » de la
+silhouette (S1), amplitudes de la courbe glycémie et seuils du défi ② (S2), alignement de la
+plaque d'athérome dans la lumière de l'artère (S7).
 
 ## Ce qui fonctionne
 
