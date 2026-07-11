@@ -46,13 +46,6 @@
   text-align: center;
 }
 
-.vueHint {
-  margin: 0;
-  max-width: 60ch;
-  text-align: center;
-  font-size: 0.9em;
-  color: var(--color-text-soft);
-}
 
 /* --- Vue 1 : les feux --- */
 
@@ -213,12 +206,13 @@
   flex-wrap: wrap;
   gap: var(--space-xl);
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .silhouetteWrap {
   flex: none;
-  width: 220px;
+  width: 400px;
+  max-width: 100%;
 }
 
 .plaquePin {
@@ -234,23 +228,7 @@
   gap: var(--space-sm);
   width: 100%;
   max-width: 420px;
-}
-
-.zoneBtn {
-  cursor: pointer;
-  padding: var(--space-sm) var(--space-md);
-  border-radius: var(--radius-lg);
-  background: var(--color-surface);
-  border: 2px solid var(--color-line);
-  font: 600 16px 'Work Sans', sans-serif;
-  text-align: left;
-  color: var(--color-text);
-}
-
-.zoneBtnActive {
-  background: var(--color-confort-soft);
-  border-color: var(--color-confort);
-  color: var(--color-confort-strong);
+  justify-content: center;
 }
 
 .zoneDescPanel {
@@ -338,14 +316,6 @@
   text-align: center;
   padding-top: var(--space-sm);
   border-top: 1px solid var(--color-line);
-}
-
-.captionText {
-  margin: var(--space-xs) 0 0;
-  font-size: 1.05em;
-  max-width: 76ch;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 /* --- Contenu de la fiche imprimable (FicheOverlay) --- */

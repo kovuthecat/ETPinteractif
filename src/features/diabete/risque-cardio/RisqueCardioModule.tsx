@@ -96,28 +96,11 @@ const ZONES: ZoneDef[] = [
 
 const ALL_SILHOUETTE_ZONES: ZoneId[] = ['cerveau', 'yeux', 'coeur', 'cou', 'reins', 'nerfs', 'jambes', 'pied'];
 
-const VUES: { n: Vue; label: string; caption: string }[] = [
-  {
-    n: 1,
-    label: '① Les leviers',
-    caption: 'Sucre, tension, cholestérol, tabac, sédentarité : cinq endroits où on peut agir ensemble.',
-  },
-  {
-    n: 2,
-    label: "② L'artère",
-    caption:
-      "Une maladie des vaisseaux : chaque feu au rouge encrasse un peu l'artère — et le mouvement se fait dans les deux sens.",
-  },
-  {
-    n: 3,
-    label: "③ L'anatomie",
-    caption: 'La même plaque, vue selon l\'endroit où elle se pose : cou, cœur, jambes.',
-  },
-  {
-    n: 4,
-    label: '④ La fiche',
-    caption: 'On coche, avec le patient, les leviers à retenir pour aujourd\'hui — pas forcément les cinq.',
-  },
+const VUES: { n: Vue; label: string }[] = [
+  { n: 1, label: '① Les leviers' },
+  { n: 2, label: "② L'artère" },
+  { n: 3, label: "③ L'anatomie" },
+  { n: 4, label: '④ La fiche' },
 ];
 
 function nextEtat(etat: FeuEtat): FeuEtat {
@@ -160,17 +143,16 @@ export default function RisqueCardioModule({ onNavigate }: ModuleProps) {
   const score = scoreSum / FEUX.length;
   const rougeCount = FEUX.filter((f) => factors[f.id] === 'rouge').length;
 
+  // S8 (passe « moins de texte ») : messages ramenés à une phrase courte — l'idée
+  // « réversible » reste portée, le détail (potentialisation, source Rawshani) est retiré,
+  // le soignant le développe à l'oral.
   const arteryMessage =
     score === 0
       ? "Tous les feux au vert : l'artère reste dégagée."
       : rougeCount <= 1
         ? 'Un feu au rouge dépose un peu de plaque — encore réversible.'
-        : rougeCount <= 3
-          ? "Les feux rouges ne s'additionnent pas : ils se potentialisent — la même plaque grossit plus vite à plusieurs."
-          : "Cumulés, les feux rouges bouchent nettement l'artère — l'effet est bien plus que la somme de chacun.";
-  const reopenMessage =
-    " Remettez un feu au vert : la plaque se résorbe — c'est le message d'espoir (Rawshani).";
-  const arteryMessageFull = arteryMessage + (rougeCount > 0 ? reopenMessage : '');
+        : "Plusieurs feux au rouge : la plaque grossit plus vite — toujours réversible.";
+  const arteryMessageFull = arteryMessage;
 
   const zonesForSilhouette: SilhouetteZoneState[] = ALL_SILHOUETTE_ZONES.map((id) => {
     if (id === 'cou' || id === 'coeur' || id === 'jambes') {
@@ -200,7 +182,7 @@ export default function RisqueCardioModule({ onNavigate }: ModuleProps) {
 
       {vue === 1 && (
         <div className={styles.vueBody}>
-          <p className={styles.vueEyebrow}>Là où on peut agir ensemble — cliquez un feu pour le régler</p>
+          <p className={styles.vueEyebrow}>Cliquez un feu pour le régler</p>
           <div className={styles.feuxRow}>
             {FEUX.map((f) => {
               const etat = factors[f.id];
@@ -231,10 +213,6 @@ export default function RisqueCardioModule({ onNavigate }: ModuleProps) {
               );
             })}
           </div>
-          <p className={styles.vueHint}>
-            Pas un score : un tableau de leviers. On règle chaque feu pour voir ce qui se passe —
-            aucune donnée réelle n'est saisie.
-          </p>
         </div>
       )}
 
@@ -284,7 +262,7 @@ export default function RisqueCardioModule({ onNavigate }: ModuleProps) {
 
       {vue === 3 && (
         <div className={styles.vueBody}>
-          <p className={styles.vueEyebrow}>Une fois bouchée, où ça se joue — cliquez une zone du corps</p>
+          <p className={styles.vueEyebrow}>Cliquez une zone du corps</p>
           <div className={styles.anatomieRow}>
             <div className={styles.silhouetteWrap}>
               <Silhouette zones={zonesForSilhouette} onZoneClick={handleZoneClick}>
@@ -305,17 +283,8 @@ export default function RisqueCardioModule({ onNavigate }: ModuleProps) {
               </Silhouette>
             </div>
             <div className={styles.zonesCol}>
-              {ZONES.map((z) => (
-                <button
-                  key={z.id}
-                  type="button"
-                  className={`${styles.zoneBtn}${zoneActive === z.id ? ` ${styles.zoneBtnActive}` : ''}`}
-                  onClick={() => handleZoneClick(z.id)}
-                  aria-pressed={zoneActive === z.id}
-                >
-                  {z.nom}
-                </button>
-              ))}
+              {/* Sélection directement sur la silhouette (S1) — plus de colonne de boutons
+                  redondante, seul le panneau descriptif reste ici. */}
               <div className={`${styles.zoneDescPanel} card`}>
                 <p>
                   {zoneActiveDef
@@ -330,7 +299,7 @@ export default function RisqueCardioModule({ onNavigate }: ModuleProps) {
 
       {vue === 4 && (
         <div className={styles.vueBody}>
-          <p className={styles.vueEyebrow}>La fiche — les leviers à retenir pour ce patient</p>
+          <p className={styles.vueEyebrow}>Les leviers à retenir pour ce patient</p>
           <div className={styles.ficheItemsRow}>
             {FEUX.map((f) => {
               const checked = !!ficheChecked[f.id];
@@ -371,7 +340,6 @@ export default function RisqueCardioModule({ onNavigate }: ModuleProps) {
 
       <div className={styles.caption}>
         <span className="eyebrow">{vueInfo.label}</span>
-        <p className={styles.captionText}>{vueInfo.caption}</p>
       </div>
 
       <ModuleFooterNav
