@@ -65,8 +65,11 @@
   min-width: 280px;
 }
 
+/* S8-v3 : prévu pour un seul item à l'origine — passe en `flex-wrap` pour afficher toutes les
+   illustrations des signes sélectionnés (jusqu'à 7). */
 .preview {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--space-md);
   padding: var(--space-md) var(--space-lg);
@@ -75,10 +78,19 @@
   border-radius: var(--radius-lg);
 }
 
+.previewItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  width: 110px;
+}
+
 .previewLabel {
-  font-size: 20px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--color-text);
+  text-align: center;
 }
 
 .chipRow {

@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
 import type { ModuleProps } from '../../types';
+import ModuleShell from '../../../components/ModuleShell';
 import FicheOverlay from '../../../components/FicheOverlay';
-import ModuleFooterNav from '../../../components/ModuleFooterNav';
 import IllustrationSlot from '../components/IllustrationSlot';
 import CourbeGlycemie, {
   COURBE_GRAPH_HEIGHT,
@@ -83,17 +83,15 @@ function handleTabsKeyDown(e: ReactKeyboardEvent<HTMLButtonElement>, index: numb
   onSelect(TEMPS_TABS[nextIndex].n);
 }
 
-export default function HypoglycemieModule({ onNavigate }: ModuleProps) {
+export default function HypoglycemieModule({ shell }: ModuleProps) {
   const [temps, setTemps] = useState<Temps>(1);
   const [signes, setSignes] = useState<Record<string, boolean>>({});
-  const [lastSigneClicked, setLastSigneClicked] = useState<string | null>(null);
   const [resucrage, setResucrage] = useState<string>('comprimes');
   const [showOvershoot, setShowOvershoot] = useState(false);
   const [ficheOpen, setFicheOpen] = useState(false);
 
   function toggleSigne(signe: string) {
     setSignes((prev) => ({ ...prev, [signe]: !prev[signe] }));
-    setLastSigneClicked(signe);
   }
 
   const mySignes = useMemo(() => SIGNES.filter((s) => signes[s]), [signes]);
@@ -166,27 +164,32 @@ export default function HypoglycemieModule({ onNavigate }: ModuleProps) {
     ? "Remanger tout de suite fait dépasser la cible — on repart en hyper. Le sucre n'a pas encore eu le temps d'agir : on attend."
     : 'Le temps fort, c’est l’attente : le sucre agit en ~15 minutes. Recontrôler avant de continuer.';
 
-  return (
-    <div className={styles.module}>
-      <div className={styles.tabs} role="tablist" aria-label="Les 3 temps du module Hypoglycémie">
-        {TEMPS_TABS.map((tab, index) => (
-          <button
-            key={tab.n}
-            type="button"
-            role="tab"
-            id={`m8-tab-${tab.n}`}
-            aria-selected={temps === tab.n}
-            aria-controls={`m8-panel-${tab.n}`}
-            tabIndex={temps === tab.n ? 0 : -1}
-            className={temps === tab.n ? `${styles.tab} ${styles.tabActive}` : styles.tab}
-            onClick={() => setTemps(tab.n)}
-            onKeyDown={(e) => handleTabsKeyDown(e, index, setTemps)}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
+  if (!shell) return null;
 
+  const navBar = (
+    <div className={styles.tabs} role="tablist" aria-label="Les 3 temps du module Hypoglycémie">
+      {TEMPS_TABS.map((tab, index) => (
+        <button
+          key={tab.n}
+          type="button"
+          role="tab"
+          id={`m8-tab-${tab.n}`}
+          aria-selected={temps === tab.n}
+          aria-controls={`m8-panel-${tab.n}`}
+          tabIndex={temps === tab.n ? 0 : -1}
+          className={temps === tab.n ? `${styles.tab} ${styles.tabActive}` : styles.tab}
+          onClick={() => setTemps(tab.n)}
+          onKeyDown={(e) => handleTabsKeyDown(e, index, setTemps)}
+        >
+          {tab.label}
+        </button>
+      ))}
+    </div>
+  );
+
+  return (
+    <ModuleShell titre={shell.titre} sources={shell.sources} onBack={shell.onBack} wide nav={navBar}>
+    <div className={styles.module}>
       {/* ── Temps ① — Mon profil hypo ─────────────────────────────────────── */}
       <section
         id="m8-panel-1"
@@ -199,10 +202,16 @@ export default function HypoglycemieModule({ onNavigate }: ModuleProps) {
           <div className={styles.profilCol}>
             <p className={styles.sectionLabel}>Mes signes précoces</p>
 
-            {lastSigneClicked && (
+            {/* S8-v3 : toutes les illustrations des signes sélectionnés (pas seulement le
+                dernier cliqué) — `mySignes` est déjà la liste complète, calculée plus haut. */}
+            {mySignes.length > 0 && (
               <div className={styles.preview}>
-                <IllustrationSlot id={`signe-${slugify(lastSigneClicked)}`} label={lastSigneClicked} size={100} />
-                <span className={styles.previewLabel}>{lastSigneClicked}</span>
+                {mySignes.map((s) => (
+                  <div key={s} className={styles.previewItem}>
+                    <IllustrationSlot id={`signe-${slugify(s)}`} label={s} size={100} />
+                    <span className={styles.previewLabel}>{s}</span>
+                  </div>
+                ))}
               </div>
             )}
 
@@ -361,11 +370,6 @@ export default function HypoglycemieModule({ onNavigate }: ModuleProps) {
         </div>
       </section>
 
-      <ModuleFooterNav
-        items={[{ id: 'insuline', label: 'Le capteur alarme quand les signes manquent' }]}
-        onNavigate={onNavigate}
-      />
-
       {ficheOpen && (
         <FicheOverlay
           eyebrow="PROGRAMME ETP · DIABÈTE"
@@ -414,5 +418,6 @@ export default function HypoglycemieModule({ onNavigate }: ModuleProps) {
         </FicheOverlay>
       )}
     </div>
+    </ModuleShell>
   );
 }
