@@ -181,6 +181,18 @@ export const FOODS: Food[] = [
   { id: 'sardine', name: 'Sardine', famille: 'proteines', cg: 0, fibres: 0, proteines: 20, lipides: 10, portion: '~100 g', sel: 'eleve', omega3: true, graisses: 'insaturees' }, // sel : conserve, généralement salée — à revalider ; grammes proteines/lipides à revalider
   { id: 'saumon', name: 'Saumon', famille: 'proteines', cg: 0, fibres: 0, proteines: 24, lipides: 13, portion: '~120 g', sel: 'faible', omega3: true, graisses: 'insaturees' }, // sel : saumon nature présumé (hors fumé) — à revalider ; grammes à revalider
   { id: 'noix', name: 'Noix', famille: 'lipides', cg: 1, fibres: 2, proteines: 4, lipides: 20, portion: 'poignée (~30 g)', omega3: true, graisses: 'insaturees' }, // grammes à revalider ; sel non pertinent (non salées)
+
+  // S7 (illustrations-diabete, 2026-07-10) : 5 aliments féculents supplémentaires, ordres de
+  // grandeur Ciqual/GI-GL — // à revalider (Thibault) dans leur intégralité, comme le reste
+  // de la table. Pâtes (GI plus bas que le riz blanc) et couscous complet en écho aux
+  // versions déjà présentes (riz complet, pain complet) ; plantain classé féculent (cuisiné
+  // comme un féculent, à la différence de la banane mûre) ; haricots rouges = légumineuse,
+  // même « pépite pédagogique » que lentilles/pois chiches.
+  { id: 'pates-blanches', name: 'Pâtes blanches', famille: 'feculents', cg: 18, fibres: 2, proteines: 5.5, lipides: 1, portion: '150 g cuites', sel: 'faible' }, // à revalider (Thibault)
+  { id: 'pates-completes', name: 'Pâtes complètes', famille: 'feculents', cg: 12, fibres: 4, proteines: 6, lipides: 1.5, portion: '150 g cuites', sel: 'faible' }, // à revalider (Thibault)
+  { id: 'couscous-complet', name: 'Couscous complet', famille: 'feculents', cg: 14, fibres: 4, proteines: 5.5, lipides: 1, portion: '150 g cuit', sel: 'faible' }, // à revalider (Thibault)
+  { id: 'banane-plantain', name: 'Banane plantain', famille: 'feculents', cg: 20, fibres: 3, proteines: 1.5, lipides: 0.3, portion: '150 g cuite', sel: 'faible' }, // à revalider (Thibault)
+  { id: 'haricots-rouges', name: 'Haricots rouges', famille: 'feculents', cg: 7, fibres: 7, proteines: 9, lipides: 0.5, portion: '150 g cuits', sel: 'faible', atout: 'Légumineuse : un féculent qui monte doucement (riche en fibres et protéines).' }, // à revalider (Thibault)
 ];
 
 export function foodById(id: string): Food | undefined {

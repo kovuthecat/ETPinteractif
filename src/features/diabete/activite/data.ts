@@ -73,6 +73,7 @@ export const ACTIVITIES: ActiviteDef[] = [
   { id: 'petitsenfants', nom: 'Jouer avec les enfants', minutes: 15, intensite: 'légère', muscle: false },
   { id: 'voiture', nom: 'Laver la voiture', minutes: 20, intensite: 'modérée', muscle: false },
   { id: 'chien', nom: 'Marcher le chien', minutes: 15, intensite: 'légère', muscle: false },
+  { id: 'sol', nom: 'Se relever du sol', minutes: 5, intensite: 'légère', muscle: true },
 ];
 
 export const ACT_MIN_STEP = 5;
