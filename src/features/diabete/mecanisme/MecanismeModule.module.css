@@ -12,13 +12,6 @@
   gap: var(--space-lg);
 }
 
-.intro {
-  margin: 0;
-  font-size: 0.95em;
-  color: var(--color-text-soft);
-  max-width: 64ch;
-}
-
 /* --- Sélecteur de mode --- */
 
 .modes {
@@ -183,9 +176,18 @@
 /* --- Caption --- */
 
 .caption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
   text-align: center;
   padding: 0 12px;
   min-height: 88px;
+}
+
+/* S6 (option B) : plus de relance auto — le soignant rejoue la séquence à volonté. */
+.replayBtn {
+  margin-top: 4px;
 }
 
 .captionEyebrow {

@@ -111,11 +111,16 @@ function bloodTone(sugarCount: number): BloodTone {
 export default function MecanismeModule({ onNavigate }: ModuleProps) {
   const [modeId, setModeId] = useState<Mode>('sain');
   const [phase, setPhase] = useState<0 | 1 | 2 | 3>(0);
+  // S6 (option B) : compteur incrémenté à chaque sélection de mode ou clic « Rejouer » —
+  // force l'effet à rejouer même en cliquant deux fois le même mode (modeId ne change pas).
+  const [replayKey, setReplayKey] = useState(0);
   const reducedMotion = usePrefersReducedMotion();
   const mode = MODES.find((m) => m.id === modeId) ?? MODES[0];
 
-  // Boucle d'animation (400 → 1600 → 2700 → relance à 4900 ms), rejouée à chaque changement de
-  // mode. Coupée si l'utilisateur a réduit les animations : état final affiché directement.
+  // Séquence jouée UNE SEULE FOIS (500 → 2000 → 3400 ms), puis on RESTE sur l'état final —
+  // plus de relance automatique (S6, capture #11 : « animations trop rapides, état final trop
+  // court »). Le soignant contrôle le rythme (choisit le mode, ou « Rejouer »). Coupée si
+  // l'utilisateur a réduit les animations : état final affiché directement.
   useEffect(() => {
     if (reducedMotion) {
       setPhase(3);
@@ -123,33 +128,31 @@ export default function MecanismeModule({ onNavigate }: ModuleProps) {
     }
     let cancelled = false;
     const timers: number[] = [];
-    function runCycle() {
-      if (cancelled) return;
-      setPhase(0);
-      timers.push(window.setTimeout(() => !cancelled && setPhase(1), 400));
-      timers.push(window.setTimeout(() => !cancelled && setPhase(2), 1600));
-      timers.push(window.setTimeout(() => !cancelled && setPhase(3), 2700));
-      timers.push(window.setTimeout(runCycle, 4900));
-    }
-    runCycle();
+    setPhase(0);
+    timers.push(window.setTimeout(() => !cancelled && setPhase(1), 500));
+    timers.push(window.setTimeout(() => !cancelled && setPhase(2), 2000));
+    timers.push(window.setTimeout(() => !cancelled && setPhase(3), 3400));
     return () => {
       cancelled = true;
       timers.forEach((t) => window.clearTimeout(t));
     };
-  }, [modeId, reducedMotion]);
+  }, [modeId, reducedMotion, replayKey]);
+
+  function selectMode(id: Mode) {
+    setModeId(id);
+    setReplayKey((k) => k + 1);
+  }
+
+  function replay() {
+    setReplayKey((k) => k + 1);
+  }
 
   const cellEtats = reducedMotion || phase >= 2 ? mode.cell : CLOSED3;
   const sugarCount = reducedMotion || phase >= 3 ? mode.sugar : TOTAL_TOKENS;
   const tone = bloodTone(sugarCount);
-  const legendText = reducedMotion
-    ? mode.l3
-    : phase === 0
-      ? ' '
-      : phase === 1
-        ? mode.l1
-        : phase === 2
-          ? mode.l2
-          : mode.l3;
+  // S8 (passe « moins de texte ») : la légende narrait chaque phase (l1/l2/l3) — réduite à la
+  // ligne finale courte, le soignant commente le déroulé de l'animation à l'oral.
+  const legendText = mode.l3;
 
   function keyPhase(i: number): KeyPhase {
     if (!mode.key[i]) return 'hidden';
@@ -161,11 +164,6 @@ export default function MecanismeModule({ onNavigate }: ModuleProps) {
 
   return (
     <div className={styles.module}>
-      <p className={styles.intro}>
-        La clé (l'insuline) ouvre — ou non — la serrure de chaque cellule. Choisissez un mécanisme
-        pour voir la scène se rejouer.
-      </p>
-
       <nav className={styles.modes} aria-label="Mécanisme à observer">
         {MODES.map((m) => (
           <button
@@ -173,7 +171,7 @@ export default function MecanismeModule({ onNavigate }: ModuleProps) {
             type="button"
             className={`${styles.modeBtn}${modeId === m.id ? ` ${styles.modeBtnActive}` : ''}`}
             aria-pressed={modeId === m.id}
-            onClick={() => setModeId(m.id)}
+            onClick={() => selectMode(m.id)}
           >
             {m.label}
           </button>
@@ -252,6 +250,11 @@ export default function MecanismeModule({ onNavigate }: ModuleProps) {
       <div className={styles.caption} aria-live="polite">
         <span className={styles.captionEyebrow}>{mode.label}</span>
         <p className={styles.captionText}>{legendText}</p>
+        {!reducedMotion && (
+          <button type="button" className={`btn btn--ghost ${styles.replayBtn}`} onClick={replay}>
+            Rejouer
+          </button>
+        )}
       </div>
 
       <ModuleFooterNav
