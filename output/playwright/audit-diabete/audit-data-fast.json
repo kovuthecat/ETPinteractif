@@ -1,0 +1,2391 @@
+{
+  "url": "https://etp-interactif.vercel.app/",
+  "console": [
+    {
+      "type": "warning",
+      "text": "The resource https://etp-interactif.vercel.app/fonts/WorkSans-latin.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally."
+    },
+    {
+      "type": "warning",
+      "text": "The resource https://etp-interactif.vercel.app/fonts/WorkSans-latin.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally."
+    },
+    {
+      "type": "warning",
+      "text": "The resource https://etp-interactif.vercel.app/fonts/WorkSans-latin.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally."
+    },
+    {
+      "type": "warning",
+      "text": "The resource https://etp-interactif.vercel.app/fonts/WorkSans-latin.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally."
+    },
+    {
+      "type": "warning",
+      "text": "The resource https://etp-interactif.vercel.app/fonts/WorkSans-latin.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally."
+    },
+    {
+      "type": "warning",
+      "text": "The resource https://etp-interactif.vercel.app/fonts/WorkSans-latin.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally."
+    },
+    {
+      "type": "warning",
+      "text": "The resource https://etp-interactif.vercel.app/fonts/WorkSans-latin.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally."
+    }
+  ],
+  "failed": [],
+  "modules": [
+    {
+      "slug": "01-mecanisme",
+      "title": "/C.est quoi le diab/i",
+      "error": null,
+      "empty": "output/playwright/audit-diabete/01-mecanisme-empty.png",
+      "emptyMetrics": {
+        "viewport": [
+          1440,
+          900
+        ],
+        "h1": "C'est quoi le diabète ?",
+        "text": "Accueil C'est quoi le diabète ? Sources Sans diabète Insulinopénie — manque de clés Insulinorésistance — serrures rouillées Mixte PANCRÉAS SUCRE DANS LE SANG : BAS SANS DIABÈTE Le sang se vide — glycémie normale. Rejouer Continuer l'exploration Voir comment l'alimentation joue",
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "buttons": [
+          "Accueil",
+          "Sources",
+          "Sans diabète",
+          "Insulinopénie — manque de clés",
+          "Insulinorésistance — serrures rouillées",
+          "Mixte",
+          "Rejouer",
+          "Voir comment l'alimentation joue"
+        ],
+        "small": [],
+        "overflow": [],
+        "tiny": [
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 104,
+            "h": 44
+          },
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 51,
+            "h": 15
+          },
+          {
+            "label": "PANCRÉAS",
+            "font": 12,
+            "w": 69,
+            "h": 18
+          },
+          {
+            "label": "SUCRE DANS LE SANG : BAS",
+            "font": 13,
+            "w": 196,
+            "h": 15
+          },
+          {
+            "label": "SANS DIABÈTE",
+            "font": 13,
+            "w": 107,
+            "h": 20
+          }
+        ]
+      },
+      "interaction": {
+        "images": [
+          "output/playwright/audit-diabete/01-mecanisme-modes-final.png"
+        ],
+        "actions": [
+          "mode /Insulinop/i",
+          "mode /serrures/i",
+          "mode /Mixte/i",
+          "rejouer"
+        ]
+      },
+      "afterMetrics": {
+        "viewport": [
+          1440,
+          900
+        ],
+        "h1": "C'est quoi le diabète ?",
+        "text": "Accueil C'est quoi le diabète ? Sources Sans diabète Insulinopénie — manque de clés Insulinorésistance — serrures rouillées Mixte PANCRÉAS SUCRE DANS LE SANG : ÉLEVÉ MIXTE Au total, le sucre reste élevé dans le sang. Rejouer Continuer l'exploration Voir comment l'alimentation joue",
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "buttons": [
+          "Accueil",
+          "Sources",
+          "Sans diabète",
+          "Insulinopénie — manque de clés",
+          "Insulinorésistance — serrures rouillées",
+          "Mixte",
+          "Rejouer",
+          "Voir comment l'alimentation joue"
+        ],
+        "small": [],
+        "overflow": [],
+        "tiny": [
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 104,
+            "h": 44
+          },
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 51,
+            "h": 15
+          },
+          {
+            "label": "PANCRÉAS",
+            "font": 12,
+            "w": 69,
+            "h": 18
+          },
+          {
+            "label": "SUCRE DANS LE SANG : ÉLEVÉ",
+            "font": 13,
+            "w": 213,
+            "h": 15
+          },
+          {
+            "label": "MIXTE",
+            "font": 13,
+            "w": 46,
+            "h": 20
+          }
+        ]
+      },
+      "constrained": "output/playwright/audit-diabete/01-mecanisme-1024-fast.png",
+      "constrainedMetrics": {
+        "viewport": [
+          1024,
+          768
+        ],
+        "h1": "C'est quoi le diabète ?",
+        "text": "Accueil C'est quoi le diabète ? Sources Sans diabète Insulinopénie — manque de clés Insulinorésistance — serrures rouillées Mixte PANCRÉAS SUCRE DANS LE SANG : ÉLEVÉ MIXTE Au total, le sucre reste élevé dans le sang. Rejouer Continuer l'exploration Voir comment l'alimentation joue",
+        "scrollWidth": 1024,
+        "clientWidth": 1024,
+        "buttons": [
+          "Accueil",
+          "Sources",
+          "Sans diabète",
+          "Insulinopénie — manque de clés",
+          "Insulinorésistance — serrures rouillées",
+          "Mixte",
+          "Rejouer",
+          "Voir comment l'alimentation joue"
+        ],
+        "small": [],
+        "overflow": [],
+        "tiny": [
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 104,
+            "h": 44
+          },
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 51,
+            "h": 15
+          },
+          {
+            "label": "PANCRÉAS",
+            "font": 12,
+            "w": 69,
+            "h": 18
+          },
+          {
+            "label": "SUCRE DANS LE SANG : ÉLEVÉ",
+            "font": 13,
+            "w": 213,
+            "h": 15
+          },
+          {
+            "label": "MIXTE",
+            "font": 13,
+            "w": 46,
+            "h": 20
+          }
+        ]
+      },
+      "homeAfterReturnText": "Accueil C'est quoi le diabète ? Sources Sans diabète Insulinopénie — manque de clés Insulinorésistance — serrures rouillées Mixte PANCRÉAS SUCRE DANS LE SANG : ÉLEVÉ MIXTE Au total, le sucre reste élevé dans le sang. Rejouer Continuer l'exploration Voir comment l'alimentation joue",
+      "returnedHome": false
+    },
+    {
+      "slug": "02-alimentation",
+      "title": "/^Alimentation$/i",
+      "error": "locator.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /^Alimentation$/i }).first()\u001b[22m\n"
+    },
+    {
+      "slug": "03-activite",
+      "title": "/Activit/i",
+      "error": null,
+      "empty": "output/playwright/audit-diabete/03-activite-empty.png",
+      "emptyMetrics": {
+        "viewport": [
+          1440,
+          900
+        ],
+        "h1": "Activité physique",
+        "text": "Accueil Activité physique Sources ① Le rayonnement ② Le volume ③ Le timing Activité cliquez : un effort, tous les bénéfices Sucre voir la suite i Cœur & vaisseaux i Tête i Autonomie i ① LE RAYONNEMENT Continuer l'exploration La même courbe, côté assiette",
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "buttons": [
+          "Accueil",
+          "Sources",
+          "① Le rayonnement",
+          "② Le volume",
+          "③ Le timing",
+          "Activité — tous les bénéfices",
+          "Sucre",
+          "i",
+          "Cœur & vaisseaux",
+          "i",
+          "Tête",
+          "i",
+          "Autonomie",
+          "i",
+          "La même courbe, côté assiette"
+        ],
+        "small": [
+          {
+            "label": "i",
+            "w": 20,
+            "h": 20
+          },
+          {
+            "label": "i",
+            "w": 20,
+            "h": 20
+          },
+          {
+            "label": "i",
+            "w": 20,
+            "h": 20
+          },
+          {
+            "label": "i",
+            "w": 20,
+            "h": 20
+          }
+        ],
+        "overflow": [],
+        "tiny": [
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 104,
+            "h": 44
+          },
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 51,
+            "h": 15
+          },
+          {
+            "label": "cliquez : un effort, tous les bénéfices",
+            "font": 10,
+            "w": 130,
+            "h": 24
+          },
+          {
+            "label": "Sucre",
+            "font": 13,
+            "w": 37,
+            "h": 16
+          },
+          {
+            "label": "Sucre",
+            "font": 13,
+            "w": 37,
+            "h": 16
+          },
+          {
+            "label": "voir la suite",
+            "font": 10,
+            "w": 72,
+            "h": 15
+          },
+          {
+            "label": "i",
+            "font": 11,
+            "w": 20,
+            "h": 20
+          },
+          {
+            "label": "Cœur & vaisseaux",
+            "font": 13,
+            "w": 62,
+            "h": 31
+          },
+          {
+            "label": "Cœur &",
+            "font": 13,
+            "w": 62,
+            "h": 16
+          },
+          {
+            "label": "vaisseaux",
+            "font": 13,
+            "w": 62,
+            "h": 16
+          },
+          {
+            "label": "i",
+            "font": 11,
+            "w": 20,
+            "h": 20
+          },
+          {
+            "label": "Tête",
+            "font": 13,
+            "w": 28,
+            "h": 16
+          },
+          {
+            "label": "Tête",
+            "font": 13,
+            "w": 28,
+            "h": 16
+          },
+          {
+            "label": "i",
+            "font": 11,
+            "w": 20,
+            "h": 20
+          },
+          {
+            "label": "Autonomie",
+            "font": 13,
+            "w": 69,
+            "h": 16
+          }
+        ]
+      },
+      "interaction": {
+        "images": [
+          "output/playwright/audit-diabete/03-activite-rayonnement.png",
+          "output/playwright/audit-diabete/03-activite-volume.png",
+          "output/playwright/audit-diabete/03-activite-timing-marche.png",
+          "output/playwright/audit-diabete/03-activite-timing-micro.png"
+        ],
+        "actions": [
+          "rayonnement centre",
+          "volume",
+          "filtre toniques",
+          "choix activitÃ©",
+          "timing",
+          "micro-coupures"
+        ]
+      },
+      "afterMetrics": {
+        "viewport": [
+          1440,
+          900
+        ],
+        "h1": "Activité physique",
+        "text": "Accueil Activité physique Sources ① Le rayonnement ② Le volume ③ Le timing Marche post-repas Micro-coupures GLYCÉMIE APRÈS LE REPAS A 1 A 2 A 3 cliquez les coupures faites aujourd’hui · 3/6 2 à 3 minutes de mouvement toutes les 30 minutes, tout au long de la journée : un effet régulier sur la glycémie. ③ LE TIMING Continuer l'exploration La même courbe, côté assiette",
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "buttons": [
+          "Accueil",
+          "Sources",
+          "① Le rayonnement",
+          "② Le volume",
+          "③ Le timing",
+          "Marche post-repas",
+          "Micro-coupures",
+          "Sans activité : valeurs au survol",
+          "Avec activité : valeurs au survol",
+          "Coupure 1",
+          "Coupure 2",
+          "Coupure 3",
+          "Coupure 4",
+          "Coupure 5",
+          "Coupure 6",
+          "La même courbe, côté assiette"
+        ],
+        "small": [
+          {
+            "label": "Coupure 1",
+            "w": 30,
+            "h": 30
+          },
+          {
+            "label": "Coupure 2",
+            "w": 30,
+            "h": 30
+          },
+          {
+            "label": "Coupure 3",
+            "w": 30,
+            "h": 30
+          },
+          {
+            "label": "Coupure 4",
+            "w": 30,
+            "h": 30
+          },
+          {
+            "label": "Coupure 5",
+            "w": 30,
+            "h": 30
+          },
+          {
+            "label": "Coupure 6",
+            "w": 30,
+            "h": 30
+          }
+        ],
+        "overflow": [],
+        "tiny": [
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 104,
+            "h": 44
+          },
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 51,
+            "h": 15
+          },
+          {
+            "label": "GLYCÉMIE APRÈS LE REPAS",
+            "font": 13,
+            "w": 670,
+            "h": 20
+          },
+          {
+            "label": "cliquez les coupures faites aujourd’hui · 3/6",
+            "font": 13,
+            "w": 279,
+            "h": 20
+          },
+          {
+            "label": "③ LE TIMING",
+            "font": 13,
+            "w": 98,
+            "h": 20
+          }
+        ]
+      },
+      "constrained": "output/playwright/audit-diabete/03-activite-1024-fast.png",
+      "constrainedMetrics": {
+        "viewport": [
+          1024,
+          768
+        ],
+        "h1": "Activité physique",
+        "text": "Accueil Activité physique Sources ① Le rayonnement ② Le volume ③ Le timing Marche post-repas Micro-coupures GLYCÉMIE APRÈS LE REPAS A 1 A 2 A 3 cliquez les coupures faites aujourd’hui · 3/6 2 à 3 minutes de mouvement toutes les 30 minutes, tout au long de la journée : un effet régulier sur la glycémie. ③ LE TIMING Continuer l'exploration La même courbe, côté assiette",
+        "scrollWidth": 1024,
+        "clientWidth": 1024,
+        "buttons": [
+          "Accueil",
+          "Sources",
+          "① Le rayonnement",
+          "② Le volume",
+          "③ Le timing",
+          "Marche post-repas",
+          "Micro-coupures",
+          "Sans activité : valeurs au survol",
+          "Avec activité : valeurs au survol",
+          "Coupure 1",
+          "Coupure 2",
+          "Coupure 3",
+          "Coupure 4",
+          "Coupure 5",
+          "Coupure 6",
+          "La même courbe, côté assiette"
+        ],
+        "small": [
+          {
+            "label": "Coupure 1",
+            "w": 30,
+            "h": 30
+          },
+          {
+            "label": "Coupure 2",
+            "w": 30,
+            "h": 30
+          },
+          {
+            "label": "Coupure 3",
+            "w": 30,
+            "h": 30
+          },
+          {
+            "label": "Coupure 4",
+            "w": 30,
+            "h": 30
+          },
+          {
+            "label": "Coupure 5",
+            "w": 30,
+            "h": 30
+          },
+          {
+            "label": "Coupure 6",
+            "w": 30,
+            "h": 30
+          }
+        ],
+        "overflow": [],
+        "tiny": [
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 104,
+            "h": 44
+          },
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 51,
+            "h": 15
+          },
+          {
+            "label": "GLYCÉMIE APRÈS LE REPAS",
+            "font": 13,
+            "w": 670,
+            "h": 20
+          },
+          {
+            "label": "cliquez les coupures faites aujourd’hui · 3/6",
+            "font": 13,
+            "w": 279,
+            "h": 20
+          },
+          {
+            "label": "③ LE TIMING",
+            "font": 13,
+            "w": 98,
+            "h": 20
+          }
+        ]
+      },
+      "homeAfterReturnText": "Accueil Activité physique Sources ① Le rayonnement ② Le volume ③ Le timing Marche post-repas Micro-coupures GLYCÉMIE APRÈS LE REPAS A 1 A 2 A 3 cliquez les coupures faites aujourd’hui · 3/6 2 à 3 minutes de mouvement toutes les 30 minutes, tout au long de la journée : un effet régulier sur la glycémie. ③ LE TIMING Continuer l'exploration La même courbe, côté assiette",
+      "returnedHome": true
+    },
+    {
+      "slug": "04-risque-cardio",
+      "title": "/Risque cardiovasculaire/i",
+      "error": null,
+      "empty": "output/playwright/audit-diabete/04-risque-cardio-empty.png",
+      "emptyMetrics": {
+        "viewport": [
+          1440,
+          900
+        ],
+        "h1": "Risque cardiovasculaire",
+        "text": "Accueil Risque cardiovasculaire Sources ① Les leviers ② L'artère ③ L'anatomie ④ La fiche CLIQUEZ UN FEU POUR LE RÉGLER Sucre Vert Tension Vert Cholestérol Vert Tabac Vert Sédentarité Vert ① LES LEVIERS Continuer l'exploration Et il y a aussi les petits vaisseaux… Ces feux, voici quand on les rallume",
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "buttons": [
+          "Accueil",
+          "Sources",
+          "① Les leviers",
+          "② L'artère",
+          "③ L'anatomie",
+          "④ La fiche",
+          "Vert",
+          "Vert",
+          "Vert",
+          "Vert",
+          "Vert",
+          "Et il y a aussi les petits vaisseaux…",
+          "Ces feux, voici quand on les rallume"
+        ],
+        "small": [],
+        "overflow": [],
+        "tiny": [
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 104,
+            "h": 44
+          },
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 51,
+            "h": 15
+          },
+          {
+            "label": "CLIQUEZ UN FEU POUR LE RÉGLER",
+            "font": 13,
+            "w": 253,
+            "h": 20
+          },
+          {
+            "label": "① LES LEVIERS",
+            "font": 13,
+            "w": 900,
+            "h": 20
+          }
+        ]
+      },
+      "interaction": {
+        "images": [
+          "output/playwright/audit-diabete/04-risque-cardio-interactions.png"
+        ],
+        "actions": []
+      },
+      "afterMetrics": {
+        "viewport": [
+          1440,
+          900
+        ],
+        "h1": "Suivi",
+        "text": "Accueil Suivi Sources ① Le parcours ② La fiche JANV AVR JUIL OCT ON CONSTRUIT LE CADRAN, UN ÉLÉMENT À LA FOIS Tout réinitialiser Consultations ‹ Tous les 3 mois › Placer sur le cadran MES EXAMENS — UN PAR UN HbA1c protège : Vaisseaux ‹ Chaque consult. › i Fait Placer sur le cadran Bilan lipidique protège : Cœur ‹ 1×/an › i À programmer Placer sur le cadran Bilan rénal (DFG) protège : Reins ‹ 1×/an › i Fait Placer sur le cadran Fond d'œil protège : Yeux ‹ 1×/an › i Fait Placer sur le cadran Pied complet protège : Pied ‹ 1×/an › i À venir Placer sur le cadran Dentiste protège : Bouche & gencives ‹ 1×/an › i À venir Placer sur le cadran Vaccins protège : Défenses immunitaires ‹ 1×/2 ans › i Tous les 2 ans — prochain : 2027 Placer sur le cadran Continuer l'exploration Les surveillances liées aux médicaments",
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "buttons": [
+          "Accueil",
+          "Sources",
+          "① Le parcours",
+          "② La fiche",
+          "Tout réinitialiser",
+          "‹",
+          "›",
+          "Placer sur le cadran",
+          "Ce que HbA1c protège — Vaisseaux",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Ce que Bilan lipidique protège — Cœur",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Ce que Bilan rénal (DFG) protège — Reins",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Ce que Fond d'œil protège — Yeux",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Ce que Pied complet protège — Pied",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Ce que Dentiste protège — Bouche & gencives",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Ce que Vaccins protège — Défenses immunitaires",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Les surveillances liées aux médicaments"
+        ],
+        "small": [
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          },
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          },
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          },
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          },
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          },
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          },
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          }
+        ],
+        "overflow": [],
+        "tiny": [
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 104,
+            "h": 44
+          },
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 51,
+            "h": 15
+          },
+          {
+            "label": "① Le parcours",
+            "font": 13,
+            "w": 143,
+            "h": 44
+          },
+          {
+            "label": "② La fiche",
+            "font": 13,
+            "w": 115,
+            "h": 44
+          },
+          {
+            "label": "Tout réinitialiser",
+            "font": 13,
+            "w": 108,
+            "h": 44
+          },
+          {
+            "label": "MES EXAMENS — UN PAR UN",
+            "font": 13,
+            "w": 900,
+            "h": 20
+          }
+        ]
+      },
+      "constrained": "output/playwright/audit-diabete/04-risque-cardio-1024-fast.png",
+      "constrainedMetrics": {
+        "viewport": [
+          1024,
+          768
+        ],
+        "h1": "Suivi",
+        "text": "Accueil Suivi Sources ① Le parcours ② La fiche JANV AVR JUIL OCT ON CONSTRUIT LE CADRAN, UN ÉLÉMENT À LA FOIS Tout réinitialiser Consultations ‹ Tous les 3 mois › Placer sur le cadran MES EXAMENS — UN PAR UN HbA1c protège : Vaisseaux ‹ Chaque consult. › i Fait Placer sur le cadran Bilan lipidique protège : Cœur ‹ 1×/an › i À programmer Placer sur le cadran Bilan rénal (DFG) protège : Reins ‹ 1×/an › i Fait Placer sur le cadran Fond d'œil protège : Yeux ‹ 1×/an › i Fait Placer sur le cadran Pied complet protège : Pied ‹ 1×/an › i À venir Placer sur le cadran Dentiste protège : Bouche & gencives ‹ 1×/an › i À venir Placer sur le cadran Vaccins protège : Défenses immunitaires ‹ 1×/2 ans › i Tous les 2 ans — prochain : 2027 Placer sur le cadran Continuer l'exploration Les surveillances liées aux médicaments",
+        "scrollWidth": 1024,
+        "clientWidth": 1024,
+        "buttons": [
+          "Accueil",
+          "Sources",
+          "① Le parcours",
+          "② La fiche",
+          "Tout réinitialiser",
+          "‹",
+          "›",
+          "Placer sur le cadran",
+          "Ce que HbA1c protège — Vaisseaux",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Ce que Bilan lipidique protège — Cœur",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Ce que Bilan rénal (DFG) protège — Reins",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Ce que Fond d'œil protège — Yeux",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Ce que Pied complet protège — Pied",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Ce que Dentiste protège — Bouche & gencives",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Ce que Vaccins protège — Défenses immunitaires",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Les surveillances liées aux médicaments"
+        ],
+        "small": [
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          },
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          },
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          },
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          },
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          },
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          },
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          }
+        ],
+        "overflow": [],
+        "tiny": [
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 104,
+            "h": 44
+          },
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 51,
+            "h": 15
+          },
+          {
+            "label": "① Le parcours",
+            "font": 13,
+            "w": 143,
+            "h": 44
+          },
+          {
+            "label": "② La fiche",
+            "font": 13,
+            "w": 115,
+            "h": 44
+          },
+          {
+            "label": "Tout réinitialiser",
+            "font": 13,
+            "w": 108,
+            "h": 44
+          },
+          {
+            "label": "MES EXAMENS — UN PAR UN",
+            "font": 13,
+            "w": 900,
+            "h": 20
+          }
+        ]
+      },
+      "homeAfterReturnText": "Accueil Suivi Sources ① Le parcours ② La fiche JANV AVR JUIL OCT ON CONSTRUIT LE CADRAN, UN ÉLÉMENT À LA FOIS Tout réinitialiser Consultations ‹ Tous les 3 mois › Placer sur le cadran MES EXAMENS — UN PAR UN HbA1c protège : Vaisseaux ‹ Chaque consult. › i Fait Placer sur le cadran Bilan lipidique protège : Cœur ‹ 1×/an › i À programmer Placer sur le cadran Bilan rénal (DFG) protège : Reins ‹ 1×/an › i Fait Placer sur le cadran Fond d'œil protège : Yeux ‹ 1×/an › i Fait Placer sur le cadran Pied ",
+      "returnedHome": true
+    },
+    {
+      "slug": "05-complications",
+      "title": "/Complications/i",
+      "error": null,
+      "empty": "output/playwright/audit-diabete/05-complications-empty.png",
+      "emptyMetrics": {
+        "viewport": [
+          1440,
+          900
+        ],
+        "h1": "Complications",
+        "text": "Accueil Complications Sources Choisissez un organe pour voir ce qu'on surveille. Continuer l'exploration Cet examen, on le programme quand ?",
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "buttons": [
+          "Accueil",
+          "Sources",
+          "Cerveau — déjà vu",
+          "Cœur — déjà vu",
+          "Yeux",
+          "Reins",
+          "Nerfs",
+          "Pied",
+          "Cet examen, on le programme quand ?"
+        ],
+        "small": [],
+        "overflow": [],
+        "tiny": [
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 104,
+            "h": 44
+          },
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 51,
+            "h": 15
+          }
+        ]
+      },
+      "interaction": {
+        "images": [
+          "output/playwright/audit-diabete/05-complications-zones.png"
+        ],
+        "actions": []
+      },
+      "afterMetrics": {
+        "viewport": [
+          1440,
+          900
+        ],
+        "h1": "Complications",
+        "text": "Accueil Complications Sources Choisissez un organe pour voir ce qu'on surveille. Continuer l'exploration Cet examen, on le programme quand ?",
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "buttons": [
+          "Accueil",
+          "Sources",
+          "Cerveau — déjà vu",
+          "Cœur — déjà vu",
+          "Yeux",
+          "Reins",
+          "Nerfs",
+          "Pied",
+          "Cet examen, on le programme quand ?"
+        ],
+        "small": [],
+        "overflow": [],
+        "tiny": [
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 104,
+            "h": 44
+          },
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 51,
+            "h": 15
+          }
+        ]
+      },
+      "constrained": "output/playwright/audit-diabete/05-complications-1024-fast.png",
+      "constrainedMetrics": {
+        "viewport": [
+          1024,
+          768
+        ],
+        "h1": "Complications",
+        "text": "Accueil Complications Sources Choisissez un organe pour voir ce qu'on surveille. Continuer l'exploration Cet examen, on le programme quand ?",
+        "scrollWidth": 1024,
+        "clientWidth": 1024,
+        "buttons": [
+          "Accueil",
+          "Sources",
+          "Cerveau — déjà vu",
+          "Cœur — déjà vu",
+          "Yeux",
+          "Reins",
+          "Nerfs",
+          "Pied",
+          "Cet examen, on le programme quand ?"
+        ],
+        "small": [],
+        "overflow": [],
+        "tiny": [
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 104,
+            "h": 44
+          },
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 51,
+            "h": 15
+          }
+        ]
+      },
+      "homeAfterReturnText": "Accueil Complications Sources Choisissez un organe pour voir ce qu'on surveille. Continuer l'exploration Cet examen, on le programme quand ?",
+      "returnedHome": true
+    },
+    {
+      "slug": "06-suivi",
+      "title": "/Suivi/i",
+      "error": null,
+      "empty": "output/playwright/audit-diabete/06-suivi-empty.png",
+      "emptyMetrics": {
+        "viewport": [
+          1440,
+          900
+        ],
+        "h1": "Suivi",
+        "text": "Accueil Suivi Sources ① Le parcours ② La fiche JANV AVR JUIL OCT ON CONSTRUIT LE CADRAN, UN ÉLÉMENT À LA FOIS Tout réinitialiser Consultations ‹ Tous les 3 mois › Placer sur le cadran MES EXAMENS — UN PAR UN HbA1c protège : Vaisseaux ‹ Chaque consult. › i Fait Placer sur le cadran Bilan lipidique protège : Cœur ‹ 1×/an › i À programmer Placer sur le cadran Bilan rénal (DFG) protège : Reins ‹ 1×/an › i Fait Placer sur le cadran Fond d'œil protège : Yeux ‹ 1×/an › i Fait Placer sur le cadran Pied complet protège : Pied ‹ 1×/an › i À venir Placer sur le cadran Dentiste protège : Bouche & gencives ‹ 1×/an › i À venir Placer sur le cadran Vaccins protège : Défenses immunitaires ‹ 1×/2 ans › i Tous les 2 ans — prochain : 2027 Placer sur le cadran Continuer l'exploration Les surveillances liées aux médicaments",
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "buttons": [
+          "Accueil",
+          "Sources",
+          "① Le parcours",
+          "② La fiche",
+          "Tout réinitialiser",
+          "‹",
+          "›",
+          "Placer sur le cadran",
+          "Ce que HbA1c protège — Vaisseaux",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Ce que Bilan lipidique protège — Cœur",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Ce que Bilan rénal (DFG) protège — Reins",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Ce que Fond d'œil protège — Yeux",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Ce que Pied complet protège — Pied",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Ce que Dentiste protège — Bouche & gencives",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Ce que Vaccins protège — Défenses immunitaires",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Les surveillances liées aux médicaments"
+        ],
+        "small": [
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          },
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          },
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          },
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          },
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          },
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          },
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          }
+        ],
+        "overflow": [],
+        "tiny": [
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 104,
+            "h": 44
+          },
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 51,
+            "h": 15
+          },
+          {
+            "label": "① Le parcours",
+            "font": 13,
+            "w": 143,
+            "h": 44
+          },
+          {
+            "label": "② La fiche",
+            "font": 13,
+            "w": 115,
+            "h": 44
+          },
+          {
+            "label": "Tout réinitialiser",
+            "font": 13,
+            "w": 108,
+            "h": 44
+          },
+          {
+            "label": "MES EXAMENS — UN PAR UN",
+            "font": 13,
+            "w": 900,
+            "h": 20
+          }
+        ]
+      },
+      "interaction": {
+        "images": [
+          "output/playwright/audit-diabete/06-suivi-cadran.png"
+        ],
+        "actions": []
+      },
+      "afterMetrics": {
+        "viewport": [
+          1440,
+          900
+        ],
+        "h1": "Suivi",
+        "text": "Accueil Suivi Sources ① Le parcours ② La fiche JANV AVR JUIL OCT ON CONSTRUIT LE CADRAN, UN ÉLÉMENT À LA FOIS Tout réinitialiser Consultations ‹ Tous les 3 mois › Placer sur le cadran MES EXAMENS — UN PAR UN HbA1c protège : Vaisseaux ‹ Chaque consult. › i Fait Placer sur le cadran Bilan lipidique protège : Cœur ‹ 1×/an › i À programmer Placer sur le cadran Bilan rénal (DFG) protège : Reins ‹ 1×/an › i Fait Placer sur le cadran Fond d'œil protège : Yeux ‹ 1×/an › i Fait Placer sur le cadran Pied complet protège : Pied ‹ 1×/an › i À venir Placer sur le cadran Dentiste protège : Bouche & gencives ‹ 1×/an › i À venir Placer sur le cadran Vaccins protège : Défenses immunitaires ‹ 1×/2 ans › i Tous les 2 ans — prochain : 2027 Placer sur le cadran Continuer l'exploration Les surveillances liées aux médicaments",
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "buttons": [
+          "Accueil",
+          "Sources",
+          "① Le parcours",
+          "② La fiche",
+          "Tout réinitialiser",
+          "‹",
+          "›",
+          "Placer sur le cadran",
+          "Ce que HbA1c protège — Vaisseaux",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Ce que Bilan lipidique protège — Cœur",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Ce que Bilan rénal (DFG) protège — Reins",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Ce que Fond d'œil protège — Yeux",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Ce que Pied complet protège — Pied",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Ce que Dentiste protège — Bouche & gencives",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Ce que Vaccins protège — Défenses immunitaires",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Les surveillances liées aux médicaments"
+        ],
+        "small": [
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          },
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          },
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          },
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          },
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          },
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          },
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          }
+        ],
+        "overflow": [],
+        "tiny": [
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 104,
+            "h": 44
+          },
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 51,
+            "h": 15
+          },
+          {
+            "label": "① Le parcours",
+            "font": 13,
+            "w": 143,
+            "h": 44
+          },
+          {
+            "label": "② La fiche",
+            "font": 13,
+            "w": 115,
+            "h": 44
+          },
+          {
+            "label": "Tout réinitialiser",
+            "font": 13,
+            "w": 108,
+            "h": 44
+          },
+          {
+            "label": "MES EXAMENS — UN PAR UN",
+            "font": 13,
+            "w": 900,
+            "h": 20
+          }
+        ]
+      },
+      "constrained": "output/playwright/audit-diabete/06-suivi-1024-fast.png",
+      "constrainedMetrics": {
+        "viewport": [
+          1024,
+          768
+        ],
+        "h1": "Suivi",
+        "text": "Accueil Suivi Sources ① Le parcours ② La fiche JANV AVR JUIL OCT ON CONSTRUIT LE CADRAN, UN ÉLÉMENT À LA FOIS Tout réinitialiser Consultations ‹ Tous les 3 mois › Placer sur le cadran MES EXAMENS — UN PAR UN HbA1c protège : Vaisseaux ‹ Chaque consult. › i Fait Placer sur le cadran Bilan lipidique protège : Cœur ‹ 1×/an › i À programmer Placer sur le cadran Bilan rénal (DFG) protège : Reins ‹ 1×/an › i Fait Placer sur le cadran Fond d'œil protège : Yeux ‹ 1×/an › i Fait Placer sur le cadran Pied complet protège : Pied ‹ 1×/an › i À venir Placer sur le cadran Dentiste protège : Bouche & gencives ‹ 1×/an › i À venir Placer sur le cadran Vaccins protège : Défenses immunitaires ‹ 1×/2 ans › i Tous les 2 ans — prochain : 2027 Placer sur le cadran Continuer l'exploration Les surveillances liées aux médicaments",
+        "scrollWidth": 1024,
+        "clientWidth": 1024,
+        "buttons": [
+          "Accueil",
+          "Sources",
+          "① Le parcours",
+          "② La fiche",
+          "Tout réinitialiser",
+          "‹",
+          "›",
+          "Placer sur le cadran",
+          "Ce que HbA1c protège — Vaisseaux",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Ce que Bilan lipidique protège — Cœur",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Ce que Bilan rénal (DFG) protège — Reins",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Ce que Fond d'œil protège — Yeux",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Ce que Pied complet protège — Pied",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Ce que Dentiste protège — Bouche & gencives",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Ce que Vaccins protège — Défenses immunitaires",
+          "‹",
+          "›",
+          "i",
+          "Placer sur le cadran",
+          "Les surveillances liées aux médicaments"
+        ],
+        "small": [
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          },
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          },
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          },
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          },
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          },
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          },
+          {
+            "label": "i",
+            "w": 110,
+            "h": 19
+          }
+        ],
+        "overflow": [],
+        "tiny": [
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 104,
+            "h": 44
+          },
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 51,
+            "h": 15
+          },
+          {
+            "label": "① Le parcours",
+            "font": 13,
+            "w": 143,
+            "h": 44
+          },
+          {
+            "label": "② La fiche",
+            "font": 13,
+            "w": 115,
+            "h": 44
+          },
+          {
+            "label": "Tout réinitialiser",
+            "font": 13,
+            "w": 108,
+            "h": 44
+          },
+          {
+            "label": "MES EXAMENS — UN PAR UN",
+            "font": 13,
+            "w": 900,
+            "h": 20
+          }
+        ]
+      },
+      "homeAfterReturnText": "Accueil Suivi Sources ① Le parcours ② La fiche JANV AVR JUIL OCT ON CONSTRUIT LE CADRAN, UN ÉLÉMENT À LA FOIS Tout réinitialiser Consultations ‹ Tous les 3 mois › Placer sur le cadran MES EXAMENS — UN PAR UN HbA1c protège : Vaisseaux ‹ Chaque consult. › i Fait Placer sur le cadran Bilan lipidique protège : Cœur ‹ 1×/an › i À programmer Placer sur le cadran Bilan rénal (DFG) protège : Reins ‹ 1×/an › i Fait Placer sur le cadran Fond d'œil protège : Yeux ‹ 1×/an › i Fait Placer sur le cadran Pied ",
+      "returnedHome": true
+    },
+    {
+      "slug": "07-traitements",
+      "title": "/Traitements/i",
+      "error": null,
+      "empty": "output/playwright/audit-diabete/07-traitements-empty.png",
+      "emptyMetrics": {
+        "viewport": [
+          1440,
+          900
+        ],
+        "h1": "Traitements",
+        "text": "Accueil Traitements Sources Ordonnance Le ____ /____ /______ Dr ________________________ · Patient : ________________________ 1. Metformine (biguanide) Sulfamide hypoglycémiant iDPP4 (inhibiteur DPP-4) aGLP1 (agoniste du GLP-1) Gliflozine (iSGLT2) IEC / ARA2 Statine Insuline basale Matin et soir, au repas Voir l'effet 2. Metformine (biguanide) Sulfamide hypoglycémiant iDPP4 (inhibiteur DPP-4) aGLP1 (agoniste du GLP-1) Gliflozine (iSGLT2) IEC / ARA2 Statine Insuline basale 1 fois par jour, le matin Voir l'effet Ajouter une ligne CE QUE CE TRAITEMENT PROTÈGE Cliquez « Voir l'effet » sur une ligne pour voir où elle agit — ou cliquez « Ordonnance » pour tout allumer d'un coup. ON TRANSCRIT, LIGNE PAR LIGNE Continuer l'exploration Hypoglycémie Insuline",
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "buttons": [
+          "Accueil",
+          "Sources",
+          "Ordonnance",
+          "Molécule de la ligne 1",
+          "Quoi surveiller : troubles digestifs possibles au début",
+          "Voir l'effet",
+          "Retirer la ligne 1",
+          "Molécule de la ligne 2",
+          "Quoi surveiller : bien s'hydrater ; risque d'infection urinaire",
+          "Voir l'effet",
+          "Retirer la ligne 2",
+          "Ajouter une ligne",
+          "Cœur",
+          "Reins",
+          "Hypoglycémie",
+          "Insuline"
+        ],
+        "small": [
+          {
+            "label": "Molécule de la ligne 1",
+            "w": 343,
+            "h": 34
+          },
+          {
+            "label": "Molécule de la ligne 2",
+            "w": 343,
+            "h": 34
+          }
+        ],
+        "overflow": [],
+        "tiny": [
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 104,
+            "h": 44
+          },
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 51,
+            "h": 15
+          },
+          {
+            "label": "Le ____ /____ /______",
+            "font": 13,
+            "w": 138,
+            "h": 20
+          },
+          {
+            "label": "Dr ________________________ · Patient : ________________________",
+            "font": 13,
+            "w": 590,
+            "h": 29
+          },
+          {
+            "label": "Matin et soir, au repas",
+            "font": 13,
+            "w": 161,
+            "h": 20
+          },
+          {
+            "label": "Voir l'effet",
+            "font": 13,
+            "w": 99,
+            "h": 44
+          },
+          {
+            "label": "1 fois par jour, le matin",
+            "font": 13,
+            "w": 164,
+            "h": 20
+          },
+          {
+            "label": "Voir l'effet",
+            "font": 13,
+            "w": 99,
+            "h": 44
+          },
+          {
+            "label": "CE QUE CE TRAITEMENT PROTÈGE",
+            "font": 13,
+            "w": 220,
+            "h": 39
+          },
+          {
+            "label": "ON TRANSCRIT, LIGNE PAR LIGNE",
+            "font": 13,
+            "w": 249,
+            "h": 20
+          }
+        ]
+      },
+      "interaction": {
+        "images": [
+          "output/playwright/audit-diabete/07-traitements-correspondance.png"
+        ],
+        "actions": []
+      },
+      "afterMetrics": {
+        "viewport": [
+          1440,
+          900
+        ],
+        "h1": "Traitements",
+        "text": "Accueil Traitements Sources Ordonnance Le ____ /____ /______ Dr ________________________ · Patient : ________________________ 1. Metformine (biguanide) Sulfamide hypoglycémiant iDPP4 (inhibiteur DPP-4) aGLP1 (agoniste du GLP-1) Gliflozine (iSGLT2) IEC / ARA2 Statine Insuline basale Matin et soir, au repas Voir l'effet 2. Metformine (biguanide) Sulfamide hypoglycémiant iDPP4 (inhibiteur DPP-4) aGLP1 (agoniste du GLP-1) Gliflozine (iSGLT2) IEC / ARA2 Statine Insuline basale 1 fois par jour, le matin Voir l'effet Ajouter une ligne CE QUE CE TRAITEMENT PROTÈGE Toutes les zones que défend l'ordonnance complète, allumées ensemble. Un seul traitement, plusieurs fronts défendus à la fois. CARTE DE PROTECTION Continuer l'exploration Hypoglycémie Insuline",
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "buttons": [
+          "Accueil",
+          "Sources",
+          "Ordonnance",
+          "Molécule de la ligne 1",
+          "Quoi surveiller : troubles digestifs possibles au début",
+          "Voir l'effet",
+          "Retirer la ligne 1",
+          "Molécule de la ligne 2",
+          "Quoi surveiller : bien s'hydrater ; risque d'infection urinaire",
+          "Voir l'effet",
+          "Retirer la ligne 2",
+          "Ajouter une ligne",
+          "Cœur",
+          "Reins",
+          "Hypoglycémie",
+          "Insuline"
+        ],
+        "small": [
+          {
+            "label": "Molécule de la ligne 1",
+            "w": 343,
+            "h": 34
+          },
+          {
+            "label": "Molécule de la ligne 2",
+            "w": 343,
+            "h": 34
+          }
+        ],
+        "overflow": [],
+        "tiny": [
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 104,
+            "h": 44
+          },
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 51,
+            "h": 15
+          },
+          {
+            "label": "Le ____ /____ /______",
+            "font": 13,
+            "w": 138,
+            "h": 20
+          },
+          {
+            "label": "Dr ________________________ · Patient : ________________________",
+            "font": 13,
+            "w": 590,
+            "h": 29
+          },
+          {
+            "label": "Matin et soir, au repas",
+            "font": 13,
+            "w": 161,
+            "h": 20
+          },
+          {
+            "label": "Voir l'effet",
+            "font": 13,
+            "w": 99,
+            "h": 44
+          },
+          {
+            "label": "1 fois par jour, le matin",
+            "font": 13,
+            "w": 164,
+            "h": 20
+          },
+          {
+            "label": "Voir l'effet",
+            "font": 13,
+            "w": 99,
+            "h": 44
+          },
+          {
+            "label": "CE QUE CE TRAITEMENT PROTÈGE",
+            "font": 13,
+            "w": 220,
+            "h": 39
+          },
+          {
+            "label": "CARTE DE PROTECTION",
+            "font": 13,
+            "w": 175,
+            "h": 20
+          }
+        ]
+      },
+      "constrained": "output/playwright/audit-diabete/07-traitements-1024-fast.png",
+      "constrainedMetrics": {
+        "viewport": [
+          1024,
+          768
+        ],
+        "h1": "Traitements",
+        "text": "Accueil Traitements Sources Ordonnance Le ____ /____ /______ Dr ________________________ · Patient : ________________________ 1. Metformine (biguanide) Sulfamide hypoglycémiant iDPP4 (inhibiteur DPP-4) aGLP1 (agoniste du GLP-1) Gliflozine (iSGLT2) IEC / ARA2 Statine Insuline basale Matin et soir, au repas Voir l'effet 2. Metformine (biguanide) Sulfamide hypoglycémiant iDPP4 (inhibiteur DPP-4) aGLP1 (agoniste du GLP-1) Gliflozine (iSGLT2) IEC / ARA2 Statine Insuline basale 1 fois par jour, le matin Voir l'effet Ajouter une ligne CE QUE CE TRAITEMENT PROTÈGE Toutes les zones que défend l'ordonnance complète, allumées ensemble. Un seul traitement, plusieurs fronts défendus à la fois. CARTE DE PROTECTION Continuer l'exploration Hypoglycémie Insuline",
+        "scrollWidth": 1024,
+        "clientWidth": 1024,
+        "buttons": [
+          "Accueil",
+          "Sources",
+          "Ordonnance",
+          "Molécule de la ligne 1",
+          "Quoi surveiller : troubles digestifs possibles au début",
+          "Voir l'effet",
+          "Retirer la ligne 1",
+          "Molécule de la ligne 2",
+          "Quoi surveiller : bien s'hydrater ; risque d'infection urinaire",
+          "Voir l'effet",
+          "Retirer la ligne 2",
+          "Ajouter une ligne",
+          "Cœur",
+          "Reins",
+          "Hypoglycémie",
+          "Insuline"
+        ],
+        "small": [
+          {
+            "label": "Molécule de la ligne 1",
+            "w": 343,
+            "h": 34
+          },
+          {
+            "label": "Molécule de la ligne 2",
+            "w": 343,
+            "h": 34
+          }
+        ],
+        "overflow": [],
+        "tiny": [
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 104,
+            "h": 44
+          },
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 51,
+            "h": 15
+          },
+          {
+            "label": "Le ____ /____ /______",
+            "font": 13,
+            "w": 138,
+            "h": 20
+          },
+          {
+            "label": "Dr ________________________ · Patient : ________________________",
+            "font": 13,
+            "w": 590,
+            "h": 29
+          },
+          {
+            "label": "Matin et soir, au repas",
+            "font": 13,
+            "w": 161,
+            "h": 20
+          },
+          {
+            "label": "Voir l'effet",
+            "font": 13,
+            "w": 99,
+            "h": 44
+          },
+          {
+            "label": "1 fois par jour, le matin",
+            "font": 13,
+            "w": 164,
+            "h": 20
+          },
+          {
+            "label": "Voir l'effet",
+            "font": 13,
+            "w": 99,
+            "h": 44
+          },
+          {
+            "label": "CE QUE CE TRAITEMENT PROTÈGE",
+            "font": 13,
+            "w": 220,
+            "h": 39
+          },
+          {
+            "label": "CARTE DE PROTECTION",
+            "font": 13,
+            "w": 175,
+            "h": 20
+          }
+        ]
+      },
+      "homeAfterReturnText": "Accueil Traitements Sources Ordonnance Le ____ /____ /______ Dr ________________________ · Patient : ________________________ 1. Metformine (biguanide) Sulfamide hypoglycémiant iDPP4 (inhibiteur DPP-4) aGLP1 (agoniste du GLP-1) Gliflozine (iSGLT2) IEC / ARA2 Statine Insuline basale Matin et soir, au repas Voir l'effet 2. Metformine (biguanide) Sulfamide hypoglycémiant iDPP4 (inhibiteur DPP-4) aGLP1 (agoniste du GLP-1) Gliflozine (iSGLT2) IEC / ARA2 Statine Insuline basale 1 fois par jour, le mat",
+      "returnedHome": true
+    },
+    {
+      "slug": "08-hypoglycemie",
+      "title": "/Hypoglyc/i",
+      "error": null,
+      "empty": "output/playwright/audit-diabete/08-hypoglycemie-empty.png",
+      "emptyMetrics": {
+        "viewport": [
+          1440,
+          900
+        ],
+        "h1": "Hypoglycémie",
+        "text": "Accueil Hypoglycémie Sources ① Mon profil hypo ② Le réflexe 15/15 ③ Ma carte MES SIGNES PRÉCOCES Tremblements Sueurs Palpitations Faim soudaine Irritabilité Vision trouble Difficulté à se concentrer MON RESUCRAGE Jus de fruit (150 ml) 3 morceaux de sucre Comprimés de glucose (15 g) ✓ choisi Soda classique (150 ml) Continuer l'exploration Le capteur alarme quand les signes manquent",
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "buttons": [
+          "Accueil",
+          "Sources",
+          "① Mon profil hypo",
+          "② Le réflexe 15/15",
+          "③ Ma carte",
+          "Tremblements",
+          "Sueurs",
+          "Palpitations",
+          "Faim soudaine",
+          "Irritabilité",
+          "Vision trouble",
+          "Difficulté à se concentrer",
+          "Jus de fruit (150 ml)",
+          "3 morceaux de sucre",
+          "Comprimés de glucose (15 g) ✓ choisi",
+          "Soda classique (150 ml)",
+          "Le capteur alarme quand les signes manquent"
+        ],
+        "small": [],
+        "overflow": [],
+        "tiny": [
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 104,
+            "h": 44
+          },
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 51,
+            "h": 15
+          },
+          {
+            "label": "✓ choisi",
+            "font": 13,
+            "w": 51,
+            "h": 20
+          }
+        ]
+      },
+      "interaction": {
+        "images": [
+          "output/playwright/audit-diabete/08-hypoglycemie-reconnaitre.png",
+          "output/playwright/audit-diabete/08-hypoglycemie-overshoot.png",
+          "output/playwright/audit-diabete/08-hypoglycemie-carte-fiche.png"
+        ],
+        "actions": []
+      },
+      "afterMetrics": {
+        "viewport": [
+          1440,
+          900
+        ],
+        "h1": "Hypoglycémie",
+        "text": "Accueil Hypoglycémie Sources ① Mon profil hypo ② Le réflexe 15/15 ③ Ma carte Ma carte-réflexe 15 / 15 À garder sur soi MES SIGNES Tremblements MON RESUCRAGE Comprimés de glucose (15 g) ① Signes qui apparaissent → 15 g Sucre pur, tout de suite → ~15 min On attend, sans remanger → ↻ Recontrôle : répéter ou récupérer Toujours du sucre pur (jus, sucre, comprimés) — jamais du chocolat ou des aliments gras : ça remonte trop lentement. Imprimer ma carte Continuer l'exploration Le capteur alarme quand les signes manquent",
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "buttons": [
+          "Accueil",
+          "Sources",
+          "① Mon profil hypo",
+          "② Le réflexe 15/15",
+          "③ Ma carte",
+          "Imprimer ma carte",
+          "Le capteur alarme quand les signes manquent"
+        ],
+        "small": [],
+        "overflow": [],
+        "tiny": [
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 104,
+            "h": 44
+          },
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 51,
+            "h": 15
+          },
+          {
+            "label": "MES SIGNES",
+            "font": 13,
+            "w": 349,
+            "h": 20
+          },
+          {
+            "label": "Tremblements",
+            "font": 13,
+            "w": 117,
+            "h": 23
+          },
+          {
+            "label": "MON RESUCRAGE",
+            "font": 13,
+            "w": 349,
+            "h": 20
+          }
+        ]
+      },
+      "constrained": "output/playwright/audit-diabete/08-hypoglycemie-1024-fast.png",
+      "constrainedMetrics": {
+        "viewport": [
+          1024,
+          768
+        ],
+        "h1": "Hypoglycémie",
+        "text": "Accueil Hypoglycémie Sources ① Mon profil hypo ② Le réflexe 15/15 ③ Ma carte Ma carte-réflexe 15 / 15 À garder sur soi MES SIGNES Tremblements MON RESUCRAGE Comprimés de glucose (15 g) ① Signes qui apparaissent → 15 g Sucre pur, tout de suite → ~15 min On attend, sans remanger → ↻ Recontrôle : répéter ou récupérer Toujours du sucre pur (jus, sucre, comprimés) — jamais du chocolat ou des aliments gras : ça remonte trop lentement. Imprimer ma carte Continuer l'exploration Le capteur alarme quand les signes manquent",
+        "scrollWidth": 1024,
+        "clientWidth": 1024,
+        "buttons": [
+          "Accueil",
+          "Sources",
+          "① Mon profil hypo",
+          "② Le réflexe 15/15",
+          "③ Ma carte",
+          "Imprimer ma carte",
+          "Le capteur alarme quand les signes manquent"
+        ],
+        "small": [],
+        "overflow": [],
+        "tiny": [
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 104,
+            "h": 44
+          },
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 51,
+            "h": 15
+          },
+          {
+            "label": "MES SIGNES",
+            "font": 13,
+            "w": 349,
+            "h": 20
+          },
+          {
+            "label": "Tremblements",
+            "font": 13,
+            "w": 117,
+            "h": 23
+          },
+          {
+            "label": "MON RESUCRAGE",
+            "font": 13,
+            "w": 349,
+            "h": 20
+          }
+        ]
+      },
+      "homeAfterReturnText": "Accueil Hypoglycémie Sources ① Mon profil hypo ② Le réflexe 15/15 ③ Ma carte Ma carte-réflexe 15 / 15 À garder sur soi MES SIGNES Tremblements MON RESUCRAGE Comprimés de glucose (15 g) ① Signes qui apparaissent → 15 g Sucre pur, tout de suite → ~15 min On attend, sans remanger → ↻ Recontrôle : répéter ou récupérer Toujours du sucre pur (jus, sucre, comprimés) — jamais du chocolat ou des aliments gras : ça remonte trop lentement. Imprimer ma carte Continuer l'exploration Le capteur alarme quand l",
+      "returnedHome": true
+    },
+    {
+      "slug": "09-insuline",
+      "title": "/Insuline/i",
+      "error": null,
+      "empty": "output/playwright/audit-diabete/09-insuline-empty.png",
+      "emptyMetrics": {
+        "viewport": [
+          1440,
+          900
+        ],
+        "h1": "Insuline : adapter les doses",
+        "text": "Accueil Insuline : adapter les doses Sources ① Zone-cible ② Lire la courbe ③ Décider LA COURBE DU CAPTEUR — PLUSIEURS NUITS SUPERPOSÉES → Tendance nocturne : stable ← nuit / à jeun, loin du repas bosses post-repas → Temps dans la cible Profil jeune, actif Zone-cible basse et serrée : on vise un contrôle plus strict. Profil âgé / fragile Zone-cible plus haute et plus large : éviter l'hypo prime avant tout. ① ZONE-CIBLE La bande verte se règle selon le patient — jamais un chiffre imposé. Dans le doute, on ne monte pas — on traite l'hypo d'abord. Continuer l'exploration Revoir la règle des 15 (resucrage) La même courbe, côté assiette",
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "buttons": [
+          "Accueil",
+          "Sources",
+          "① Zone-cible",
+          "② Lire la courbe",
+          "③ Décider",
+          "Segment nuit / à jeun",
+          "Bosses post-repas",
+          "Profil jeune, actif Zone-cible basse et serrée : on vise un contrôle plus strict.",
+          "Profil âgé / fragile Zone-cible plus haute et plus large : éviter l'hypo prime avant tout.",
+          "Revoir la règle des 15 (resucrage)",
+          "La même courbe, côté assiette"
+        ],
+        "small": [],
+        "overflow": [],
+        "tiny": [
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 104,
+            "h": 44
+          },
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 51,
+            "h": 15
+          },
+          {
+            "label": "LA COURBE DU CAPTEUR — PLUSIEURS NUITS SUPERPOSÉES",
+            "font": 13,
+            "w": 422,
+            "h": 20
+          },
+          {
+            "label": "← nuit / à jeun, loin du repas",
+            "font": 13,
+            "w": 183,
+            "h": 20
+          },
+          {
+            "label": "bosses post-repas →",
+            "font": 13,
+            "w": 134,
+            "h": 20
+          },
+          {
+            "label": "① ZONE-CIBLE",
+            "font": 13,
+            "w": 900,
+            "h": 20
+          }
+        ]
+      },
+      "interaction": {
+        "images": [
+          "output/playwright/audit-diabete/09-insuline-traces.png"
+        ],
+        "actions": []
+      },
+      "afterMetrics": {
+        "viewport": [
+          1440,
+          900
+        ],
+        "h1": "Insuline : adapter les doses",
+        "text": "Accueil Insuline : adapter les doses Sources ① Zone-cible ② Lire la courbe ③ Décider LA COURBE DU CAPTEUR — PLUSIEURS NUITS SUPERPOSÉES → Tendance nocturne : stable ← nuit / à jeun, loin du repas bosses post-repas → Bosses post-repas ↔ le bolus Temps dans la cible Profil jeune, actif Zone-cible basse et serrée : on vise un contrôle plus strict. Profil âgé / fragile Zone-cible plus haute et plus large : éviter l'hypo prime avant tout. ① ZONE-CIBLE La bande verte se règle selon le patient — jamais un chiffre imposé. Dans le doute, on ne monte pas — on traite l'hypo d'abord. Continuer l'exploration Revoir la règle des 15 (resucrage) La même courbe, côté assiette",
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "buttons": [
+          "Accueil",
+          "Sources",
+          "① Zone-cible",
+          "② Lire la courbe",
+          "③ Décider",
+          "Segment nuit / à jeun",
+          "Bosses post-repas",
+          "Profil jeune, actif Zone-cible basse et serrée : on vise un contrôle plus strict.",
+          "Profil âgé / fragile Zone-cible plus haute et plus large : éviter l'hypo prime avant tout.",
+          "Revoir la règle des 15 (resucrage)",
+          "La même courbe, côté assiette"
+        ],
+        "small": [],
+        "overflow": [],
+        "tiny": [
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 104,
+            "h": 44
+          },
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 51,
+            "h": 15
+          },
+          {
+            "label": "LA COURBE DU CAPTEUR — PLUSIEURS NUITS SUPERPOSÉES",
+            "font": 13,
+            "w": 422,
+            "h": 20
+          },
+          {
+            "label": "← nuit / à jeun, loin du repas",
+            "font": 13,
+            "w": 183,
+            "h": 20
+          },
+          {
+            "label": "bosses post-repas →",
+            "font": 13,
+            "w": 134,
+            "h": 20
+          },
+          {
+            "label": "Bosses post-repas ↔ le bolus",
+            "font": 13,
+            "w": 214,
+            "h": 23
+          },
+          {
+            "label": "① ZONE-CIBLE",
+            "font": 13,
+            "w": 900,
+            "h": 20
+          }
+        ]
+      },
+      "constrained": "output/playwright/audit-diabete/09-insuline-1024-fast.png",
+      "constrainedMetrics": {
+        "viewport": [
+          1024,
+          768
+        ],
+        "h1": "Insuline : adapter les doses",
+        "text": "Accueil Insuline : adapter les doses Sources ① Zone-cible ② Lire la courbe ③ Décider LA COURBE DU CAPTEUR — PLUSIEURS NUITS SUPERPOSÉES → Tendance nocturne : stable ← nuit / à jeun, loin du repas bosses post-repas → Bosses post-repas ↔ le bolus Temps dans la cible Profil jeune, actif Zone-cible basse et serrée : on vise un contrôle plus strict. Profil âgé / fragile Zone-cible plus haute et plus large : éviter l'hypo prime avant tout. ① ZONE-CIBLE La bande verte se règle selon le patient — jamais un chiffre imposé. Dans le doute, on ne monte pas — on traite l'hypo d'abord. Continuer l'exploration Revoir la règle des 15 (resucrage) La même courbe, côté assiette",
+        "scrollWidth": 1024,
+        "clientWidth": 1024,
+        "buttons": [
+          "Accueil",
+          "Sources",
+          "① Zone-cible",
+          "② Lire la courbe",
+          "③ Décider",
+          "Segment nuit / à jeun",
+          "Bosses post-repas",
+          "Profil jeune, actif Zone-cible basse et serrée : on vise un contrôle plus strict.",
+          "Profil âgé / fragile Zone-cible plus haute et plus large : éviter l'hypo prime avant tout.",
+          "Revoir la règle des 15 (resucrage)",
+          "La même courbe, côté assiette"
+        ],
+        "small": [],
+        "overflow": [],
+        "tiny": [
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 104,
+            "h": 44
+          },
+          {
+            "label": "Sources",
+            "font": 13,
+            "w": 51,
+            "h": 15
+          },
+          {
+            "label": "LA COURBE DU CAPTEUR — PLUSIEURS NUITS SUPERPOSÉES",
+            "font": 13,
+            "w": 422,
+            "h": 20
+          },
+          {
+            "label": "← nuit / à jeun, loin du repas",
+            "font": 13,
+            "w": 183,
+            "h": 20
+          },
+          {
+            "label": "bosses post-repas →",
+            "font": 13,
+            "w": 134,
+            "h": 20
+          },
+          {
+            "label": "Bosses post-repas ↔ le bolus",
+            "font": 13,
+            "w": 214,
+            "h": 23
+          },
+          {
+            "label": "① ZONE-CIBLE",
+            "font": 13,
+            "w": 900,
+            "h": 20
+          }
+        ]
+      },
+      "homeAfterReturnText": "Accueil Insuline : adapter les doses Sources ① Zone-cible ② Lire la courbe ③ Décider LA COURBE DU CAPTEUR — PLUSIEURS NUITS SUPERPOSÉES → Tendance nocturne : stable ← nuit / à jeun, loin du repas bosses post-repas → Bosses post-repas ↔ le bolus Temps dans la cible Profil jeune, actif Zone-cible basse et serrée : on vise un contrôle plus strict. Profil âgé / fragile Zone-cible plus haute et plus large : éviter l'hypo prime avant tout. ① ZONE-CIBLE La bande verte se règle selon le patient — jamais",
+      "returnedHome": true
+    }
+  ],
+  "homeDesktop": "output/playwright/audit-diabete/00-home-desktop-fast.png",
+  "homeMetrics": {
+    "viewport": [
+      1440,
+      900
+    ],
+    "h1": "Votre accompagnement",
+    "text": "PROGRAMME ETP · DIABÈTE Votre accompagnement Le diabète est une maladie des vaisseaux, pas seulement du sucre — agir sur tout ensemble protège. COMPRENDRE C'est quoi le diabète ? Avec la métaphore de la clé et de la serrure, comprendre pourquoi le sucre reste dans le sang. Risque cardiovasculaire Régler cinq feux de risque pour voir comment ils bouchent — et débouchent — les artères. Complications Explorer, organe par organe, ce qui peut être touché — et surtout comment l'éviter. AGIR AU QUOTIDIEN Alimentation Composer une assiette et voir en direct comment elle fait varier la glycémie. Activité physique Découvrir tout ce que bouger apporte, et quand une activité aide le plus la glycémie. SE SOIGNER Suivi Faire le tour de l'année de soins sur un cadran, pour savoir où on en est. Traitements Voir sur le corps ce que chaque ligne de l’ordonnance protège vraiment. Hypoglycémie Le réflexe en cas d’hypoglycémie : reconnaître, resucrer, attendre — et voir la courbe remonter. Insuline : adapter les doses Lire la courbe du capteur pour savoir quand ajuster une dose d’insuline.",
+    "scrollWidth": 1440,
+    "clientWidth": 1440,
+    "buttons": [
+      "C'est quoi le diabète ? Avec la métaphore de la clé et de la serrure, comprendre pourquoi le sucre reste dans le sang.",
+      "Risque cardiovasculaire Régler cinq feux de risque pour voir comment ils bouchent — et débouchent — les artères.",
+      "Complications Explorer, organe par organe, ce qui peut être touché — et surtout comment l'éviter.",
+      "Alimentation Composer une assiette et voir en direct comment elle fait varier la glycémie.",
+      "Activité physique Découvrir tout ce que bouger apporte, et quand une activité aide le plus la glycémie.",
+      "Suivi Faire le tour de l'année de soins sur un cadran, pour savoir où on en est.",
+      "Traitements Voir sur le corps ce que chaque ligne de l’ordonnance protège vraiment.",
+      "Hypoglycémie Le réflexe en cas d’hypoglycémie : reconnaître, resucrer, attendre — et voir la courbe remonter.",
+      "Insuline : adapter les doses Lire la courbe du capteur pour savoir quand ajuster une dose d’insuline."
+    ],
+    "small": [],
+    "overflow": [],
+    "tiny": [
+      {
+        "label": "PROGRAMME ETP · DIABÈTE",
+        "font": 13,
+        "w": 900,
+        "h": 20
+      },
+      {
+        "label": "COMPRENDRE",
+        "font": 13,
+        "w": 900,
+        "h": 20
+      },
+      {
+        "label": "C'est quoi le diabète ? Avec la métaphore de la clé et de la serrure, comprendre",
+        "font": 13.3333,
+        "w": 443,
+        "h": 98
+      },
+      {
+        "label": "C'est quoi le diabète ? Avec la métaphore de la clé et de la serrure, comprendre",
+        "font": 13.3333,
+        "w": 347,
+        "h": 58
+      },
+      {
+        "label": "Avec la métaphore de la clé et de la serrure, comprendre pourquoi le sucre reste",
+        "font": 13,
+        "w": 347,
+        "h": 36
+      },
+      {
+        "label": "Risque cardiovasculaire Régler cinq feux de risque pour voir comment ils bouchen",
+        "font": 13.3333,
+        "w": 443,
+        "h": 98
+      },
+      {
+        "label": "Risque cardiovasculaire Régler cinq feux de risque pour voir comment ils bouchen",
+        "font": 13.3333,
+        "w": 347,
+        "h": 58
+      },
+      {
+        "label": "Régler cinq feux de risque pour voir comment ils bouchent — et débouchent — les ",
+        "font": 13,
+        "w": 347,
+        "h": 36
+      },
+      {
+        "label": "Complications Explorer, organe par organe, ce qui peut être touché — et surtout ",
+        "font": 13.3333,
+        "w": 443,
+        "h": 98
+      },
+      {
+        "label": "Complications Explorer, organe par organe, ce qui peut être touché — et surtout ",
+        "font": 13.3333,
+        "w": 347,
+        "h": 58
+      },
+      {
+        "label": "Explorer, organe par organe, ce qui peut être touché — et surtout comment l'évit",
+        "font": 13,
+        "w": 347,
+        "h": 36
+      },
+      {
+        "label": "AGIR AU QUOTIDIEN",
+        "font": 13,
+        "w": 900,
+        "h": 20
+      },
+      {
+        "label": "Alimentation Composer une assiette et voir en direct comment elle fait varier la",
+        "font": 13.3333,
+        "w": 443,
+        "h": 98
+      },
+      {
+        "label": "Alimentation Composer une assiette et voir en direct comment elle fait varier la",
+        "font": 13.3333,
+        "w": 347,
+        "h": 58
+      },
+      {
+        "label": "Composer une assiette et voir en direct comment elle fait varier la glycémie.",
+        "font": 13,
+        "w": 347,
+        "h": 36
+      }
+    ]
+  },
+  "home1024": "output/playwright/audit-diabete/00-home-1024-fast.png",
+  "home1024Metrics": {
+    "viewport": [
+      1024,
+      768
+    ],
+    "h1": "Votre accompagnement",
+    "text": "PROGRAMME ETP · DIABÈTE Votre accompagnement Le diabète est une maladie des vaisseaux, pas seulement du sucre — agir sur tout ensemble protège. COMPRENDRE C'est quoi le diabète ? Avec la métaphore de la clé et de la serrure, comprendre pourquoi le sucre reste dans le sang. Risque cardiovasculaire Régler cinq feux de risque pour voir comment ils bouchent — et débouchent — les artères. Complications Explorer, organe par organe, ce qui peut être touché — et surtout comment l'éviter. AGIR AU QUOTIDIEN Alimentation Composer une assiette et voir en direct comment elle fait varier la glycémie. Activité physique Découvrir tout ce que bouger apporte, et quand une activité aide le plus la glycémie. SE SOIGNER Suivi Faire le tour de l'année de soins sur un cadran, pour savoir où on en est. Traitements Voir sur le corps ce que chaque ligne de l’ordonnance protège vraiment. Hypoglycémie Le réflexe en cas d’hypoglycémie : reconnaître, resucrer, attendre — et voir la courbe remonter. Insuline : adapter les doses Lire la courbe du capteur pour savoir quand ajuster une dose d’insuline.",
+    "scrollWidth": 1024,
+    "clientWidth": 1024,
+    "buttons": [
+      "C'est quoi le diabète ? Avec la métaphore de la clé et de la serrure, comprendre pourquoi le sucre reste dans le sang.",
+      "Risque cardiovasculaire Régler cinq feux de risque pour voir comment ils bouchent — et débouchent — les artères.",
+      "Complications Explorer, organe par organe, ce qui peut être touché — et surtout comment l'éviter.",
+      "Alimentation Composer une assiette et voir en direct comment elle fait varier la glycémie.",
+      "Activité physique Découvrir tout ce que bouger apporte, et quand une activité aide le plus la glycémie.",
+      "Suivi Faire le tour de l'année de soins sur un cadran, pour savoir où on en est.",
+      "Traitements Voir sur le corps ce que chaque ligne de l’ordonnance protège vraiment.",
+      "Hypoglycémie Le réflexe en cas d’hypoglycémie : reconnaître, resucrer, attendre — et voir la courbe remonter.",
+      "Insuline : adapter les doses Lire la courbe du capteur pour savoir quand ajuster une dose d’insuline."
+    ],
+    "small": [],
+    "overflow": [],
+    "tiny": [
+      {
+        "label": "PROGRAMME ETP · DIABÈTE",
+        "font": 13,
+        "w": 900,
+        "h": 20
+      },
+      {
+        "label": "COMPRENDRE",
+        "font": 13,
+        "w": 900,
+        "h": 20
+      },
+      {
+        "label": "C'est quoi le diabète ? Avec la métaphore de la clé et de la serrure, comprendre",
+        "font": 13.3333,
+        "w": 443,
+        "h": 98
+      },
+      {
+        "label": "C'est quoi le diabète ? Avec la métaphore de la clé et de la serrure, comprendre",
+        "font": 13.3333,
+        "w": 347,
+        "h": 58
+      },
+      {
+        "label": "Avec la métaphore de la clé et de la serrure, comprendre pourquoi le sucre reste",
+        "font": 13,
+        "w": 347,
+        "h": 36
+      },
+      {
+        "label": "Risque cardiovasculaire Régler cinq feux de risque pour voir comment ils bouchen",
+        "font": 13.3333,
+        "w": 443,
+        "h": 98
+      },
+      {
+        "label": "Risque cardiovasculaire Régler cinq feux de risque pour voir comment ils bouchen",
+        "font": 13.3333,
+        "w": 347,
+        "h": 58
+      },
+      {
+        "label": "Régler cinq feux de risque pour voir comment ils bouchent — et débouchent — les ",
+        "font": 13,
+        "w": 347,
+        "h": 36
+      },
+      {
+        "label": "Complications Explorer, organe par organe, ce qui peut être touché — et surtout ",
+        "font": 13.3333,
+        "w": 443,
+        "h": 98
+      },
+      {
+        "label": "Complications Explorer, organe par organe, ce qui peut être touché — et surtout ",
+        "font": 13.3333,
+        "w": 347,
+        "h": 58
+      },
+      {
+        "label": "Explorer, organe par organe, ce qui peut être touché — et surtout comment l'évit",
+        "font": 13,
+        "w": 347,
+        "h": 36
+      },
+      {
+        "label": "AGIR AU QUOTIDIEN",
+        "font": 13,
+        "w": 900,
+        "h": 20
+      },
+      {
+        "label": "Alimentation Composer une assiette et voir en direct comment elle fait varier la",
+        "font": 13.3333,
+        "w": 443,
+        "h": 98
+      },
+      {
+        "label": "Alimentation Composer une assiette et voir en direct comment elle fait varier la",
+        "font": 13.3333,
+        "w": 347,
+        "h": 58
+      },
+      {
+        "label": "Composer une assiette et voir en direct comment elle fait varier la glycémie.",
+        "font": 13,
+        "w": 347,
+        "h": 36
+      }
+    ]
+  }
+}
