@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import type { ModuleProps } from '../../types';
-import ModuleFooterNav from '../../../components/ModuleFooterNav';
+import ModuleShell from '../../../components/ModuleShell';
 import InfoHover from '../../../components/InfoHover';
 import IllustrationSlot from '../components/IllustrationSlot';
 import CourbeGlycemie, {
@@ -95,7 +95,7 @@ function formatMg(level: number): string {
   return `${Math.round(mgFromLevel(level))} mg/dL`;
 }
 
-export default function ActiviteModule({ onNavigate }: ModuleProps) {
+export default function ActiviteModule({ shell }: ModuleProps) {
   const [temps, setTemps] = useState<Temps>(1);
 
   // Temps ① — rayonnement
@@ -260,23 +260,28 @@ export default function ActiviteModule({ onNavigate }: ModuleProps) {
     caption = { eyebrow: '③ Le timing' };
   }
 
-  return (
-    <div className={styles.module}>
-      <div className={styles.tempsTabs} role="tablist" aria-label="Étape du module">
-        {TEMPS_TABS.map((t) => (
-          <button
-            key={t.n}
-            type="button"
-            role="tab"
-            aria-selected={temps === t.n}
-            className={`${styles.tab} ${temps === t.n ? styles.tabActive : ''}`}
-            onClick={() => setTemps(t.n)}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
+  if (!shell) return null;
 
+  const navBar = (
+    <div className={styles.tempsTabs} role="tablist" aria-label="Étape du module">
+      {TEMPS_TABS.map((t) => (
+        <button
+          key={t.n}
+          type="button"
+          role="tab"
+          aria-selected={temps === t.n}
+          className={`${styles.tab} ${temps === t.n ? styles.tabActive : ''}`}
+          onClick={() => setTemps(t.n)}
+        >
+          {t.label}
+        </button>
+      ))}
+    </div>
+  );
+
+  return (
+    <ModuleShell titre={shell.titre} sources={shell.sources} onBack={shell.onBack} wide nav={navBar}>
+    <div className={styles.module}>
       {temps === 1 && (
         <div className={styles.rayonWrap}>
           <svg className={styles.raySvg} viewBox="0 0 100 100" aria-hidden="true">
@@ -400,7 +405,7 @@ export default function ActiviteModule({ onNavigate }: ModuleProps) {
                         id={`activite-${a.id}`}
                         label={a.nom}
                         shape="rounded"
-                        size={a.intensite === 'modérée' ? 68 : 56}
+                        size={a.intensite === 'modérée' ? 48 : 44}
                       />
                       {a.muscle && (
                         <span className={styles.muscleDot} aria-hidden="true" title="bon pour les muscles" />
@@ -442,12 +447,14 @@ export default function ActiviteModule({ onNavigate }: ModuleProps) {
               <p className={styles.totalNumber}>
                 {totalMinutes} <span className={styles.totalUnit}>minutes</span>
               </p>
-              <div className={styles.jaugeTrack}>
-                <div className={styles.jaugeFill} style={{ width: `${jaugePct}%` }} />
-              </div>
-              <div className={styles.jaugeScale}>
-                <span>0</span>
-                <span>et ça continue ···→</span>
+              <div className={styles.jaugeCol}>
+                <div className={styles.jaugeTrack}>
+                  <div className={styles.jaugeFill} style={{ width: `${jaugePct}%` }} />
+                </div>
+                <div className={styles.jaugeScale}>
+                  <span>0</span>
+                  <span>et ça continue ···→</span>
+                </div>
               </div>
             </div>
             <div className={styles.muscleLegend}>
@@ -546,10 +553,7 @@ export default function ActiviteModule({ onNavigate }: ModuleProps) {
         {caption.text && <p className={styles.captionText}>{caption.text}</p>}
       </div>
 
-      <ModuleFooterNav
-        items={[{ id: 'alimentation', label: 'La même courbe, côté assiette' }]}
-        onNavigate={onNavigate}
-      />
     </div>
+    </ModuleShell>
   );
 }
