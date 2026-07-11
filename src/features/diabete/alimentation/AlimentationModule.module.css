@@ -202,13 +202,19 @@
   display: flex;
   gap: var(--space-md);
   flex-wrap: wrap;
-  align-items: center;
+  /* S4-v3 : flex-start (au lieu de center) — remonte le bloc, l'espace en haut d'écran ne se
+     creuse plus autour d'une assiette centrée verticalement dans sa ligne. */
+  align-items: flex-start;
   justify-content: center;
 }
 
 .d1Plate {
-  width: 400px;
-  height: 400px;
+  /* S4-v3 : 400→320px — la courbe (résultat clé) sort de `.stage` et prend toute la largeur
+     en dessous ; l'assiette n'a plus besoin d'être aussi grande pour rester lisible. Padding/gap
+     resserrés et `.d1Chip` réduit en proportion (cf. plus bas) pour que les 10 aliments
+     (D1_PLATE_MAX) tiennent toujours dans le cercle (4/rang × 3 rangs max, avant : 3/rang × 4). */
+  width: 320px;
+  height: 320px;
   flex-shrink: 0;
   border-radius: 50%;
   background: var(--color-surface);
@@ -218,8 +224,8 @@
   justify-content: center;
   align-content: center;
   flex-wrap: wrap;
-  gap: 10px;
-  padding: 32px;
+  gap: 8px;
+  padding: 20px;
   box-sizing: border-box;
 }
 
@@ -232,8 +238,9 @@
 }
 
 .d1Chip {
-  width: 84px;
-  height: 84px;
+  /* S4-v3 : 84→56px, cf. note `.d1Plate` (garde 10 aliments dans le cercle réduit). */
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   background: var(--color-surface);
   border: 2px solid var(--color-confort);
@@ -263,11 +270,16 @@
 
 /* S6-v2 (#14) : `width: 380px` + `flex-basis: 340px` (redondants, sources potentielles de
    confusion selon les moteurs de rendu) remplacés par un simple `max-width` + `min-width: 0`
-   qui laisse la carte se réduire jusqu'à son contenu plutôt que forcer une largeur fixe. */
+   qui laisse la carte se réduire jusqu'à son contenu plutôt que forcer une largeur fixe.
+   S4-v3 : `min-width: 0` seul était inopérant — `flex-wrap` décide du retour à la ligne sur la
+   `flex-basis` déclarée (340px), pas sur la taille rétrécie ; 340×2+gap(40) > 531px (largeur
+   de `.stage` avant S1) → 2 cartes empilées au lieu de côte à côte. Basis et plafond réduits
+   (340→240 / 380→320) pour que 240×2+40=520 ≤ 531. Après S1 (`.stage` plus large), on peut
+   remonter `max-width` pour des cartes plus confortables — `// à caler`. */
 .d2Card {
-  max-width: 380px;
+  max-width: 320px;
   min-width: 0;
-  flex: 1 1 340px;
+  flex: 1 1 240px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -300,6 +312,7 @@
 
 .d2Levels {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-sm);
 }
 
@@ -385,15 +398,19 @@
 
 .d3Row {
   display: flex;
-  gap: var(--space-lg);
+  /* S4-v3 : gap resserré 24→16px (même cause qu'en ②, `flex-wrap` décide sur la basis, pas la
+     taille rétrécie) — combiné à la basis réduite de `.d3Slot` ci-dessous. */
+  gap: var(--space-md);
   flex-wrap: wrap;
   justify-content: space-around;
 }
 
-/* S6-v2 (#15) : même correction qu'en défi ② — `width` fixe retiré au profit de `min-width: 0`. */
+/* S6-v2 (#15) : même correction qu'en défi ② — `width` fixe retiré au profit de `min-width: 0`.
+   S4-v3 : basis 170→155px (155×3 + gap(16)×2 = 497 ≤ 531px, `.stage` avant S1) pour que les
+   3 aliments tiennent sur une ligne au lieu de 2+1. */
 .d3Slot {
   min-width: 0;
-  flex: 1 1 170px;
+  flex: 1 1 155px;
   max-width: 220px;
   display: flex;
   flex-direction: column;
@@ -460,7 +477,8 @@
   display: flex;
   gap: var(--space-xl);
   flex-wrap: wrap;
-  align-items: center;
+  /* S4-v3 : flex-start (au lieu de center) — remonte le bloc, même logique que `.d1Layout`. */
+  align-items: flex-start;
   justify-content: center;
 }
 

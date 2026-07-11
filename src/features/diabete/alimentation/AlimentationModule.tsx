@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import type { DragEvent, KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { Check, X } from 'lucide-react';
 import type { ModuleProps } from '../../types';
+import ModuleShell from '../../../components/ModuleShell';
 import FicheOverlay from '../../../components/FicheOverlay';
-import ModuleFooterNav from '../../../components/ModuleFooterNav';
 import InfoHover from '../../../components/InfoHover';
 import IllustrationSlot from '../components/IllustrationSlot';
 import CourbeGlycemie, {
@@ -318,7 +318,7 @@ function CourbeSection({ courbes, onNavigateActivite, animerTrace }: CourbeSecti
   );
 }
 
-export default function AlimentationModule({ onNavigate }: ModuleProps) {
+export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
   const [defi, setDefi] = useState<DefiId>(1);
   const [gmFamily, setGmFamily] = useState(FAMILIES[0].id);
 
@@ -675,35 +675,40 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
 
   const showShelf = defi === 1 || defi === 2 || defi === 3 || defi === 5;
 
-  return (
-    <div className={styles.module}>
-      <div className={styles.tabs} role="tablist" aria-label="Les 4 défis et la synthèse">
-        {DEFI_ORDER.map((n, index) => {
-          const played = playedDefis.has(n);
-          return (
-            <button
-              key={n}
-              type="button"
-              role="tab"
-              aria-selected={defi === n}
-              tabIndex={defi === n ? 0 : -1}
-              className={defi === n ? `${styles.tab} ${styles.tabActive}` : styles.tab}
-              onClick={() => setDefi(n)}
-              onKeyDown={(e) => handleTabKeyDown(e, index)}
-              aria-label={played ? `${DEFI_LABELS[n]} — défi joué` : undefined}
-            >
-              {DEFI_LABELS[n]}
-              {played && (
-                <span className={styles.tabCheck} aria-hidden="true">
-                  {' '}
-                  ✓
-                </span>
-              )}
-            </button>
-          );
-        })}
-      </div>
+  if (!shell) return null;
 
+  const navBar = (
+    <div className={styles.tabs} role="tablist" aria-label="Les 4 défis et la synthèse">
+      {DEFI_ORDER.map((n, index) => {
+        const played = playedDefis.has(n);
+        return (
+          <button
+            key={n}
+            type="button"
+            role="tab"
+            aria-selected={defi === n}
+            tabIndex={defi === n ? 0 : -1}
+            className={defi === n ? `${styles.tab} ${styles.tabActive}` : styles.tab}
+            onClick={() => setDefi(n)}
+            onKeyDown={(e) => handleTabKeyDown(e, index)}
+            aria-label={played ? `${DEFI_LABELS[n]} — défi joué` : undefined}
+          >
+            {DEFI_LABELS[n]}
+            {played && (
+              <span className={styles.tabCheck} aria-hidden="true">
+                {' '}
+                ✓
+              </span>
+            )}
+          </button>
+        );
+      })}
+    </div>
+  );
+
+  return (
+    <ModuleShell titre={shell.titre} sources={shell.sources} onBack={shell.onBack} wide nav={navBar}>
+    <div className={styles.module}>
       <div className={styles.layout}>
         {showShelf && (
           <aside className={styles.shelf} aria-label="Le garde-manger">
@@ -760,7 +765,7 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
                         onClick={() => handleD1Remove(chip.uid)}
                         aria-label={`Retirer ${food.name} de l'assiette`}
                       >
-                        <IllustrationSlot id={`aliment-${food.id}`} label={food.name} shape="circle" size={72} />
+                        <IllustrationSlot id={`aliment-${food.id}`} label={food.name} shape="circle" size={44} />
                       </button>
                     );
                   })}
@@ -775,37 +780,6 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
                   </button>
                 </div>
               </div>
-              <CourbeSection
-                courbes={
-                  d1ShowFantome && d1CourbeFeculents
-                    ? [
-                        {
-                          id: 'd1',
-                          d: d1Courbe.d,
-                          label: 'Votre assiette',
-                          mg: `${d1Courbe.mg} mg/dL`,
-                          variante: 'principale',
-                        },
-                        {
-                          id: 'feculents-seuls',
-                          d: d1CourbeFeculents.d,
-                          label: 'Vos féculents seuls',
-                          mg: `${d1CourbeFeculents.mg} mg/dL`,
-                          variante: 'fantome',
-                        },
-                      ]
-                    : [
-                        {
-                          id: 'd1',
-                          d: d1Courbe.d,
-                          label: 'Votre assiette',
-                          mg: `${d1Courbe.mg} mg/dL`,
-                          variante: 'principale',
-                        },
-                      ]
-                }
-                onNavigateActivite={() => onNavigate('activite')}
-              />
             </>
           )}
 
@@ -906,32 +880,6 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
                   </button>
                 )}
               </div>
-              {d2Revealed && (
-                <CourbeSection
-                  courbes={[
-                    {
-                      id: 'A',
-                      d: d2CardA.courbe.d,
-                      label: d2CardA.food.name,
-                      mg: `${d2CardA.courbe.mg} mg/dL`,
-                      variante: 'duoA',
-                      picAt: d2CardA.courbe.picAt,
-                      etiquette: d2CardA.food.name,
-                    },
-                    {
-                      id: 'B',
-                      d: d2CardB.courbe.d,
-                      label: d2CardB.food.name,
-                      mg: `${d2CardB.courbe.mg} mg/dL`,
-                      variante: 'duoB',
-                      picAt: d2CardB.courbe.picAt,
-                      etiquette: d2CardB.food.name,
-                    },
-                  ]}
-                  onNavigateActivite={() => onNavigate('activite')}
-                  animerTrace
-                />
-              )}
             </>
           )}
 
@@ -975,25 +923,6 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
                   </div>
                 ))}
               </div>
-              <CourbeSection
-                courbes={[
-                  {
-                    id: 'actuel',
-                    d: d3CourbeActuel.d,
-                    label: d3ActuelLabel,
-                    mg: `${d3CourbeActuel.mg} mg/dL`,
-                    variante: 'principale',
-                  },
-                  {
-                    id: 'reference',
-                    d: d3CourbeRef.d,
-                    label: d3RefLabel,
-                    mg: `${d3CourbeRef.mg} mg/dL`,
-                    variante: 'fantome',
-                  },
-                ]}
-                onNavigateActivite={() => onNavigate('activite')}
-              />
             </>
           )}
 
@@ -1039,37 +968,6 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
                   )}
                 </div>
               </div>
-              <CourbeSection
-                courbes={
-                  d4ShowFantome && d4CourbeFeculents
-                    ? [
-                        {
-                          id: 'd4',
-                          d: d4Courbe.d,
-                          label: 'Votre assiette',
-                          mg: `${d4Courbe.mg} mg/dL`,
-                          variante: 'principale',
-                        },
-                        {
-                          id: 'd4-feculents-seuls',
-                          d: d4CourbeFeculents.d,
-                          label: 'Vos féculents seuls',
-                          mg: `${d4CourbeFeculents.mg} mg/dL`,
-                          variante: 'fantome',
-                        },
-                      ]
-                    : [
-                        {
-                          id: 'd4',
-                          d: d4Courbe.d,
-                          label: 'Votre assiette',
-                          mg: `${d4Courbe.mg} mg/dL`,
-                          variante: 'principale',
-                        },
-                      ]
-                }
-                onNavigateActivite={() => onNavigate('activite')}
-              />
             </>
           )}
 
@@ -1112,27 +1010,6 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
                   Recommencer
                 </button>
               </div>
-              {synthPlate.length > 0 && (
-                <CourbeSection
-                  courbes={[
-                    {
-                      id: 'principale',
-                      d: synthCourbePrincipale.d,
-                      label: 'Votre repas',
-                      mg: `${synthCourbePrincipale.mg} mg/dL`,
-                      variante: 'principale',
-                    },
-                    {
-                      id: 'naive',
-                      d: synthCourbeNaive.d,
-                      label: "Version naïve (féculents d'abord, sans légumes)",
-                      mg: `${synthCourbeNaive.mg} mg/dL`,
-                      variante: 'fantome',
-                    },
-                  ]}
-                  onNavigateActivite={() => onNavigate('activite')}
-                />
-              )}
               <button
                 type="button"
                 className={`btn btn--primary ${styles.ficheButton}`}
@@ -1146,10 +1023,143 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
         </div>
       </div>
 
-      <ModuleFooterNav
-        items={[{ id: 'activite', label: 'Et si on bougeait après ce repas ?' }]}
-        onNavigate={onNavigate}
-      />
+      {/* S4-v3 : LA COURBE (résultat clé) sort de `.stage` (~531px avant S1, encore trop
+          juste après) pour occuper toute la largeur du module, sous shelf+stage. Gardes
+          conservées à l'identique (défi ② seulement si révélé, défi ⑤ seulement si non vide). */}
+      {defi === 1 && (
+        <CourbeSection
+          courbes={
+            d1ShowFantome && d1CourbeFeculents
+              ? [
+                  {
+                    id: 'd1',
+                    d: d1Courbe.d,
+                    label: 'Votre assiette',
+                    mg: `${d1Courbe.mg} mg/dL`,
+                    variante: 'principale',
+                  },
+                  {
+                    id: 'feculents-seuls',
+                    d: d1CourbeFeculents.d,
+                    label: 'Vos féculents seuls',
+                    mg: `${d1CourbeFeculents.mg} mg/dL`,
+                    variante: 'fantome',
+                  },
+                ]
+              : [
+                  {
+                    id: 'd1',
+                    d: d1Courbe.d,
+                    label: 'Votre assiette',
+                    mg: `${d1Courbe.mg} mg/dL`,
+                    variante: 'principale',
+                  },
+                ]
+          }
+          onNavigateActivite={() => onNavigate('activite')}
+        />
+      )}
+      {defi === 2 && d2Revealed && (
+        <CourbeSection
+          courbes={[
+            {
+              id: 'A',
+              d: d2CardA.courbe.d,
+              label: d2CardA.food.name,
+              mg: `${d2CardA.courbe.mg} mg/dL`,
+              variante: 'duoA',
+              picAt: d2CardA.courbe.picAt,
+              etiquette: d2CardA.food.name,
+            },
+            {
+              id: 'B',
+              d: d2CardB.courbe.d,
+              label: d2CardB.food.name,
+              mg: `${d2CardB.courbe.mg} mg/dL`,
+              variante: 'duoB',
+              picAt: d2CardB.courbe.picAt,
+              etiquette: d2CardB.food.name,
+            },
+          ]}
+          onNavigateActivite={() => onNavigate('activite')}
+          animerTrace
+        />
+      )}
+      {defi === 3 && (
+        <CourbeSection
+          courbes={[
+            {
+              id: 'actuel',
+              d: d3CourbeActuel.d,
+              label: d3ActuelLabel,
+              mg: `${d3CourbeActuel.mg} mg/dL`,
+              variante: 'principale',
+            },
+            {
+              id: 'reference',
+              d: d3CourbeRef.d,
+              label: d3RefLabel,
+              mg: `${d3CourbeRef.mg} mg/dL`,
+              variante: 'fantome',
+            },
+          ]}
+          onNavigateActivite={() => onNavigate('activite')}
+        />
+      )}
+      {defi === 4 && (
+        <CourbeSection
+          courbes={
+            d4ShowFantome && d4CourbeFeculents
+              ? [
+                  {
+                    id: 'd4',
+                    d: d4Courbe.d,
+                    label: 'Votre assiette',
+                    mg: `${d4Courbe.mg} mg/dL`,
+                    variante: 'principale',
+                  },
+                  {
+                    id: 'd4-feculents-seuls',
+                    d: d4CourbeFeculents.d,
+                    label: 'Vos féculents seuls',
+                    mg: `${d4CourbeFeculents.mg} mg/dL`,
+                    variante: 'fantome',
+                  },
+                ]
+              : [
+                  {
+                    id: 'd4',
+                    d: d4Courbe.d,
+                    label: 'Votre assiette',
+                    mg: `${d4Courbe.mg} mg/dL`,
+                    variante: 'principale',
+                  },
+                ]
+          }
+          onNavigateActivite={() => onNavigate('activite')}
+        />
+      )}
+      {defi === 5 && synthPlate.length > 0 && (
+        <CourbeSection
+          courbes={[
+            {
+              id: 'principale',
+              d: synthCourbePrincipale.d,
+              label: 'Votre repas',
+              mg: `${synthCourbePrincipale.mg} mg/dL`,
+              variante: 'principale',
+            },
+            {
+              id: 'naive',
+              d: synthCourbeNaive.d,
+              label: "Version naïve (féculents d'abord, sans légumes)",
+              mg: `${synthCourbeNaive.mg} mg/dL`,
+              variante: 'fantome',
+            },
+          ]}
+          onNavigateActivite={() => onNavigate('activite')}
+        />
+      )}
 
       {ficheOpen && (
         <FicheOverlay
@@ -1199,5 +1209,6 @@ export default function AlimentationModule({ onNavigate }: ModuleProps) {
         </FicheOverlay>
       )}
     </div>
+    </ModuleShell>
   );
 }
