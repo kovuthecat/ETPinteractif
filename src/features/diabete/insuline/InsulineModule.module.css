@@ -130,36 +130,49 @@
   background: var(--color-vigilance);
 }
 
-/* --- Temps ① : profils --- */
+/* --- Profil : toggle d'état (S4-v2, remplace l'ancien onglet ① plein écran) --- */
 
-.profiles {
+.profileToggleRow {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-md);
+  align-items: center;
+  gap: var(--space-sm);
 }
 
-.profileCard {
-  flex: 1 1 280px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: var(--space-md) var(--space-lg);
-  text-align: left;
-  cursor: pointer;
-  font: inherit;
-  color: inherit;
-  border: 2px solid var(--color-line);
-}
-
-.profileNom {
+.profileToggleLabel {
+  font-size: 13px;
   font-weight: 700;
-  font-size: 1.05em;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-soft);
 }
 
-.profileDesc {
-  font-size: 0.9em;
-  line-height: 1.4;
+.profileToggle {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-line);
+}
+
+.profileToggleBtn {
+  padding: 7px 14px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
   color: var(--color-text-soft);
+  font: 600 13px 'Work Sans', sans-serif;
+  cursor: pointer;
+}
+
+.profileToggleBtnActive {
+  background: var(--color-text);
+  color: var(--color-bg);
+}
+
+.profileToggleBtn:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
 }
 
 /* --- Temps ③ : situations --- */
@@ -244,17 +257,3 @@
   cursor: pointer;
 }
 
-/* --- Bandeau de synthèse --- */
-
-.caption {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.captionText {
-  margin: 0;
-  font-size: 1.1em;
-  line-height: 1.4;
-  max-width: 72ch;
-}
