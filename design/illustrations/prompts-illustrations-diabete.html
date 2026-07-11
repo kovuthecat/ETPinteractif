@@ -159,9 +159,9 @@
 /* ------------------------------------------------------------------ *
  * Styles par défaut (éditables dans l'UI)                            *
  * ------------------------------------------------------------------ */
-const DEFAULT_SYS = `Illustration vectorielle plate (flat design), style pictogramme éditorial adulte et raffiné, pour un support d'éducation thérapeutique médicale montré en consultation. Aplats de couleur unis, AUCUN dégradé, AUCUNE ombre portée, AUCUN effet 3D, pas de texture bruitée. Palette sobre et limitée : fond blanc pur (#ffffff), un bleu-canard principal (~#1f7a8c), un accent chaud terracotta doux (~#c76b4a), gris neutres ; les couleurs feu vert / ambre / rouge UNIQUEMENT si le sujet l'impose. Trait d'épaisseur régulière, formes géométriques nettes et simples, beaucoup d'espace négatif, composition centrée, format carré 1:1 avec marge. AUCUN texte, chiffre, lettre ou étiquette dans l'image. Sujet isolé sur fond blanc uni. Registre digne, jamais enfantin : pas de smiley, pas de visage cartoon, pas de bulle de BD, pas de style « stock santé » souriant. Bords nets, contraste élevé, détails minimaux — pensé pour être vectorisé proprement en SVG. Produire une seule image.`;
+const DEFAULT_SYS = `Illustration vectorielle plate (flat design), style pictogramme éditorial adulte et raffiné, pour un support d'éducation thérapeutique médicale montré en consultation. Aplats de couleur unis, AUCUN dégradé, AUCUNE ombre portée, AUCUN effet 3D, pas de texture bruitée. Palette sobre et limitée : fond blanc pur (#ffffff), un bleu-canard principal (~#1f7a8c), un accent chaud terracotta doux (~#c76b4a), gris neutres ; les couleurs feu vert / ambre / rouge UNIQUEMENT si le sujet l'impose. Trait d'épaisseur régulière, formes géométriques nettes et simples, beaucoup d'espace négatif, composition centrée, format carré 1:1 avec marge. AUCUN texte, chiffre, lettre ou étiquette dans l'image. Sujet isolé sur fond blanc uni. Registre digne, jamais enfantin : pas de smiley, pas de visage cartoon, pas de bulle de BD, pas de style « stock santé » souriant. Bords nets, contraste élevé, détails minimaux — pensé pour être vectorisé proprement en SVG. AUCUN élément de contexte ou de décor autour du sujet (pas de rayons, d'axe, de cadre ni de série de petits points décoratifs : l'application dessine elle-même ces éléments). Un seul langage graphique par famille d'icônes : formes en APLATS PLEINS, détails intérieurs en négatif blanc, pas de mélange trait fin / aplat. Aucun micro-détail illisible à 40 px. Produire une seule image.`;
 
-const DEFAULT_FOOD = `Vignette d'un seul aliment, illustration vectorielle plate (flat design), appétissante mais épurée, style pictogramme éditorial cohérent (une seule famille graphique avec les autres aliments). Aplats de couleur unis aux teintes naturelles légèrement désaturées et harmonisées, AUCUN dégradé, AUCUNE ombre portée, AUCUN effet 3D, contour fin d'épaisseur régulière possible. UN SEUL aliment, centré, vue de face ou 3/4 lisible à 1 mètre, format carré 1:1, cadrage et échelle constants (le sujet occupe ~70% du cadre). AUCUN texte, AUCUNE pastille de couleur, AUCUNE assiette ni couvert autour, fond blanc pur uni. Jamais de rendu photo, jamais de style « stock ». Bords nets, formes simples — pensé pour être vectorisé proprement en SVG. Produire une seule image.`;
+const DEFAULT_FOOD = `Vignette d'un seul aliment, illustration vectorielle plate (flat design), appétissante mais épurée, style pictogramme éditorial cohérent (une seule famille graphique avec les autres aliments). Aplats de couleur unis aux teintes naturelles légèrement désaturées et harmonisées, AUCUN dégradé, AUCUNE ombre portée, AUCUN effet 3D, contour fin d'épaisseur régulière possible. UN SEUL aliment, centré, vue de face ou 3/4 lisible à 1 mètre, format carré 1:1, cadrage et échelle constants (le sujet occupe ~70% du cadre). AUCUN texte, AUCUNE pastille de couleur, AUCUNE assiette ni couvert autour, fond blanc pur uni. Contour fin brun régulier autour de chaque forme, 2 à 3 aplats par élément maximum (référence de famille : la vignette pois chiches déjà générée). AUCUNE texture granuleuse, AUCUN mouchetis, AUCUN rendu peint ni pointilliste : pour un tas de grains ou de granulés, dessiner une masse en aplat uni et suggérer seulement 10 à 20 grains en surface. Jamais de rendu photo, jamais de style « stock ». Bords nets, formes simples — pensé pour être vectorisé proprement en SVG. Produire une seule image.`;
 
 const DEFAULT_TABAC = `Illustration éditoriale chaleureuse pour un support d'éducation thérapeutique au sevrage tabagique, destinée à un BANDEAU HORIZONTAL (ratio 16:7) posé sur une carte crème. Style à trait fin et régulier rehaussé d'aplats doux, cohérent avec une iconographie en lignes (icônes « line »). Palette papier crème / kraft : fond crème très clair (~#f7f4ee), traits et formes en brun chaud sombre (~#3a2c1e), un vert doux « confort » pour le geste correct, un ambre/or « vigilance » et un rouge chaud « toxique » UNIQUEMENT si un geste à éviter est montré, un bleu neutre discret. AUCUN dégradé criard, aucune 3D, aucune ombre lourde, jamais de rendu photo ni de style « stock santé ». Registre adulte et digne, jamais enfantin : pas de smiley, pas de mascotte. Mains, bouche ou visage stylisés et neutres (non genrés, non racialisés). Composition horizontale lisible de gauche à droite, éventuellement 2–3 étapes du geste. AUCUN texte, chiffre ou étiquette dans l'image (les légendes sont ajoutées par l'application). Sujet centré, marges généreuses, fond uni. Bords nets, aplats francs — pensé pour être vectorisé proprement en SVG. Produire une seule image.`;
 
@@ -173,241 +173,75 @@ const DEFAULT_TABAC_SQ = `Illustration éditoriale sobre pour un support d'éduc
 const S = 'sys', F = 'food', T = 'tabac', TQ = 'tabacsq';
 const SECTIONS = [
 {
-  key:'commun', title:'Système visuel commun', badge:S,
-  desc:"Objets réutilisés dans plusieurs modules : ils doivent être LE MÊME dessin à chaque réapparition (BRIEF §1). À dessiner en premier.",
-  items:[
-    ["Silhouette-corps (asset central)","Une silhouette de corps humain complète vue de face, debout, posture neutre et symétrique, épaules détendues. Corps stylisé, sobre et digne — ni mannequin médical anxiogène, ni personnage cartoon — en un aplat de couleur neutre non genré et non racialisé. À l'intérieur du corps, un réseau de vaisseaux sanguins stylisé et élégant qui parcourt tout le corps (grand axe du cou et du cœur vers les bras, jusqu'aux jambes et aux pieds) : c'est le fil conducteur « maladie des vaisseaux ». Emplacements des organes seulement suggérés et neutres (yeux, cerveau, cœur, reins, pieds), sans détail clinique. Zones bien distinctes et identifiables pour pouvoir être mises en surbrillance ensuite. Vue de face uniquement, symétrique.",S,"Asset le plus important : réutilisé aux modules 4, 5, 6, 7. Le générer une fois, proprement, puis vectoriser en zones séparées."],
-    ["Réseau vasculaire seul (calque)","Uniquement le réseau des vaisseaux sanguins d'un corps humain, isolé sans le corps autour : un arbre vasculaire stylisé et symétrique (axe central au niveau du cœur, ramifications vers la tête, les bras, les jambes et les pieds), lignes fluides à l'épaisseur dégressive vers les extrémités. Élégant et calme.",S,"Servira de calque superposable à la silhouette."],
-    ["Artère saine (lumière ouverte)","Coupe longitudinale d'un segment de vaisseau sanguin stylisé, paroi propre et lumière (canal intérieur) large et bien ouverte où le sang circule librement. Objet simple, identifiable, réutilisable.",S,"État 1/3 de l'artère réversible du module 4."],
-    ["Artère encrassée (plaque modérée)","Le même segment de vaisseau sanguin stylisé, mais avec un dépôt (plaque d'athérome) sur la paroi qui rétrécit partiellement la lumière : le passage du sang est réduit. Même objet que l'artère saine, seul le dépôt change.",S,"État 2/3. LA PLAQUE = motif-fil qui voyagera sur la silhouette (module 5)."],
-    ["Artère bouchée (lumière quasi fermée)","Le même segment de vaisseau, avec un dépôt de plaque d'athérome important qui bouche presque entièrement la lumière : il ne reste qu'un mince passage. Même objet, dépôt maximal.",S,"État 3/3. Doit être clairement le même objet que les deux précédents."],
-    ["Plaque d'athérome isolée (motif voyageur)","Un petit motif isolé représentant un dépôt de plaque d'athérome, forme reconnaissable et mémorable, destiné à être posé à différents endroits (dans une artère, puis sur une zone de la silhouette). Simple, identifiable seul.",S,"Le même objet doit se reconnaître partout (BRIEF §1.4)."],
-    ["Signature « évitable » (bonne nouvelle)","Un petit motif graphique positif et rassurant symbolisant « c'est évitable et dépistable / bonne nouvelle » : un bouclier doux d'où émerge une jeune pousse (petite feuille), sobre et chaleureux. Doit fonctionner comme une signature récurrente et mémorable, pas comme une simple coche générique.",S,"Motif-réflexe répété au module 5. Une seule forme, réutilisée partout (BRIEF §1.5)."],
-    ["Fil rouge — personne & vaisseaux protégés","Motif central rond : une figure humaine très simplifiée (buste ou silhouette) traversée d'un réseau de vaisseaux sanguins stylisés apaisés, avec une idée douce de protection (halo ou cercle enveloppant). Symbolise « le diabète est une maladie des vaisseaux, agir protège ». Symétrique, centré, apaisant.",S,"Réutilisé au centre du cadran (module 6) et comme refrain."],
-  ]
-},
-{
-  key:'m1', title:'Module 1 — C\'est quoi le diabète ? (clé / serrure)', badge:S,
-  desc:"Métaphore fondatrice clé (insuline) / serrure (cellule). Pas de pancréas gore, pas de culpabilisation.",
-  items:[
-    ["Clé « insuline »","Une clé stylisée, élégante et simple, symbolisant l'insuline. Forme claire et mémorable, lisible même à petite taille, réutilisable en plusieurs exemplaires.",S],
-    ["Cellule-serrure (fermée)","Une cellule du corps stylisée sous forme de porte ronde / hublot organique avec une serrure au centre, fermée. Douce et arrondie mais épurée. La serrure doit visiblement pouvoir accueillir la clé.",S],
-    ["Cellule-serrure (ouverte)","La même cellule-serrure, cette fois ouverte, laissant entrer un jeton de sucre à l'intérieur. Montrer clairement « le sucre entre, ça fonctionne ».",S],
-    ["Serrure rouillée (insulinorésistance)","La même cellule-serrure, mais visiblement grippée / rouillée : la clé est présente mais entre mal, la serrure résiste. Montrer la difficulté avec sobriété (légère texture de rouille), sans dramatiser ni image gore.",S,"Cœur pédagogique : mécanisme différent, même conséquence que « pas assez de clés »."],
-    ["Jeton de sucre (glucose)","Un petit jeton / granule de sucre stylisé (une unité de glucose), forme simple répétable en nombre car on en affichera plusieurs dans le sang.",S],
-    ["Pancréas stylisé (en forme / fatigué)","Un pancréas stylisé, sobre et digne, en aplat de couleur douce, forme reconnaissable mais simplifiée, NON gore. Prévoir deux versions : « en forme » (net) et « fatigué » (plus terne et affaissé) pour illustrer le manque de clés.",S],
-    ["Canal sanguin (scène)","Un segment de vaisseau sanguin ouvert vu comme un canal horizontal stylisé, dans lequel circulent des jetons de sucre et des clés d'insuline. Sobre, lisible, sert de décor à la séquence.",S],
-  ]
-},
-{
-  key:'m2-ui', title:'Module 2 — Alimentation : objets d\'écran', badge:S,
-  desc:"L'assiette (zone de dépôt) et l'assiette-modèle. Objets d'interface, style système.",
-  items:[
-    ["Assiette vide (zone de dépôt)","Une assiette ronde vue de dessus, vide, très épurée, contour simple, légère bordure. Neutre, sert de zone où l'on dépose les aliments.",S],
-    ["Assiette-modèle ½ – ¼ – ¼","Une assiette ronde vue de dessus, divisée visuellement en trois parts délimitées : une moitié « légumes », un quart « protéines », un quart « féculents », en aplats de couleur neutres et distincts (SANS aliments dessinés, seulement les zones proportionnelles). Épurée, claire.",S,"L'assiette-modèle cible du défi 4 / de la fiche."],
-  ]
-},
-{
   key:'m2-fec', title:'Module 2 — Garde-manger : féculents & pains', badge:F,
-  desc:"Cœur du jeu (comparaison intra-famille). Même cadrage et même échelle pour toutes les vignettes.",
+  desc:"Vignettes restant à générer (les autres féculents/légumineuses sont faits). Contour fin + aplats, réf. pois chiches ; pas de texture granuleuse.",
   items:[
-    ["Baguette blanche","Une baguette de pain blanc à la croûte dorée, entière, une extrémité légèrement coupée."],
-    ["Pain complet","Un petit pain / une tranche épaisse de pain complet aux céréales, mie brune, quelques graines."],
-    ["Riz blanc","Un petit monticule de riz blanc cuit, grains distincts."],
-    ["Riz basmati","Un monticule de riz basmati aux grains longs et fins."],
-    ["Riz complet","Un monticule de riz complet, grains bruns."],
-    ["Semoule fine","Un monticule de semoule fine de blé (couscous fin)."],
-    ["Couscous complet","Un monticule de couscous complet, grains ambrés."],
-    ["Pâtes blanches","Une portion de pâtes classiques (penne, ou spaghetti enroulés à la fourchette)."],
-    ["Pâtes complètes","Une portion de pâtes complètes, teinte plus foncée."],
-    ["Pomme de terre / purée","Une pomme de terre entière à côté d'une petite quenelle de purée."],
-    ["Patate douce","Une patate douce entière et une moitié coupée à chair orange."],
-    ["Attiéké / manioc","Un petit tas d'attiéké (semoule de manioc) et un morceau de racine de manioc."],
-    ["Igname","Un tubercule d'igname, une extrémité coupée montrant la chair claire."],
-    ["Banane plantain","Une banane plantain entière et une rondelle cuite dorée."],
-    ["Lentilles","Un petit tas de lentilles.",F,"Pépite pédagogique : féculent riche en fibres → à double-classer visuellement."],
-    ["Pois chiches","Une petite poignée de pois chiches."],
-    ["Haricots rouges","Un petit tas de haricots rouges."],
-    ["Naan","Un pain naan indien, forme en goutte, légèrement gonflé et moucheté."],
-    ["Chapati complet","Un chapati complet, pain plat et rond, légèrement doré."],
-    ["Boulgour","Un monticule de boulgour."],
+    ["Pain pita","Un pain pita rond et plat, légèrement gonflé, une moitié coupée laissant voir la poche intérieure.",F,"Fichier cible : aliment-pain-pita."],
+    ["Galette de riz soufflé","Deux ou trois galettes de riz soufflé rondes empilées en léger décalé, surface de grains soufflés suggérée par une douzaine de formes simples (pas de texture granuleuse).",F,"Fichier cible : aliment-galette-riz."],
   ]
 },
 {
   key:'m2-fru', title:'Module 2 — Garde-manger : fruits', badge:F, desc:"",
   items:[
-    ["Pomme","Une pomme entière avec une petite feuille."],
-    ["Orange","Une orange entière à côté d'un quartier."],
-    ["Cerises","Deux ou trois cerises reliées par la queue."],
-    ["Banane mûre","Une banane mûre, jaune."],
-    ["Mangue","Une mangue entière et une joue coupée en damier."],
-    ["Raisin","Une petite grappe de raisin."],
-    ["Dattes","Deux ou trois dattes."],
-    ["Pastèque","Une tranche triangulaire de pastèque avec quelques pépins."],
-    ["Fruits au sirop","Une coupelle de fruits au sirop (quartiers baignant dans le jus)."],
+    ["Pomme","Une pomme entière avec une petite feuille.",F,"Fichier cible : aliment-pomme."],
+    ["Banane mûre","Une banane mûre, jaune.",F,"Fichier cible : aliment-banane."],
+    ["Dattes","Deux ou trois dattes.",F,"Fichier cible : aliment-dattes."],
+    ["Pastèque","Une tranche triangulaire de pastèque avec quelques pépins.",F,"Fichier cible : aliment-pasteque."],
   ]
 },
 {
-  key:'m2-leg', title:'Module 2 — Garde-manger : légumes', badge:F,
-  desc:"Message : presque tous « verts ». Rendu homogène et frais.",
+  key:'m2-leg', title:'Module 2 — Garde-manger : légumes', badge:F, desc:"",
   items:[
-    ["Courgette","Une courgette entière et une rondelle."],
-    ["Tomate","Une tomate entière avec son pédoncule."],
-    ["Aubergine","Une aubergine entière, violette et brillante mais mate (flat)."],
-    ["Haricots verts","Une petite poignée de haricots verts."],
-    ["Épinards","Quelques feuilles d'épinard."],
-    ["Gombo","Deux ou trois gombos (okras)."],
-    ["Poivron","Un poivron entier."],
-    ["Carotte","Une carotte entière avec un bout de fane, et une rondelle."],
-    ["Brocoli","Un bouquet de brocoli."],
+    ["Carotte","Une carotte entière avec un bout de fane, et une rondelle.",F,"Fichier cible : aliment-carotte."],
+    ["Brocoli","Un bouquet de brocoli.",F,"Fichier cible : aliment-brocoli."],
   ]
 },
 {
   key:'m2-lait', title:'Module 2 — Garde-manger : laitages', badge:F, desc:"",
   items:[
-    ["Yaourt nature","Un pot de yaourt nature ouvert, surface lisse."],
-    ["Lait","Un verre de lait, ou une petite brique générique sans marque."],
-    ["Lben","Un verre de lben (petit-lait fermenté), blanc et légèrement mousseux."],
-    ["Yaourt sucré / aux fruits","Un pot de yaourt aux fruits avec une touche de fruit (coulis) visible."],
+    ["Yaourt nature","Un pot de yaourt nature ouvert, surface lisse.",F,"Fichier cible : aliment-yaourt."],
   ]
 },
 {
-  key:'m2-prot', title:'Module 2 — Garde-manger : protéines', badge:F,
-  desc:"Rôle : aplatir la courbe. Charge glycémique ~nulle.",
+  key:'m2-prot', title:'Module 2 — Garde-manger : protéines', badge:F, desc:"",
   items:[
-    ["Poulet","Un filet / blanc de poulet cuit, ou un pilon."],
-    ["Poisson","Un filet de poisson."],
-    ["Œuf","Un œuf dur coupé en deux (jaune visible), à côté d'un œuf entier."],
-    ["Bœuf","Un morceau de viande de bœuf (steak)."],
-    ["Tofu","Un cube de tofu et une tranche."],
+    ["Poulet","Un filet / blanc de poulet cuit, ou un pilon.",F,"Fichier cible : aliment-poulet."],
+    ["Œuf","Un œuf dur coupé en deux (jaune visible), à côté d'un œuf entier.",F,"Fichier cible : aliment-oeuf."],
+    ["Sardine","Une ou deux sardines entières stylisées, corps argenté-bleuté en aplats.",F,"Fichier cible : aliment-sardine."],
+    ["Saumon","Un pavé de saumon à chair rose-orangé, fines lignes blanches rendues en aplats.",F,"Fichier cible : aliment-saumon."],
   ]
 },
 {
   key:'m2-mg', title:'Module 2 — Garde-manger : matières grasses', badge:F, desc:"",
   items:[
-    ["Huile d'olive","Une petite burette versant un mince filet d'huile d'olive dorée."],
-    ["Beurre","Une plaquette de beurre avec une noisette coupée."],
-    ["Avocat","Un demi-avocat avec son noyau, à côté d'une moitié coupée, chair vert clair.",F,"Classé dans les lipides (matière grasse) dans le jeu du garde-manger."],
-  ]
-},
-{
-  key:'m2-boi', title:'Module 2 — Garde-manger : boissons', badge:F, desc:"",
-  items:[
-    ["Soda","Un verre de soda pétillant avec des bulles (ou une canette générique, sans marque ni texte)."],
-    ["Jus de fruit","Un verre de jus d'orange."],
-    ["Thé à la menthe sucré","Un verre à thé marocain contenant du thé à la menthe."],
-    ["Eau","Un verre d'eau claire."],
-    ["Thé / café non sucré","Une tasse de thé ou de café, sans sucre, sans accompagnement."],
+    ["Avocat","Un demi-avocat avec son noyau, à côté d'une moitié coupée, chair vert clair.",F,"Fichier cible : aliment-avocat."],
+    ["Huile d'olive","Une petite burette versant un mince filet d'huile d'olive dorée.",F,"Fichier cible : aliment-huile-olive."],
+    ["Noix","Deux cerneaux de noix et une noix entière en coquille.",F,"Fichier cible : aliment-noix."],
   ]
 },
 {
   key:'m3', title:'Module 3 — Activité physique', badge:S,
-  desc:"Rayonnement (un effort, plusieurs bénéfices) + activités du quotidien reconnaissables. Valorisant, jamais culpabilisant.",
+  desc:"Vignettes d'activités restant à générer. MÊME personnage que les vignettes déjà faites : silhouette en aplat plein bleu-canard, tête ronde détachée sans visage ; accessoires en aplats/traits épais (jamais de filaire fin ni de gris), un seul accent terracotta.",
   items:[
-    ["Motif central « activité »","Un motif central rond symbolisant l'activité / le mouvement : une personne très simplifiée en mouvement (marche dynamique), pensée pour être entourée de rayons partant vers plusieurs bénéfices. Centré, énergique mais sobre.",S],
-    ["Rayon — bénéfice « sucre »","Petite icône « glycémie / sucre » : une goutte associée à une courbe qui redescend doucement, ou un granule de sucre. Simple, lisible en bout de rayon.",S],
-    ["Rayon — bénéfice « cœur & vaisseaux »","Petite icône cœur associé à un vaisseau / une pulsation. Sobre.",S],
-    ["Rayon — bénéfice « tête »","Petite icône tête / esprit apaisé (bien-être mental, sommeil), sans visage souriant.",S],
-    ["Rayon — bénéfice « autonomie »","Petite icône force / équilibre : une personne stable, ou un bras tonique minimal, évoquant l'autonomie et la prévention des chutes.",S],
-    ["Marqueur « bon pour les muscles »","Un petit marqueur discret « bon pour les muscles » : un biceps stylisé minimal, non intimidant, à poser en coin de certaines activités.",S],
-    ["Activité — marcher","Une personne très simplifiée qui marche.",S],
-    ["Activité — vélo","Une personne très simplifiée à vélo (ou un vélo seul stylisé).",S],
-    ["Activité — ménage","Le ménage : un balai / aspirateur stylisé, ou une personne qui passe le balai.",S],
-    ["Activité — bricolage","Le bricolage : une perceuse ou un marteau stylisé, ou une personne qui bricole.",S],
-    ["Activité — jardinage","Le jardinage : un arrosoir et une plante, ou une personne qui jardine.",S],
-    ["Activité — porter les courses","Une personne portant des sacs de courses.",S,"Marquer aussi « bon pour les muscles »."],
-    ["Activité — monter les escaliers","Une personne qui monte un escalier.",S,"Marquer aussi « bon pour les muscles »."],
-    ["Activité — se lever d'une chaise","Une personne qui se lève d'une chaise.",S,"Marquer aussi « bon pour les muscles »."],
-    ["Activité — se relever du sol","Une personne qui se relève du sol.",S,"Marquer aussi « bon pour les muscles »."],
-    ["Activité — danser","Une personne très simplifiée qui danse (posture dynamique, bras en mouvement).",S],
-    ["Activité — jouer avec les enfants","Une personne très simplifiée qui joue avec un enfant (ballon, ou main dans la main en mouvement).",S],
-    ["Activité — laver la voiture","Le lavage de la voiture : une personne avec une éponge devant une voiture stylisée, ou un seau + éponge + voiture.",S],
-    ["Activité — marcher le chien","Une personne qui promène un chien tenu en laisse.",S],
-    ["Curseur d'activité (marqueur temps)","Un petit marqueur / curseur déplaçable stylisé (silhouette qui marche posée sur un repère) à faire glisser le long d'un axe de temps.",S,"Se pose sur LA COURBE (voir note SVG)."],
-  ]
-},
-{
-  key:'m4', title:'Module 4 — Risque cardiovasculaire', badge:S,
-  desc:"Les 5 feux (leviers), l'artère réversible (voir section commune), l'anatomie (silhouette réutilisée).",
-  items:[
-    ["Feu tricolore (objet, 3 états)","Un feu de signalisation stylisé et large, à trois états lisibles séparément : vert, ambre, rouge. Objet de réglage simple et digne. Fournir les trois états.",S],
-    ["Feu — icône « sucre »","Petite icône représentant le sucre / la glycémie : une goutte de sang avec un granule.",S],
-    ["Feu — icône « tension »","Petite icône tension artérielle : un brassard de tensiomètre ou un manomètre stylisé.",S],
-    ["Feu — icône « cholestérol »","Petite icône cholestérol : une goutte de lipide dans un vaisseau, ou une gouttelette grasse.",S],
-    ["Feu — icône « tabac »","Petite icône tabac : une cigarette stylisée (neutre, sans réalisme cru).",S],
-    ["Feu — icône « sédentarité »","Petite icône sédentarité : une personne assise / un canapé stylisé. Non culpabilisant.",S],
-  ]
-},
-{
-  key:'m5', title:'Module 5 — Complications (organes)', badge:S,
-  desc:"Silhouette réutilisée + gros plans d'organes. Sobres, dignes, jamais d'images cliniques crues. Chaque organe s'accompagne de la signature « évitable ».",
-  items:[
-    ["Œil / rétine","Un œil humain stylisé et sobre (vue de face simplifiée), évoquant le dépistage du fond d'œil. Digne, non clinique cru. Option : un fin réseau de vaisseaux de la rétine suggéré.",S],
-    ["Rein","Un rein stylisé, forme de haricot claire et reconnaissable. Sobre, digne. Option : un petit néphron / filtre minimal suggéré.",S],
-    ["Nerf","Une fibre nerveuse stylisée (corps + ramifications) évoquant la neuropathie et la sensibilité, sobre. Peut suggérer les extrémités (pieds/mains) sans détail clinique.",S],
-    ["Cœur (organe)","Un cœur humain stylisé, sobre et digne, forme reconnaissable et simplifiée (jamais anatomique cru), en aplat de couleur douce, avec les gros vaisseaux qui en partent suggérés. Sert d'organe « déjà vu au module 4 » (macro) et de révélation « ce que ça garde ».",S,"Réutilisé au module 6 (« ce que ça garde — cœur », station bilan lipidique) et cohérent avec la zone cœur de la silhouette."],
-    ["Pied (neutre)","Un pied humain stylisé vu de profil ou 3/4, neutre et digne, sain.",S],
-    ["Pied — points d'auto-examen","Une planche d'auto-examen du pied : le pied vu de dessus ET la plante (dessous), avec quelques points de contrôle repérés (petits repères) et l'espace entre les orteils indiqué. Statique, clair, digne — sert de fiche de référence.",S,"Fiche pied (référence). Illustration statique (pas de séquence)."],
-    ["Miroir d'inspection plantaire","Un petit miroir posé au sol permettant d'examiner la plante du pied. Objet simple.",S],
-    ["Bonne chaussure","Une chaussure fermée, confortable et adaptée, stylisée.",S],
-    ["Pied nu — à éviter","Un pied nu accompagné d'un discret symbole d'interdiction (ne pas marcher pieds nus). Sobre, non moralisateur.",S],
-    ["Monofilament 10 g","Un test au monofilament : un fin fil souple monté sur un manche, touchant la peau d'un pied (dépistage de la sensibilité). Sobre.",S],
-  ]
-},
-{
-  key:'m6', title:'Module 6 — Suivi (icônes du cadran)', badge:S,
-  desc:"Le cadran lui-même se construit en SVG natif (voir note en bas). Ici : les icônes de stations + le centre.",
-  items:[
-    ["Station — consultation","Petite icône « consultation médicale » : un stéthoscope stylisé, ou une blouse / un soignant minimal. Neutre.",S],
-    ["Station — fond d'œil","Icône « examen des yeux » : réutiliser l'œil du module 5 en petit format.",S,"Réutiliser l'asset Œil."],
-    ["Station — rein","Icône « bilan rénal » : réutiliser le rein du module 5 en petit.",S,"Réutiliser l'asset Rein."],
-    ["Station — pied complet","Icône « examen du pied » : réutiliser le pied / monofilament en petit.",S,"Réutiliser l'asset Pied."],
-    ["Station — bilan lipidique","Icône prise de sang / bilan lipidique : un petit tube de prélèvement, ou une goutte de sang.",S],
-    ["Station — dentiste","Icône dentiste : une dent stylisée.",S],
-    ["Station — vaccins","Icône vaccin : une seringue stylisée, sobre.",S],
-    ["Station — HbA1c","Icône HbA1c : une goutte de sang stylisée (le langage « moyenne du sucre » se dira par la couleur/position, sans chiffre).",S],
-  ]
-},
-{
-  key:'m7', title:'Module 7 — Traitements', badge:S,
-  desc:"Silhouette réutilisée (3ᵉ passage : organes « défendus »). Ici : ordonnance, pictos d'usage, halo de protection.",
-  items:[
-    ["Ordonnance (feuille)","Une feuille d'ordonnance stylisée : des lignes de texte seulement SUGGÉRÉES par des traits (aucun vrai mot, aucune lettre), en-tête minimal. Sobre, reconnaissable.",S],
-    ["Picto usage — quotidien","Petit picto « tous les jours » : un soleil, ou un repère « 1 jour ». Simple.",S],
-    ["Picto usage — hebdomadaire","Petit picto « une fois par semaine » : sept repères / un mini-calendrier semaine.",S],
-    ["Picto usage — aux repas","Petit picto « aux repas » : une assiette avec couvert, miniature.",S],
-    ["Pastille — peut faire l'hypo","Petite pastille de surveillance « peut faire l'hypo » : une goutte de sang avec une flèche vers le bas. Discrète (2ᵉ niveau).",S],
-    ["Pastille — rein à contrôler","Petite pastille de surveillance « rein à contrôler » : un mini-rein avec un repère de vérification. Discrète.",S],
-    ["Halo de protection (surbrillance positive)","Un halo lumineux doux et positif, à superposer sur une zone du corps protégée par un traitement. Uniquement positif — aucune alerte, aucun clignotement rouge. Rayonnement apaisé.",S,"Le corps reste « pur » : le halo ne montre que le bien fait."],
+    ["Activité — danser","Une personne très simplifiée qui danse (posture dynamique, bras en mouvement).",S,"Fichier cible : activite-danse."],
+    ["Activité — laver la voiture","Le lavage de la voiture : une personne avec une éponge devant une voiture stylisée.",S,"Fichier cible : activite-voiture."],
   ]
 },
 {
   key:'m8', title:'Module 8 — Hypoglycémie', badge:S,
-  desc:"Signalétique de crise, lisible sous stress. Signes précoces + resucrages. Gros, simple, inratable.",
+  desc:"Signes précoces (vignettes ~100 px) + resucrages (~44 px). Gros, simple, inratable. À générer.",
   items:[
-    ["Signe — tremblements","Une main qui tremble, stylisée (petites lignes de tremblement). Signe d'hypoglycémie.",S],
-    ["Signe — sueurs","Un front / visage minimal avec des gouttes de sueur. Sans expression cartoon.",S],
-    ["Signe — palpitations","Un cœur avec un petit éclair / une pulsation rapide, symbolisant les palpitations.",S],
-    ["Signe — faim","Un estomac / ventre stylisé signalant la faim.",S],
-    ["Signe — irritabilité","Un visage neutre très minimal avec de fines lignes de tension (irritabilité), sans smiley ni grimace cartoon.",S],
-    ["Signe — vertige / confusion","Une tête avec une petite spirale douce évoquant le vertige / la confusion.",S],
-    ["Signe — vision trouble","Un œil stylisé avec une zone de flou / de fines lignes douces devant, évoquant une vision trouble passagère. Sobre, non clinique.",S],
-    ["Resucrage — jus de fruit","Un petit verre ou une briquette de jus de fruit (resucrage rapide).",S],
-    ["Resucrage — morceaux de sucre","Deux ou trois morceaux de sucre (≈15 g).",S],
-    ["Resucrage — comprimés de glucose","Un tube / des comprimés de glucose.",S],
-    ["Resucrage — soda classique","Un verre de soda classique (sucré) avec quelques bulles, ou une canette générique sans marque ni texte. Resucrage rapide de dépannage.",S,"Bien « classique » — jamais light / zéro (sans sucre = inefficace pour resucrer)."],
-    ["Piège — chocolat (à écarter)","Une barre / un carré de chocolat associé à un discret symbole « trop lent » (resucrage inadapté car le gras ralentit). Sobre.",S,"Montrer que le gras remonte trop lentement (piège à écarter)."],
-    ["Horloge — attendre 15 min","Une horloge stylisée signalant une courte attente (~15 minutes), calme. Le temps fort du module.",S],
-  ]
-},
-{
-  key:'m9', title:'Module 9 — Insuline (adaptation)', badge:S,
-  desc:"La courbe du capteur + bandes se font en SVG natif (note en bas). Ici : matériel + flèches de tendance.",
-  items:[
-    ["Stylo à insuline lente","Un stylo à insuline stylisé, identifié comme l'insuline LENTE (couleur froide, sobre). Objet médical digne.",S],
-    ["Stylo à insuline (bolus)","Un stylo à insuline stylisé, distinct du précédent, identifié comme le bolus / rapide (couleur plus chaude).",S,"Doit se différencier clairement de la lente."],
-    ["Capteur FreeStyle Libre","Un capteur de glycémie rond porté sur le haut du bras (type FreeStyle Libre), stylisé et sobre, sur une portion de bras minimale.",S],
-    ["Flèche de tendance","Un jeu de flèches de tendance stylisées : nette montée, stable, nette descente (trois flèches d'une même famille), pour lire l'évolution d'un coup d'œil.",S],
+    ["Signe — tremblements","Une main qui tremble, stylisée (petites lignes de tremblement). Signe d'hypoglycémie.",S,"Fichier cible : signe-tremblements."],
+    ["Signe — sueurs","Un front / visage minimal avec des gouttes de sueur. Sans expression cartoon.",S,"Fichier cible : signe-sueurs."],
+    ["Signe — palpitations","Un cœur avec un petit éclair / une pulsation rapide, symbolisant les palpitations.",S,"Fichier cible : signe-palpitations."],
+    ["Signe — faim soudaine","Un estomac / ventre stylisé signalant la faim.",S,"Fichier cible : signe-faim-soudaine."],
+    ["Signe — irritabilité","Un visage neutre très minimal avec de fines lignes de tension (irritabilité), sans smiley ni grimace cartoon.",S,"Fichier cible : signe-irritabilite."],
+    ["Signe — vision trouble","Un œil stylisé avec une zone de flou / de fines lignes douces devant, évoquant une vision trouble passagère. Sobre, non clinique.",S,"Fichier cible : signe-vision-trouble."],
+    ["Signe — difficulté à se concentrer","Une tête stylisée de profil avec, au-dessus, quelques fins traits en pointillés qui se dispersent (pensées qui s'éparpillent). Sobre, sans spirale ni expression.",S,"Fichier cible : signe-difficulte-a-se-concentrer."],
+    ["Resucrage — jus de fruit","Un petit verre ou une briquette de jus de fruit (resucrage rapide).",S,"Fichier cible : resucrage-jus."],
+    ["Resucrage — morceaux de sucre","Deux ou trois morceaux de sucre (≈15 g).",S,"Fichier cible : resucrage-sucre."],
+    ["Resucrage — comprimés de glucose","Un tube / des comprimés de glucose.",S,"Fichier cible : resucrage-comprimes."],
+    ["Resucrage — soda classique","Un verre de soda classique (sucré) avec quelques bulles, ou une canette générique sans marque ni texte.",S,"Fichier cible : resucrage-soda. « Classique » — jamais light/zéro."],
   ]
 },
 {
@@ -432,7 +266,6 @@ const SECTIONS = [
     ["Cerveau protégé","Un cerveau stylisé calme, entouré d'un fin halo doux de protection, avec un réseau de vaisseaux apaisés qui l'irrigue. Aucune spirale d'angoisse, aucun éclair.",TQ,"Fichier cible : public/illustrations/tabac/benef-cerveau.png"],
     ["Jambes qui marchent","Deux jambes stylisées en pleine marche d'un pas ample et facile, avec un fin trait de trajectoire régulier au sol. Énergie tranquille, aisance.",TQ,"Fichier cible : public/illustrations/tabac/benef-jambes.png"],
     ["Peau plus lumineuse","Un visage stylisé neutre et digne de trois quarts (sans expression marquée), au teint uni et clair, avec quelques fins rayons doux suggérant l'éclat retrouvé. Pas de comparatif avant/après.",TQ,"Fichier cible : public/illustrations/tabac/benef-peau.png"],
-    ["Des années gagnées","Un chemin ou une route stylisée qui s'étire vers un horizon dégagé et lumineux, avec une silhouette qui avance d'un bon pas. Idée d'espérance de vie retrouvée, ton serein.",TQ,"Fichier cible : public/illustrations/tabac/benef-horizon.png"],
   ]
 },
 {
@@ -501,6 +334,14 @@ const styleSysEl = $('#styleSys');
 const styleFoodEl = $('#styleFood');
 const styleTabacEl = $('#styleTabac');
 const styleTabacSqEl = $('#styleTabacSq');
+
+// Migration 2026-07-11 (v3) : le catalogue a été réduit aux seules illustrations RESTANT à générer
+// (côté diabète). On efface une fois tout le suivi « générée » et les styles édités.
+if(!localStorage.getItem('etp_migration_2026_07_11_v3')){
+  Object.keys(localStorage).filter(k=>k.startsWith('etp_done_')||k.startsWith('etp_style_'))
+    .forEach(k=>localStorage.removeItem(k));
+  localStorage.setItem('etp_migration_2026_07_11_v3','1');
+}
 
 // charge styles (persistés si édités)
 styleSysEl.value = localStorage.getItem('etp_style_sys') || DEFAULT_SYS;
