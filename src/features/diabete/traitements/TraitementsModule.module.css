@@ -4,9 +4,11 @@
   gap: var(--space-lg);
 }
 
+/* S7-v3 : colonne gauche élargie 460→640px max (460 laissait trop peu à `.ligneMain` une fois
+   index/badges/bouton « Voir l'effet » soustraits → `.classeSelect`/nom de molécule tronqués). */
 .grid {
   display: grid;
-  grid-template-columns: minmax(320px, 460px) minmax(480px, 1fr);
+  grid-template-columns: minmax(440px, 640px) minmax(380px, 1fr);
   gap: var(--space-xl);
   align-items: start;
 }
@@ -132,6 +134,7 @@
 }
 
 .classeSelect {
+  max-width: 100%;
   padding: 4px 10px;
   border: 1.5px solid var(--color-line);
   border-radius: var(--radius-sm);
@@ -292,6 +295,21 @@
   min-height: 96px;
   display: flex;
   align-items: center;
+  gap: var(--space-md);
+}
+
+/* S7-v3 : pastille verte cohérente avec le halo positif du module (jamais de rouge/alerte ici). */
+.pictoMecanisme {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 50%;
+  border: 2px solid var(--color-confort);
+  background: var(--color-confort-soft);
+  color: var(--color-confort-strong);
 }
 
 .panelText {
@@ -324,7 +342,9 @@
 }
 
 
-@media (max-width: 900px) {
+/* S7-v3 : 900→1100px — sinon la grille (440+380+gap) déborde horizontalement sur ~950-1000px
+   avant de basculer en 1 colonne (la colonne gauche a été élargie ci-dessus). */
+@media (max-width: 1100px) {
   .grid {
     grid-template-columns: 1fr;
   }

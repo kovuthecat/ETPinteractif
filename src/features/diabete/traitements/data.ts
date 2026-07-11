@@ -28,6 +28,11 @@ export interface ClasseTraitement {
   peutHypo?: boolean;
   /** Classe insuline → porte supplémentaire vers le module Insuline (D10). */
   estInsuline?: boolean;
+  /** Métaphore clé/serrure (module « C'est quoi le diabète ») : 'serrure' = agit sur
+   *  l'insulinorésistance (cellule verrouillée) ; 'cle' = agit sur la sécrétion d'insuline.
+   *  Optionnel : les classes hors métaphore (action rénale, cardio, lipidique) n'en ont pas.
+   *  // à revalider (Thibault) — notamment le classement iDPP4/aGLP1 en « sécrétion ». */
+  picto?: 'serrure' | 'cle';
 }
 
 export const CLASSES: ClasseTraitement[] = [
@@ -37,6 +42,7 @@ export const CLASSES: ClasseTraitement[] = [
     zones: ['sucre'],
     freq: 'Matin et soir, au repas',
     watch: 'Quoi surveiller : troubles digestifs possibles au début',
+    picto: 'serrure',
   },
   {
     id: 'sulfamide',
@@ -45,6 +51,7 @@ export const CLASSES: ClasseTraitement[] = [
     freq: 'Avant les repas',
     watch: "Quoi surveiller : peut faire l'hypoglycémie",
     peutHypo: true,
+    picto: 'cle',
   },
   {
     id: 'idpp4',
@@ -52,6 +59,7 @@ export const CLASSES: ClasseTraitement[] = [
     zones: ['sucre'],
     freq: '1 fois par jour',
     watch: 'Quoi surveiller : généralement bien toléré',
+    picto: 'cle',
   },
   {
     id: 'aglp1',
@@ -59,6 +67,7 @@ export const CLASSES: ClasseTraitement[] = [
     zones: ['sucre', 'coeur'],
     freq: '1 fois par semaine (injection)',
     watch: 'Quoi surveiller : peut donner des nausées au début',
+    picto: 'cle',
   },
   {
     id: 'gliflozine',
@@ -89,6 +98,7 @@ export const CLASSES: ClasseTraitement[] = [
     watch: "Quoi surveiller : peut faire l'hypoglycémie — voir le module Hypoglycémie",
     peutHypo: true,
     estInsuline: true,
+    picto: 'cle',
   },
 ];
 

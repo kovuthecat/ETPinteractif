@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
-import { Clock, Info, LifeBuoy, Plus, Syringe, X } from 'lucide-react';
+import { Clock, Info, KeyRound, LifeBuoy, Lock, Plus, Syringe, X } from 'lucide-react';
 import type { ModuleProps } from '../../types';
-import ModuleFooterNav from '../../../components/ModuleFooterNav';
+import ModuleShell from '../../../components/ModuleShell';
 import Silhouette from '../components/Silhouette';
 import type { SilhouetteZoneState, ZoneId as SilhouetteZoneId } from '../components/Silhouette';
 import { CLASSES, ZONE_MSG, classById, lignesInitiales, newLigne, type Ligne, type ZoneTraitementId } from './data';
@@ -58,7 +58,7 @@ function LigneBadge({ icon: Icon, tooltip, ariaLabel, onActivate, variant = 'wat
   );
 }
 
-export default function TraitementsModule({ onNavigate }: ModuleProps) {
+export default function TraitementsModule({ onNavigate, shell }: ModuleProps) {
   const [lignes, setLignes] = useState<Ligne[]>(lignesInitiales);
   const [selectedUid, setSelectedUid] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('line');
@@ -128,7 +128,10 @@ export default function TraitementsModule({ onNavigate }: ModuleProps) {
     captionEyebrow = 'On transcrit, ligne par ligne';
   }
 
+  if (!shell) return null;
+
   return (
+    <ModuleShell titre={shell.titre} sources={shell.sources} onBack={shell.onBack} wide>
     <div className={styles.module}>
       <div className={styles.grid}>
         <section className={`card ${styles.ordonnance}`}>
@@ -246,6 +249,17 @@ export default function TraitementsModule({ onNavigate }: ModuleProps) {
             <div className={styles.panel}>
               <span className="eyebrow">Ce que ce traitement protège</span>
               <div className={`card ${styles.panelCard}`}>
+                {/* S7-v3 : picto clé/serrure — mode ligne uniquement (métaphore attachée à une
+                    molécule précise, pas à la vue d'ensemble), seulement si la classe en a un. */}
+                {viewMode === 'line' && selectedLigne && classById(selectedLigne.classId).picto && (
+                  <span className={styles.pictoMecanisme} aria-hidden="true">
+                    {classById(selectedLigne.classId).picto === 'serrure' ? (
+                      <Lock size={22} />
+                    ) : (
+                      <KeyRound size={22} />
+                    )}
+                  </span>
+                )}
                 <p className={styles.panelText}>{sideText}</p>
               </div>
               {badgeMultiFronts && (
@@ -259,14 +273,7 @@ export default function TraitementsModule({ onNavigate }: ModuleProps) {
       <div className={styles.caption}>
         <span className="eyebrow">{captionEyebrow}</span>
       </div>
-
-      <ModuleFooterNav
-        items={[
-          { id: 'hypoglycemie', label: 'Hypoglycémie' },
-          { id: 'insuline', label: 'Insuline' },
-        ]}
-        onNavigate={onNavigate}
-      />
     </div>
+    </ModuleShell>
   );
 }
