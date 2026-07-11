@@ -4,15 +4,6 @@
   gap: var(--space-lg);
 }
 
-.intro {
-  margin: 0;
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--color-text-faint);
-}
-
 .layout {
   display: flex;
   gap: var(--space-xl);
@@ -21,25 +12,12 @@
 
 .silhouetteCol {
   flex: 0 0 auto;
-  width: 260px;
+  width: 400px;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--space-md);
-}
-
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--space-sm);
-}
-
-.chipVerrouille {
-  --chip-bg: var(--color-line);
-  --chip-fg: var(--color-text-faint);
-  cursor: pointer;
-  border: none;
 }
 
 .panneau {
@@ -96,12 +74,6 @@
   font-weight: 500;
   line-height: 1.4;
   color: var(--color-text);
-}
-
-.videSousTitre {
-  margin: 0;
-  font-size: 17px;
-  color: var(--color-text-faint);
 }
 
 /* --- État verrouillé (cœur / cerveau, « déjà vu — module 4 ») --- */
@@ -228,20 +200,6 @@
 
 .ficheBouton {
   margin-left: auto;
-}
-
-/* --- Légende de bas d'écran --- */
-
-.caption {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-sm);
-  text-align: center;
-  font-size: 18px;
-  line-height: 1.4;
-  font-weight: 500;
-  color: var(--color-text);
 }
 
 /* --- Fiche pied (FicheOverlay) --- */

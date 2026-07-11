@@ -1,5 +1,5 @@
-import { useState, type CSSProperties } from 'react';
-import { Lock, PersonStanding } from 'lucide-react';
+import { useState } from 'react';
+import { PersonStanding } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import FicheOverlay from '../../../components/FicheOverlay';
 import ModuleFooterNav from '../../../components/ModuleFooterNav';
@@ -44,65 +44,14 @@ export default function ComplicationsModule({ onNavigate }: ModuleProps) {
     })),
   ];
 
-  let legende: { eyebrow: string; texte: string };
-  if (organeOuvert) {
-    legende = {
-      eyebrow: organeOuvert.nom,
-      texte: "Ce qu'on surveille pour que ça n'arrive pas — jamais ce qui vous attend.",
-    };
-  } else if (verrouilleOuvert) {
-    legende = {
-      eyebrow: verrouilleOuvert.nom,
-      texte: 'Cœur et cerveau : déjà vus au module 4, la même maladie, à plus grande échelle.',
-    };
-  } else {
-    legende = { eyebrow: 'Complications', texte: EXERGUE_DIABETE };
-  }
-
   return (
     <div className={styles.module}>
-      <p className={styles.intro}>Touchez un organe — refermez quand c'est assez.</p>
-
       <div className={styles.layout}>
         <div className={styles.silhouetteCol}>
+          {/* Sélection directement sur la silhouette (S1) : les hotspots restent cliquables
+              même « déjà vu » (cœur/cerveau → panneau récapitulatif module 4), plus de chips
+              redondantes. */}
           <Silhouette zones={zones} onZoneClick={selectionner} />
-
-          {/* Rangée de chips : double accès (accessibilité) aux mêmes zones que la
-              silhouette. Les pastilles verrouillées de Silhouette sont désactivées
-              (natif <button disabled>) : ces chips portent donc aussi le seul accès
-              cliquable au panneau « déjà vu — module 4 », comme dans la maquette. */}
-          <div className={styles.chips} role="group" aria-label="Choisir un organe à explorer">
-            {ORGANES_VERROUILLES.map((z) => {
-              const active = verrouilleOuvert?.id === z.id;
-              return (
-                <button
-                  key={z.id}
-                  type="button"
-                  className={`chip ${styles.chipVerrouille}${active ? ' activeDoubled' : ''}`}
-                  style={{ '--active-color': 'var(--color-text-faint)' } as CSSProperties}
-                  aria-pressed={active}
-                  onClick={() => selectionner(z.id)}
-                >
-                  <Lock size={13} aria-hidden="true" /> {z.nom}
-                </button>
-              );
-            })}
-            {ORGANES.map((o) => {
-              const active = selected === o.id;
-              return (
-                <button
-                  key={o.id}
-                  type="button"
-                  className={`chip chip--confort${active ? ' activeDoubled' : ''}`}
-                  style={active ? ({ '--active-color': 'var(--color-confort)' } as CSSProperties) : undefined}
-                  aria-pressed={active}
-                  onClick={() => selectionner(o.id)}
-                >
-                  {o.nom}
-                </button>
-              );
-            })}
-          </div>
         </div>
 
         <div className={styles.panneau}>
@@ -111,11 +60,7 @@ export default function ComplicationsModule({ onNavigate }: ModuleProps) {
               <div className={styles.videIcone}>
                 <PersonStanding size={40} aria-hidden="true" />
               </div>
-              <p className={styles.videTitre}>
-                Le diabète est une maladie des vaisseaux, pas seulement du sucre — la même plaque,
-                ailleurs, abîme d'autres organes.
-              </p>
-              <p className={styles.videSousTitre}>Choisissez un organe pour voir ce qu'on surveille.</p>
+              <p className={styles.videTitre}>Choisissez un organe pour voir ce qu'on surveille.</p>
             </div>
           )}
 
@@ -184,11 +129,6 @@ export default function ComplicationsModule({ onNavigate }: ModuleProps) {
           )}
         </div>
       </div>
-
-      <p className={styles.caption}>
-        <span className="eyebrow">{legende.eyebrow}</span>
-        {legende.texte}
-      </p>
 
       <ModuleFooterNav
         items={[{ id: 'suivi', label: 'Cet examen, on le programme quand ?' }]}
