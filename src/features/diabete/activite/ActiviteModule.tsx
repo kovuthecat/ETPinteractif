@@ -307,7 +307,7 @@ export default function ActiviteModule({ onNavigate }: ModuleProps) {
               aria-pressed={t1Active === 'all'}
               aria-label="Activité — tous les bénéfices"
             >
-              <IllustrationSlot id="activite-centre" label="Personne active" shape="circle" size={128} />
+              <IllustrationSlot id="activite-centre" label="Personne active" shape="circle" size={176} />
             </button>
             <span className={styles.nodeBelow}>
               <span className={`${styles.nodeLabel} ${styles.nodeCenterLabel}`}>Activité</span>
@@ -331,7 +331,7 @@ export default function ActiviteModule({ onNavigate }: ModuleProps) {
                   aria-pressed={lit}
                   aria-label={r.label.join(' ')}
                 >
-                  <IllustrationSlot id={`activite-rayon-${r.id}`} label={r.label.join(' ')} shape="circle" size={104} />
+                  <IllustrationSlot id={`activite-rayon-${r.id}`} label={r.label.join(' ')} shape="circle" size={140} />
                 </button>
                 <span className={styles.nodeBelow}>
                   <span className={styles.nodeLabel}>
@@ -384,7 +384,11 @@ export default function ActiviteModule({ onNavigate }: ModuleProps) {
             </div>
             <div className={`card ${styles.activitiesGrid}`}>
               {reserveView.map((a) => (
-                <div key={a.id} className={`${styles.activityCard} ${a.isChecked ? styles.activityCardOn : ''}`}>
+                <div
+                  key={a.id}
+                  className={`${styles.activityCard} ${a.isChecked ? styles.activityCardOn : ''}`}
+                  data-intensite={a.intensite}
+                >
                   <button
                     type="button"
                     className={styles.activityMain}
@@ -392,7 +396,12 @@ export default function ActiviteModule({ onNavigate }: ModuleProps) {
                     aria-pressed={a.isChecked}
                   >
                     <span className={styles.activityIllu}>
-                      <IllustrationSlot id={`activite-${a.id}`} label={a.nom} shape="rounded" size={56} />
+                      <IllustrationSlot
+                        id={`activite-${a.id}`}
+                        label={a.nom}
+                        shape="rounded"
+                        size={a.intensite === 'modérée' ? 68 : 56}
+                      />
                       {a.muscle && (
                         <span className={styles.muscleDot} aria-hidden="true" title="bon pour les muscles" />
                       )}
