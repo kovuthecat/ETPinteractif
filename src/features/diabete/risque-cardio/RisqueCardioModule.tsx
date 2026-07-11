@@ -1,21 +1,21 @@
 import { useState } from 'react';
-import type { CSSProperties } from 'react';
+import type { CSSProperties, ComponentType } from 'react';
+import { Droplet, Gauge, Droplets, Cigarette, Armchair } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import ModuleFooterNav from '../../../components/ModuleFooterNav';
 import FicheOverlay from '../../../components/FicheOverlay';
-import IllustrationSlot from '../components/IllustrationSlot';
-import PlaqueArtere from '../components/PlaqueArtere';
-import Silhouette, { SILHOUETTE_ANCHORS, SILHOUETTE_VIEWBOX } from '../components/Silhouette';
+import PlaqueArtere, { plaquePassagePct } from '../components/PlaqueArtere';
+import Silhouette from '../components/Silhouette';
 import type { ZoneId, SilhouetteZoneState } from '../components/Silhouette';
 import styles from './RisqueCardioModule.module.css';
 
 /**
- * Module 4 — Risque cardiovasculaire (D7, plans/theme-diabete/S7.md). Chaîne causale en 4 vues
- * persistantes (mêmes 5 feux partagés entre elles) : ① les leviers → ② l'artère (mécanisme,
- * réversible) → ③ l'anatomie (conséquence, via Silhouette + PlaqueArtere) → ④ la fiche.
- * Portage fidèle de la maquette M4 ; `PlaqueArtere`/`Silhouette` (S3) sont consommés tels quels,
- * jamais redessinés (cf. brief §1.4). Outil « pour voir », non diagnostique : aucune donnée
- * réelle n'est saisie ni conservée.
+ * Module 4 — Risque cardiovasculaire (D7, plans/theme-diabete/S7.md ; illustration-driven depuis
+ * S3, plans/illustrations-diabete/S3.md). Chaîne causale en 4 vues persistantes (mêmes 5 feux
+ * partagés entre elles) : ① les leviers (icônes lucide) → ② l'artère (illustration `artere-saine.png`
+ * + plaque codée qui grossit dessus) → ③ l'anatomie (silhouette `bodyImage` + plaque en image posée
+ * sur le territoire) → ④ la fiche. Outil « pour voir », non diagnostique : aucune donnée réelle
+ * n'est saisie ni conservée.
  */
 
 type FeuId = 'sucre' | 'tension' | 'cholesterol' | 'tabac' | 'sedentarite';
@@ -26,16 +26,26 @@ type ZoneM4 = 'cou' | 'coeur' | 'jambes';
 interface FeuDef {
   id: FeuId;
   nom: string;
-  illustration: string;
+  Icon: ComponentType<{ size?: number; 'aria-hidden'?: boolean }>;
 }
 
+// Feux → lucide (index illustrations-diabete §4) : la sémantique vert/ambre/rouge de l'état reste
+// portée par la carte (bordure + bouton d'état), jamais par la couleur de l'icône elle-même.
 const FEUX: FeuDef[] = [
-  { id: 'sucre', nom: 'Sucre', illustration: 'risque-cardio-feu-sucre' },
-  { id: 'tension', nom: 'Tension', illustration: 'risque-cardio-feu-tension' },
-  { id: 'cholesterol', nom: 'Cholestérol', illustration: 'risque-cardio-feu-cholesterol' },
-  { id: 'tabac', nom: 'Tabac', illustration: 'risque-cardio-feu-tabac' },
-  { id: 'sedentarite', nom: 'Sédentarité', illustration: 'risque-cardio-feu-sedentarite' },
+  { id: 'sucre', nom: 'Sucre', Icon: Droplet },
+  { id: 'tension', nom: 'Tension', Icon: Gauge },
+  { id: 'cholesterol', nom: 'Cholestérol', Icon: Droplets },
+  { id: 'tabac', nom: 'Tabac', Icon: Cigarette },
+  { id: 'sedentarite', nom: 'Sédentarité', Icon: Armchair },
 ];
+
+// Ancre + rotation de la plaque image (transparente, ~26 px) posée sur chaque territoire de la
+// silhouette (index illustrations-diabete §7 — distinctes des ancres d'organe SILHOUETTE_ANCHORS).
+const PLAQUE_OVERLAYS: Record<ZoneM4, { x: number; y: number; rotDeg: number }> = {
+  cou: { x: 50, y: 17, rotDeg: 90 },
+  coeur: { x: 49, y: 26, rotDeg: 0 },
+  jambes: { x: 46, y: 63, rotDeg: 90 },
+};
 
 // Seuils affichés au survol de chaque feu (2ᵉ niveau) — repris verbatim de la maquette M4.
 // à revalider (Thibault) avant tout usage réel en consultation.
@@ -196,7 +206,9 @@ export default function RisqueCardioModule({ onNavigate }: ModuleProps) {
               const etat = factors[f.id];
               return (
                 <div key={f.id} className={styles.feuCard} style={feuTokenStyle(etat)}>
-                  <IllustrationSlot id={f.illustration} label={f.nom} shape="circle" size={74} />
+                  <div className={styles.feuIconFrame}>
+                    <f.Icon size={38} aria-hidden />
+                  </div>
                   <p className={styles.feuNom}>{f.nom}</p>
                   <button
                     type="button"
@@ -248,7 +260,22 @@ export default function RisqueCardioModule({ onNavigate }: ModuleProps) {
 
           <div className={`${styles.arterePanel} card`}>
             <p className={styles.artereEyebrow}>L'artère — un seul objet, réversible</p>
-            <PlaqueArtere encrassement={score} variante="artere" />
+            <div
+              className={styles.artereImgWrap}
+              role="img"
+              aria-label={`Section d'artère : passage du sang à ${plaquePassagePct(score)} % de la lumière initiale`}
+            >
+              <img
+                src={`${import.meta.env.BASE_URL}illustrations/diabete/artere-saine.png`}
+                alt=""
+                aria-hidden="true"
+                className={styles.artereImg}
+              />
+              <PlaqueArtere encrassement={score} className={styles.artereOverlay} />
+            </div>
+            <p className={styles.artereStat} aria-hidden="true">
+              Passage du sang : {plaquePassagePct(score)} %
+            </p>
           </div>
 
           <p className={styles.artereMessage}>{arteryMessageFull}</p>
@@ -263,18 +290,16 @@ export default function RisqueCardioModule({ onNavigate }: ModuleProps) {
               <Silhouette zones={zonesForSilhouette} onZoneClick={handleZoneClick}>
                 {rougeCount > 0 &&
                   ZONES.map((z) => {
-                    const anchor = SILHOUETTE_ANCHORS[z.id];
-                    const leftPct = (anchor.x / SILHOUETTE_VIEWBOX.width) * 100;
-                    const topPct = (anchor.y / SILHOUETTE_VIEWBOX.height) * 100;
+                    const p = PLAQUE_OVERLAYS[z.id];
                     return (
-                      <div
+                      <img
                         key={z.id}
-                        className={styles.plaquePin}
+                        src={`${import.meta.env.BASE_URL}illustrations/diabete/plaque.png`}
+                        alt=""
                         aria-hidden="true"
-                        style={{ left: `${leftPct}%`, top: `calc(${topPct}% + ${anchor.r + 16}px)` }}
-                      >
-                        <PlaqueArtere encrassement={score} variante="pastille" />
-                      </div>
+                        className={styles.plaquePin}
+                        style={{ left: `${p.x}%`, top: `${p.y}%`, transform: `translate(-50%, -50%) rotate(${p.rotDeg}deg)` }}
+                      />
                     );
                   })}
               </Silhouette>
@@ -319,7 +344,9 @@ export default function RisqueCardioModule({ onNavigate }: ModuleProps) {
                   onClick={() => toggleFiche(f.id)}
                   aria-pressed={checked}
                 >
-                  <IllustrationSlot id={f.illustration} label={f.nom} shape="circle" size={56} />
+                  <div className={`${styles.feuIconFrame} ${styles.feuIconFrameSmall}`}>
+                    <f.Icon size={26} aria-hidden />
+                  </div>
                   <span className={styles.ficheItemNom}>{f.nom}</span>
                   <span className={styles.ficheCheckDot} aria-hidden="true">
                     {checked ? '✓' : ''}
