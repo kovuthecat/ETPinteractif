@@ -54,6 +54,10 @@
   flex-wrap: wrap;
   gap: var(--space-md);
   justify-content: center;
+  /* S3-v3 : borne à 3 cartes/ligne (200px + gap) — sans ce plafond, 4 (voire 5) tiennent sur la
+     1ʳᵉ ligne après l'élargissement du chrome (S1). Recalculer si `.feuCard` change de largeur. */
+  max-width: calc(200px * 3 + var(--space-md) * 2);
+  margin-inline: auto;
 }
 
 .feuCard {
@@ -201,9 +205,19 @@
 .anatomieRow {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-xl);
+  gap: var(--space-lg);
   justify-content: center;
   align-items: center;
+}
+
+/* S3-v3 : au-dessus de ce seuil, le contenu élargi (S1, ~1240px) tient 560 (silhouette) +
+   gap + 420 (texte) sur une seule ligne — le texte de résultat reste à côté de la silhouette
+   au lieu de retomber dessous. En dessous, on repasse en empilé (mobile/tablette étroite). */
+@media (min-width: 1020px) {
+  .anatomieRow {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+  }
 }
 
 .silhouetteWrap {
@@ -237,6 +251,8 @@
 
 .zoneDescPanel p {
   margin: 0;
+  /* S3-v3 : texte de résultat mis en valeur (lisible à ~1 m), à côté de la silhouette. */
+  font-size: clamp(1.15rem, 2.4vw, 1.5rem);
   line-height: 1.45;
 }
 

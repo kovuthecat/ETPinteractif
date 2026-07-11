@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { CSSProperties, ComponentType } from 'react';
 import { Droplet, Gauge, Droplets, Cigarette, Armchair } from 'lucide-react';
 import type { ModuleProps } from '../../types';
-import ModuleFooterNav from '../../../components/ModuleFooterNav';
+import ModuleShell from '../../../components/ModuleShell';
 import FicheOverlay from '../../../components/FicheOverlay';
 import PlaqueArtere, { plaquePassagePct } from '../components/PlaqueArtere';
 import Silhouette from '../components/Silhouette';
@@ -117,7 +117,7 @@ function feuTokenStyle(etat: FeuEtat): CSSProperties {
   } as CSSProperties;
 }
 
-export default function RisqueCardioModule({ onNavigate }: ModuleProps) {
+export default function RisqueCardioModule({ shell }: ModuleProps) {
   const [vue, setVue] = useState<Vue>(1);
   const [factors, setFactors] = useState<Record<FeuId, FeuEtat>>({
     sucre: 'vert',
@@ -170,22 +170,27 @@ export default function RisqueCardioModule({ onNavigate }: ModuleProps) {
   const zoneActiveDef = zoneActive ? ZONES.find((z) => z.id === zoneActive) : undefined;
   const vueInfo = VUES[vue - 1];
 
-  return (
-    <div className={styles.module}>
-      <nav className={styles.tabs} aria-label="Étapes du module">
-        {VUES.map((v) => (
-          <button
-            key={v.n}
-            type="button"
-            className={`${styles.tab}${vue === v.n ? ` ${styles.tabActive}` : ''}`}
-            aria-pressed={vue === v.n}
-            onClick={() => setVue(v.n)}
-          >
-            {v.label}
-          </button>
-        ))}
-      </nav>
+  if (!shell) return null;
 
+  const navBar = (
+    <nav className={styles.tabs} aria-label="Étapes du module">
+      {VUES.map((v) => (
+        <button
+          key={v.n}
+          type="button"
+          className={`${styles.tab}${vue === v.n ? ` ${styles.tabActive}` : ''}`}
+          aria-pressed={vue === v.n}
+          onClick={() => setVue(v.n)}
+        >
+          {v.label}
+        </button>
+      ))}
+    </nav>
+  );
+
+  return (
+    <ModuleShell titre={shell.titre} sources={shell.sources} onBack={shell.onBack} wide nav={navBar}>
+    <div className={styles.module}>
       {vue === 1 && (
         <div className={styles.vueBody}>
           <p className={styles.vueEyebrow}>Cliquez un feu pour le régler</p>
@@ -274,10 +279,11 @@ export default function RisqueCardioModule({ onNavigate }: ModuleProps) {
           <div className={styles.anatomieRow}>
             <div className={styles.silhouetteWrap}>
               <Silhouette zones={zonesForSilhouette} onZoneClick={handleZoneClick}>
-                {/* S1-v2 (#3) : la plaque ne se dépose que sur le territoire sélectionné —
-                    avant, elle apparaissait sur les 3 territoires dès qu'un feu était rouge. */}
-                {rougeCount > 0 &&
-                  zoneActive &&
+                {/* S1-v2 (#3) : la plaque ne se dépose que sur le territoire sélectionné.
+                    S3-v3 : le pin est purement illustratif (aucun paramètre de sévérité) —
+                    il ne dépend plus de `rougeCount` (l'état des feux), seulement de la zone
+                    cliquée ; sinon aucune zone ne montre de pin tant qu'aucun feu n'est rouge. */}
+                {zoneActive &&
                   (() => {
                     const p = PLAQUE_OVERLAYS[zoneActive];
                     return (
@@ -352,14 +358,6 @@ export default function RisqueCardioModule({ onNavigate }: ModuleProps) {
         <span className="eyebrow">{vueInfo.label}</span>
       </div>
 
-      <ModuleFooterNav
-        items={[
-          { id: 'complications', label: 'Et il y a aussi les petits vaisseaux…' },
-          { id: 'suivi', label: 'Ces feux, voici quand on les rallume' },
-        ]}
-        onNavigate={onNavigate}
-      />
-
       {ficheOpen && (
         <FicheOverlay
           eyebrow="PROGRAMME ETP · DIABÈTE"
@@ -415,5 +413,6 @@ export default function RisqueCardioModule({ onNavigate }: ModuleProps) {
         </FicheOverlay>
       )}
     </div>
+    </ModuleShell>
   );
 }

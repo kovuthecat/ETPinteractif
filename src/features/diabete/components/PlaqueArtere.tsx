@@ -33,10 +33,17 @@ export function plaquePassagePct(encrassementRaw: number): number {
 }
 
 /** Dépôt en croissant collé à une paroi (`edgeY` = 0 ou 100) : plat contre la paroi sur toute
- *  la longueur du vaisseau, bulle vers le centre jusqu'à `peakY` au milieu (x=50), et se
- *  résorbe à rien aux deux extrémités — au lieu d'un disque flottant au milieu du vaisseau. */
-function crescentPath(edgeY: number, peakY: number): string {
-  return `M0,${edgeY} Q50,${peakY} 100,${edgeY} Z`;
+ *  la longueur du vaisseau, bulle vers le centre jusqu'à `apexY` au milieu (x=50), et se
+ *  résorbe à rien aux deux extrémités — au lieu d'un disque flottant au milieu du vaisseau.
+ *  S3-v3 (fix bug Bézier) : `apexY` est l'apex RÉEL voulu. Pour une quadratique
+ *  `Q P0(0,edgeY) P1(50,ctrl) P2(100,edgeY)`, le point au milieu (t=0.5) vaut
+ *  `(edgeY + ctrl) / 2` — le point de contrôle n'est PAS l'apex. On calcule donc le point de
+ *  contrôle qui produit l'apex demandé (`ctrl = 2*apexY - edgeY`) au lieu d'utiliser l'apex
+ *  directement comme point de contrôle (ancien bug : l'apex réel n'atteignait que la moitié
+ *  de la profondeur visée, la plaque restait collée aux parois même au score max). */
+function crescentPath(edgeY: number, apexY: number): string {
+  const ctrl = 2 * apexY - edgeY;
+  return `M0,${edgeY} Q50,${ctrl} 100,${edgeY} Z`;
 }
 
 /** Seuil d'encrassement au-delà duquel un 2ᵉ dépôt (paroi opposée) apparaît — rétrécissement
