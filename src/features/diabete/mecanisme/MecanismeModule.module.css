@@ -1,10 +1,9 @@
 /*
- * Module 1 — clé/serrure (S4.md D4). Palette fonctionnelle sur tokens sémantiques
- * (confort = serrure ouverte, vigilance = serrure rouillée / sucre qui stagne, line =
- * serrure fermée neutre) ; le pancréas, le vaisseau et les jetons de sucre restent des
- * teintes purement décoratives (organe/sang), locales à ce fichier, sans valeur sémantique.
- * Transitions douces sur transform/opacity/couleur : déjà neutralisées globalement par la
- * règle prefers-reduced-motion de src/styles/global.css (aucune gestion JS supplémentaire).
+ * Module 1 — clé/serrure, illustration-driven (S4, plans/illustrations-diabete/S4.md). Scène en
+ * boîte de référence 1060×340 (même principe que SILHOUETTE_VIEWBOX) : tout est positionné en %
+ * pour rester responsive à n'importe quelle largeur. Le sang (canal + jetons) utilise les tokens
+ * sémantiques confort/vigilance/toxique (bas/encore élevé/élevé) ; pancréas, cellules, clé restent
+ * des illustrations neutres.
  */
 
 .module {
@@ -20,274 +19,165 @@
   max-width: 64ch;
 }
 
-/* --- Progression (4 temps) --- */
+/* --- Sélecteur de mode --- */
 
-.dots {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
-
-.dot {
-  width: 13px;
-  height: 13px;
-  border-radius: 50%;
-  border: 2px solid var(--color-line);
-  background: transparent;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-.dotFilled {
-  background: var(--color-text);
-  border-color: var(--color-text);
-}
-
-/* --- Scène --- */
-
-.scene {
+.modes {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  gap: var(--space-sm);
   justify-content: center;
-  gap: 32px;
+}
+
+.modeBtn {
+  padding: 10px 18px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--color-line);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: 600 14px 'Work Sans', sans-serif;
+  cursor: pointer;
+}
+
+.modeBtnActive {
+  border-color: var(--color-nav);
+  background: var(--color-nav-soft);
+  color: var(--color-nav);
+}
+
+/* --- Scène (boîte de référence 1060×340, tout en %) --- */
+
+.scene {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1060 / 340;
+  min-height: 260px;
 }
 
 .pancreasBlock {
+  position: absolute;
+  left: 0.5%;
+  top: 12%;
+  width: 13%;
   display: flex;
-  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.pancreasImg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.pancreasLabel {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+}
+
+.cell {
+  position: absolute;
+  top: 10.6%;
+  width: 14.9%;
+  aspect-ratio: 1 / 1;
+}
+
+.cellImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.cellImgVisible {
+  opacity: 1;
+}
+
+.key {
+  position: absolute;
+  width: 5.5%;
+  aspect-ratio: 1 / 1;
+  transition:
+    left 0.9s cubic-bezier(0.5, 0.05, 0.3, 1),
+    top 0.9s cubic-bezier(0.5, 0.05, 0.3, 1),
+    transform 0.9s cubic-bezier(0.5, 0.05, 0.3, 1),
+    opacity 0.4s ease;
+}
+
+.canalWrap {
+  position: absolute;
+  left: 42.6%;
+  top: 60%;
+  width: 55.8%;
+  display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--space-sm);
 }
 
-.pancreas {
-  width: 132px;
-  height: 98px;
-  border-radius: 50%;
-  background: oklch(88% 0.03 70);
-  box-shadow: inset 0 -8px 16px rgba(60, 40, 20, 0.12);
-  transition: opacity 0.3s ease, filter 0.3s ease;
-}
-
-.pancreasDim {
-  opacity: 0.55;
-  filter: grayscale(0.6);
-}
-
-.pancreasLabel {
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-text-faint);
-}
-
-.arrow {
-  flex: 0 0 auto;
-  font-size: 28px;
-  color: var(--color-text-faint);
-}
-
-.cellsAndVessel {
+.canal {
+  width: 100%;
   display: flex;
-  flex: 1 1 360px;
-  flex-direction: column;
-  align-items: stretch;
-  gap: var(--space-lg);
-  min-width: 280px;
-}
-
-/* --- Cellules (serrures) --- */
-
-.cellsRow {
-  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-wrap: wrap;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 22px;
+  gap: 3%;
+  padding: 4% 5%;
+  border-radius: var(--radius-pill);
+  border: 2px solid transparent;
+  transition: background-color 0.5s ease, border-color 0.5s ease;
 }
 
-.celluleWrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.cellule {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 84px;
-  height: 108px;
-  border-radius: 58% 58% 46% 46% / 64% 64% 40% 40%;
-  background: var(--color-surface);
-  border: 4px solid var(--color-line);
-  transition: border-color 0.3s ease;
-}
-
-.cellule--ouverte {
+.canal--confort {
+  background: var(--color-confort-soft);
   border-color: var(--color-confort);
 }
 
-.cellule--rouillee {
+.canal--vigilance {
+  background: var(--color-vigilance-soft);
   border-color: var(--color-vigilance);
 }
 
-.cellule--fermee {
-  border-color: var(--color-line);
+.canal--toxique {
+  background: var(--color-toxique-soft);
+  border-color: var(--color-toxique);
 }
 
-.lockSlot {
-  position: absolute;
-  top: -14px;
-  left: 50%;
-  transform: translateX(-50%);
+.sugarToken {
+  width: 8%;
+  aspect-ratio: 1 / 1;
+  transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
-.key {
-  position: absolute;
-  left: 50%;
-  top: -22px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transition: transform 0.3s ease, opacity 0.3s ease;
+.sugarTokenHidden {
+  opacity: 0;
+  transform: translateY(-14px);
 }
 
-.keyBow {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  border: 4px solid var(--color-text);
+.bloodLabel {
+  margin: 0;
+  text-align: center;
+  font: 700 13px 'Work Sans', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: color 0.4s ease;
 }
 
-.keyShaft {
-  width: 5px;
-  height: 15px;
-  background: var(--color-text);
-  margin-top: -2px;
+.bloodLabel--confort {
+  color: var(--color-confort-strong);
 }
 
-.lock {
-  display: block;
+.bloodLabel--vigilance {
+  color: var(--color-vigilance);
 }
 
-.shackle {
-  stroke-width: 2.4;
-  transition: stroke 0.3s ease;
-}
-
-.shackle--ouverte {
-  stroke: var(--color-confort);
-}
-
-.shackle--rouillee {
-  stroke: var(--color-vigilance);
-}
-
-.shackle--fermee {
-  stroke: var(--color-line);
-}
-
-.lockBody {
-  stroke-width: 2;
-  transition: fill 0.3s ease, stroke 0.3s ease;
-}
-
-.lockBody--ouverte {
-  fill: var(--color-confort-soft);
-  stroke: var(--color-confort);
-}
-
-.lockBody--rouillee {
-  fill: var(--color-vigilance-soft);
-  stroke: var(--color-vigilance);
-}
-
-.lockBody--fermee {
-  fill: var(--color-surface);
-  stroke: var(--color-line);
-}
-
-.rustMark {
-  stroke: var(--color-vigilance);
-  stroke-width: 1.6;
-}
-
-.keyhole {
-  fill: var(--color-text-faint);
-}
-
-.cellTokens {
-  display: flex;
-  gap: 6px;
-  margin-top: 26px;
-}
-
-.stem {
-  width: 5px;
-  height: 20px;
-  margin-top: 2px;
-  border-radius: var(--radius-pill);
-  background: oklch(70% 0.07 20);
-}
-
-/* --- Vaisseau sanguin --- */
-
-.vesselOuter {
-  border-radius: 48px;
-  padding: 10px;
-  background: linear-gradient(180deg, oklch(85% 0.05 20), oklch(72% 0.08 25));
-  box-shadow:
-    inset 0 2px 4px rgba(255, 255, 255, 0.4),
-    var(--shadow-2);
-}
-
-.vesselInner {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  min-height: 72px;
-  padding: 14px 28px;
-  border-radius: 38px;
-  background: oklch(38% 0.09 22);
-  box-shadow:
-    inset 0 6px 12px rgba(0, 0, 0, 0.3),
-    inset 0 -4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.token {
-  transition: opacity 0.3s ease;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
-}
-
-.tokenFaceTop {
-  fill: #ffffff;
-}
-
-.tokenFaceLeft {
-  fill: #ede7da;
-}
-
-.tokenFaceRight {
-  fill: #ded5c2;
-}
-
-.token--confort .tokenFaceTop,
-.token--confort .tokenFaceLeft,
-.token--confort .tokenFaceRight {
-  stroke: var(--color-confort);
-  stroke-width: 1.2;
-}
-
-.token--vigilance .tokenFaceTop,
-.token--vigilance .tokenFaceLeft,
-.token--vigilance .tokenFaceRight {
-  stroke: var(--color-vigilance);
-  stroke-width: 1.2;
+.bloodLabel--toxique {
+  color: var(--color-toxique);
 }
 
 /* --- Caption --- */
@@ -295,6 +185,7 @@
 .caption {
   text-align: center;
   padding: 0 12px;
+  min-height: 88px;
 }
 
 .captionEyebrow {
@@ -316,95 +207,8 @@
   line-height: 1.4;
 }
 
-/* --- Navigation --- */
-
-.navRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-md);
-}
-
-.navBtnGhost,
-.navBtnPrimary,
-.navBtnTertiary,
-.transitionBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: var(--target-min);
-  padding: 10px 18px;
-  border-radius: var(--radius-pill);
-  font: 600 15px 'Work Sans', sans-serif;
-  cursor: pointer;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
-}
-
-.navBtnGhost {
-  border: 1.5px solid var(--color-line);
-  background: transparent;
-  color: var(--color-text-soft);
-}
-
-.navBtnGhost:hover,
-.navBtnGhost:focus-visible {
-  background: var(--color-nav-soft);
-}
-
-.navBtnPrimary {
-  border: none;
-  background: var(--color-text);
-  color: var(--color-bg);
-  box-shadow: var(--shadow-1);
-}
-
-.navBtnPrimary:hover,
-.navBtnPrimary:focus-visible {
-  background: var(--color-nav);
-}
-
-.navBtnTertiary {
-  border: none;
-  background: transparent;
-  color: var(--color-text-soft);
-  padding: 10px 6px;
-}
-
-.finalActions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-md);
-}
-
-.transitionBtn {
-  border: 1.5px solid var(--color-nav);
-  background: var(--color-surface);
-  color: var(--color-nav);
-  font-weight: 700;
-}
-
-.transitionBtn:hover,
-.transitionBtn:focus-visible {
-  background: var(--color-nav-soft);
-}
-
-@media (max-width: 600px) {
-  .cellsRow {
-    gap: 14px;
-  }
-
-  .cellule {
-    width: 68px;
-    height: 90px;
-  }
-
+@media (max-width: 640px) {
   .captionText {
     font-size: 19px;
-  }
-
-  .navRow {
-    flex-wrap: wrap;
   }
 }
