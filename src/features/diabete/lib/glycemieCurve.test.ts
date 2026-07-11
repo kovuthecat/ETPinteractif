@@ -160,12 +160,19 @@ describe('invariant fibres/lipides/protéines pris isolément (à partir du riz 
 });
 
 describe('invariant légumineuses / galette / pastèque (pièges pédagogiques du brief)', () => {
+  // Seuils absolus recalibrés S2 (corrections-visuelles-diabete, 2026-07-11) après
+  // désaturation de K_CHARGE/K_FREIN (60/6 → 20/20, cf. glycemieCurve.ts) : le plancher de
+  // pic remonte pour TOUS les aliments (même CG basse), donc le seuil qualitatif se déplace
+  // avec lui. L'invariant qui compte reste l'écart relatif (piège pédagogique préservé, cf.
+  // ci-dessous), pas la valeur absolue.
+  const SEUIL_PIC_BAS = BASELINE + 20;
+
   it('lentilles ≪ riz blanc (légumineuses : CG basse + fibres)', () => {
     const lentilles = peakOf(sampleRepas(paramsFromAssiette({ aliments: [LENTILLES] }))).v;
     const rizBlanc = peakOf(sampleRepas(paramsFromAssiette({ aliments: [RIZ_BLANC] }))).v;
-    expect(lentilles).toBeLessThan(BASELINE + 12);
+    expect(lentilles).toBeLessThan(SEUIL_PIC_BAS);
     expect(rizBlanc).toBeGreaterThan(BASELINE + 15);
-    expect(lentilles).toBeLessThan(rizBlanc);
+    expect(lentilles).toBeLessThan(rizBlanc - 25);
   });
 
   it('galette de riz : pic haut et précoce malgré l\'image "légère" (fibres quasi nulles)', () => {
@@ -178,8 +185,31 @@ describe('invariant légumineuses / galette / pastèque (pièges pédagogiques d
   it('pastèque : petit pic (CG basse malgré l\'IG réputé haut)', () => {
     const pasteque = peakOf(sampleRepas(paramsFromAssiette({ aliments: [PASTEQUE] }))).v;
     const rizBlanc = peakOf(sampleRepas(paramsFromAssiette({ aliments: [RIZ_BLANC] }))).v;
-    expect(pasteque).toBeLessThan(BASELINE + 12);
-    expect(pasteque).toBeLessThan(rizBlanc);
+    expect(pasteque).toBeLessThan(SEUIL_PIC_BAS);
+    expect(pasteque).toBeLessThan(rizBlanc - 25);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// S2 (corrections-visuelles-diabete, 2026-07-11, captures #6/#9) — pic féculents lisible
+// + effet d'ordre nettement visible.
+// ---------------------------------------------------------------------------
+
+describe('S2 — pic féculents cumulés nettement plus haut + ordre nettement lisible', () => {
+  it('pic(3 féculents identiques) > pic(1 féculent seul), et proche du plafond', () => {
+    const un = peakOf(sampleRepas(paramsFromAssiette({ aliments: [RIZ_BLANC] }))).v;
+    const trois = peakOf(
+      sampleRepas(paramsFromAssiette({ aliments: [RIZ_BLANC, RIZ_BLANC, RIZ_BLANC] })),
+    ).v;
+    expect(trois).toBeGreaterThan(un);
+    expect(trois).toBeGreaterThan(LEVEL_MAX - 15);
+  });
+
+  it('pic(féculent en premier) − pic(féculent en dernier) ≥ 15 points, sur une assiette type du défi ③', () => {
+    const aliments = [RIZ_BLANC, POULET, BROCOLI];
+    const premier = peakOf(sampleRepas(paramsFromAssiette({ aliments, ordreFeculent: 0 }))).v;
+    const dernier = peakOf(sampleRepas(paramsFromAssiette({ aliments, ordreFeculent: 1 }))).v;
+    expect(premier - dernier).toBeGreaterThanOrEqual(15);
   });
 });
 

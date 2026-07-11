@@ -68,6 +68,16 @@ export interface BandeCible {
   hauteY: number;
 }
 
+/** Convertit une bande-cible exprimée dans l'échelle 0–100 de `glycemieCurve` (`levelMax`,
+ *  défaut `LEVEL_MAX`) en coordonnées locales du graphe (`BandeCible`) — même repère que
+ *  `toSvgPath`. Utilitaire partagé (ex-`insuline/scenarios.ts`, S2 corrections-visuelles). */
+export function bandeToY(bande: { basse: number; haute: number }, levelMax = 100): BandeCible {
+  return {
+    hauteY: COURBE_GRAPH_HEIGHT - (bande.haute / levelMax) * COURBE_GRAPH_HEIGHT,
+    basseY: COURBE_GRAPH_HEIGHT - (bande.basse / levelMax) * COURBE_GRAPH_HEIGHT,
+  };
+}
+
 export type MarqueurType = 'repas' | 'activite' | 'resucrage' | 'attente';
 
 export interface MarqueurDef {

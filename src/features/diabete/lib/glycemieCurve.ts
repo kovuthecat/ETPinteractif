@@ -72,18 +72,34 @@ function clampRange(x: number, lo: number, hi: number): number {
   return Math.min(hi, Math.max(lo, x));
 }
 
-/** Constante de saturation de la charge glycémique cumulée (jamais de cumul linéaire infini). */
-const K_CHARGE = 60;
+/**
+ * Constante de saturation de la charge glycémique cumulée (jamais de cumul linéaire infini).
+ * Corrections-visuelles S2 (2026-07-11, revue Thibault #9) : abaissée de 60 à 20 — un féculent
+ * seul « rouge » (CG ~20-30) doit déjà culminer haut (~75-85/100), et 2-3 féculents cumulés
+ * doivent approcher le plafond (~90/100). `// à revalider (Thibault)` — calibrage pédagogique,
+ * pas un score métabolique validé.
+ */
+const K_CHARGE = 20;
 /**
  * Constantes de saturation du frein (aplatissement) et du retard (décalage du pic) liés à
  * la composition réelle du repas (fibres/lipides/protéines, S14 §0.c.3) — calibrées pour que
- * les assiettes types du module restent dans la dynamique visuelle du modèle (pic ~40-95).
+ * les assiettes types du module restent dans la dynamique visuelle du modèle. Corrections-
+ * visuelles S2 (2026-07-11) : relevées de 6/5 à 20/14 en même temps que `K_CHARGE` — sans
+ * ce réajustement conjoint, le frein cumulé de plusieurs féculents identiques (chacun
+ * apportant ses propres fibres/lipides/protéines) rattraperait le gain de charge et
+ * empêcherait « 3 féculents » de culminer plus haut qu'« 1 seul » (cf. VALIDATION.md §S2).
  */
-const K_FREIN = 6;
-const K_RETARD = 5;
+const K_FREIN = 20;
+const K_RETARD = 14;
 
-const ORDRE_FREIN_BONUS = 0.45;
-const ORDRE_RETARD_BONUS = 0.35;
+/**
+ * Bonus d'ordre (défi ③) : amplifiés S2 (0.45→0.6, 0.35→0.5) pour que « féculent en dernier »
+ * vs « en premier » produise un écart de pic nettement lisible (delta ≥ ~15 points sur les
+ * assiettes types du défi). `// à revalider (Thibault)` — effet réel plus modeste dans la vraie
+ * vie, accentué ici pour la pédagogie (cf. index.md §Décisions).
+ */
+const ORDRE_FREIN_BONUS = 0.6;
+const ORDRE_RETARD_BONUS = 0.5;
 
 /**
  * Agrège une assiette en paramètres de repas à partir de sa composition réelle approximative

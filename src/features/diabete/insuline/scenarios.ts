@@ -1,7 +1,9 @@
-import type { CourbeDef, BandeCible, SegmentDef } from '../components/CourbeGlycemie';
-import { COURBE_GRAPH_WIDTH, COURBE_GRAPH_HEIGHT } from '../components/CourbeGlycemie';
-import { LEVEL_MAX, sampleNuits, toSvgPath } from '../lib/glycemieCurve';
+import type { CourbeDef, SegmentDef } from '../components/CourbeGlycemie';
+import { COURBE_GRAPH_WIDTH, COURBE_GRAPH_HEIGHT, bandeToY } from '../components/CourbeGlycemie';
+import { sampleNuits, toSvgPath } from '../lib/glycemieCurve';
 import type { Point, ScenarioTrace } from '../lib/glycemieCurve';
+
+export { bandeToY };
 
 /**
  * Mapping situations du module 9 (textes verbatim de la maquette
@@ -137,13 +139,6 @@ export function buildCourbes(traces: Point[][]): CourbeDef[] {
       variante: principale ? 'principale' : 'estompee',
     };
   });
-}
-
-export function bandeToY(bande: { basse: number; haute: number }): BandeCible {
-  return {
-    hauteY: COURBE_GRAPH_HEIGHT - (bande.haute / LEVEL_MAX) * COURBE_GRAPH_HEIGHT,
-    basseY: COURBE_GRAPH_HEIGHT - (bande.basse / LEVEL_MAX) * COURBE_GRAPH_HEIGHT,
-  };
 }
 
 /** Segment nuit / à jeun ↔ la lente ; bosses post-repas ↔ le bolus (SPEC §13.4). */
