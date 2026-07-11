@@ -9,7 +9,12 @@
   stroke: var(--color-text);
   stroke-width: 1;
   transition:
-    rx 0.6s ease,
-    ry 0.6s ease,
+    d 0.6s ease,
     fill 0.6s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plaque {
+    transition: none;
+  }
 }
