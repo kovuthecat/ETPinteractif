@@ -8,6 +8,7 @@ import {
   ClipboardList,
   LifeBuoy,
   Syringe,
+  Utensils,
 } from 'lucide-react';
 import type { ModuleDef } from '../types';
 import MecanismeModule from './mecanisme/MecanismeModule';
@@ -19,6 +20,7 @@ import SuiviModule from './suivi/SuiviModule';
 import TraitementsModule from './traitements/TraitementsModule';
 import HypoglycemieModule from './hypoglycemie/HypoglycemieModule';
 import InsulineModule from './insuline/InsulineModule';
+import InsulineRapideModule from './insuline-rapide/InsulineRapideModule';
 
 export const MODULES: ModuleDef[] = [
   {
@@ -31,6 +33,7 @@ export const MODULES: ModuleDef[] = [
     Icon: KeyRound,
     Component: MecanismeModule,
     hue: 'nav',
+    rendersOwnShell: true,
   },
   {
     id: 'alimentation',
@@ -41,6 +44,7 @@ export const MODULES: ModuleDef[] = [
     Icon: Salad,
     Component: AlimentationModule,
     hue: 'confort',
+    rendersOwnShell: true,
   },
   {
     id: 'activite',
@@ -51,6 +55,7 @@ export const MODULES: ModuleDef[] = [
     Icon: Footprints,
     Component: ActiviteModule,
     hue: 'confort',
+    rendersOwnShell: true,
   },
   {
     id: 'risque-cardio',
@@ -61,6 +66,7 @@ export const MODULES: ModuleDef[] = [
     Icon: HeartPulse,
     Component: RisqueCardioModule,
     hue: 'toxique',
+    rendersOwnShell: true,
   },
   {
     id: 'complications',
@@ -71,6 +77,7 @@ export const MODULES: ModuleDef[] = [
     Icon: PersonStanding,
     Component: ComplicationsModule,
     hue: 'vigilance',
+    rendersOwnShell: true,
   },
   {
     id: 'suivi',
@@ -81,6 +88,7 @@ export const MODULES: ModuleDef[] = [
     Icon: Gauge,
     Component: SuiviModule,
     hue: 'nav',
+    rendersOwnShell: true,
   },
   {
     id: 'traitements',
@@ -91,6 +99,7 @@ export const MODULES: ModuleDef[] = [
     Icon: ClipboardList,
     Component: TraitementsModule,
     hue: 'confort',
+    rendersOwnShell: true,
   },
   {
     id: 'hypoglycemie',
@@ -101,6 +110,7 @@ export const MODULES: ModuleDef[] = [
     Icon: LifeBuoy,
     Component: HypoglycemieModule,
     hue: 'vigilance',
+    rendersOwnShell: true,
   },
   {
     id: 'insuline',
@@ -111,5 +121,17 @@ export const MODULES: ModuleDef[] = [
     Icon: Syringe,
     Component: InsulineModule,
     hue: 'nav',
+    rendersOwnShell: true,
+  },
+  {
+    id: 'insuline-rapide',
+    famille: 'soigner',
+    titre: 'Insuline rapide (avant le repas)',
+    resume: 'Comprendre comment la rapide couvre le repas — le bon moment, la bonne mesure, sans empiler.',
+    sources: ['ADA Standards of Care 2026', 'Consensus ADA/EASD', 'Slattery 2018 (timing)'],
+    Icon: Utensils,
+    Component: InsulineRapideModule,
+    hue: 'nav',
+    rendersOwnShell: true,
   },
 ];
