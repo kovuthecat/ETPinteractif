@@ -16,6 +16,12 @@
   box-sizing: border-box;
 }
 
+/* S1-v3 : chrome élargi (diabète uniquement, via prop `wide`) — cible provisoire,
+   à caler visuellement (Thibault). */
+.headerWide {
+  max-width: 1240px;
+}
+
 .back {
   display: inline-flex;
   align-items: center;
@@ -39,13 +45,32 @@
   outline-offset: 2px;
 }
 
-.titre {
+/* S1-v3 : conteneur titre + slot `nav` optionnel, sur la même ligne, repli propre si la
+   place manque (le gap ci-dessous porte l'espacement auparavant sur .titre lui-même). */
+.titleRow {
   flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm) var(--space-md);
+  min-width: 0;
   margin: 0 var(--space-md);
+}
+
+.titre {
+  flex: 1 1 auto;
+  margin: 0;
   text-align: left;
   font-family: 'Source Serif 4', serif;
   font-weight: 600;
   font-size: 26px;
+}
+
+.nav {
+  flex: 0 1 auto;
+  display: flex;
+  min-width: 0;
 }
 
 .content {
@@ -55,6 +80,10 @@
   margin-inline: auto;
   padding: 20px 40px 60px;
   box-sizing: border-box;
+}
+
+.contentWide {
+  max-width: 1240px;
 }
 
 @media (max-width: 600px) {

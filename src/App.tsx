@@ -47,7 +47,16 @@ function App() {
   const module = theme.modules.find((m) => m.id === currentView.moduleId);
   if (!module) return null;
 
-  const { Component, titre, sources } = module;
+  const { Component, titre, sources, rendersOwnShell } = module;
+  if (rendersOwnShell) {
+    return (
+      <Component
+        onNavigate={navigateToModule}
+        context={currentView.context}
+        shell={{ titre, sources, onBack: handleBack }}
+      />
+    );
+  }
   return (
     <ModuleShell titre={titre} sources={sources} onBack={handleBack}>
       <Component onNavigate={navigateToModule} context={currentView.context} />

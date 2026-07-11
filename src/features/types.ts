@@ -7,6 +7,9 @@ export interface ModuleProps {
   onNavigate: (id: ModuleId, context?: unknown) => void;
   /** Contexte opaque transmis par le module appelant (le moteur n'en connaît pas la forme). */
   context?: unknown;
+  /** Fourni par App.tsx uniquement quand `ModuleDef.rendersOwnShell` est vrai : le module
+   *  rend lui-même `ModuleShell` (nécessaire pour remonter sa barre d'onglets dans le slot `nav`). */
+  shell?: { titre: string; sources?: string[]; onBack: () => void };
 }
 
 export type FamilleId = string;
@@ -22,6 +25,9 @@ export interface ModuleDef {
   Icon: LucideIcon;
   Component: ComponentType<ModuleProps>;
   hue?: Hue;
+  /** Générique (aucun thème par son nom) : quand vrai, le module rend lui-même `ModuleShell`
+   *  (reçoit ses infos via `ModuleProps.shell`) au lieu qu'App.tsx l'enveloppe. */
+  rendersOwnShell?: boolean;
 }
 
 export interface FamilleDef {
