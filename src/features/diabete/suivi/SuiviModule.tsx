@@ -111,11 +111,9 @@ interface SuiviState {
 type Action =
   | { type: 'SET_TEMPS'; temps: Temps }
   | { type: 'SET_CONSULT_INTERVAL'; interval: number; currentMonth: number }
-  | { type: 'STEP_CONSULT_START'; delta: number; currentMonth: number }
   | { type: 'TOGGLE_CONSULT'; month: number }
   | { type: 'TOGGLE_CONSULT_REVEAL' }
   | { type: 'SET_EXAM_EVERY_N'; id: ExamId; everyN: number }
-  | { type: 'STEP_EXAM_MONTH'; id: ExamId; delta: number }
   | { type: 'TOGGLE_EXAM_STATUS'; id: ExamId }
   | { type: 'TOGGLE_EXAM_REVEAL'; id: ExamId }
   | { type: 'OPEN_DOOR'; protects: ProtectsId }
@@ -152,12 +150,6 @@ function reducer(state: SuiviState, action: Action): SuiviState {
       const months = computeConsultMonths(consultConfig);
       return { ...state, consultConfig, consultStatus: defaultConsultStatus(months, action.currentMonth) };
     }
-    case 'STEP_CONSULT_START': {
-      const startMonth = (((state.consultConfig.startMonth + action.delta) % 12) + 12) % 12;
-      const consultConfig = { ...state.consultConfig, startMonth };
-      const months = computeConsultMonths(consultConfig);
-      return { ...state, consultConfig, consultStatus: defaultConsultStatus(months, action.currentMonth) };
-    }
     case 'TOGGLE_CONSULT': {
       const current = state.consultStatus[action.month];
       const next: Status = current === 'fait' ? 'a_programmer' : 'fait';
@@ -173,20 +165,6 @@ function reducer(state: SuiviState, action: Action): SuiviState {
           [action.id]: { ...state.examConfig[action.id], everyN: action.everyN },
         },
       };
-    case 'STEP_EXAM_MONTH': {
-      const consultMonths = computeConsultMonths(state.consultConfig);
-      const cfg = state.examConfig[action.id];
-      const snapped = nearestConsultMonth(cfg.startMonth, consultMonths);
-      let idx = consultMonths.indexOf(snapped);
-      idx = (((idx + action.delta) % consultMonths.length) + consultMonths.length) % consultMonths.length;
-      return {
-        ...state,
-        examConfig: {
-          ...state.examConfig,
-          [action.id]: { ...cfg, startMonth: consultMonths[idx] },
-        },
-      };
-    }
     case 'TOGGLE_EXAM_STATUS': {
       const cfg = state.examConfig[action.id];
       const next: Status = cfg.status === 'fait' ? 'a_programmer' : 'fait';
@@ -222,6 +200,15 @@ function statusLabelFor(status: Status): string {
   if (status === 'fait') return 'Fait';
   if (status === 'a_programmer') return 'À programmer';
   return 'À venir';
+}
+
+/** S4 : un seul contrôle ‹ valeur › par fréquence (remplace les groupes de chips qui
+ *  débordaient) — fait tourner `current` dans `options` de `delta` crans. */
+function cycleValue<T>(options: T[], current: T, delta: number): T {
+  const idx = options.indexOf(current);
+  const base = idx === -1 ? 0 : idx;
+  const next = (((base + delta) % options.length) + options.length) % options.length;
+  return options[next];
 }
 
 export default function SuiviModule({ onNavigate }: ModuleProps) {
@@ -313,15 +300,11 @@ export default function SuiviModule({ onNavigate }: ModuleProps) {
   function setConsultInterval(interval: number) {
     dispatch({ type: 'SET_CONSULT_INTERVAL', interval, currentMonth });
   }
-  function stepConsultStart(delta: number) {
-    dispatch({ type: 'STEP_CONSULT_START', delta, currentMonth });
-  }
 
   // ── Panneau de réglage — examens ──────────────────────────────────────────────────────────
   const examRows = EXAM_DEFS.map((def) => {
     const cfg = state.examConfig[def.id];
     const revealed = state.revealed[def.id];
-    const snapped = nearestConsultMonth(cfg.startMonth, consultMonths);
     const longCycle = isLongCycle(cfg, consultMonths);
     const cycles = longCycleYears(cfg, state.consultConfig.interval);
     const info = PROTECTS_INFO[def.protects];
@@ -331,7 +314,7 @@ export default function SuiviModule({ onNavigate }: ModuleProps) {
       { n: annualN * 2, label: '1×/2 ans' },
       { n: annualN * 5, label: '1×/5 ans' },
     ];
-    return { def, cfg, revealed, snapped, longCycle, cycles, info, freqOptions };
+    return { def, cfg, revealed, longCycle, cycles, info, freqOptions };
   });
 
   // ── Fiche — check-list triée par mois ─────────────────────────────────────────────────────
@@ -502,25 +485,20 @@ export default function SuiviModule({ onNavigate }: ModuleProps) {
                 <StationIcon kind="stethoscope" label="Stéthoscope" size={38} />
               </span>
               <span className={styles.rowLabel}>Consultations</span>
-              <div className={styles.chipGroup}>
-                {CONSULT_INTERVAL_OPTIONS.map((iv) => (
-                  <button
-                    key={iv}
-                    type="button"
-                    className={styles.chip}
-                    aria-pressed={state.consultConfig.interval === iv}
-                    onClick={() => setConsultInterval(iv)}
-                  >
-                    {CONSULT_INTERVAL_LABELS[iv]}
-                  </button>
-                ))}
-              </div>
               <div className={styles.stepper}>
-                <button type="button" aria-label="Mois de départ précédent" onClick={() => stepConsultStart(-1)}>
+                <button
+                  type="button"
+                  aria-label="Fréquence de consultation précédente"
+                  onClick={() => setConsultInterval(cycleValue(CONSULT_INTERVAL_OPTIONS, state.consultConfig.interval, -1))}
+                >
                   ‹
                 </button>
-                <span>{MONTHS[state.consultConfig.startMonth]}</span>
-                <button type="button" aria-label="Mois de départ suivant" onClick={() => stepConsultStart(1)}>
+                <span>{CONSULT_INTERVAL_LABELS[state.consultConfig.interval]}</span>
+                <button
+                  type="button"
+                  aria-label="Fréquence de consultation suivante"
+                  onClick={() => setConsultInterval(cycleValue(CONSULT_INTERVAL_OPTIONS, state.consultConfig.interval, 1))}
+                >
                   ›
                 </button>
               </div>
@@ -536,93 +514,87 @@ export default function SuiviModule({ onNavigate }: ModuleProps) {
 
             <p className={styles.examListLabel}>Mes examens — un par un</p>
             <div className={styles.examList}>
-              {examRows.map(({ def, cfg, revealed, snapped, longCycle, cycles, info, freqOptions }) => (
-                <div key={def.id} className={styles.examRow} data-revealed={revealed}>
-                  <span className={styles.rowIcon}>
-                    <StationIcon kind={def.protects} label={info.name} size={34} />
-                  </span>
-                  <span className={styles.examName}>
-                    <span className={styles.examNameLabel}>{def.name}</span>
-                    <span className={styles.examProtects}>protège : {info.name}</span>
-                  </span>
+              {examRows.map(({ def, cfg, revealed, longCycle, cycles, info, freqOptions }) => {
+                const freqIdx = Math.max(0, freqOptions.findIndex((fo) => fo.n === cfg.everyN));
+                return (
+                  <div key={def.id} className={styles.examRow} data-revealed={revealed}>
+                    <button
+                      type="button"
+                      className={styles.rowIconBtn}
+                      onClick={() => dispatch({ type: 'OPEN_DOOR', protects: def.protects })}
+                      aria-label={`Ce que ${def.name} protège — ${info.name}`}
+                    >
+                      <StationIcon kind={def.protects} label={info.name} size={34} />
+                    </button>
+                    <span className={styles.examName}>
+                      <span className={styles.examNameLabel}>{def.name}</span>
+                      <span className={styles.examProtects}>protège : {info.name}</span>
+                    </span>
 
-                  <div className={styles.chipGroup}>
-                    {freqOptions.map((fo) => (
+                    <div className={styles.stepper}>
                       <button
-                        key={fo.n}
                         type="button"
-                        className={styles.chipSmall}
-                        aria-pressed={cfg.everyN === fo.n}
-                        onClick={() => dispatch({ type: 'SET_EXAM_EVERY_N', id: def.id, everyN: fo.n })}
+                        aria-label={`Fréquence de ${def.name} précédente`}
+                        onClick={() =>
+                          dispatch({
+                            type: 'SET_EXAM_EVERY_N',
+                            id: def.id,
+                            everyN: freqOptions[(freqIdx - 1 + freqOptions.length) % freqOptions.length].n,
+                          })
+                        }
                       >
-                        {fo.label}
+                        ‹
                       </button>
-                    ))}
-                    <InfoHover
-                      label={`Fréquence usuelle de ${def.name}, à revalider`}
-                      content={
-                        <>
-                          Fréquence indicative — <strong>à revalider (ADA/HAS-SFD)</strong> avec le soignant.
-                        </>
-                      }
-                    >
-                      <span className={styles.infoGlyph} aria-hidden="true">
-                        i
-                      </span>
-                    </InfoHover>
-                  </div>
+                      <span>{freqOptions[freqIdx].label}</span>
+                      <button
+                        type="button"
+                        aria-label={`Fréquence de ${def.name} suivante`}
+                        onClick={() =>
+                          dispatch({
+                            type: 'SET_EXAM_EVERY_N',
+                            id: def.id,
+                            everyN: freqOptions[(freqIdx + 1) % freqOptions.length].n,
+                          })
+                        }
+                      >
+                        ›
+                      </button>
+                      <InfoHover
+                        label={`Fréquence usuelle de ${def.name}, à revalider`}
+                        content={
+                          <>
+                            Fréquence indicative — <strong>à revalider (ADA/HAS-SFD)</strong> avec le soignant.
+                          </>
+                        }
+                      >
+                        <span className={styles.infoGlyph} aria-hidden="true">
+                          i
+                        </span>
+                      </InfoHover>
+                    </div>
 
-                  <div className={styles.stepper}>
+                    <span className={styles.examStatus} data-status={longCycle ? 'longcycle' : cfg.status}>
+                      {longCycle
+                        ? `Tous les ${cycles} ans — prochain : ${longCycleNextYear(cfg, state.consultConfig.interval, currentYear)}`
+                        : statusLabelFor(cfg.status)}
+                    </span>
+
                     <button
                       type="button"
-                      aria-label={`Mois de ${def.name} précédent`}
-                      onClick={() => dispatch({ type: 'STEP_EXAM_MONTH', id: def.id, delta: -1 })}
+                      className={styles.revealToggle}
+                      aria-pressed={revealed}
+                      onClick={() => dispatch({ type: 'TOGGLE_EXAM_REVEAL', id: def.id })}
                     >
-                      ‹
-                    </button>
-                    <span>{MONTHS[snapped]}</span>
-                    <button
-                      type="button"
-                      aria-label={`Mois de ${def.name} suivant`}
-                      onClick={() => dispatch({ type: 'STEP_EXAM_MONTH', id: def.id, delta: 1 })}
-                    >
-                      ›
+                      {revealed ? 'Retirer du cadran' : 'Placer sur le cadran'}
                     </button>
                   </div>
-
-                  <span className={styles.examStatus} data-status={longCycle ? 'longcycle' : cfg.status}>
-                    {longCycle
-                      ? `Tous les ${cycles} ans — prochain : ${longCycleNextYear(cfg, state.consultConfig.interval, currentYear)}`
-                      : statusLabelFor(cfg.status)}
-                  </span>
-
-                  <button
-                    type="button"
-                    className={styles.doorButton}
-                    onClick={() => dispatch({ type: 'OPEN_DOOR', protects: def.protects })}
-                  >
-                    Ce que ça garde
-                  </button>
-                  <button
-                    type="button"
-                    className={styles.revealToggle}
-                    aria-pressed={revealed}
-                    onClick={() => dispatch({ type: 'TOGGLE_EXAM_REVEAL', id: def.id })}
-                  >
-                    {revealed ? 'Retirer du cadran' : 'Placer sur le cadran'}
-                  </button>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
       )}
 
-      <p className={styles.caption}>
-        {state.temps === 'parcours'
-          ? "On place les consultations, puis chaque examen un par un — le cadran se construit sous vos yeux."
-          : 'Le cadran enseigne, la fiche organise — même ADN, deux objets distincts.'}
-      </p>
 
       <ModuleFooterNav
         titre="Continuer l'exploration"
