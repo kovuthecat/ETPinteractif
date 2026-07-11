@@ -1,8 +1,7 @@
 import { useMemo, useState } from 'react';
 import type { ModuleProps } from '../../types';
-import ModuleFooterNav from '../../../components/ModuleFooterNav';
+import ModuleShell from '../../../components/ModuleShell';
 import CourbeGlycemie from '../components/CourbeGlycemie';
-import { tempsDansCible } from '../lib/glycemieCurve';
 import {
   PROFILES,
   SUB_SITUATIONS,
@@ -47,7 +46,7 @@ const TREND_LABEL: Record<'↗' | '↘' | '→', string> = {
   '→': 'stable',
 };
 
-export default function InsulineModule({ onNavigate }: ModuleProps) {
+export default function InsulineModule({ onNavigate, shell }: ModuleProps) {
   const [temps, setTemps] = useState<TempsId>(1);
   const [profileId, setProfileId] = useState<ProfileId>('jeune');
   const [situationId, setSituationId] = useState<SituationId | null>(null);
@@ -60,7 +59,6 @@ export default function InsulineModule({ onNavigate }: ModuleProps) {
   const traces = useMemo(() => tracesForScenario(scenario), [scenario]);
   const courbes = useMemo(() => buildCourbes(traces), [traces]);
   const bandesY = useMemo(() => bandeToY(profile.bande), [profile]);
-  const tir = useMemo(() => tempsDansCible(traces, profile.bande), [traces, profile]);
   const trendArrow = useMemo(() => computeTrendArrow(traces), [traces]);
 
   function toggleSituation(id: SituationId) {
@@ -74,22 +72,27 @@ export default function InsulineModule({ onNavigate }: ModuleProps) {
   const cardAActive = situationId !== null && situationId !== 'bas';
   const cardBActive = situationId === 'bas';
 
-  return (
-    <div className={styles.module}>
-      <div className={styles.tabs}>
-        {TEMPS_TABS.map((t) => (
-          <button
-            key={t.id}
-            type="button"
-            className={`${styles.tab}${temps === t.id ? ` ${styles.tabActive}` : ''}`}
-            aria-pressed={temps === t.id}
-            onClick={() => setTemps(t.id)}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
+  if (!shell) return null;
 
+  const navBar = (
+    <div className={styles.tabs}>
+      {TEMPS_TABS.map((t) => (
+        <button
+          key={t.id}
+          type="button"
+          className={`${styles.tab}${temps === t.id ? ` ${styles.tabActive}` : ''}`}
+          aria-pressed={temps === t.id}
+          onClick={() => setTemps(t.id)}
+        >
+          {t.label}
+        </button>
+      ))}
+    </div>
+  );
+
+  return (
+    <ModuleShell titre={shell.titre} sources={shell.sources} onBack={shell.onBack} wide nav={navBar}>
+    <div className={styles.module}>
       {/* S4-v2 (T1) : profil = toggle d'état discret près de la courbe, plus un onglet plein
           écran — visible sur les 2 onglets, règle la zone-cible en continu. */}
       <div className={styles.profileToggleRow}>
@@ -140,21 +143,6 @@ export default function InsulineModule({ onNavigate }: ModuleProps) {
           </p>
         )}
       </div>
-
-      {temps === 2 && (
-        <div className={styles.tirRow}>
-          <span className={styles.tirLabel}>Temps dans la cible</span>
-          <div
-            className={styles.tirBar}
-            role="img"
-            aria-label={`Temps dans la cible : ${Math.round(tir.bas)}% bas, ${Math.round(tir.cible)}% en cible, ${Math.round(tir.haut)}% haut`}
-          >
-            <span className={styles.tirBas} style={{ width: `${tir.bas}%` }} />
-            <span className={styles.tirCible} style={{ width: `${tir.cible}%` }} />
-            <span className={styles.tirHaut} style={{ width: `${tir.haut}%` }} />
-          </div>
-        </div>
-      )}
 
       {temps === 2 && (
         <div className={styles.situations}>
@@ -208,15 +196,14 @@ export default function InsulineModule({ onNavigate }: ModuleProps) {
         </div>
       )}
 
-      <p className="filrouge">Dans le doute, on ne monte pas — on traite l'hypo d'abord.</p>
-
-      <ModuleFooterNav
-        items={[
-          { id: 'hypoglycemie', label: 'Revoir la règle des 15 (resucrage)' },
-          { id: 'alimentation', label: 'La même courbe, côté assiette' },
-        ]}
-        onNavigate={onNavigate}
-      />
+      <div className={styles.piedRefrain}>
+        <p className="filrouge">Dans le doute, on ne monte pas — on traite l'hypo d'abord.</p>
+        <p className={styles.accompagnement}>
+          Régler la lente, c'est un travail d'équipe avec votre soignant — pas une décision à
+          prendre seul.
+        </p>
+      </div>
     </div>
+    </ModuleShell>
   );
 }

@@ -89,45 +89,20 @@
   --chip-fg: var(--color-bg);
 }
 
-/* --- Temps dans la cible --- */
-
-.tirRow {
+/* Pied : refrain de sécurité (.filrouge, dominant) + note d'accompagnement discrète en dessous. */
+.piedRefrain {
   display: flex;
-  align-items: center;
-  gap: var(--space-md);
+  flex-direction: column;
+  gap: var(--space-xs);
 }
 
-.tirLabel {
-  font-size: 14px;
-  font-weight: 600;
+/* Message d'accompagnement (auto-titration guidée, jamais seul — sources OE insuline basale
+   2026-07-11). Volontairement plus discret que le refrain de sécurité au-dessus. */
+.accompagnement {
+  margin: 0;
   color: var(--color-text-soft);
-  white-space: nowrap;
-}
-
-.tirBar {
-  flex: 1;
-  display: flex;
-  height: 22px;
-  border-radius: var(--radius-pill);
-  overflow: hidden;
-}
-
-.tirBas {
-  display: block;
-  height: 100%;
-  background: var(--color-toxique);
-}
-
-.tirCible {
-  display: block;
-  height: 100%;
-  background: var(--color-confort);
-}
-
-.tirHaut {
-  display: block;
-  height: 100%;
-  background: var(--color-vigilance);
+  font-size: var(--font-size-small);
+  line-height: 1.45;
 }
 
 /* --- Profil : toggle d'état (S4-v2, remplace l'ancien onglet ① plein écran) --- */
