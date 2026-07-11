@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { ArrowLeft, CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { ModuleProps } from '../../types';
-import ModuleFooterNav from '../../../components/ModuleFooterNav';
 import SilhouetteCorps, { type SilhouetteZone } from '../../../components/SilhouetteCorps';
 import IllustrationSlot from '../components/IllustrationSlot';
 import { ZONES, ZONES_BY_ID, JALONS, DERNIER_JALON_INDEX, beneficesDeZone, type ZoneId } from './data';
@@ -17,7 +16,7 @@ import styles from './BeneficesArretModule.module.css';
 const MESSAGE_TRANSVERSE =
   "Ces étapes se déclenchent quel que soit l'âge, le nombre d'années de tabac ou de tentatives précédentes. Il n'est jamais trop tard — ni trop tôt.";
 
-export default function BeneficesArretModule({ onNavigate }: ModuleProps) {
+export default function BeneficesArretModule(_props: ModuleProps) {
   const [jalonIndex, setJalonIndex] = useState(0);
   const [selectedZone, setSelectedZone] = useState<ZoneId | null>(null);
 
@@ -193,14 +192,6 @@ export default function BeneficesArretModule({ onNavigate }: ModuleProps) {
           <p className={styles.messageTransverse}>{MESSAGE_TRANSVERSE}</p>
         </div>
       </div>
-
-      <ModuleFooterNav
-        items={[
-          { id: 'motivation', label: 'Explorer ma motivation' },
-          { id: 'plan-arret', label: "Préparer mon plan d'arrêt" },
-        ]}
-        onNavigate={onNavigate}
-      />
     </div>
   );
 }

@@ -3,7 +3,6 @@ import type { KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerE
 import { Plus } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import FicheOverlay from '../../../components/FicheOverlay';
-import ModuleFooterNav from '../../../components/ModuleFooterNav';
 import Dial from './Dial';
 import styles from './MotivationModule.module.css';
 
@@ -53,7 +52,7 @@ function relance(valeur: number): { bas?: string; haut?: string } {
 type Onglet = 'echelles' | 'raisons';
 type Etape = 0 | 1 | 2;
 
-export default function MotivationModule({ onNavigate }: ModuleProps) {
+export default function MotivationModule(_props: ModuleProps) {
   const boardRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<{ id: number; startX: number; startY: number; moved: boolean } | null>(null);
 
@@ -397,11 +396,6 @@ export default function MotivationModule({ onNavigate }: ModuleProps) {
           </button>
         )}
       </section>
-
-      <ModuleFooterNav
-        items={[{ id: 'plan-arret', label: 'Passer au concret : mon plan' }]}
-        onNavigate={onNavigate}
-      />
 
       {ficheOpen && (
         <FicheOverlay

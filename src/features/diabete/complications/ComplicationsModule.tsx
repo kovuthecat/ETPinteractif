@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { PersonStanding } from 'lucide-react';
 import type { ModuleProps } from '../../types';
+import ModuleShell from '../../../components/ModuleShell';
 import FicheOverlay from '../../../components/FicheOverlay';
-import ModuleFooterNav from '../../../components/ModuleFooterNav';
 import Silhouette, { type SilhouetteZoneState, type ZoneId } from '../components/Silhouette';
 import SignatureEvitable from '../components/SignatureEvitable';
 import IllustrationSlot from '../components/IllustrationSlot';
@@ -24,7 +24,7 @@ const EXERGUE_DIABETE =
 
 type Selection = ZoneId | null;
 
-export default function ComplicationsModule({ onNavigate }: ModuleProps) {
+export default function ComplicationsModule({ shell }: ModuleProps) {
   const [selected, setSelected] = useState<Selection>(null);
   const [ficheOuverte, setFicheOuverte] = useState(false);
 
@@ -44,7 +44,10 @@ export default function ComplicationsModule({ onNavigate }: ModuleProps) {
     })),
   ];
 
+  if (!shell) return null;
+
   return (
+    <ModuleShell titre={shell.titre} sources={shell.sources} onBack={shell.onBack} wide>
     <div className={styles.module}>
       <div className={styles.layout}>
         <div className={styles.silhouetteCol}>
@@ -130,11 +133,6 @@ export default function ComplicationsModule({ onNavigate }: ModuleProps) {
         </div>
       </div>
 
-      <ModuleFooterNav
-        items={[{ id: 'suivi', label: 'Cet examen, on le programme quand ?' }]}
-        onNavigate={onNavigate}
-      />
-
       {ficheOuverte && (
         <FicheOverlay
           eyebrow="Fiche — référence"
@@ -164,5 +162,6 @@ export default function ComplicationsModule({ onNavigate }: ModuleProps) {
         </FicheOverlay>
       )}
     </div>
+    </ModuleShell>
   );
 }

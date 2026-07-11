@@ -3,7 +3,6 @@ import { ArrowRight, Check, ChevronLeft } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import IllustrationSlot from '../components/IllustrationSlot';
 import FicheOverlay from '../../../components/FicheOverlay';
-import ModuleFooterNav from '../../../components/ModuleFooterNav';
 import VagueCraving from './VagueCraving';
 import { OUTILS, PREUVE_LABELS, type Outil } from './data';
 import { SITUATIONS, parseSelectionSituations, type PilierId, type SituationDef } from '../situations';
@@ -244,14 +243,6 @@ export default function BoiteAOutilsModule({ onNavigate, context }: ModuleProps)
           Imprimer ma boîte à outils ({ficheOutils.length})
         </button>
       </div>
-
-      <ModuleFooterNav
-        items={[
-          { id: 'plan-arret', label: "Préparer mon plan d'arrêt" },
-          { id: 'motivation', label: "Explorer mes raisons d'arrêter" },
-        ]}
-        onNavigate={onNavigate}
-      />
 
       {ficheOpen && (
         <FicheOverlay

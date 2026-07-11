@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Brain, Check, Cloud, Dna, HeartPulse, ShieldAlert, Wind, X, type LucideIcon } from 'lucide-react';
 import type { ModuleProps } from '../../types';
-import ModuleFooterNav from '../../../components/ModuleFooterNav';
 import styles from './NicotineToxiqueModule.module.css';
 
 // Repère viewBox unique (1000x620) : le point sert à la fois à tracer le trait
@@ -23,7 +22,7 @@ const HOTSPOTS: Hotspot[] = [
 
 const toPercent = (point: Point) => ({ left: `${(point.x / VIEWBOX_WIDTH) * 100}%`, top: `${(point.y / VIEWBOX_HEIGHT) * 100}%` });
 
-export default function NicotineToxiqueModule({ onNavigate }: ModuleProps) {
+export default function NicotineToxiqueModule(_props: ModuleProps) {
   const [filter, setFilter] = useState<Category | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selected = HOTSPOTS.find((hotspot) => hotspot.id === selectedId) ?? null;
@@ -106,13 +105,6 @@ export default function NicotineToxiqueModule({ onNavigate }: ModuleProps) {
       <p className="filrouge">
         C'est la fumée qui rend malade. C'est le manque qui fait fumer. Et le manque, ça se traite.
       </p>
-      <ModuleFooterNav
-        items={[
-          { id: 'substituts', label: 'Substituts et vapoteuse' },
-          { id: 'nicotine', label: 'Comprendre la nicotine' },
-        ]}
-        onNavigate={onNavigate}
-      />
     </div>
   );
 }

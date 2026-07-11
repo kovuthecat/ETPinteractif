@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { ArrowRight, Check, ChevronLeft, RotateCcw, X } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import IllustrationSlot from '../components/IllustrationSlot';
-import ModuleFooterNav from '../../../components/ModuleFooterNav';
 import { CARDS, RENVOI_LABELS, type Verdict } from './data';
 import styles from './IdeesRecuesModule.module.css';
 
@@ -76,13 +75,6 @@ export default function IdeesRecuesModule({ onNavigate }: ModuleProps) {
           })}
         </div>
 
-        <ModuleFooterNav
-          items={[
-            { id: 'nicotine-toxique', label: "La nicotine n'est pas le toxique" },
-            { id: 'benefices-arret', label: "Ce que l'arrêt répare" },
-          ]}
-          onNavigate={onNavigate}
-        />
       </div>
     );
   }

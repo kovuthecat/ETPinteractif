@@ -2,7 +2,6 @@ import { useMemo, useRef, useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { AlertTriangle, CheckCircle2, RotateCcw } from 'lucide-react';
 import type { ModuleProps } from '../../types';
-import ModuleFooterNav from '../../../components/ModuleFooterNav';
 import {
   sampleCurve,
   classifyZone,
@@ -115,7 +114,7 @@ function patchCells(x: number, dose: number, color: string) {
   return { cells, cellSize, totalW, color };
 }
 
-export default function NicotineModule({ onNavigate }: ModuleProps) {
+export default function NicotineModule(_props: ModuleProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const nextId = useRef(0);
   const [tool, setTool] = useState<NicotineEventType>('cigarette');
@@ -428,13 +427,6 @@ export default function NicotineModule({ onNavigate }: ModuleProps) {
       <p className="filrouge">
         C'est la fumée qui rend malade. C'est le manque qui fait fumer. Et le manque, ça se traite.
       </p>
-      <ModuleFooterNav
-        items={[
-          { id: 'substituts', label: 'Bien utiliser les substituts' },
-          { id: 'soulagement', label: 'Pourquoi la cigarette « soulage »' },
-        ]}
-        onNavigate={onNavigate}
-      />
     </div>
   );
 }

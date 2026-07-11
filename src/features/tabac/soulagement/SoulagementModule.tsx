@@ -2,7 +2,6 @@ import { useMemo, useState, type CSSProperties, type MouseEvent } from 'react';
 import { Cigarette } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import { sampleTension, toSvgPath, TENSION_NONSMOKER, TENSION_TAU, TIME_MAX } from '../lib/nicotineCurve';
-import ModuleFooterNav from '../../../components/ModuleFooterNav';
 import styles from './SoulagementModule.module.css';
 
 const WIDTH = 600;
@@ -22,7 +21,7 @@ function levelToY(level: number): number {
   return HEIGHT - (level / 100) * HEIGHT;
 }
 
-export default function SoulagementModule({ onNavigate }: ModuleProps) {
+export default function SoulagementModule(_props: ModuleProps) {
   const [cigTimes, setCigTimes] = useState<number[]>([]);
   const [compare, setCompare] = useState(false);
 
@@ -212,13 +211,6 @@ export default function SoulagementModule({ onNavigate }: ModuleProps) {
       <p className="filrouge">
         C'est la fumée qui rend malade. C'est le manque qui fait fumer. Et le manque, ça se traite.
       </p>
-      <ModuleFooterNav
-        items={[
-          { id: 'substituts', label: 'Sortir du yo-yo : les substituts' },
-          { id: 'boite-a-outils', label: 'Stratégies et outils' },
-        ]}
-        onNavigate={onNavigate}
-      />
     </div>
   );
 }

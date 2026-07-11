@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { ModuleProps } from '../../types';
-import ModuleFooterNav from '../../../components/ModuleFooterNav';
+import ModuleShell from '../../../components/ModuleShell';
 import styles from './MecanismeModule.module.css';
 
 /**
@@ -108,7 +108,7 @@ function bloodTone(sugarCount: number): BloodTone {
   return 'toxique';
 }
 
-export default function MecanismeModule({ onNavigate }: ModuleProps) {
+export default function MecanismeModule({ shell }: ModuleProps) {
   const [modeId, setModeId] = useState<Mode>('sain');
   const [phase, setPhase] = useState<0 | 1 | 2 | 3>(0);
   // S6 (option B) : compteur incrémenté à chaque sélection de mode ou clic « Rejouer » —
@@ -162,7 +162,10 @@ export default function MecanismeModule({ onNavigate }: ModuleProps) {
     return phase === 2 ? 'turned' : 'gone';
   }
 
+  if (!shell) return null;
+
   return (
+    <ModuleShell titre={shell.titre} sources={shell.sources} onBack={shell.onBack} wide>
     <div className={styles.module}>
       <nav className={styles.modes} aria-label="Mécanisme à observer">
         {MODES.map((m) => (
@@ -257,10 +260,7 @@ export default function MecanismeModule({ onNavigate }: ModuleProps) {
         )}
       </div>
 
-      <ModuleFooterNav
-        items={[{ id: 'alimentation', label: "Voir comment l'alimentation joue" }]}
-        onNavigate={onNavigate}
-      />
     </div>
+    </ModuleShell>
   );
 }

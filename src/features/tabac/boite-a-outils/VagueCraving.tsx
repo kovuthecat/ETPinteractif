@@ -104,7 +104,7 @@ function formatClock(seconds: number): string {
 }
 
 interface VagueCravingProps {
-  /** Retour à la grille des outils — remplace l'ancien ModuleFooterNav interne. */
+  /** Retour à la grille des outils. */
   onBack: () => void;
 }
 
@@ -113,8 +113,7 @@ interface VagueCravingProps {
  * Déplacé quasi tel quel depuis l'ancien module `craving` (plans/boite-a-outils/S2.md) :
  * mêmes phases idle/active/done, même minuteur 3 min, mêmes 4D, même animation de
  * respiration, même fiche « Ma carte anti-envie » (X2, ne pas modifier les textes).
- * Seules adaptations : pas de ModuleFooterNav interne (il vit dans BoiteAOutilsModule),
- * bouton de retour vers la grille.
+ * Seule adaptation : bouton de retour vers la grille (pas de porte de navigation interne).
  */
 export default function VagueCraving({ onBack }: VagueCravingProps) {
   const [phase, setPhase] = useState<Phase>('idle');

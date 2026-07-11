@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { AlertTriangle, Flame, Info, Moon, Sun } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import FicheOverlay from '../../../components/FicheOverlay';
-import ModuleFooterNav from '../../../components/ModuleFooterNav';
 import TechniqueIllustration from './TechniqueIllustration';
 import styles from './SubstitutsModule.module.css';
 
@@ -151,7 +150,7 @@ function PatchQuarts({
   );
 }
 
-export default function SubstitutsModule({ onNavigate }: ModuleProps) {
+export default function SubstitutsModule(_props: ModuleProps) {
   const [selectedForme, setSelectedForme] = useState<FormeId | null>(null);
 
   const [quartsJour, setQuartsJour] = useState(INITIAL_QUARTS);
@@ -399,14 +398,6 @@ export default function SubstitutsModule({ onNavigate }: ModuleProps) {
           </button>
         </div>
       </section>
-
-      <ModuleFooterNav
-        items={[
-          { id: 'plan-arret', label: 'Préparer mon arrêt' },
-          { id: 'nicotine', label: "Voir l'effet sur 24 h" },
-        ]}
-        onNavigate={onNavigate}
-      />
 
       {ficheOpen && (
         <FicheOverlay
