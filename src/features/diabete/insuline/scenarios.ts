@@ -106,36 +106,52 @@ export const SITUATIONS: Record<SituationId, SituationDef> = {
 
 export type Ajustement = 'baisse' | 'pareil' | 'hausse';
 
-/** Effet d'un réglage de la lente sur une situation → scénario résultant (réutilise les
- *  scénarios existants ; `// à revalider (Thibault)` — mapping pédagogique, pas une prescription). */
-const AJUSTEMENT_RESULT: Record<'tendance' | 'descend' | 'rapide', Record<Ajustement, ScenarioTrace>> = {
-  tendance: { baisse: 'descend_hypo_matinale', pareil: 'derive_haute', hausse: 'stable' },
-  descend: { baisse: 'stable', pareil: 'descend_hypo_matinale', hausse: 'derive_haute' },
-  rapide: { baisse: 'haut_stable_apres_repas', pareil: 'haut_stable_apres_repas', hausse: 'haut_stable_apres_repas' },
-};
-
-export function resultScenario(situationId: SituationId, ajustement: Ajustement): ScenarioTrace {
-  if (situationId === 'bas') return SITUATIONS.bas.scenario; // pas d'expérimentation sur l'hypo
-  return AJUSTEMENT_RESULT[situationId][ajustement];
+export interface DeciderCell {
+  /** Courbe résultante affichée pour ce couple (situation, choix). */
+  scenario: ScenarioTrace;
+  /** Message qualitatif décrivant le résultat (aucun chiffre). */
+  texte: string;
+  ton: ActionTon;
 }
 
-/** Message qualitatif dérivé du scénario résultant (aucun chiffre). */
-export function outcomeMessage(result: ScenarioTrace): { texte: string; ton: ActionTon } {
-  switch (result) {
-    case 'stable':
-      return { texte: 'La dérive s’aplatit : on est revenu dans la cible.', ton: 'neutre' };
-    case 'derive_haute':
-      return { texte: 'Ça continue de monter la nuit : on s’éloigne de la cible.', ton: 'vigilance' };
-    case 'descend_hypo_matinale':
-      return { texte: 'Ça descend trop : on frôle l’hypo au petit matin.', ton: 'toxique' };
-    case 'haut_stable_apres_repas':
-      return {
-        texte: 'La lente n’y change presque rien : c’est le rapide du soir qu’on revoit.',
-        ton: 'neutre',
-      };
-    default:
-      return { texte: '', ton: 'neutre' };
-  }
+/**
+ * Table {situation, choix de lente} → {courbe, message, ton}. Remplace l'ancien couple
+ * `AJUSTEMENT_RESULT` (→ scénario) + `outcomeMessage(scénario)` : le message y était dérivé
+ * du seul scénario résultant, si bien qu'un même texte se retrouvait plaqué sur deux couples
+ * (situation, choix) physiologiquement opposés — audit itération 2, points 1/3/4. Ici chaque
+ * case porte son propre sens : baisser une lente déjà insuffisante aggrave vers l'hyper
+ * (`derive_haute_forte`), la monter alors qu'elle est déjà trop forte creuse l'hypo
+ * (`plonge_bas`), et la situation « déjà haut, stable » réagit désormais à chacun des 3 choix
+ * (elle renvoyait avant un scénario figé). `// à revalider (Thibault)` — mapping pédagogique,
+ * pas une prescription.
+ */
+const DECIDER_MATRICE: Record<'tendance' | 'descend' | 'rapide', Record<Ajustement, DeciderCell>> = {
+  // Nuits qui montent = lente insuffisante ; bonne réponse : monter la lente.
+  tendance: {
+    hausse: { scenario: 'stable', texte: 'La dérive s’aplatit : la nuit revient dans la cible.', ton: 'neutre' },
+    pareil: { scenario: 'derive_haute', texte: 'Sans rien changer, ça continue de monter la nuit : on s’éloigne de la cible.', ton: 'vigilance' },
+    baisse: { scenario: 'derive_haute_forte', texte: 'Baisser une lente déjà insuffisante fait grimper encore plus haut la nuit.', ton: 'toxique' },
+  },
+  // Descend la nuit = lente trop forte ; bonne réponse : baisser la lente.
+  descend: {
+    baisse: { scenario: 'stable', texte: 'La descente s’arrête : la nuit revient dans la cible.', ton: 'neutre' },
+    pareil: { scenario: 'descend_hypo_matinale', texte: 'Sans rien changer, ça continue de descendre : on frôle l’hypo au petit matin.', ton: 'vigilance' },
+    hausse: { scenario: 'plonge_bas', texte: 'Monter une lente déjà trop forte creuse encore l’hypo de la nuit.', ton: 'toxique' },
+  },
+  // Déjà haut juste après le repas puis plat toute la nuit = ce n'est pas la lente, c'est le
+  // rapide du soir ; toucher la lente ne fait que déplacer le problème.
+  rapide: {
+    baisse: { scenario: 'haut_puis_monte', texte: 'La lente n’est pas le problème : la nuit est plate. En la baissant, le sucre repart à la hausse — c’est le repas ou le rapide du soir qu’on revoit.', ton: 'vigilance' },
+    pareil: { scenario: 'haut_stable_apres_repas', texte: 'La nuit est plate mais haute : la lente n’y change presque rien, c’est le repas ou le rapide du soir qu’on revoit.', ton: 'neutre' },
+    hausse: { scenario: 'haut_puis_descend', texte: 'La lente n’est pas le problème : en la montant, le risque est de plonger en hypo si le repas du soir est moins riche. C’est le rapide du soir qu’on revoit.', ton: 'toxique' },
+  },
+};
+
+/** Case de la matrice pour le couple (situation, choix) — `null` sur la situation basse
+ *  (`bas`), qui n'ouvre pas d'expérimentation (on traite l'hypo d'abord). */
+export function deciderCell(situationId: SituationId, ajustement: Ajustement): DeciderCell | null {
+  if (situationId === 'bas') return null;
+  return DECIDER_MATRICE[situationId][ajustement];
 }
 
 /** Nuits superposées par trace (1 principale + estompées) — « profil type du Libre ». */
@@ -148,6 +164,9 @@ const SEED_BY_SCENARIO: Record<ScenarioTrace, number> = {
   descend_hypo_matinale: 303,
   haut_stable_apres_repas: 404,
   plonge_bas: 505,
+  derive_haute_forte: 606,
+  haut_puis_monte: 707,
+  haut_puis_descend: 808,
 };
 
 /**
