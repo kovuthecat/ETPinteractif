@@ -216,7 +216,24 @@
   line-height: 1.4;
 }
 
-.situationAction {
+/* --- Temps ② : réglage manipulable de la lente (T8) --- */
+
+.ajustementRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.ajustementBtn {
+  --active-color: var(--color-nav);
+  padding: 12px 18px;
+  font-size: 15px;
+  border: 2px solid var(--color-line);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.ajustementMessage {
   margin: 0;
   font-weight: 700;
   font-size: 1.02em;

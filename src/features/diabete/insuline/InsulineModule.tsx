@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { TrendingDown, Minus, TrendingUp } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import ModuleShell from '../../../components/ModuleShell';
 import CourbeGlycemie from '../components/CourbeGlycemie';
@@ -12,8 +13,10 @@ import {
   buildCourbes,
   bandeToY,
   computeTrendArrow,
+  resultScenario,
+  outcomeMessage,
 } from './scenarios';
-import type { ProfileId, SituationId, ActionTon } from './scenarios';
+import type { ProfileId, SituationId, ActionTon, Ajustement } from './scenarios';
 import styles from './InsulineModule.module.css';
 
 /**
@@ -51,10 +54,18 @@ export default function InsulineModule({ onNavigate, shell }: ModuleProps) {
   const [profileId, setProfileId] = useState<ProfileId>('jeune');
   const [situationId, setSituationId] = useState<SituationId | null>(null);
   const [segmentId, setSegmentId] = useState<'nuit' | 'repas' | null>(null);
+  const [ajustement, setAjustement] = useState<Ajustement | null>(null);
 
   const profile = PROFILES[profileId];
   const situation = situationId ? SITUATIONS[situationId] : null;
-  const scenario = situation ? situation.scenario : 'stable';
+  const baseScenario = situation ? situation.scenario : 'stable';
+  // T8 : au temps ② « Décider », le scénario dépend du couple (situation, ajustement) — la
+  // courbe réagit au réglage de la lente plutôt que d'afficher une réponse figée.
+  const scenario =
+    temps === 2 && situationId && situationId !== 'bas' && ajustement
+      ? resultScenario(situationId, ajustement)
+      : baseScenario;
+  const outcome = ajustement ? outcomeMessage(scenario) : null;
 
   const traces = useMemo(() => tracesForScenario(scenario), [scenario]);
   const courbes = useMemo(() => buildCourbes(traces), [traces]);
@@ -63,6 +74,7 @@ export default function InsulineModule({ onNavigate, shell }: ModuleProps) {
 
   function toggleSituation(id: SituationId) {
     setSituationId((prev) => (prev === id ? null : id));
+    setAjustement(null);
   }
 
   function handleSegmentClick(id: string) {
@@ -104,7 +116,10 @@ export default function InsulineModule({ onNavigate, shell }: ModuleProps) {
               type="button"
               className={`${styles.profileToggleBtn}${profileId === p.id ? ` ${styles.profileToggleBtnActive}` : ''}`}
               aria-pressed={profileId === p.id}
-              onClick={() => setProfileId(p.id)}
+              onClick={() => {
+                setProfileId(p.id);
+                setAjustement(null);
+              }}
             >
               {p.nom}
             </button>
@@ -163,9 +178,40 @@ export default function InsulineModule({ onNavigate, shell }: ModuleProps) {
             {cardAActive && situation && (
               <>
                 <p className={styles.situationDesc}>{situation.desc}</p>
-                <p className={styles.situationAction} style={{ color: TON_VAR[situation.ton] }}>
-                  {situation.action}
-                </p>
+                <div className={styles.ajustementRow} role="group" aria-label="Réglage de la lente">
+                  <button
+                    type="button"
+                    className={`chip ${styles.ajustementBtn}${ajustement === 'baisse' ? ' activeDoubled' : ''}`}
+                    aria-pressed={ajustement === 'baisse'}
+                    onClick={() => setAjustement('baisse')}
+                  >
+                    <TrendingDown size={18} aria-hidden="true" />
+                    Baisser la lente
+                  </button>
+                  <button
+                    type="button"
+                    className={`chip ${styles.ajustementBtn}${ajustement === 'pareil' ? ' activeDoubled' : ''}`}
+                    aria-pressed={ajustement === 'pareil'}
+                    onClick={() => setAjustement('pareil')}
+                  >
+                    <Minus size={18} aria-hidden="true" />
+                    Laisser pareil
+                  </button>
+                  <button
+                    type="button"
+                    className={`chip ${styles.ajustementBtn}${ajustement === 'hausse' ? ' activeDoubled' : ''}`}
+                    aria-pressed={ajustement === 'hausse'}
+                    onClick={() => setAjustement('hausse')}
+                  >
+                    <TrendingUp size={18} aria-hidden="true" />
+                    Monter la lente
+                  </button>
+                </div>
+                {outcome && (
+                  <p className={styles.ajustementMessage} style={{ color: TON_VAR[outcome.ton] }} aria-live="polite">
+                    {outcome.texte}
+                  </p>
+                )}
               </>
             )}
           </div>

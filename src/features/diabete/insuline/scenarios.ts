@@ -104,6 +104,40 @@ export const SITUATIONS: Record<SituationId, SituationDef> = {
   bas: BAS,
 };
 
+export type Ajustement = 'baisse' | 'pareil' | 'hausse';
+
+/** Effet d'un réglage de la lente sur une situation → scénario résultant (réutilise les
+ *  scénarios existants ; `// à revalider (Thibault)` — mapping pédagogique, pas une prescription). */
+const AJUSTEMENT_RESULT: Record<'tendance' | 'descend' | 'rapide', Record<Ajustement, ScenarioTrace>> = {
+  tendance: { baisse: 'descend_hypo_matinale', pareil: 'derive_haute', hausse: 'stable' },
+  descend: { baisse: 'stable', pareil: 'descend_hypo_matinale', hausse: 'derive_haute' },
+  rapide: { baisse: 'haut_stable_apres_repas', pareil: 'haut_stable_apres_repas', hausse: 'haut_stable_apres_repas' },
+};
+
+export function resultScenario(situationId: SituationId, ajustement: Ajustement): ScenarioTrace {
+  if (situationId === 'bas') return SITUATIONS.bas.scenario; // pas d'expérimentation sur l'hypo
+  return AJUSTEMENT_RESULT[situationId][ajustement];
+}
+
+/** Message qualitatif dérivé du scénario résultant (aucun chiffre). */
+export function outcomeMessage(result: ScenarioTrace): { texte: string; ton: ActionTon } {
+  switch (result) {
+    case 'stable':
+      return { texte: 'La dérive s’aplatit : on est revenu dans la cible.', ton: 'neutre' };
+    case 'derive_haute':
+      return { texte: 'Ça continue de monter la nuit : on s’éloigne de la cible.', ton: 'vigilance' };
+    case 'descend_hypo_matinale':
+      return { texte: 'Ça descend trop : on frôle l’hypo au petit matin.', ton: 'toxique' };
+    case 'haut_stable_apres_repas':
+      return {
+        texte: 'La lente n’y change presque rien : c’est le rapide du soir qu’on revoit.',
+        ton: 'neutre',
+      };
+    default:
+      return { texte: '', ton: 'neutre' };
+  }
+}
+
 /** Nuits superposées par trace (1 principale + estompées) — « profil type du Libre ». */
 const N_NUITS = 3;
 
