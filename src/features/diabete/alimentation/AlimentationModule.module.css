@@ -171,29 +171,36 @@
   gap: var(--space-md);
 }
 
+/* S3 (audit diabète, T5) : ne porte plus que le bouton reset (compteur « Dans l'assiette : … »
+   retiré) — centré verticalement à côté de l'assiette plutôt qu'aligné en colonne pour un seul
+   enfant. */
 .side {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  align-self: center;
 }
 
-.sideLabel {
-  margin: 0;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--color-text-soft);
-}
-
+/* S3 (T5) : reset devient une icône seule (`RotateCcw`), bouton rond ≥ 44 px — partagé par
+   Composition (défi ①) et la synthèse (★). Le défi ② (T6) reprend le même traitement. */
 .linkReset {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   align-self: flex-start;
+  width: 44px;
+  height: 44px;
   min-height: var(--target-min);
   padding: 0;
-  border: none;
-  background: none;
-  font-size: 14px;
+  border: 1.5px solid var(--color-line);
+  border-radius: 50%;
+  background: var(--color-surface);
   color: var(--color-text-soft);
-  text-decoration: underline;
   cursor: pointer;
+}
+
+.linkReset:hover {
+  background: var(--color-bg);
+  color: var(--color-text);
 }
 
 /* --- Défi 1 : composition --- */
@@ -209,12 +216,12 @@
 }
 
 .d1Plate {
-  /* S4-v3 : 400→320px — la courbe (résultat clé) sort de `.stage` et prend toute la largeur
-     en dessous ; l'assiette n'a plus besoin d'être aussi grande pour rester lisible. Padding/gap
-     resserrés et `.d1Chip` réduit en proportion (cf. plus bas) pour que les 10 aliments
-     (D1_PLATE_MAX) tiennent toujours dans le cercle (4/rang × 3 rangs max, avant : 3/rang × 4). */
-  width: 320px;
-  height: 320px;
+  /* S3 (audit diabète, T5) : 320→400px — la courbe (T4) est redescendue dans `.stage`, sous
+     l'assiette, mais celle-ci reste le repère visuel principal du défi (audit §4 : « agrandir
+     l'assiette »). `.d1Chip` grandit d'autant (56→64px) pour rester proportionné, en gardant
+     les 10 aliments (D1_PLATE_MAX) lisibles dans le cercle. */
+  width: 400px;
+  height: 400px;
   flex-shrink: 0;
   border-radius: 50%;
   background: var(--color-surface);
@@ -224,8 +231,8 @@
   justify-content: center;
   align-content: center;
   flex-wrap: wrap;
-  gap: 8px;
-  padding: 20px;
+  gap: 10px;
+  padding: 24px;
   box-sizing: border-box;
 }
 
@@ -234,13 +241,13 @@
   font-size: 15px;
   color: var(--color-text-soft);
   text-align: center;
-  max-width: 220px;
+  max-width: 260px;
 }
 
 .d1Chip {
-  /* S4-v3 : 84→56px, cf. note `.d1Plate` (garde 10 aliments dans le cercle réduit). */
-  width: 56px;
-  height: 56px;
+  /* S3 (T5) : 56→64px, cf. note `.d1Plate`. */
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   background: var(--color-surface);
   border: 2px solid var(--color-confort);
@@ -258,14 +265,6 @@
   gap: var(--space-xl);
   flex-wrap: wrap;
   justify-content: space-around;
-}
-
-/* A4 : duels suggérés, style proche des `familyTab` (réutilisées telles quelles). */
-.d2Duels {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: var(--space-sm);
 }
 
 /* S6-v2 (#14) : `width: 380px` + `flex-basis: 340px` (redondants, sources potentielles de
@@ -349,8 +348,9 @@
   border-color: var(--color-nav);
 }
 
-/* B3 : verdict visuel au révèle — badge niveau (double encodage : libellé + couleur) puis
-   résultat de prédiction (jamais rouge : se tromper fait partie du jeu). */
+/* B3 : verdict visuel au révèle — badge niveau uniquement (double encodage : libellé + couleur).
+   S3 (audit diabète, T6) : les textes de prédiction (« Bonne prédiction » / « Vous aviez dit »)
+   sont retirés — le badge suffit, la comparaison des 2 courbes porte le reste du sens. */
 .d2Verdict {
   display: flex;
   flex-direction: column;
@@ -368,24 +368,6 @@
   font-size: 16px;
   font-weight: 700;
   color: #fff;
-}
-
-.verdictOk,
-.verdictOff {
-  margin: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.verdictOk {
-  color: var(--color-confort-strong);
-}
-
-.verdictOff {
-  color: var(--color-text);
 }
 
 .d2Actions {
@@ -643,14 +625,12 @@
 
 /* --- Courbe (partagée entre tous les défis + synthèse) --- */
 
-/* S6-v2 (#15, #16) : plafond relevé 760→900px — la courbe des défis ③/④ (pleine largeur,
-   pas de garde-manger à côté) restait capée bien en-dessous de l'espace réellement
-   disponible. Le plancher commun (`CourbeGlycemie.module.css` §S6-v2) couvre le cas inverse
-   (défi ③, garde-manger présent, colonne plus étroite). */
+/* S3 (audit diabète, T4) : la carte remonte DANS `.stage` (colonne de contenu du défi actif),
+   sous le contenu interactif — plus un bloc pleine largeur sous `.layout`. `max-width`/centrage
+   n'ont plus de sens dans une colonne déjà contrainte par `.stage` → pleine largeur. */
 .courbeCard {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: var(--space-md) var(--space-lg);
+  width: 100%;
+  padding: var(--space-lg);
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);

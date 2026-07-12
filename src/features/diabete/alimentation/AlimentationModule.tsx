@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { DragEvent, KeyboardEvent as ReactKeyboardEvent } from 'react';
-import { Check, X } from 'lucide-react';
+import { Check, RotateCcw } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import ModuleShell from '../../../components/ModuleShell';
 import FicheOverlay from '../../../components/FicheOverlay';
@@ -70,14 +70,6 @@ const NIVEAU_COLOR_VAR: Record<Niveau, string> = {
   moyen: '--color-vigilance',
   haut: '--color-toxique',
 };
-
-/** Duels suggérés du défi ② (A4) — chaque duel isole un principe de comparaison. */
-const D2_DUELS: { id: string; label: string; a: string; b: string }[] = [
-  { id: 'raffinage', label: 'Baguette vs Pain complet', a: 'baguette', b: 'pain-complet' },
-  { id: 'variete', label: 'Riz blanc vs Riz basmati', a: 'riz-blanc', b: 'riz-basmati' },
-  { id: 'legumineuses', label: 'Riz blanc vs Lentilles', a: 'riz-blanc', b: 'lentilles' },
-  { id: 'piege-cg', label: 'Dattes vs Pastèque', a: 'dattes', b: 'pasteque' },
-];
 
 // Domaine temporel commun à toutes les courbes du module (repas à t=0 → +3h, cf. S3).
 const T_START = 0;
@@ -396,13 +388,6 @@ export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
   function handleD2Reset() {
     setD2Guess({ A: null, B: null });
     setD2Revealed(false);
-  }
-  /** A4 : chip duel suggéré — même chemin que `d2AssignFood` (reset prédictions + révèle). */
-  function handleD2Duel(duel: { a: string; b: string }) {
-    setD2Slots({ A: duel.a, B: duel.b });
-    setD2Guess({ A: null, B: null });
-    setD2Revealed(false);
-    setD2NextSlot('A');
   }
 
   function computeD2Card(slot: 'A' | 'B') {
@@ -765,42 +750,59 @@ export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
                         onClick={() => handleD1Remove(chip.uid)}
                         aria-label={`Retirer ${food.name} de l'assiette`}
                       >
-                        <IllustrationSlot id={`aliment-${food.id}`} label={food.name} shape="circle" size={44} />
+                        <IllustrationSlot id={`aliment-${food.id}`} label={food.name} shape="circle" size={50} />
                       </button>
                     );
                   })}
                 </div>
                 <div className={styles.side}>
-                  <p className={styles.sideLabel}>
-                    Dans l'assiette : {d1Foods.length} aliment{d1Foods.length > 1 ? 's' : ''}, dont {d1Feculents.length}{' '}
-                    féculent{d1Feculents.length > 1 ? 's' : ''}
-                  </p>
-                  <button type="button" className={styles.linkReset} onClick={handleD1Reset}>
-                    Recommencer
+                  <button
+                    type="button"
+                    className={styles.linkReset}
+                    onClick={handleD1Reset}
+                    aria-label="Recommencer"
+                    title="Recommencer"
+                  >
+                    <RotateCcw size={20} aria-hidden="true" />
                   </button>
                 </div>
               </div>
+              <CourbeSection
+                courbes={
+                  d1ShowFantome && d1CourbeFeculents
+                    ? [
+                        {
+                          id: 'd1',
+                          d: d1Courbe.d,
+                          label: 'Votre assiette',
+                          mg: `${d1Courbe.mg} mg/dL`,
+                          variante: 'principale',
+                        },
+                        {
+                          id: 'feculents-seuls',
+                          d: d1CourbeFeculents.d,
+                          label: 'Vos féculents seuls',
+                          mg: `${d1CourbeFeculents.mg} mg/dL`,
+                          variante: 'fantome',
+                        },
+                      ]
+                    : [
+                        {
+                          id: 'd1',
+                          d: d1Courbe.d,
+                          label: 'Votre assiette',
+                          mg: `${d1Courbe.mg} mg/dL`,
+                          variante: 'principale',
+                        },
+                      ]
+                }
+                onNavigateActivite={() => onNavigate('activite')}
+              />
             </>
           )}
 
           {defi === 2 && (
             <>
-              <div className={styles.d2Duels} role="group" aria-label="Duels suggérés">
-                {D2_DUELS.map((duel) => {
-                  const active = d2Slots.A === duel.a && d2Slots.B === duel.b;
-                  return (
-                    <button
-                      key={duel.id}
-                      type="button"
-                      className={active ? `${styles.familyTab} ${styles.familyTabActive}` : styles.familyTab}
-                      aria-pressed={active}
-                      onClick={() => handleD2Duel(duel)}
-                    >
-                      {duel.label}
-                    </button>
-                  );
-                })}
-              </div>
               <div className={styles.d2Layout}>
                 {(['A', 'B'] as const).map((slot) => {
                   const card = slot === 'A' ? d2CardA : d2CardB;
@@ -852,16 +854,6 @@ export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
                           >
                             Pic {NIVEAU_LABEL[card.correct].toLowerCase()}
                           </span>
-                          {d2Guess[slot] === card.correct ? (
-                            <p className={styles.verdictOk}>
-                              <Check size={18} aria-hidden="true" /> Bonne prédiction
-                            </p>
-                          ) : (
-                            <p className={styles.verdictOff}>
-                              <X size={18} aria-hidden="true" /> Vous aviez dit :{' '}
-                              {d2Guess[slot] ? NIVEAU_LABEL[d2Guess[slot] as Niveau] : '—'}
-                            </p>
-                          )}
                         </div>
                       )}
                     </div>
@@ -875,11 +867,43 @@ export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
                   </button>
                 )}
                 {d2Revealed && (
-                  <button type="button" className="btn btn--ghost" onClick={handleD2Reset}>
-                    Recommencer
+                  <button
+                    type="button"
+                    className={styles.linkReset}
+                    onClick={handleD2Reset}
+                    aria-label="Recommencer"
+                    title="Recommencer"
+                  >
+                    <RotateCcw size={20} aria-hidden="true" />
                   </button>
                 )}
               </div>
+              {d2Revealed && (
+                <CourbeSection
+                  courbes={[
+                    {
+                      id: 'A',
+                      d: d2CardA.courbe.d,
+                      label: d2CardA.food.name,
+                      mg: `${d2CardA.courbe.mg} mg/dL`,
+                      variante: 'duoA',
+                      picAt: d2CardA.courbe.picAt,
+                      etiquette: d2CardA.food.name,
+                    },
+                    {
+                      id: 'B',
+                      d: d2CardB.courbe.d,
+                      label: d2CardB.food.name,
+                      mg: `${d2CardB.courbe.mg} mg/dL`,
+                      variante: 'duoB',
+                      picAt: d2CardB.courbe.picAt,
+                      etiquette: d2CardB.food.name,
+                    },
+                  ]}
+                  onNavigateActivite={() => onNavigate('activite')}
+                  animerTrace
+                />
+              )}
             </>
           )}
 
@@ -923,6 +947,25 @@ export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
                   </div>
                 ))}
               </div>
+              <CourbeSection
+                courbes={[
+                  {
+                    id: 'actuel',
+                    d: d3CourbeActuel.d,
+                    label: d3ActuelLabel,
+                    mg: `${d3CourbeActuel.mg} mg/dL`,
+                    variante: 'principale',
+                  },
+                  {
+                    id: 'reference',
+                    d: d3CourbeRef.d,
+                    label: d3RefLabel,
+                    mg: `${d3CourbeRef.mg} mg/dL`,
+                    variante: 'fantome',
+                  },
+                ]}
+                onNavigateActivite={() => onNavigate('activite')}
+              />
             </>
           )}
 
@@ -968,6 +1011,37 @@ export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
                   )}
                 </div>
               </div>
+              <CourbeSection
+                courbes={
+                  d4ShowFantome && d4CourbeFeculents
+                    ? [
+                        {
+                          id: 'd4',
+                          d: d4Courbe.d,
+                          label: 'Votre assiette',
+                          mg: `${d4Courbe.mg} mg/dL`,
+                          variante: 'principale',
+                        },
+                        {
+                          id: 'd4-feculents-seuls',
+                          d: d4CourbeFeculents.d,
+                          label: 'Vos féculents seuls',
+                          mg: `${d4CourbeFeculents.mg} mg/dL`,
+                          variante: 'fantome',
+                        },
+                      ]
+                    : [
+                        {
+                          id: 'd4',
+                          d: d4Courbe.d,
+                          label: 'Votre assiette',
+                          mg: `${d4Courbe.mg} mg/dL`,
+                          variante: 'principale',
+                        },
+                      ]
+                }
+                onNavigateActivite={() => onNavigate('activite')}
+              />
             </>
           )}
 
@@ -1006,8 +1080,14 @@ export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
                     </span>
                   ))}
                 </div>
-                <button type="button" className={styles.linkReset} onClick={handleSynthReset}>
-                  Recommencer
+                <button
+                  type="button"
+                  className={styles.linkReset}
+                  onClick={handleSynthReset}
+                  aria-label="Recommencer"
+                  title="Recommencer"
+                >
+                  <RotateCcw size={20} aria-hidden="true" />
                 </button>
               </div>
               <button
@@ -1018,148 +1098,31 @@ export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
               >
                 Imprimer mon assiette
               </button>
+              {synthPlate.length > 0 && (
+                <CourbeSection
+                  courbes={[
+                    {
+                      id: 'principale',
+                      d: synthCourbePrincipale.d,
+                      label: 'Votre repas',
+                      mg: `${synthCourbePrincipale.mg} mg/dL`,
+                      variante: 'principale',
+                    },
+                    {
+                      id: 'naive',
+                      d: synthCourbeNaive.d,
+                      label: "Version naïve (féculents d'abord, sans légumes)",
+                      mg: `${synthCourbeNaive.mg} mg/dL`,
+                      variante: 'fantome',
+                    },
+                  ]}
+                  onNavigateActivite={() => onNavigate('activite')}
+                />
+              )}
             </>
           )}
         </div>
       </div>
-
-      {/* S4-v3 : LA COURBE (résultat clé) sort de `.stage` (~531px avant S1, encore trop
-          juste après) pour occuper toute la largeur du module, sous shelf+stage. Gardes
-          conservées à l'identique (défi ② seulement si révélé, défi ⑤ seulement si non vide). */}
-      {defi === 1 && (
-        <CourbeSection
-          courbes={
-            d1ShowFantome && d1CourbeFeculents
-              ? [
-                  {
-                    id: 'd1',
-                    d: d1Courbe.d,
-                    label: 'Votre assiette',
-                    mg: `${d1Courbe.mg} mg/dL`,
-                    variante: 'principale',
-                  },
-                  {
-                    id: 'feculents-seuls',
-                    d: d1CourbeFeculents.d,
-                    label: 'Vos féculents seuls',
-                    mg: `${d1CourbeFeculents.mg} mg/dL`,
-                    variante: 'fantome',
-                  },
-                ]
-              : [
-                  {
-                    id: 'd1',
-                    d: d1Courbe.d,
-                    label: 'Votre assiette',
-                    mg: `${d1Courbe.mg} mg/dL`,
-                    variante: 'principale',
-                  },
-                ]
-          }
-          onNavigateActivite={() => onNavigate('activite')}
-        />
-      )}
-      {defi === 2 && d2Revealed && (
-        <CourbeSection
-          courbes={[
-            {
-              id: 'A',
-              d: d2CardA.courbe.d,
-              label: d2CardA.food.name,
-              mg: `${d2CardA.courbe.mg} mg/dL`,
-              variante: 'duoA',
-              picAt: d2CardA.courbe.picAt,
-              etiquette: d2CardA.food.name,
-            },
-            {
-              id: 'B',
-              d: d2CardB.courbe.d,
-              label: d2CardB.food.name,
-              mg: `${d2CardB.courbe.mg} mg/dL`,
-              variante: 'duoB',
-              picAt: d2CardB.courbe.picAt,
-              etiquette: d2CardB.food.name,
-            },
-          ]}
-          onNavigateActivite={() => onNavigate('activite')}
-          animerTrace
-        />
-      )}
-      {defi === 3 && (
-        <CourbeSection
-          courbes={[
-            {
-              id: 'actuel',
-              d: d3CourbeActuel.d,
-              label: d3ActuelLabel,
-              mg: `${d3CourbeActuel.mg} mg/dL`,
-              variante: 'principale',
-            },
-            {
-              id: 'reference',
-              d: d3CourbeRef.d,
-              label: d3RefLabel,
-              mg: `${d3CourbeRef.mg} mg/dL`,
-              variante: 'fantome',
-            },
-          ]}
-          onNavigateActivite={() => onNavigate('activite')}
-        />
-      )}
-      {defi === 4 && (
-        <CourbeSection
-          courbes={
-            d4ShowFantome && d4CourbeFeculents
-              ? [
-                  {
-                    id: 'd4',
-                    d: d4Courbe.d,
-                    label: 'Votre assiette',
-                    mg: `${d4Courbe.mg} mg/dL`,
-                    variante: 'principale',
-                  },
-                  {
-                    id: 'd4-feculents-seuls',
-                    d: d4CourbeFeculents.d,
-                    label: 'Vos féculents seuls',
-                    mg: `${d4CourbeFeculents.mg} mg/dL`,
-                    variante: 'fantome',
-                  },
-                ]
-              : [
-                  {
-                    id: 'd4',
-                    d: d4Courbe.d,
-                    label: 'Votre assiette',
-                    mg: `${d4Courbe.mg} mg/dL`,
-                    variante: 'principale',
-                  },
-                ]
-          }
-          onNavigateActivite={() => onNavigate('activite')}
-        />
-      )}
-      {defi === 5 && synthPlate.length > 0 && (
-        <CourbeSection
-          courbes={[
-            {
-              id: 'principale',
-              d: synthCourbePrincipale.d,
-              label: 'Votre repas',
-              mg: `${synthCourbePrincipale.mg} mg/dL`,
-              variante: 'principale',
-            },
-            {
-              id: 'naive',
-              d: synthCourbeNaive.d,
-              label: "Version naïve (féculents d'abord, sans légumes)",
-              mg: `${synthCourbeNaive.mg} mg/dL`,
-              variante: 'fantome',
-            },
-          ]}
-          onNavigateActivite={() => onNavigate('activite')}
-        />
-      )}
 
       {ficheOpen && (
         <FicheOverlay
