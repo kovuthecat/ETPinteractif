@@ -149,8 +149,8 @@
   margin-top: var(--space-sm);
 }
 
-/* ── Temps ④ — bascule cumul (grammaire du module 8, .overshootToggle) ──── */
+/* ── Temps ③ — bascule correction (glycémie de départ haute) ─────────────── */
 
-.cumulToggle {
+.correctionToggle {
   align-self: center;
 }

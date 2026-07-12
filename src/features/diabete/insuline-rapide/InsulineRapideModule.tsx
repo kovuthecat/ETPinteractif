@@ -98,9 +98,58 @@ const DEPART_OPTIONS: { id: DepartId; label: string; value: number }[] = [
   { id: 'cible', label: 'Dans la cible', value: BASELINE },
   { id: 'haute', label: 'Haute', value: BASELINE + 30 },
 ];
+/** Dose de correction ajoutée à la dose adéquate quand on active le toggle de correction sur
+ *  un départ haut (temps ③, expérimentation point 11) — `// à caler (Thibault)`. */
+const CORRECTION_DOSE = 0.4;
 
-// --- Temps ④ — 2ᵉ dose ~30 min après la 1ʳᵉ (`// à revalider`, cf. docs §5 « cumul »). ---
-const T_SECONDE_DOSE = T_INJECTION_DEFAUT + 30;
+// --- Temps ④ — deux situations cliniques expérimentables (point 12, décision Thibault
+// 2026-07-12, cf. plans/audit-diabete/S5.md T10) : « la glycémie redescend seule » (A) vs
+// « la glycémie reste haute » (B, via `exces` — cf. glycemieCurve.ts), croisées avec 3 choix de
+// recorrection (aucune / tout de suite / après attente). ---
+type SituationCumul = 'revient' | 'reste-haut';
+type Recorrection = 'aucune' | 'tot' | 'attente';
+
+const SITUATION_CUMUL_OPTIONS: { id: SituationCumul; label: string }[] = [
+  { id: 'revient', label: 'La glycémie redescend toute seule' },
+  { id: 'reste-haut', label: 'La glycémie reste haute' },
+];
+
+const RECORRECTION_OPTIONS: { id: Recorrection; label: string }[] = [
+  { id: 'aucune', label: "Je n'ajoute pas de dose" },
+  { id: 'tot', label: 'Je recorrige tout de suite' },
+  { id: 'attente', label: "J'attends que la 1ʳᵉ ait fini, puis je recorrige" },
+];
+
+/** Élévation persistante (situation B) : `exces` de `glycemieCurve.ts`, ne se résorbe pas avec le
+ *  temps seul, uniquement via une recorrection réelle — `// à caler (Thibault)`. */
+const EXCES_SITUATION_B = 35;
+/** Délais (minutes, non affichés) de la 2ᵉ dose selon le choix de recorrection — « tôt » : la 1ʳᵉ
+ *  dose agit encore fortement ; « attente » : elle a quasi fini d'agir. `// à caler (Thibault)`. */
+const RECORR_DELAIS: Record<Exclude<Recorrection, 'aucune'>, number> = {
+  tot: T_INJECTION_DEFAUT + 30,
+  attente: T_INJECTION_DEFAUT + 165,
+};
+
+/** Message + issue (plonge ou non) pour la case courante de la matrice (audit point 12, cf.
+ *  S5.md T10 §Décision clé). Jamais de chiffre — raison qualitative courte. */
+function matriceCumul(situation: SituationCumul, recorrection: Recorrection): { message: string; plonge: boolean } {
+  if (situation === 'revient') {
+    if (recorrection === 'aucune') {
+      return { message: 'Sans rien ajouter, la glycémie redescend seule dans la cible : la dose de départ suffisait.', plonge: false };
+    }
+    if (recorrection === 'tot') {
+      return { message: "Recorriger tout de suite, alors que ce n'était pas nécessaire, fait plonger sous la cible.", plonge: true };
+    }
+    return { message: "Même après avoir attendu, ajouter une dose qui n'était pas nécessaire fait plonger sous la cible.", plonge: true };
+  }
+  if (recorrection === 'aucune') {
+    return { message: 'Sans correction, la glycémie reste haute après le repas.', plonge: false };
+  }
+  if (recorrection === 'tot') {
+    return { message: "Recorriger tout de suite, pendant que la 1ʳᵉ dose agit encore, fait plonger sous la cible : les deux doses s'additionnent.", plonge: true };
+  }
+  return { message: "Attendre que la 1ʳᵉ dose ait fini d'agir, puis recorriger, ramène la glycémie dans la cible.", plonge: false };
+}
 
 function timingHint(delay: number): string {
   if (delay <= -30) return "Injectée bien avant, la rapide a déjà commencé à agir quand le repas fait monter le sucre.";
@@ -114,7 +163,9 @@ export default function InsulineRapideModule({ onNavigate, shell }: ModuleProps)
   const [repasId, setRepasId] = useState<RepasCranId>('moyen');
   const [delay, setDelay] = useState(T_INJECTION_DEFAUT);
   const [departId, setDepartId] = useState<DepartId>('cible');
-  const [cumulActive, setCumulActive] = useState(false);
+  const [corriger, setCorriger] = useState(false);
+  const [situationCumul, setSituationCumul] = useState<SituationCumul>('revient');
+  const [recorrection, setRecorrection] = useState<Recorrection>('aucune');
 
   const cran = REPAS_CRANS.find((c) => c.id === repasId) ?? REPAS_CRANS[1];
   const departValue = DEPART_OPTIONS.find((d) => d.id === departId)?.value ?? BASELINE;
@@ -162,12 +213,12 @@ export default function InsulineRapideModule({ onNavigate, shell }: ModuleProps)
     () => ({
       reference: sampleRepasAvecBolus(REPAS_MOYEN, { dose: DOSE_ADEQUATE, tInjection: T_INJECTION_DEFAUT }),
       selection: sampleRepasAvecBolus(REPAS_MOYEN, {
-        dose: DOSE_ADEQUATE,
+        dose: DOSE_ADEQUATE + (departId === 'haute' && corriger ? CORRECTION_DOSE : 0),
         tInjection: T_INJECTION_DEFAUT,
         depart: departValue,
       }),
     }),
-    [departValue],
+    [departValue, departId, corriger],
   );
   const t3Courbes: CourbeDef[] = useMemo(
     () => [
@@ -177,32 +228,52 @@ export default function InsulineRapideModule({ onNavigate, shell }: ModuleProps)
     [t3Points],
   );
 
-  // ── Temps ④ — le piège du cumul ──────────────────────────────────────────
+  // ── Temps ④ — le piège du cumul (2 situations × 3 recorrections, point 12) ──────────────
+  const t4BolusBase = useMemo(
+    () => ({
+      dose: DOSE_ADEQUATE,
+      tInjection: T_INJECTION_DEFAUT,
+      ...(situationCumul === 'reste-haut' ? { exces: EXCES_SITUATION_B } : {}),
+    }),
+    [situationCumul],
+  );
   const t4Points = useMemo(
     () => ({
-      unique: sampleRepasAvecBolus(REPAS_MOYEN, { dose: DOSE_ADEQUATE, tInjection: T_INJECTION_DEFAUT }),
-      cumul: sampleRepasAvecBolus(REPAS_MOYEN, {
-        dose: DOSE_ADEQUATE,
-        tInjection: T_INJECTION_DEFAUT,
-        tSecondeDose: T_SECONDE_DOSE,
-      }),
+      sansRecorrection: sampleRepasAvecBolus(REPAS_MOYEN, t4BolusBase),
+      avecRecorrection:
+        recorrection === 'aucune'
+          ? null
+          : sampleRepasAvecBolus(REPAS_MOYEN, { ...t4BolusBase, tSecondeDose: RECORR_DELAIS[recorrection] }),
     }),
-    [],
+    [t4BolusBase, recorrection],
   );
+  const t4Issue = useMemo(() => matriceCumul(situationCumul, recorrection), [situationCumul, recorrection]);
   const t4Courbes: CourbeDef[] = useMemo(() => {
     const list: CourbeDef[] = [
-      { id: 'unique', d: toSvgPath(t4Points.unique, DOMAIN_OPTS), label: 'Une dose', variante: 'principale' },
+      {
+        id: 'base',
+        d: toSvgPath(t4Points.sansRecorrection, DOMAIN_OPTS),
+        label: situationCumul === 'revient' ? 'Sans recorrection : redescend seule' : 'Sans recorrection : reste haute',
+        variante: 'principale',
+      },
     ];
-    if (cumulActive) {
-      list.push({ id: 'cumul', d: toSvgPath(t4Points.cumul, DOMAIN_OPTS), label: '2ᵉ dose trop tôt', variante: 'fantome' });
+    if (t4Points.avecRecorrection) {
+      list.push({
+        id: 'recorrection',
+        d: toSvgPath(t4Points.avecRecorrection, DOMAIN_OPTS),
+        label: recorrection === 'tot' ? 'Avec recorrection trop tôt' : 'Avec recorrection après attente',
+        variante: 'fantome',
+      });
     }
     return list;
-  }, [t4Points, cumulActive]);
+  }, [t4Points, situationCumul, recorrection]);
   const t4Marqueurs: MarqueurDef[] = useMemo(() => {
     const list: MarqueurDef[] = [REPAS_MARQUEUR, { t: frac(T_INJECTION_DEFAUT), type: 'activite', label: '1ʳᵉ dose' }];
-    if (cumulActive) list.push({ t: frac(T_SECONDE_DOSE), type: 'activite', label: '2ᵉ dose' });
+    if (recorrection !== 'aucune') {
+      list.push({ t: frac(RECORR_DELAIS[recorrection]), type: 'activite', label: '2ᵉ dose' });
+    }
     return list;
-  }, [cumulActive]);
+  }, [recorrection]);
 
   if (!shell) return null;
 
@@ -303,7 +374,10 @@ export default function InsulineRapideModule({ onNavigate, shell }: ModuleProps)
                 role="radio"
                 aria-checked={active}
                 className={`chip ${styles.cranChip}${active ? ' activeDoubled' : ''}`}
-                onClick={() => setDepartId(d.id)}
+                onClick={() => {
+                  setDepartId(d.id);
+                  setCorriger(false);
+                }}
               >
                 {d.label}
               </button>
@@ -326,36 +400,81 @@ export default function InsulineRapideModule({ onNavigate, shell }: ModuleProps)
         )}
         {departId === 'cible' && <p className={styles.message}>Glycémie dans la cible : la dose habituelle suffit, pas de correction à ajouter.</p>}
         {departId === 'haute' && (
-          <p className={styles.message}>Glycémie haute avant de manger : un peu plus de rapide vient corriger, en plus de la couverture du repas.</p>
+          <div className={styles.bridgeRow}>
+            <p className={styles.message}>
+              {corriger
+                ? 'Un peu plus de rapide, en plus de la couverture du repas, ramène la courbe vers la cible.'
+                : "Glycémie haute avant de manger, sans correction : ça reste haut après le repas."}
+            </p>
+            <button
+              type="button"
+              className={`btn btn--ghost ${styles.correctionToggle}${corriger ? ' activeDoubled' : ''}`}
+              aria-pressed={corriger}
+              onClick={() => setCorriger((v) => !v)}
+            >
+              Ajouter une correction de rapide
+            </button>
+          </div>
         )}
       </section>
 
       {/* ── Temps ④ — Le piège du cumul ───────────────────────────────────── */}
       <section id="m10-panel-4" role="tabpanel" aria-labelledby="m10-tab-4" hidden={temps !== 4} className={styles.panel}>
-        <button
-          type="button"
-          className={`btn btn--ghost ${styles.cumulToggle}${cumulActive ? ' activeDoubled' : ''}`}
-          aria-pressed={cumulActive}
-          onClick={() => setCumulActive((v) => !v)}
-        >
-          Et si j'en remets trop tôt ?
-        </button>
+        <div className={styles.chipRow} aria-label="Après le repas">
+          {SITUATION_CUMUL_OPTIONS.map((opt) => {
+            const active = situationCumul === opt.id;
+            return (
+              <button
+                key={opt.id}
+                type="button"
+                aria-pressed={active}
+                className={`chip ${styles.cranChip}${active ? ' activeDoubled' : ''}`}
+                onClick={() => {
+                  setSituationCumul(opt.id);
+                  setRecorrection('aucune');
+                }}
+              >
+                {opt.label}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className={styles.chipRow} aria-label="Recorriger ou attendre">
+          {RECORRECTION_OPTIONS.map((opt) => {
+            const active = recorrection === opt.id;
+            return (
+              <button
+                key={opt.id}
+                type="button"
+                aria-pressed={active}
+                className={`chip ${styles.cranChip}${active ? ' activeDoubled' : ''}`}
+                onClick={() => setRecorrection(opt.id)}
+              >
+                {opt.label}
+              </button>
+            );
+          })}
+        </div>
 
         <div className={`card ${styles.courbeCard}`}>
-          <p className="eyebrow">Ce que fait le sucre si on se recorrige trop tôt</p>
+          <p className="eyebrow">Ce que fait le sucre selon ce qu'on fait après le repas</p>
           <CourbeGlycemie courbes={t4Courbes} bandes={bandes} marqueurs={t4Marqueurs} axeLabels={AXE_LABELS} />
           <div className={styles.legendeRow}>
-            <span className={styles.legendePrincipale}>— Une dose : ça se pose dans la cible</span>
-            {cumulActive && <span className={styles.legendeVigilance}>- - Deux doses rapprochées : ça plonge sous la cible</span>}
+            <span className={styles.legendePrincipale}>
+              — {situationCumul === 'revient' ? 'Sans recorrection : redescend seule' : 'Sans recorrection : reste haute'}
+            </span>
+            {recorrection !== 'aucune' && (
+              <span className={t4Issue.plonge ? styles.legendeVigilance : styles.legendePrincipale}>
+                - - {t4Issue.plonge ? 'Avec cette recorrection : ça plonge sous la cible' : 'Avec cette recorrection : ça revient dans la cible'}
+              </span>
+            )}
           </div>
         </div>
 
         <div className={styles.bridgeRow}>
-          <p className={styles.message}>
-            L'insuline rapide agit pendant plusieurs heures : se recorriger trop tôt alors qu'elle agit encore fait plonger sous
-            la cible. On attend, on recontrôle.
-          </p>
-          {cumulActive && (
+          <p className={styles.message}>{t4Issue.message}</p>
+          {t4Issue.plonge && (
             <button type="button" className="btn btn--ghost" onClick={() => onNavigate('hypoglycemie')}>
               Ça ressemble à une hypo → le réflexe
             </button>
