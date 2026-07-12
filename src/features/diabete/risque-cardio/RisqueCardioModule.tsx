@@ -11,16 +11,16 @@ import styles from './RisqueCardioModule.module.css';
 
 /**
  * Module 4 — Risque cardiovasculaire (D7, plans/theme-diabete/S7.md ; illustration-driven depuis
- * S3, plans/illustrations-diabete/S3.md). Chaîne causale en 4 vues persistantes (mêmes 5 feux
- * partagés entre elles) : ① les leviers (icônes lucide) → ② l'artère (illustration `artere-saine.png`
- * + plaque codée qui grossit dessus) → ③ l'anatomie (silhouette `bodyImage` + plaque en image posée
- * sur le territoire) → ④ la fiche. Outil « pour voir », non diagnostique : aucune donnée réelle
- * n'est saisie ni conservée.
+ * S3, plans/illustrations-diabete/S3.md ; fusion « leviers »/« artère » — S1, plans/audit-diabete/S1.md).
+ * Chaîne causale en 3 vues persistantes (mêmes 5 feux partagés entre elles) : ① les facteurs de
+ * risque (chips icônées Lucide → illustration `artere-saine.png` + plaque codée qui grossit dessus)
+ * → ② l'anatomie (silhouette `bodyImage` + plaque en image posée sur le territoire) → ③ la fiche.
+ * Outil « pour voir », non diagnostique : aucune donnée réelle n'est saisie ni conservée.
  */
 
 type FeuId = 'sucre' | 'tension' | 'cholesterol' | 'tabac' | 'sedentarite';
 type FeuEtat = 'vert' | 'orange' | 'rouge';
-type Vue = 1 | 2 | 3 | 4;
+type Vue = 1 | 2 | 3;
 type ZoneM4 = 'cou' | 'coeur' | 'jambes';
 
 interface FeuDef {
@@ -99,10 +99,9 @@ const ZONES: ZoneDef[] = [
 const ALL_SILHOUETTE_ZONES: ZoneId[] = ['cerveau', 'yeux', 'coeur', 'cou', 'reins', 'nerfs', 'jambes', 'pied'];
 
 const VUES: { n: Vue; label: string }[] = [
-  { n: 1, label: '① Les leviers' },
-  { n: 2, label: "② L'artère" },
-  { n: 3, label: "③ L'anatomie" },
-  { n: 4, label: '④ La fiche' },
+  { n: 1, label: '① Les facteurs de risque' },
+  { n: 2, label: "② L'anatomie" },
+  { n: 3, label: '③ La fiche' },
 ];
 
 function nextEtat(etat: FeuEtat): FeuEtat {
@@ -145,20 +144,10 @@ export default function RisqueCardioModule({ shell }: ModuleProps) {
   }
 
   // ---- Score cumulé (0..1) : les feux se potentialisent, ce n'est jamais affiché comme note. ----
+  // Utilisé par <PlaqueArtere> (encrassement visuel) et par l'aria-label de .artereImgWrap
+  // (plaquePassagePct) — S1 (audit) : le message texte associé a été retiré (narration orale).
   const scoreSum = FEUX.reduce((acc, f) => acc + STATE_WEIGHT[factors[f.id]], 0);
   const score = scoreSum / FEUX.length;
-  const rougeCount = FEUX.filter((f) => factors[f.id] === 'rouge').length;
-
-  // S8 (passe « moins de texte ») : messages ramenés à une phrase courte — l'idée
-  // « réversible » reste portée, le détail (potentialisation, source Rawshani) est retiré,
-  // le soignant le développe à l'oral.
-  const arteryMessage =
-    score === 0
-      ? "Tous les feux au vert : l'artère reste dégagée."
-      : rougeCount <= 1
-        ? 'Un feu au rouge dépose un peu de plaque — encore réversible.'
-        : "Plusieurs feux au rouge : la plaque grossit plus vite — toujours réversible.";
-  const arteryMessageFull = arteryMessage;
 
   const zonesForSilhouette: SilhouetteZoneState[] = ALL_SILHOUETTE_ZONES.map((id) => {
     if (id === 'cou' || id === 'coeur' || id === 'jambes') {
@@ -193,30 +182,27 @@ export default function RisqueCardioModule({ shell }: ModuleProps) {
     <div className={styles.module}>
       {vue === 1 && (
         <div className={styles.vueBody}>
-          <p className={styles.vueEyebrow}>Cliquez un feu pour le régler</p>
-          <div className={styles.feuxRow}>
+          <p className={styles.vueEyebrow}>Cliquez un facteur pour le régler</p>
+          <div className={styles.chipsRow}>
             {FEUX.map((f) => {
               const etat = factors[f.id];
               return (
-                <div key={f.id} className={styles.feuCard} style={feuTokenStyle(etat)}>
-                  {/* S2-v2 : l'icône EST le bouton (couleur = état), plus de bouton texte
-                      « Vert/Orange/Rouge » séparé — nom accessible discriminant conservé. */}
+                <div key={f.id} className={styles.chipWrap}>
                   <button
                     type="button"
-                    className={styles.feuIconFrame}
+                    className={styles.chipFeu}
+                    style={feuTokenStyle(etat)}
                     onClick={() => cycleFactor(f.id)}
                     onMouseEnter={() => setHoverFeu(f.id)}
                     onMouseLeave={() => setHoverFeu(null)}
                     onFocus={() => setHoverFeu(f.id)}
                     onBlur={() => setHoverFeu(null)}
-                    aria-label={`${f.nom} : ${STATE_LABELS[etat]}`}
+                    aria-pressed={etat !== 'vert'}
                     aria-describedby={hoverFeu === f.id ? `feu-seuil-${f.id}` : undefined}
                   >
-                    <f.Icon size={38} aria-hidden />
-                  </button>
-                  <p className={styles.feuNom} aria-hidden="true">
+                    <f.Icon size={22} aria-hidden />
                     {f.nom}
-                  </p>
+                  </button>
                   {hoverFeu === f.id && (
                     <p id={`feu-seuil-${f.id}`} role="tooltip" className={styles.feuTooltip}>
                       {SEUILS[f.id]}
@@ -226,31 +212,8 @@ export default function RisqueCardioModule({ shell }: ModuleProps) {
               );
             })}
           </div>
-        </div>
-      )}
-
-      {vue === 2 && (
-        <div className={styles.vueBody}>
-          <div className={styles.chipsRow}>
-            {FEUX.map((f) => {
-              const etat = factors[f.id];
-              return (
-                <button
-                  key={f.id}
-                  type="button"
-                  className={styles.chipFeu}
-                  style={feuTokenStyle(etat)}
-                  onClick={() => cycleFactor(f.id)}
-                  aria-pressed={etat !== 'vert'}
-                >
-                  {f.nom}
-                </button>
-              );
-            })}
-          </div>
 
           <div className={`${styles.arterePanel} card`}>
-            <p className={styles.artereEyebrow}>L'artère — un seul objet, réversible</p>
             <div
               className={styles.artereImgWrap}
               role="img"
@@ -264,16 +227,11 @@ export default function RisqueCardioModule({ shell }: ModuleProps) {
               />
               <PlaqueArtere encrassement={score} className={styles.artereOverlay} />
             </div>
-            <p className={styles.artereStat} aria-hidden="true">
-              Passage du sang : {plaquePassagePct(score)} %
-            </p>
           </div>
-
-          <p className={styles.artereMessage}>{arteryMessageFull}</p>
         </div>
       )}
 
-      {vue === 3 && (
+      {vue === 2 && (
         <div className={styles.vueBody}>
           <p className={styles.vueEyebrow}>Cliquez une zone du corps</p>
           <div className={styles.anatomieRow}>
@@ -313,7 +271,7 @@ export default function RisqueCardioModule({ shell }: ModuleProps) {
         </div>
       )}
 
-      {vue === 4 && (
+      {vue === 3 && (
         <div className={styles.vueBody}>
           <p className={styles.vueEyebrow}>Les leviers à retenir pour ce patient</p>
           <div className={styles.ficheItemsRow}>

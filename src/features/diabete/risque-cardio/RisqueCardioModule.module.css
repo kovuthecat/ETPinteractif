@@ -4,7 +4,7 @@
   gap: var(--space-lg);
 }
 
-/* --- Onglets des 4 vues (état partagé, persistant entre elles) --- */
+/* --- Onglets des 3 vues (état partagé, persistant entre elles) --- */
 
 .tabs {
   display: flex;
@@ -47,41 +47,12 @@
 }
 
 
-/* --- Vue 1 : les feux --- */
+/* --- Icônes de feu (bouton d'état, réutilisées dans la vue « fiche ») --- */
 
-.feuxRow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-md);
-  justify-content: center;
-  /* S3-v3 : borne à 3 cartes/ligne (200px + gap) — sans ce plafond, 4 (voire 5) tiennent sur la
-     1ʳᵉ ligne après l'élargissement du chrome (S1). Recalculer si `.feuCard` change de largeur. */
-  max-width: calc(200px * 3 + var(--space-md) * 2);
-  margin-inline: auto;
-}
-
-.feuCard {
-  position: relative;
-  width: 200px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-sm);
-  padding: var(--space-lg) var(--space-md);
-  border-radius: var(--radius-lg);
-  background: var(--color-surface);
-  border: 2px solid var(--feu-fg, var(--color-line));
-  box-shadow: var(--shadow-1);
-}
-
-.feuNom {
-  margin: 0;
-  font-weight: 600;
-  text-align: center;
-}
-
-/* S2-v2 : l'icône-cadre est désormais le bouton d'état (couleur = état, épaisseur de bordure =
-   sévérité — repère non chromatique complémentaire). Cible ≥ 44 px, focus clavier visible. */
+/* S2-v2 : l'icône-cadre est le bouton d'état (couleur = état, épaisseur de bordure = sévérité —
+   repère non chromatique complémentaire). Cible ≥ 44 px, focus clavier visible.
+   S1 (audit) : la vue « Les leviers » qui l'hébergeait à l'origine a fusionné dans « L'artère »
+   (.chipFeu ci-dessous) ; ce cadre reste utilisé en petit format dans la vue « fiche ». */
 .feuIconFrame {
   display: flex;
   align-items: center;
@@ -124,7 +95,7 @@
   z-index: 1;
 }
 
-/* --- Vue 2 : l'artère --- */
+/* --- Vue 1 : les facteurs de risque (chips + artère) --- */
 
 .chipsRow {
   display: flex;
@@ -133,7 +104,16 @@
   justify-content: center;
 }
 
+.chipWrap {
+  position: relative;
+  display: inline-flex;
+}
+
 .chipFeu {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
   padding: 8px 16px;
   border-radius: var(--radius-pill);
   border: 1.5px solid var(--feu-fg);
@@ -147,22 +127,6 @@
   width: 100%;
   max-width: 720px;
   padding: var(--space-lg) var(--space-lg);
-}
-
-.artereEyebrow {
-  margin: 0 0 var(--space-md);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-text-soft);
-}
-
-.artereMessage {
-  margin: 0;
-  max-width: 62ch;
-  text-align: center;
-  font-size: 1.1em;
 }
 
 .artereImgWrap {
@@ -192,15 +156,7 @@
   pointer-events: none;
 }
 
-.artereStat {
-  margin: var(--space-sm) 0 0;
-  text-align: center;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-text-soft);
-}
-
-/* --- Vue 3 : l'anatomie --- */
+/* --- Vue 2 : l'anatomie --- */
 
 .anatomieRow {
   display: flex;
@@ -256,7 +212,7 @@
   line-height: 1.45;
 }
 
-/* --- Vue 4 : la fiche à l'écran --- */
+/* --- Vue 3 : la fiche à l'écran --- */
 
 .ficheItemsRow {
   display: flex;
