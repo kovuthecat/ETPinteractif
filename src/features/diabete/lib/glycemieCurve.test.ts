@@ -374,6 +374,70 @@ describe('invariant 10 — sampleRepasAvecBolus', () => {
       expect(p.v).toBeLessThanOrEqual(LEVEL_MAX);
     }
   });
+
+  // -------------------------------------------------------------------------
+  // Point 11 (audit diabète) — l'écart de départ se résorbe (forme convergente),
+  // au lieu d'un décalage vertical constant.
+  // -------------------------------------------------------------------------
+
+  it("point 11 : convergence — l'écart de départ est quasi résorbé en fin de fenêtre alors qu'il était plein au départ", () => {
+    const bolus = { dose: 0.5, tInjection: -15 };
+    const haut = sampleRepasAvecBolus(params, { ...bolus, depart: BASELINE + 20 });
+    const defaut = sampleRepasAvecBolus(params, { ...bolus, depart: BASELINE });
+    const ecartDepart = Math.abs(valueAt(haut, -20) - valueAt(defaut, -20));
+    const ecartFin = Math.abs(valueAt(haut, 170) - valueAt(defaut, 170));
+    expect(ecartDepart).toBeCloseTo(20, 6);
+    expect(ecartFin).toBeLessThan(ecartDepart * 0.2);
+  });
+
+  it('point 11 : forme distincte — départ haut vs départ défaut ne sont pas une simple translation constante', () => {
+    const bolus = { dose: 0.5, tInjection: -15 };
+    const haut = sampleRepasAvecBolus(params, { ...bolus, depart: BASELINE + 20 });
+    const defaut = sampleRepasAvecBolus(params, { ...bolus, depart: BASELINE });
+    const ecartDepart = valueAt(haut, -20) - valueAt(defaut, -20);
+    const ecartMilieu = valueAt(haut, 120) - valueAt(defaut, 120);
+    expect(Math.abs(ecartMilieu - ecartDepart)).toBeGreaterThan(5);
+  });
+
+  // -------------------------------------------------------------------------
+  // Point 12 (audit diabète) — excès persistant (temps ④, situation B « reste haute ») :
+  // ne se résorbe pas avec le temps seul, seulement via une recorrection réelle, proportionnelle
+  // à la dose ajoutée + l'insuline encore active de la 1ʳᵉ dose (IOB qualitatif).
+  // -------------------------------------------------------------------------
+
+  it('point 12 : exces/doseCorrection absents ou explicitement neutres → aucune régression (mêmes valeurs)', () => {
+    const bolus = { dose: 0.5, tInjection: -15, tSecondeDose: 15 };
+    const sansChamps = sampleRepasAvecBolus(params, bolus);
+    const avecChampsNeutres = sampleRepasAvecBolus(params, { ...bolus, exces: 0, doseCorrection: bolus.dose });
+    for (const p of sansChamps) {
+      expect(valueAt(avecChampsNeutres, p.t)).toBeCloseTo(p.v, 9);
+    }
+  });
+
+  it('point 12 : exces sans recorrection → plateau persistant, la courbe reste au-dessus de la bande cible en fin de fenêtre', () => {
+    const bolus = { dose: 0.5, tInjection: -15, exces: 35 };
+    const curve = sampleRepasAvecBolus(params, bolus);
+    for (const t of [140, 150, 160, 170, 180]) {
+      expect(valueAt(curve, t)).toBeGreaterThan(BANDE_CIBLE_DEFAUT.haute);
+    }
+  });
+
+  it("point 12 : asymétrie IOB — une recorrection précoce (1ʳᵉ dose encore active) plonge nettement plus bas qu'une recorrection après attente, à excès et dose égaux", () => {
+    const bolus = { dose: 0.5, tInjection: -15, exces: 35 };
+    const tot = sampleRepasAvecBolus(params, { ...bolus, tSecondeDose: 15 });
+    const attente = sampleRepasAvecBolus(params, { ...bolus, tSecondeDose: 150 });
+    const minTot = Math.min(...tot.map((p) => p.v));
+    const minAttente = Math.min(...attente.map((p) => p.v));
+    expect(minTot).toBeLessThan(minAttente - 10);
+  });
+
+  it('point 12 : recorrection après attente → la courbe finit dans la bande cible (ni hypo, ni encore haute)', () => {
+    const bolus = { dose: 0.5, tInjection: -15, exces: 35, tSecondeDose: 150 };
+    const curve = sampleRepasAvecBolus(params, bolus);
+    const derniere = curve[curve.length - 1].v;
+    expect(derniere).toBeGreaterThanOrEqual(BANDE_CIBLE_DEFAUT.basse);
+    expect(derniere).toBeLessThanOrEqual(BANDE_CIBLE_DEFAUT.haute);
+  });
 });
 
 // ---------------------------------------------------------------------------

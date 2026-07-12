@@ -282,6 +282,15 @@ export type BolusParams = {
   /** Instant d'une 2ᵉ dose de correction (minutes, t=0 = repas). Absent = pas de cumul.
    *  Sert au temps ④ : une 2ᵉ dose rapprochée creuse sous la cible. */
   tSecondeDose?: number;
+  /** Élévation persistante de la glycémie de repas (points d'échelle 0–100), **non résorbée par
+   *  le seul écoulement du temps** — temps ④ (point 12, situation B « la glycémie reste haute »).
+   *  Contrairement à `depart` (T9), qui se résorbe automatiquement, cet excès ne diminue que sous
+   *  l'effet d'une recorrection réelle (`tSecondeDose`), proportionnellement à la dose ajoutée et
+   *  à l'insuline encore active de la 1ʳᵉ dose au moment de l'injection (IOB qualitatif).
+   *  `// à revalider (Thibault)`. */
+  exces?: number;
+  /** Dose de la 2ᵉ injection (recorrection), si distincte de `dose` — défaut : `dose`. */
+  doseCorrection?: number;
 };
 
 /** Profil PK/PD qualitatif d'un analogue rapide (`// à revalider (Thibault)`, cf.
@@ -295,6 +304,15 @@ const BOLUS_PIC = 60; // pic d'action ~60 min après injection
 // dans la fourchette sourcée, // à revalider (Thibault).
 const BOLUS_DUREE = 180;
 const BOLUS_EFFET_MAX = 55; // baisse max (points d'échelle 0–100) à dose=1 // à caler
+
+/** Résorption de l'écart de glycémie de départ (min) : un départ haut/bas revient vers la
+ *  baseline, plutôt qu'un décalage constant → formes convergentes. `// à caler (Thibault)`. */
+const DEPART_RESORPTION = 180;
+
+/** Points d'excès (temps ④, situation B « reste haute ») résorbés par unité d'insuline mobilisée
+ *  lors d'une recorrection (dose ajoutée + insuline encore active de la 1ʳᵉ dose, IOB qualitatif).
+ *  `// à caler (Thibault)`. */
+const EXCES_CONSOMMATION = 50;
 
 /** Effet hypoglycémiant instantané d'un bolus (points 0–100 soustraits), à `dtDepuisInjection`
  *  minutes de l'injection. Cloche : 0 avant la latence, monte jusqu'au pic, décroît à 0 en fin
@@ -311,20 +329,55 @@ function bolusEffet(dtDepuisInjection: number, dose: number): number {
 }
 
 /**
- * Courbe post-repas + effet d'un bolus rapide (avec correction de départ et 2ᵉ dose
- * optionnelle). Sur le patron de `sampleActivite` : n'altère jamais `repasLevelAt`, se
- * contente de soustraire l'effet du bolus par-dessus.
+ * Fraction (0→1) de l'effet d'un bolus déjà **délivrée** `dt` minutes après son injection —
+ * approxime la notion d'insuline encore active (IOB, cf. `docs/diabete/10-insuline-rapide.md`
+ * §5, Walsh 2014) : rampe `ease` sur toute la durée d'action du bolus. Distincte de `bolusEffet`,
+ * qui donne l'intensité **instantanée** (une cloche qui revient à 0), pas la fraction **cumulée**
+ * délivrée (qui croît de 0 à 1 sans redescendre) — nécessaire au temps ④ pour quantifier combien
+ * de la 1ʳᵉ dose reste « à agir » au moment d'une recorrection.
+ */
+function fractionEffetDelivree(dt: number): number {
+  return ease(clamp01((dt - BOLUS_LATENCE) / (BOLUS_DUREE - BOLUS_LATENCE)));
+}
+
+/**
+ * Courbe post-repas + effet d'un bolus rapide (avec correction de départ, excès persistant et
+ * 2ᵉ dose optionnelle). Sur le patron de `sampleActivite` : n'altère jamais `repasLevelAt`, se
+ * contente d'ajouter/soustraire des contributions par-dessus.
+ *
+ * - L'écart de départ (`decalageDepart`, T9) n'est pas un décalage constant : il vaut plein avant
+ *   le repas (t≤0) puis se **résorbe** (ease) vers 0 sur `DEPART_RESORPTION` minutes → une
+ *   glycémie de départ haute/basse revient vers la baseline (formes convergentes, point 11).
+ * - L'excès persistant (`exces`, temps ④, point 12, situation B « reste haute ») est, lui,
+ *   **constant tant qu'aucune recorrection n'a lieu** (pas de résorption temporelle propre — la
+ *   glycémie « reste haute » par définition). Une recorrection (`tSecondeDose`) le consomme
+ *   progressivement (rampe `ease`, jamais de clamp à 0 : une sur-correction laisse un solde
+ *   négatif = hypo durable), proportionnellement à la dose de recorrection **et** à l'insuline
+ *   encore active de la 1ʳᵉ dose au moment de l'injection (IOB qualitatif via
+ *   `fractionEffetDelivree`) — c'est cette somme, pas un simple écart temporel, qui distingue une
+ *   recorrection trop précoce (IOB encore élevé → plonge) d'une recorrection après attente (IOB
+ *   quasi nul → atterrit dans la cible).
  */
 export function sampleRepasAvecBolus(params: RepasParams, bolus: BolusParams): Point[] {
-  const depart = bolus.depart ?? BASELINE;
-  const decalageDepart = depart - BASELINE; // temps ③ : correction du point de départ
+  const decalageDepart = (bolus.depart ?? BASELINE) - BASELINE; // temps ③ : correction du point de départ
+  const exces = bolus.exces ?? 0; // temps ④ : élévation persistante (situation B)
+  const t2 = bolus.tSecondeDose;
+  const doseCorrection = bolus.doseCorrection ?? bolus.dose;
+  // Insuline de la 1ʳᵉ dose encore « à agir » au moment de l'injection de la 2ᵉ (IOB qualitatif) :
+  const iob1 = t2 !== undefined ? bolus.dose * (1 - fractionEffetDelivree(t2 - bolus.tInjection)) : 0;
+  // Total de points d'excès que la recorrection va résorber (dose ajoutée + IOB de la 1ʳᵉ dose) :
+  const conso = t2 !== undefined && exces > 0 ? EXCES_CONSOMMATION * (doseCorrection + iob1) : 0;
   const tEnd = Math.max(180, (bolus.tSecondeDose ?? 0) + BOLUS_DUREE);
   return sampleRange(-20, tEnd, 1, (t) => {
-    const repas = repasLevelAt(params, t) + decalageDepart;
+    const deviation =
+      t <= 0 ? decalageDepart : decalageDepart * (1 - ease(clamp01(t / DEPART_RESORPTION)));
+    // Rampe permanente (pas de clamp à 0) : un solde négatif = sur-correction installée (hypo durable).
+    const plateau = exces - (t2 !== undefined ? conso * fractionEffetDelivree(t - t2) : 0);
+    const repas = repasLevelAt(params, t) + deviation + plateau;
     let effet = bolusEffet(t - bolus.tInjection, bolus.dose);
     if (bolus.tSecondeDose !== undefined) {
-      // 2ᵉ dose de correction (même dose qualitative que la principale, à défaut d'un réglage) :
-      effet += bolusEffet(t - bolus.tSecondeDose, bolus.dose);
+      // 2ᵉ dose de correction (dose distincte possible via `doseCorrection`, défaut = `dose`) :
+      effet += bolusEffet(t - bolus.tSecondeDose, doseCorrection);
     }
     return clampRange(repas - effet, 0, LEVEL_MAX);
   });
