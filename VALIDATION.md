@@ -1116,3 +1116,37 @@ formellement actée, cf. `DECISIONS.md` § 2026-07-11 « S10 »)
 - [ ] Onglets ② Le bon moment et ④ Le piège du cumul **inchangés** (hors périmètre de cet audit).
 - [ ] Pas de scroll horizontal à 1024×768 / 1366×768 avec la rangée de dose ajoutée (2 rangées de
       chips empilées).
+
+## Illustrations tabac (chantier illustrations-tabac) — validation du 2026-07-12
+
+**Statut** : 42 PNG déposés + code câblé · en attente de validation visuelle Thibault (`npm run dev`)
+— aucune vérification navigateur faite côté Claude (règle projet). Échantillon relu à l'œil par
+Claude (outil Read, 4 images de familles différentes) : flood-fill propre, aucun artefact, aucune
+perte de détail. Mapping fichier→id fait par correspondance de titre/affirmation (détail complet et
+cas arbitrés dans `DECISIONS.md` 2026-07-12) — **jamais vérifié à l'écran par Claude**, c'est le
+point principal à valider ici : la bonne image doit apparaître au bon endroit.
+
+- [ ] **Ce que l'arrêt répare** (silhouette, 7 zones) : cliquer cerveau/bouche/cœur/poumons/sang/
+      peau/jambes affiche chacun sa vignette (96 px, cadre arrondi) en tête du panneau détail ; le
+      dernier jalon (« L'horizon retrouvé ») reste en placeholder (aucune image dédiée) — normal, pas
+      un bug.
+- [ ] **Stratégies & outils** (14 outils) : chacun des 14 outils affiche sa vignette (panneau détail,
+      96 px, et carte réduite, 64 px) ; plus aucun placeholder texte sur la grille complète.
+- [ ] **Vrai ou faux ?** (21 cartes) : 15 cartes affichent leur vignette (96 px) ; les 6 restantes
+      (poids-cœur, fumer-mince, poids-régime, vape-aide, double-usage, vapeur-eau) affichent le
+      placeholder crème habituel — attendu, pas une erreur de chargement.
+  - Vérifier en particulier `vf-poids` (« Poids et arrêt ») : un seul visuel « poids » existait dans
+    le lot ; affecté à cette carte (la plus centrale) plutôt qu'à `vf-poids-coeur`/`vf-fumer-mince`/
+    `vf-poids-regime` — à confirmer que c'est le bon choix ou à réaffecter (aucun changement de code,
+    juste renommer le fichier PNG si Thibault préfère une autre carte).
+- [ ] **Substituts — technique de prise** : sélectionner gomme/pastille/sublingual/spray/vapoteuse
+      affiche une scène illustrée large (pas de placeholder « illustration · technique de prise »)
+      sous le titre « Technique de prise » ; le patch n'affiche jamais de technique (comportement
+      inchangé, la titration remplace ce bloc pour cette forme) — l'image `substitut-patch.png`
+      existe mais n'est actuellement jamais montrée par l'UI (non bloquant, cf. `DECISIONS.md`).
+      Fiche imprimable (bloc « Ma prise ponctuelle », gomme/pastille/sublingual/spray) : même
+      vignette qu'à l'écran.
+- [ ] Rien de coupé/déformé/étiré à ~1 m de lecture, y compris les scènes larges substituts
+      (aspect ratio d'origine préservé, pas de recadrage carré forcé).
+- [ ] Poids de page raisonnable au chargement (42 PNG, 3,2 Mo au total, chargés à la demande par
+      panneau — jamais tous en même temps).

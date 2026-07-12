@@ -4,7 +4,35 @@
 
 > **Frontières** — STATUS : état actuel · `TASKS.md` : backlog + tâches · `plans/` : plan d'une tâche active · `VALIDATION.md` : checklist visuelle.
 >
-> **Dernière mise à jour :** 2026-07-12 (audit-diabete **itération 2** — 6 points sur les 2 modules Insuline, corrigés en une passe Opus)
+> **Dernière mise à jour :** 2026-07-12 (chantier `illustrations-tabac` — 42 vignettes tabac intégrées, 1ʳᵉ génération d'illustrations du thème)
+
+**Illustrations tabac (2026-07-12)** — le thème tabac n'avait **aucune** illustration (tous les
+`IllustrationSlot` en placeholder depuis leur création). Thibault a livré un lot de sources dans
+`Downloads\illustration ETP\` couvrant à la fois des compléments diabète (déjà tous absorbés par le
+chantier `illustrations-diabete`, aucune action côté diabète) et, pour la première fois, un lot
+tabac complet. Nouveau script `design/illustrations/build_assets_tabac.py` (même pipeline Pillow/
+numpy que le diabète : flood-fill transparent 8 points de bord, palette adaptative 256 couleurs) →
+**42 PNG** déposés dans `public/illustrations/tabac/` (3,2 Mo au total) :
+- **Bénéfices de l'arrêt** (7/8 zones) : `benef-cerveau/bouche/coeur/poumons/sang/peau/jambes` —
+  mappées par correspondance de libellé (`benefices-arret/data.ts`) ; `benef-horizon` (dernier
+  jalon) reste en placeholder, aucune image dédiée dans le lot.
+- **Boîte à outils** (14/14, couverture complète) : chaque outil retrouve son illustration par titre
+  exact ou quasi-exact (ex. « Une semaine d'observation » → `outil-journal`, « Traiter le manque » →
+  `outil-substituts`).
+- **Idées reçues** (15/21) : mapping par contenu de l'affirmation (ex. « Ça commence en 20mn » →
+  `vf-20min`) ; 6 cartes sans image dédiée dans le lot restent en placeholder (`vf-poids-coeur`,
+  `vf-fumer-mince`, `vf-poids-regime`, `vf-vape-aide`, `vf-double-usage`, `vf-vapeur-eau`) — un seul
+  visuel « poids » existait dans le lot, affecté à `vf-poids` (le mythe le plus central), à
+  revalider par Thibault si un autre choix était voulu (cf. `DECISIONS.md`).
+- **Substituts — techniques de prise** (6/6) : `TechniqueIllustration.tsx` réécrit pour consommer
+  `public/illustrations/tabac/substitut-<forme>.png` (comme suggéré par le commentaire déjà présent
+  dans le code depuis BO5) au lieu de sa table `ILLUSTRATIONS` figée à `null` ; taille 900px (scènes
+  larges 16:7) au lieu de 512px (icônes carrées des autres slots).
+
+`IllustrationSlot` gérait déjà nativement la couverture partielle (fallback `onError` → placeholder,
+jamais une erreur) : aucune régression sur les ids sans image dédiée. Gate : `tsc --noEmit` ✓ ·
+`npm run build` ✓ · `npm test` ✓ (95/95, aucune régression). Échantillon relu à l'œil (organe,
+scène technique large, icônes + objet, personnage) : flood-fill propre, aucun artefact.
 
 **Audit-diabete itération 2 (2026-07-12)** — 6 points d'une 2ᵉ navigation manuelle de Thibault sur le
 déployé (`Audit/audit-etp-interactif-iteration2.md`), corrigés en une passe (Opus), tous sur la famille
