@@ -2,12 +2,12 @@
   width: 100%;
   max-width: 980px;
   margin: 0 auto;
-  padding: 44px 40px 60px;
+  padding: 24px 40px 28px;
   box-sizing: border-box;
 }
 
 .header {
-  margin-bottom: 30px;
+  margin-bottom: 18px;
 }
 
 .eyebrow {
@@ -30,7 +30,7 @@
 }
 
 .famille {
-  margin-bottom: 26px;
+  margin-bottom: 16px;
 }
 
 .famille:last-child {
@@ -50,12 +50,12 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 14px;
+  gap: 12px;
 }
 
 @media (max-width: 600px) {
   .container {
-    padding: 32px 20px 48px;
+    padding: 20px 20px 28px;
   }
 
   .grid {

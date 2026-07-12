@@ -1,7 +1,7 @@
 .shell {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .header {
@@ -12,7 +12,7 @@
   width: 100%;
   max-width: 980px;
   margin: 0 auto;
-  padding: 32px 40px 0;
+  padding: 20px 40px 0;
   box-sizing: border-box;
 }
 
@@ -78,7 +78,7 @@
   width: 100%;
   max-width: 980px;
   margin-inline: auto;
-  padding: 20px 40px 60px;
+  padding: 16px 40px 24px;
   box-sizing: border-box;
 }
 
@@ -88,7 +88,7 @@
 
 @media (max-width: 600px) {
   .header {
-    padding: 24px 20px 0;
+    padding: 16px 20px 0;
   }
 
   .titre {
@@ -96,6 +96,6 @@
   }
 
   .content {
-    padding: 16px 20px 48px;
+    padding: 12px 20px 28px;
   }
 }
