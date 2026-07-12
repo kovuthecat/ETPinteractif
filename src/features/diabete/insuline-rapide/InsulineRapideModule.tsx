@@ -98,9 +98,19 @@ const DEPART_OPTIONS: { id: DepartId; label: string; value: number }[] = [
   { id: 'cible', label: 'Dans la cible', value: BASELINE },
   { id: 'haute', label: 'Haute', value: BASELINE + 30 },
 ];
-/** Dose de correction ajoutée à la dose adéquate quand on active le toggle de correction sur
- *  un départ haut (temps ③, expérimentation point 11) — `// à caler (Thibault)`. */
-const CORRECTION_DOSE = 0.4;
+// --- Axe de dose partagé aux temps ①/③ (audit itération 2, points 5/6) : 3 crans qualitatifs
+// appliqués en facteur à la dose de référence de chaque temps (charge du repas au ①, dose adéquate
+// au ③). Croisés avec les 3 crans de chaque temps → 9 combinaisons. Jamais affichés en unités. ---
+type DoseNiveau = 'moins' | 'standard' | 'plus';
+const DOSE_NIVEAUX: { id: DoseNiveau; label: string }[] = [
+  { id: 'moins', label: 'Moins de dose' },
+  { id: 'standard', label: 'Dose habituelle' },
+  { id: 'plus', label: 'Plus de dose' },
+];
+/** Facteur qualitatif appliqué à la dose de référence — `// à revalider (Thibault)`. L'effet
+ *  étant proportionnel à la dose, l'écart absolu est plus marqué pour un gros repas / un départ
+ *  haut que pour un petit, comme attendu par l'audit. */
+const DOSE_FACTOR: Record<DoseNiveau, number> = { moins: 0.6, standard: 1, plus: 1.5 };
 
 // --- Temps ④ — deux situations cliniques expérimentables (point 12, décision Thibault
 // 2026-07-12, cf. plans/audit-diabete/S5.md T10) : « la glycémie redescend seule » (A) vs
@@ -158,12 +168,79 @@ function timingHint(delay: number): string {
   return "Injectée après le repas, la rapide arrive en retard : le pic a une longueur d'avance sur elle.";
 }
 
+/** Temps ① — message selon la dose de rapide choisie face au repas (point 5). */
+function messageCouvrir(dose: DoseNiveau): string {
+  switch (dose) {
+    case 'moins':
+      return "Trop peu de rapide pour ce repas : le pic n'est pas couvert, le sucre reste au-dessus de la cible.";
+    case 'plus':
+      return 'Trop de rapide pour ce repas : le sucre est poussé sous la cible — risque d’hypo.';
+    default:
+      return 'Avec une dose ajustée à ce repas, le pic est couvert : le sucre revient vers la cible.';
+  }
+}
+
+/** Temps ③ — message selon la glycémie de départ ET la dose de correction (point 6). La bonne
+ *  dose dépend du départ : sur un départ haut c'est « plus » qui ramène dans la cible, sur un
+ *  départ dans la cible c'est « habituelle », et un départ bas ne se corrige pas au rapide. */
+function messageCorriger(depart: DepartId, dose: DoseNiveau): string {
+  if (depart === 'basse') {
+    return dose === 'plus'
+      ? "Glycémie basse avant de manger : ajouter de la dose ici creuse l'hypo. On traite l'hypo d'abord."
+      : "Glycémie basse avant de manger : on ne corrige pas par plus de rapide, on traite l'hypo d'abord.";
+  }
+  if (depart === 'cible') {
+    switch (dose) {
+      case 'moins':
+        return "Un peu moins de rapide que d'habitude : le pic du repas n'est pas tout à fait couvert, ça reste au-dessus de la cible.";
+      case 'plus':
+        return 'Plus de rapide sans en avoir besoin : le sucre passe sous la cible — risque d’hypo.';
+      default:
+        return 'Dans la cible : la dose habituelle suffit, le repas est couvert.';
+    }
+  }
+  // haute : la correction se justifie ; c'est « plus » qui ramène dans la cible.
+  switch (dose) {
+    case 'moins':
+      return 'Départ déjà haut et trop peu de rapide : ça reste nettement au-dessus de la cible.';
+    case 'plus':
+      return 'Un peu plus de rapide, en plus de la couverture du repas, ramène la courbe vers la cible.';
+    default:
+      return 'Départ haut, dose habituelle : ça reste au-dessus de la cible ; une correction en plus rapprocherait de la cible.';
+  }
+}
+
+/** Sélecteur de dose mutualisé (temps ①/③) — 3 crans qualitatifs, même grammaire visuelle que
+ *  les autres chips du module (audit itération 2 : implémentation mutualisée demandée). */
+function DoseSelector({ value, onChange }: { value: DoseNiveau; onChange: (n: DoseNiveau) => void }) {
+  return (
+    <div className={styles.chipRow} role="radiogroup" aria-label="Dose de rapide">
+      {DOSE_NIVEAUX.map((d) => {
+        const active = value === d.id;
+        return (
+          <button
+            key={d.id}
+            type="button"
+            role="radio"
+            aria-checked={active}
+            className={`chip ${styles.cranChip}${active ? ' activeDoubled' : ''}`}
+            onClick={() => onChange(d.id)}
+          >
+            {d.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function InsulineRapideModule({ onNavigate, shell }: ModuleProps) {
   const [temps, setTemps] = useState<Temps>(1);
   const [repasId, setRepasId] = useState<RepasCranId>('moyen');
   const [delay, setDelay] = useState(T_INJECTION_DEFAUT);
   const [departId, setDepartId] = useState<DepartId>('cible');
-  const [corriger, setCorriger] = useState(false);
+  const [doseCouvrir, setDoseCouvrir] = useState<DoseNiveau>('standard');
+  const [doseCorriger, setDoseCorriger] = useState<DoseNiveau>('standard');
   const [situationCumul, setSituationCumul] = useState<SituationCumul>('revient');
   const [recorrection, setRecorrection] = useState<Recorrection>('aucune');
 
@@ -176,9 +253,12 @@ export default function InsulineRapideModule({ onNavigate, shell }: ModuleProps)
   const t1Points = useMemo(
     () => ({
       sans: sampleRepas(cran.params, { tStart: T_MIN, tEnd: T_MAX }),
-      avec: sampleRepasAvecBolus(cran.params, { dose: cran.params.charge, tInjection: T_INJECTION_DEFAUT }),
+      avec: sampleRepasAvecBolus(cran.params, {
+        dose: cran.params.charge * DOSE_FACTOR[doseCouvrir],
+        tInjection: T_INJECTION_DEFAUT,
+      }),
     }),
-    [cran],
+    [cran, doseCouvrir],
   );
   const t1Courbes: CourbeDef[] = useMemo(
     () => [
@@ -213,12 +293,12 @@ export default function InsulineRapideModule({ onNavigate, shell }: ModuleProps)
     () => ({
       reference: sampleRepasAvecBolus(REPAS_MOYEN, { dose: DOSE_ADEQUATE, tInjection: T_INJECTION_DEFAUT }),
       selection: sampleRepasAvecBolus(REPAS_MOYEN, {
-        dose: DOSE_ADEQUATE + (departId === 'haute' && corriger ? CORRECTION_DOSE : 0),
+        dose: DOSE_ADEQUATE * DOSE_FACTOR[doseCorriger],
         tInjection: T_INJECTION_DEFAUT,
         depart: departValue,
       }),
     }),
-    [departValue, departId, corriger],
+    [departValue, doseCorriger],
   );
   const t3Courbes: CourbeDef[] = useMemo(
     () => [
@@ -321,16 +401,18 @@ export default function InsulineRapideModule({ onNavigate, shell }: ModuleProps)
           })}
         </div>
 
+        <DoseSelector value={doseCouvrir} onChange={setDoseCouvrir} />
+
         <div className={`card ${styles.courbeCard}`}>
           <p className="eyebrow">Ce que fait le sucre après le repas</p>
           <CourbeGlycemie courbes={t1Courbes} bandes={bandes} marqueurs={[REPAS_MARQUEUR]} axeLabels={AXE_LABELS} />
           <div className={styles.legendeRow}>
-            <span className={styles.legendeFantome}>- - Sans rapide : le pic monte librement</span>
-            <span className={styles.legendePrincipale}>— Avec rapide : le pic est couvert</span>
+            <span className={styles.legendeFantome}>- - Sans rapide</span>
+            <span className={styles.legendePrincipale}>— Avec rapide, à la dose choisie</span>
           </div>
         </div>
 
-        <p className={styles.message}>Plus le repas apporte de glucides, plus il faut de rapide pour couvrir la montée du sucre.</p>
+        <p className={styles.message}>{messageCouvrir(doseCouvrir)}</p>
       </section>
 
       {/* ── Temps ② — Le bon moment ───────────────────────────────────────── */}
@@ -374,10 +456,7 @@ export default function InsulineRapideModule({ onNavigate, shell }: ModuleProps)
                 role="radio"
                 aria-checked={active}
                 className={`chip ${styles.cranChip}${active ? ' activeDoubled' : ''}`}
-                onClick={() => {
-                  setDepartId(d.id);
-                  setCorriger(false);
-                }}
+                onClick={() => setDepartId(d.id)}
               >
                 {d.label}
               </button>
@@ -385,37 +464,21 @@ export default function InsulineRapideModule({ onNavigate, shell }: ModuleProps)
           })}
         </div>
 
+        <DoseSelector value={doseCorriger} onChange={setDoseCorriger} />
+
         <div className={`card ${styles.courbeCard}`}>
-          <p className="eyebrow">Ce que fait le sucre, selon la glycémie de départ</p>
+          <p className="eyebrow">Ce que fait le sucre, selon la glycémie de départ et la dose</p>
           <CourbeGlycemie courbes={t3Courbes} bandes={bandes} marqueurs={[REPAS_MARQUEUR]} axeLabels={AXE_LABELS} />
         </div>
 
-        {departId === 'basse' && (
-          <div className={styles.bridgeRow}>
-            <p className={styles.message}>Glycémie basse avant de manger : on ne corrige pas par plus de rapide, on traite l'hypo d'abord.</p>
+        <div className={styles.bridgeRow}>
+          <p className={styles.message}>{messageCorriger(departId, doseCorriger)}</p>
+          {departId === 'basse' && (
             <button type="button" className="btn btn--ghost" onClick={() => onNavigate('hypoglycemie')}>
               Traiter l'hypo d'abord
             </button>
-          </div>
-        )}
-        {departId === 'cible' && <p className={styles.message}>Glycémie dans la cible : la dose habituelle suffit, pas de correction à ajouter.</p>}
-        {departId === 'haute' && (
-          <div className={styles.bridgeRow}>
-            <p className={styles.message}>
-              {corriger
-                ? 'Un peu plus de rapide, en plus de la couverture du repas, ramène la courbe vers la cible.'
-                : "Glycémie haute avant de manger, sans correction : ça reste haut après le repas."}
-            </p>
-            <button
-              type="button"
-              className={`btn btn--ghost ${styles.correctionToggle}${corriger ? ' activeDoubled' : ''}`}
-              aria-pressed={corriger}
-              onClick={() => setCorriger((v) => !v)}
-            >
-              Ajouter une correction de rapide
-            </button>
-          </div>
-        )}
+          )}
+        </div>
       </section>
 
       {/* ── Temps ④ — Le piège du cumul ───────────────────────────────────── */}

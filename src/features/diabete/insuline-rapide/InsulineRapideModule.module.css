@@ -148,9 +148,3 @@
   color: var(--color-text-soft);
   margin-top: var(--space-sm);
 }
-
-/* ── Temps ③ — bascule correction (glycémie de départ haute) ─────────────── */
-
-.correctionToggle {
-  align-self: center;
-}
