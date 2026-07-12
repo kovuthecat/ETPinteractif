@@ -326,11 +326,12 @@ export default function HypoglycemieModule({ shell }: ModuleProps) {
             <div className={styles.carteBloc}>
               <p className={styles.carteBlocLabel}>Mes signes</p>
               {mySignes.length > 0 ? (
-                <div className={styles.chipRow}>
+                <div className={styles.cartePreview}>
                   {mySignes.map((s) => (
-                    <span key={s} className="chip">
-                      {s}
-                    </span>
+                    <div key={s} className={styles.cartePreviewItem}>
+                      <IllustrationSlot id={`signe-${slugify(s)}`} label={s} size={64} />
+                      <span className={styles.previewLabel}>{s}</span>
+                    </div>
                   ))}
                 </div>
               ) : (

@@ -274,6 +274,23 @@
   color: var(--color-text-faint);
 }
 
+/* T3 (audit §8) : variante compacte de `.preview`/`.previewItem` pour le bloc « Mes signes »
+   de la carte-réflexe (temps ③) — illustrations plus petites que le temps ① pour tenir sur la
+   carte sans pousser au scroll. */
+.cartePreview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.cartePreviewItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 84px;
+}
+
 .carteBlocVide {
   margin: 0;
   color: var(--color-text-soft);
