@@ -532,6 +532,33 @@ describe('0.d — descend_hypo_matinale : descente progressive, minimum en fin d
   });
 });
 
+describe('audit itération 2 — scénarios d\'aggravation (module 9 « Décider »)', () => {
+  const nightMean = (traces: Point[][], from: 'debut' | 'fin') =>
+    traces.reduce((s, trace) => {
+      const nuit = nightSegment(trace);
+      const slice = from === 'debut' ? nuit.slice(0, 4) : nuit.slice(-4);
+      return s + slice.reduce((a, p) => a + p.v, 0) / slice.length;
+    }, 0) / traces.length;
+
+  it('derive_haute_forte monte plus haut en fin de nuit que derive_haute (aggravation hyper)', () => {
+    const forte = nightMean(sampleNuits('derive_haute_forte', 3, 42), 'fin');
+    const normale = nightMean(sampleNuits('derive_haute', 3, 42), 'fin');
+    expect(forte).toBeGreaterThan(normale);
+  });
+
+  it('haut_puis_monte : nuit qui part haut (au-dessus de la cible) et monte encore', () => {
+    const traces = sampleNuits('haut_puis_monte', 3, 7);
+    expect(nightMean(traces, 'debut')).toBeGreaterThan(BANDE_CIBLE_DEFAUT.haute - 5);
+    expect(nightMean(traces, 'fin')).toBeGreaterThan(nightMean(traces, 'debut'));
+  });
+
+  it('haut_puis_descend : nuit qui part haut puis glisse nettement vers le bas', () => {
+    const traces = sampleNuits('haut_puis_descend', 3, 9);
+    expect(nightMean(traces, 'debut')).toBeGreaterThan(BANDE_CIBLE_DEFAUT.haute - 5);
+    expect(nightMean(traces, 'fin')).toBeLessThan(nightMean(traces, 'debut') - 10);
+  });
+});
+
 describe('0.d.3 — raccord nuit -> jour sans falaise', () => {
   const scenarios: ScenarioTrace[] = [
     'stable',
@@ -539,6 +566,9 @@ describe('0.d.3 — raccord nuit -> jour sans falaise', () => {
     'plonge_bas',
     'haut_stable_apres_repas',
     'descend_hypo_matinale',
+    'derive_haute_forte',
+    'haut_puis_monte',
+    'haut_puis_descend',
   ];
 
   // Continuité au raccord (au sens de la correction B7 : la « falaise » de saut brutal au

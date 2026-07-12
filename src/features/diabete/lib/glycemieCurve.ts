@@ -427,7 +427,14 @@ export type ScenarioTrace =
   | 'derive_haute'
   | 'descend_hypo_matinale'
   | 'haut_stable_apres_repas'
-  | 'plonge_bas';
+  | 'plonge_bas'
+  // Trois variantes d'« aggravation » ajoutées pour l'audit itération 2 (module 9 « Décider ») :
+  // baisser une lente déjà insuffisante (`derive_haute_forte`, monte plus fort que `derive_haute`),
+  // et, sur une nuit déjà haute et plate, le sens que prend une lente qui n'est pourtant pas en
+  // cause — repart à la hausse (`haut_puis_monte`) ou plonge vers l'hypo (`haut_puis_descend`).
+  | 'derive_haute_forte'
+  | 'haut_puis_monte'
+  | 'haut_puis_descend';
 
 const NUIT_MINUTES = 480; // 8h de nuit
 const JOUR_MINUTES = 960; // 16h de jour
@@ -461,6 +468,15 @@ function nightBaseLevel(scenario: ScenarioTrace, x: number): number {
     case 'descend_hypo_matinale':
       // Descente progressive (ease) jusqu'à frôler le plancher hypo au petit matin.
       return BASELINE - (BASELINE - (HYPO_FLOOR + 3)) * ease(x);
+    case 'derive_haute_forte':
+      // Comme `derive_haute` mais plus raide : baisser une lente déjà insuffisante aggrave.
+      return BASELINE + 45 * x;
+    case 'haut_puis_monte':
+      // Part du plateau haut de `haut_stable_apres_repas` puis monte encore.
+      return BASELINE + 30 + 18 * x;
+    case 'haut_puis_descend':
+      // Part du même plateau haut mais glisse vers le bas de la cible / l'hypo.
+      return BASELINE + 30 - 40 * ease(x);
     default:
       // 'stable'
       return BASELINE;
