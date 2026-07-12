@@ -13,8 +13,7 @@ import {
   buildCourbes,
   bandeToY,
   computeTrendArrow,
-  resultScenario,
-  outcomeMessage,
+  deciderCell,
 } from './scenarios';
 import type { ProfileId, SituationId, ActionTon, Ajustement } from './scenarios';
 import styles from './InsulineModule.module.css';
@@ -59,13 +58,15 @@ export default function InsulineModule({ onNavigate, shell }: ModuleProps) {
   const profile = PROFILES[profileId];
   const situation = situationId ? SITUATIONS[situationId] : null;
   const baseScenario = situation ? situation.scenario : 'stable';
-  // T8 : au temps ② « Décider », le scénario dépend du couple (situation, ajustement) — la
-  // courbe réagit au réglage de la lente plutôt que d'afficher une réponse figée.
-  const scenario =
+  // T8 : au temps ② « Décider », courbe ET message viennent du couple (situation, ajustement)
+  // via `deciderCell` — chaque case porte son propre sens (audit itération 2, points 1/3/4),
+  // là où l'ancien code dérivait le message du seul scénario résultant.
+  const cell =
     temps === 2 && situationId && situationId !== 'bas' && ajustement
-      ? resultScenario(situationId, ajustement)
-      : baseScenario;
-  const outcome = ajustement ? outcomeMessage(scenario) : null;
+      ? deciderCell(situationId, ajustement)
+      : null;
+  const scenario = cell ? cell.scenario : baseScenario;
+  const outcome = cell ? { texte: cell.texte, ton: cell.ton } : null;
 
   const traces = useMemo(() => tracesForScenario(scenario), [scenario]);
   const courbes = useMemo(() => buildCourbes(traces), [traces]);
@@ -177,7 +178,8 @@ export default function InsulineModule({ onNavigate, shell }: ModuleProps) {
             </div>
             {cardAActive && situation && (
               <>
-                <p className={styles.situationDesc}>{situation.desc}</p>
+                {/* Point 2 (audit itération 2) : plus de phrase narrative qui donne la réponse
+                    avant l'interaction — on garde le chip + les 3 boutons + le message de résultat. */}
                 <div className={styles.ajustementRow} role="group" aria-label="Réglage de la lente">
                   <button
                     type="button"
