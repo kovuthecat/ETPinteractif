@@ -4,7 +4,16 @@
 
 > **Frontières** — STATUS : état actuel · `TASKS.md` : backlog + tâches · `plans/` : plan d'une tâche active · `VALIDATION.md` : checklist visuelle.
 >
-> **Dernière mise à jour :** 2026-07-11 (corrections-visuelles-diabete-v3 S10 — 10ᵉ module diabète « Insuline rapide », chantier CVD3 clos)
+> **Dernière mise à jour :** 2026-07-12 (audit-diabete S1-S6 — 12 corrections d'un audit manuel de Thibault + modèle de cumul insuline convergent, chantier clos)
+
+**Audit-diabete (2026-07-12)** — 6 sessions, 11 tâches (T1-T11), 12 points d'un audit manuel de
+Thibault sur le déployé corrigés : Cardio (fusion Leviers→Artère, retrait de 3 textes), Hypo
+(illustrations des signes dans la carte-réflexe), Alimentation (courbe remontée dans la colonne de
+chaque défi + allègements Composition/Qualité), Insuline « Décider » (réglage de la lente devenu
+expérimentable), Insuline rapide (départ convergent + cumul à 6 cases expérimentable — 3 tentatives
+de modélisation, mécanisme d'excès persistant/IOB retenu, cf. `DECISIONS.md`), zéro scroll
+(resserrement du cadre partagé + mesure des résiduels). Détail complet en `## Phase 14` ci-dessous.
+Chantier `audit-diabete` (S1-S6) **clos**.
 
 **S10 (2026-07-11)** — 10ᵉ module diabète, `insuline-rapide/InsulineRapideModule.tsx` : 4 temps
 (couvrir le repas / le bon moment / corriger avant le repas / le piège du cumul), modèle
@@ -479,6 +488,75 @@ commits par tâche en fin de plan.
 bloquée en attente de validation de contenu par Thibault — c'est la seule session encore
 ouverte.**
 
+## Phase 14 (`plans/audit-diabete/`)
+
+**Chantier `audit-diabete` (S1-S6, 2026-07-12)** — 12 points d'un audit manuel de Thibault sur le
+déployé (`Audit/audit-etp-interactif.md`, sélecteurs DOM), par-dessus le chantier
+`corrections-visuelles-diabete-v3` déjà déployé. Trois natures de travail : allègement/mise en page
+(Cardio, Alimentation), réutilisation de composant existant (illustrations Hypo), et passage d'un
+affichage figé à un **système d'expérimentation** sur la famille Insuline (le patient manipule un
+réglage — dose, moment, délai — et voit l'effet en direct sur la courbe, plutôt qu'une réponse
+pré-écrite). Mode vague parallèle (S1-S5, zones disjointes) puis S6 solo (transversal, après
+S1 + S3). 6 sessions, 11 tâches (T1-T11), commits/push en fin de plan.
+
+- **S1 — Risque cardio** (T1-T2, audit #2-3) : fusion « ① Les leviers » dans « ② L'artère » →
+  « ① Les facteurs de risque » (icônes lucide portées sur les chips, tooltip de seuils reporté) ;
+  retrait des 3 textes explicatifs sous l'artère (sur-titre, compteur « Passage du sang : X % »,
+  message d'état — narration désormais orale, seuls l'image et l'overlay de plaque restent).
+- **S2 — Hypoglycémie** (T3, audit #8) : le bloc « Mes signes » de la carte-réflexe (temps ③)
+  affiche désormais les illustrations des signes (motif `previewItem` du temps ①, `size={64}`,
+  nouvelles classes `.cartePreview`/`.cartePreviewItem`) au lieu de chips texte-seul ; la fiche
+  imprimable garde ses chips texte (hors périmètre, inchangée).
+- **S3 — Alimentation** (T4-T7, audit #4-7) : la carte « Glycémie après le repas » sort de sous
+  `.layout` et vit désormais **dans la colonne de chaque défi** (`.stage`), agrandie (`.courbeCard`
+  passe de 900px centré à `width:100%`), visible sans scroll — corrige d'un coup les 4 points
+  structurels de l'audit. Composition : compteur retiré, reset en icône, assiette agrandie
+  (320→400px). Qualité : rangée de duels + verdicts textuels retirés (seul le badge « Pic … »
+  reste), reset en icône. Ordre/Repas complet : vérifiés par lecture de code, aucune retouche
+  supplémentaire jugée nécessaire au-delà de T4.
+- **S4 — Insuline « Décider »** (T8, audit #9) : le réglage de la lente devient expérimentable —
+  3 boutons (Baisser/Laisser pareil/Monter) après le choix d'une situation, qui sélectionnent un
+  scénario existant (`ScenarioTrace`, table de correspondance `AJUSTEMENT_RESULT` dans
+  `scenarios.ts`) et font réagir en direct la courbe des nuits suivantes + la flèche de tendance.
+  `glycemieCurve.ts` non touché (scénarios déjà existants réutilisés).
+- **S5 — Insuline rapide** (T9-T10, audit #10-12) : onglet ③, l'écart de glycémie de départ
+  (Basse/Cible/Haute) **se résorbe** désormais (`DEPART_RESORPTION`, forme convergente au lieu d'un
+  décalage constant), avec une correction de rapide expérimentable qui ramène la courbe « Haute »
+  dans la cible. Onglet ④, la matrice de cumul (2 situations × 3 recorrections, 6 cases) est
+  entièrement expérimentable — **3 tentatives de modélisation** ont été nécessaires (2 rejetées par
+  preuve numérique — grid search exhaustif —, cf. `DECISIONS.md` 2026-07-12 pour le détail) avant
+  qu'un mécanisme d'excès de glycémie persistant, résorbé par l'insuline encore active (IOB) de la
+  1ʳᵉ dose (proposé et vérifié numériquement par le modèle Fable sollicité spécifiquement pour cette
+  réflexion, implémenté par Sonnet), ne fasse fonctionner les 6 cases. Nouveaux champs optionnels
+  `exces?`/`doseCorrection?` sur `BolusParams` (comportement strictement inchangé quand absents),
+  nouvelle fonction privée `fractionEffetDelivree` ; 55 tests `glycemieCurve.test.ts` (dont 4
+  nouveaux), `bolusEffet` non modifiée.
+- **S6 — Zéro scroll** (T11, audit #1) : resserrement du rythme vertical du cadre partagé
+  (`ModuleShell`, `Home`) — paddings/marges réduits (~90-110 px récupérés par page), `.shell` passe
+  en `min-height: 100dvh`, aucun `overflow:hidden` ni hauteur figée ajoutés, rétro-compat tabac
+  respectée (abstention délibérée sur `tokens.css`, réductions locales seulement). Mesure (par
+  lecture de code, pas de rendu navigateur) des 10 modules diabète + accueil aux résolutions
+  1366×768 et 1024×768 : résiduels identifiés et priorisés, cf. ci-dessous.
+
+**Résiduels non résolus par ce chantier** (à traiter en micro-session dédiée, hors périmètre S6) :
+
+1. **Débordement zéro-scroll persistant** sur les modules **Suivi** (« Le parcours », breakpoint
+   côte-à-côte mal calé pour 1024px, empilement au lieu du côte-à-côte prévu, +~615px estimé) et
+   **Traitements** (grille ordonnance/silhouette empilée sous 1100px, +~300-550px estimé à 1024px)
+   — cause structurelle : deux breakpoints de layout mal calés, pas un manque de resserrement de
+   padding (chiffres détaillés dans le bilan de `S6.md`). `CourbeGlycemie` sans plafond de hauteur
+   est une 2ᵉ cause transversale identifiée (4 modules touchés : Alimentation, Hypoglycémie,
+   Insuline, Insuline rapide).
+2. **Constantes `// à caler (Thibault)` introduites par ce chantier**, non cliniquement validées :
+   `CORRECTION_DOSE` (S5/T9), `EXCES_SITUATION_B`/`EXCES_CONSOMMATION` (S5/T10),
+   `DEPART_RESORPTION` (S5/T9), le mapping situation×ajustement de `insuline/scenarios.ts` (S4/T8).
+
+Gate consolidation : `npx tsc --noEmit` ✓ · `npm run build` ✓ · `npm test` ✓ (92/92, dont 55
+`glycemieCurve.test.ts` — 4 nouveaux — et 37 `nicotineCurve.test.ts`), vérifié session par session
+puis par l'orchestrateur sur l'intégralité des changements fusionnés. Visuel → checklists
+consolidées dans `docs/diabete/VALIDATION.md` (nouveau, cf. §Cadre transverse pour le détail des
+résiduels par module à 1366×768/1024×768).
+
 ## Ce qui fonctionne
 
 - **Moteur multi-thèmes** (2026-07-08) : navigation à 3 niveaux (thèmes → accueil du thème → module,
@@ -539,6 +617,18 @@ ouverte.**
     aucune des 3 entrées du 2ᵉ niveau de lecture (`docs/BRIEF_TABAC.md` §3.5 — substituts/nicotine/
     stratégies & outils) n'est marquée validée au §5 du brief à ce stade. C'est le comportement par
     défaut attendu, pas un point bloquant.
+
+- **Thème diabète — audit 2026-07-12** (`plans/audit-diabete/`, 12 corrections, détail en
+  `## Phase 14`) : la famille Insuline passe à un système d'**expérimentation** (réglage → effet
+  direct sur la courbe) sur les modules Insuline (lente, S4) et Insuline rapide (départ convergent +
+  correction + cumul, S5). `glycemieCurve.ts` (`sampleRepasAvecBolus`) gagne 2 champs optionnels
+  `exces?`/`doseCorrection?` sur `BolusParams` (comportement strictement inchangé quand absents) et
+  une nouvelle fonction privée `fractionEffetDelivree`, pour modéliser un excès de glycémie
+  persistant résorbé uniquement par une dose de correction réelle pondérée par l'insuline encore
+  active (IOB) d'une dose antérieure — détail de la décision de modélisation (3 tentatives) dans
+  `DECISIONS.md` 2026-07-12. **Résiduels connus** : débordement zéro-scroll persistant sur Suivi et
+  Traitements à 1024×768 (breakpoints de layout, cf. `## Phase 14`) ; plusieurs constantes
+  `// à caler (Thibault)` du modèle de cumul non cliniquement validées.
 
 ## Ce qui n'est pas fait / à compléter (non bloquant)
 
