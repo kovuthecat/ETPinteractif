@@ -1067,3 +1067,52 @@ formellement actée, cf. `DECISIONS.md` § 2026-07-11 « S10 »)
 - [ ] La note est visuellement secondaire (plus petite, gris doux) — le refrain de sécurité
       reste le message dominant.
 - [ ] Présent sur les deux onglets (① Lire la courbe, ② Décider), comme le refrain.
+
+---
+
+## Audit diabète itération 2 (revue Thibault, 2026-07-12) · source: `Audit/audit-etp-interactif-iteration2.md`
+
+> Corrections livrées 2026-07-12 (Opus, une passe). Gate : `tsc --noEmit` ✓ · `npm run build` ✓ ·
+> `npm test` ✓ (95/95, dont 3 nouveaux invariants de scénarios). **Sans navigateur côté Claude** —
+> tout ci-dessous est à confirmer à l'écran (`npm run dev`). Constantes cliniques (facteurs de dose,
+> amplitudes des nouveaux scénarios) marquées `// à revalider (Thibault)`.
+
+### Module 9 « Insuline : adapter les doses » — onglet ② Décider (points 1/2/3/4)
+
+- [ ] **Point 2** — plus aucune phrase narrative sous le chip de situation : on ne voit que le nom
+      de la situation (chip) + les 3 boutons Baisser/Laisser pareil/Monter + le message *après* clic.
+      (Les 3 desc « Le taux grimpe pendant la nuit… », « La trace glisse vers le bas… », « Le taux est
+      déjà haut… » ont disparu.)
+- [ ] **Point 1** — situation « Plusieurs nuits qui montent » + **Baisser la lente** : la courbe
+      **monte encore plus haut** (pas de descente/hypo) et le message parle d'aggravation vers le haut
+      (« fait grimper encore plus haut la nuit »), plus jamais « on frôle l'hypo ».
+- [ ] **Point 3** — situation « Ça descend la nuit, bas au réveil » + **Monter la lente** : la courbe
+      **plonge plus bas** (hypo aggravée) et le message parle d'hypo creusée, plus jamais « ça continue
+      de monter ».
+- [ ] Les 4 bonnes/mauvaises réponses restantes restent cohérentes : Monter (situation 1) et Baisser
+      (situation 2) aplatissent la dérive (message « revient dans la cible ») ; « Laisser pareil »
+      prolonge la dérive de départ dans les deux cas.
+- [ ] **Point 4** — situation « Déjà haut après le repas, stable » : les 3 boutons changent enfin
+      **la courbe ET le message** (avant : figés). Baisser → la nuit repart à la hausse ; Laisser
+      pareil → plate et haute ; Monter → glisse vers le bas (risque d'hypo). Les 3 messages disent
+      tous « la lente n'est pas le problème, c'est le repas / le rapide du soir ».
+- [ ] La flèche de tendance (↗/→/↘) près de la courbe reste cohérente avec le sens de chaque courbe.
+
+### Module 10 « Insuline rapide (avant le repas) » — sélecteur de dose (points 5/6)
+
+- [ ] **Point 5 — ① Couvrir le repas** : sous les 3 chips de repas, une **2ᵉ rangée** « Moins de
+      dose / Dose habituelle / Plus de dose ». Les 9 combinaisons (3 repas × 3 doses) changent la
+      courbe « avec rapide » : *habituelle* = pic couvert (comme avant), *moins* = pic mal couvert
+      (sucre reste haut), *plus* = passe sous la cible (hypo). L'écart est plus marqué pour
+      « Beaucoup de glucides » que pour « Peu ». Message sous le graphe cohérent avec la dose.
+- [ ] **Point 6 — ③ Corriger avant le repas** : même 2ᵉ rangée de dose (l'ancien bouton unique
+      « Ajouter une correction de rapide » a disparu). Les 3 glycémies de départ (Basse/Cible/Haute)
+      déplacent toujours visiblement la courbe (bug « courbes identiques » du 1er rapport toujours
+      corrigé), croisées avec les 3 doses = 9 combinaisons. Sur **Haute**, c'est « Plus de dose » qui
+      ramène vers la cible ; sur **Cible**, « Plus » fait passer sous la cible ; sur **Basse**, le
+      message de prudence + le bouton « Traiter l'hypo d'abord » (→ module Hypoglycémie) restent.
+- [ ] Les chips de dose sont bien des radios (un seul actif), cibles ≥ 44 px, lisibles à ~1 m,
+      **aucun chiffre** (ni dose, ni %) affiché — libellés qualitatifs uniquement.
+- [ ] Onglets ② Le bon moment et ④ Le piège du cumul **inchangés** (hors périmètre de cet audit).
+- [ ] Pas de scroll horizontal à 1024×768 / 1366×768 avec la rangée de dose ajoutée (2 rangées de
+      chips empilées).

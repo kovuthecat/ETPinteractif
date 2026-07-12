@@ -4,7 +4,26 @@
 
 > **Frontières** — STATUS : état actuel · `TASKS.md` : backlog + tâches · `plans/` : plan d'une tâche active · `VALIDATION.md` : checklist visuelle.
 >
-> **Dernière mise à jour :** 2026-07-12 (audit-diabete S1-S6 — 12 corrections d'un audit manuel de Thibault + modèle de cumul insuline convergent, chantier clos)
+> **Dernière mise à jour :** 2026-07-12 (audit-diabete **itération 2** — 6 points sur les 2 modules Insuline, corrigés en une passe Opus)
+
+**Audit-diabete itération 2 (2026-07-12)** — 6 points d'une 2ᵉ navigation manuelle de Thibault sur le
+déployé (`Audit/audit-etp-interactif-iteration2.md`), corrigés en une passe (Opus), tous sur la famille
+Insuline. **Module 9 « Décider »** (`insuline/scenarios.ts` + `InsulineModule.tsx`) : l'ancien couple
+`AJUSTEMENT_RESULT`→scénario + `outcomeMessage(scénario)` est remplacé par une table unique
+`DECIDER_MATRICE` `{situation, choix} → {courbe, message, ton}` — le message était dérivé du seul
+scénario résultant, ce qui plaquait un même texte sur deux couples opposés (baisser une lente déjà
+faible ≠ monter une lente déjà forte). Points 1/3 (messages inversés) et 4 (situation « déjà haut »
+totalement inerte, courbe + message figés) réglés ; point 2 : les 3 descriptions narratives qui
+donnaient la réponse sont retirées. **Module 10 « Insuline rapide »** (`insuline-rapide/`) : sélecteur
+de dose mutualisé (`DoseSelector`, crans −/habituelle/+ en facteur `DOSE_FACTOR`) ajouté aux onglets
+① Couvrir le repas et ③ Corriger, croisé avec les crans existants → 9 combinaisons de courbe chacun
+(points 5/6) ; l'ancien toggle ad hoc « Ajouter une correction » du départ haut disparaît.
+**Lib `glycemieCurve.ts`** : 3 scénarios nocturnes ajoutés (`derive_haute_forte`, `haut_puis_monte`,
+`haut_puis_descend`) pour porter l'aggravation et la réactivité de la situation « déjà haut » ; 3
+invariants de test ajoutés. Constantes cliniques (facteurs de dose, amplitudes) `// à revalider
+(Thibault)`. **Aucun commit** (working tree, en attente de la validation visuelle Thibault, cf.
+`VALIDATION.md §Audit diabète itération 2`). Gate : `tsc --noEmit` ✓ · `npm run build` ✓ ·
+`npm test` ✓ (95/95).
 
 **Audit-diabete (2026-07-12)** — 6 sessions, 11 tâches (T1-T11), 12 points d'un audit manuel de
 Thibault sur le déployé corrigés : Cardio (fusion Leviers→Artère, retrait de 3 textes), Hypo
