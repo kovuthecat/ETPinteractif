@@ -179,8 +179,15 @@
 .zonesConcernees {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-sm);
+  gap: var(--space-md);
   margin-top: var(--space-xs);
+}
+
+.zoneCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
 }
 
 .zoneChip {

@@ -173,11 +173,17 @@ export default function BeneficesArretModule(_props: ModuleProps) {
                 <p className={styles.texteBenefice}>{jalonCourant.texte}</p>
 
                 <div className={styles.zonesConcernees} aria-label="Zones concernées par cette étape">
-                  {jalonCourant.zones.map((zid) => (
-                    <span key={zid} className={styles.zoneChip}>
-                      <CheckCircle2 size={14} aria-hidden="true" /> {ZONES_BY_ID[zid].label}
-                    </span>
-                  ))}
+                  {jalonCourant.zones.map((zid) => {
+                    const zone = ZONES_BY_ID[zid];
+                    return (
+                      <div key={zid} className={styles.zoneCard}>
+                        <IllustrationSlot id={`benef-${zid}`} label={zone.illustrationLabel} shape="rounded" size={80} />
+                        <span className={styles.zoneChip}>
+                          <CheckCircle2 size={14} aria-hidden="true" /> {zone.label}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
 
                 {jalonIndex === DERNIER_JALON_INDEX && (
