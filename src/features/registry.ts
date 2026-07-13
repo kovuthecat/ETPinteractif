@@ -11,9 +11,9 @@ export const THEMES: ThemeDef[] = [
     exergue:
       "C'est la fumée qui rend malade. C'est le manque qui fait fumer. Et le manque, ça se traite.",
     familles: [
+      { id: 'motivation', label: 'Se motiver' },
       { id: 'comprendre', label: 'Comprendre' },
       { id: 'agir', label: 'Agir' },
-      { id: 'motivation', label: 'Se motiver' },
     ],
     modules: TABAC_MODULES,
   },
