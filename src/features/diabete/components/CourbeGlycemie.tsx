@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Utensils, Syringe, type LucideIcon } from 'lucide-react';
 import styles from './CourbeGlycemie.module.css';
 
 /**
@@ -115,9 +116,9 @@ export interface CourbeGlycemieProps {
   animerTrace?: boolean;
 }
 
-const MARQUEUR_META: Record<MarqueurType, { glyph: string; colorVar: string }> = {
-  repas: { glyph: 'R', colorVar: '--color-nav' },
-  activite: { glyph: 'A', colorVar: '--color-confort' },
+const MARQUEUR_META: Record<MarqueurType, { glyph: string; colorVar: string; icone?: LucideIcon }> = {
+  repas: { glyph: 'R', colorVar: '--color-nav', icone: Utensils },
+  activite: { glyph: 'A', colorVar: '--color-confort', icone: Syringe },
   resucrage: { glyph: 'S', colorVar: '--color-vigilance' },
   attente: { glyph: '…', colorVar: '--color-text-soft' },
 };
@@ -327,7 +328,7 @@ export default function CourbeGlycemie({
           const x1 = m.largeur !== undefined ? tToX(m.t + m.largeur) : x0;
           const badgeY = COURBE_GRAPH_Y_BOTTOM + 22;
           return (
-            <g key={`${m.type}-${m.t}-${i}`}>
+            <g key={`${m.type}-${m.t}-${i}`} aria-label={m.label}>
               {m.largeur !== undefined && x1 > x0 && (
                 <rect
                   x={x0}
@@ -349,14 +350,26 @@ export default function CourbeGlycemie({
               <circle
                 cx={x0}
                 cy={badgeY}
-                r={12}
+                r={13}
                 fill={`var(${meta.colorVar})`}
                 className={styles.marqueurBadge}
               />
-              <text x={x0} y={badgeY + 4} textAnchor="middle" className={styles.marqueurGlyph}>
-                {meta.glyph}
-              </text>
-              <text x={x0} y={badgeY + 26} textAnchor="middle" className={styles.marqueurLabel}>
+              {meta.icone ? (
+                <meta.icone
+                  x={x0 - 8}
+                  y={badgeY - 8}
+                  width={16}
+                  height={16}
+                  color="var(--color-surface)"
+                  strokeWidth={2}
+                  aria-hidden="true"
+                />
+              ) : (
+                <text x={x0} y={badgeY + 4} textAnchor="middle" className={styles.marqueurGlyph} aria-hidden="true">
+                  {meta.glyph}
+                </text>
+              )}
+              <text x={x0} y={badgeY + 27} textAnchor="middle" className={styles.marqueurLabel}>
                 {m.label}
               </text>
             </g>
