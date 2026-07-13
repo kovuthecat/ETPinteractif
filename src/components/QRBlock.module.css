@@ -1,0 +1,27 @@
+.block {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.image {
+  flex: none;
+  width: 30mm;
+  height: 30mm;
+  object-fit: contain;
+  background: #fff;
+}
+
+.legende {
+  margin: 0;
+  font-size: 12px;
+  color: var(--color-text-soft);
+  max-width: 32ch;
+}
+
+@media print {
+  .image {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

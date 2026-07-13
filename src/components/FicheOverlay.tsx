@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { createPortal } from 'react-dom';
+import QRBlock from './QRBlock';
 import styles from './FicheOverlay.module.css';
 
 interface FicheOverlayProps {
@@ -56,6 +57,7 @@ export default function FicheOverlay({ eyebrow, titre, footer, onClose, children
         <div className={styles.content}>{children}</div>
         <footer className={styles.footer}>
           {footer}
+          <QRBlock />
           <p className={styles.mention}>Fiche générée en consultation — rien n'est enregistré.</p>
         </footer>
       </div>

@@ -71,6 +71,10 @@
   color: var(--color-text-faint);
 }
 
+.footer > *:not(:first-child) {
+  margin-top: var(--space-sm);
+}
+
 .actions {
   display: flex;
   flex: none;
