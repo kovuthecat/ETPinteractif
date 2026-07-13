@@ -47,12 +47,16 @@ fiche « plan » courte isolée ; « Mes bénéfices »/« Contacts » toujours 
 fine à valider en aperçu Ctrl+P ; illustration substituts affichée aussi pour le patch, alors que le module
 lui-même n'en montre pas).
 
-**Cadrage séparé de l'app patient (T16)** — sorti du chantier en **chantier séparé cadré**,
-`plans/aide-patient/index.md` : 2ᵉ surface applicative autonome (2ᵉ point d'entrée Vite, bundle qui
-n'importe jamais le registre ni un module de consultation), contenu **générique** (jamais les choix d'un
-patient, zéro donnée patient), v1 = « Mes substituts » + « Agir face à une situation », **un seul QR** vers
-la racine de cette app. Cadrage produit complet (2026-07-13), **non démarré**. Reste différable :
-hébergement de l'URL (2ᵉ projet Vercel ou sous-domaine) au moment du déploiement.
+**App d'aide patient autonome (chantier aide-patient, T16 du chantier corrections-audit-tabac) — vagues V1-V4
+(2026-07-13)** — 2ᵉ surface applicative autonome : 2ᵉ point d'entrée Vite (`patient.html` + `src/patient/main.tsx`)
+dans le même repo, bundle isolé qui n'importe **jamais** le registre ni un module de consultation. Contenu
+**générique** (aucune donnée patient) : v1 = deux écrans seulement (« Mes substituts » + « Agir face à une
+situation ») + un QR statique unique. Couche partagée nouvelle : `src/content/tabac/` (substituts/situations/outils,
+sources de vérité pour consultation + patient, relativisés du repositionnement S1). **Vagues complètes et gates
+verts** : V1 = S1 (relocalisation contenus) ✓ · V2 = S2 (2ᵉ entrée Vite + coquille app) ✓ · V3 = S3·S4·S5
+(substituts, situations, QR) ✓ · V4 = S6 (consolidation contexte) → en cours. **Validation VISUELLE** (Thibault,
+`npm run dev`, deux apps) encore entièrement à faire. Reste différable : hébergement de l'URL patient (2ᵉ projet
+Vercel ou sous-domaine), régénération `public/qr/patient.png` à l'URL définitive.
 
 Gate finale du chantier (S1-S11 + S13) : `npx tsc --noEmit` OK · `npm run build` OK · `npm test` 95/95 OK,
 aucune dépendance runtime ajoutée. **La validation VISUELLE humaine (Thibault, `npm run dev`) reste

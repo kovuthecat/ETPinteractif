@@ -111,7 +111,16 @@ Index des tâches : backlog + actives. Historique des tâches faites : `git log`
 - [x] S7 — Vignettes M2/M3/M8 (session récurrente, lot complet) · modèle: Sonnet, effort: medium · plan: → plans/illustrations-diabete/S7.md (auto OK : tsc --noEmit + vite build + npm test 78/78 verts). 62 nouvelles vignettes déposées (33 aliments M2 dont 5 nouveaux · 18 activité M3 dont `sol` nouveau · 11 hypoglycémie M8) ; `alimentation/data.ts` et `activite/data.ts` mis à jour (`// à revalider`). `public/illustrations/diabete/` : 75 fichiers au total. Session marquée récurrente (index §8) — à rouvrir au prochain lot.
   - **Chantier `illustrations-diabete` (S1-S7) clos le 2026-07-10.** Points ouverts non bloquants : alignement plaque overlay M4 (S3) et clés volantes M1 (S4) jamais vérifiés à l'écran ; valeurs nutritionnelles `// à revalider (Thibault)`.
 
-### Reliquat v1
+### App d'aide patient autonome (2ᵉ surface applicative, T16 du chantier corrections-audit-tabac, 2026-07-13) · plan: → plans/aide-patient/ (index + S1-S6)
+- [x] T1 — Couche `src/content/tabac/` (relocalisation données partagées, déplacement pur) · modèle: Sonnet, effort: high · plan: → plans/aide-patient/S1.md (auto OK : tsc --noEmit + vite build + npm test 95/95 verts)
+- [x] T2 — 2ᵉ entrée Vite + coquille app patient (home + nav par état, bundle isolé) · modèle: Sonnet, effort: high · plan: → plans/aide-patient/S2.md (auto OK : tsc --noEmit + vite build deux entrées + npm test 95/95 verts)
+- [x] T3 — Écran « Mes substituts » (voix patient) · modèle: Sonnet, effort: medium · plan: → plans/aide-patient/S3.md (auto OK : tsc --noEmit + vite build + npm test 95/95 verts)
+- [x] T4 — Écran « Agir face à une situation » (situation → outils, voix patient) · modèle: Sonnet, effort: high · plan: → plans/aide-patient/S4.md (auto OK : tsc --noEmit + vite build + npm test 95/95 verts)
+- [x] T5 — QR statique unique vers l'app patient sur fiches et livret · modèle: Sonnet, effort: low · plan: → plans/aide-patient/S5.md (auto OK : tsc --noEmit + vite build + npm test 95/95 verts)
+  - Vagues : V1 = S1 (solo, bloquante) → V2 = S2 (solo) → V3 = S3·S4·S5 (parallèles, zones disjointes) → V4 = S6 (consolidation). **S1-S5 faites, gates verts (2026-07-13).**
+  - ⚠️ Points ouverts Thibault (non bloquants) : habillage voix patient (3 phrases de Home + 3 de PatientSituations + 1 de QRBlock), marqués `// à revalider (Thibault)` ; PATIENT_APP_URL placeholder à fixer au déploiement + `public/qr/patient.png` à régénérer ; maquette Claude Design non faite (v1-directe retenue par défaut, cf. index §Maquette) ; déploiement de l'URL patient (2ᵉ projet Vercel ou sous-domaine) différé.
+
+## Reliquat v1
 - [~] C10 — Compléter le contenu non bloquant · modèle: Sonnet, effort: low · plan: → plans/PLAN_corrections-ux.md
   - [ ] Références de sources par module (HAS / Tabac Info Service) dans `registry.ts`
   - [ ] « Bonnes pratiques / erreurs fréquentes » par forme de substitut (Module 3-A)

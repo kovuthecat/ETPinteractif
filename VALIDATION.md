@@ -1276,5 +1276,80 @@ point principal à valider ici : la bonne image doit apparaître au bon endroit.
 
 - **AT-D1** (diabète, ordre Hypoglycémie + renommage « Insuline basale ») : déjà fait antérieurement au
   chantier, pas de checklist dédiée ici.
-- **T16** (module d'aide patient autonome) : sorti en chantier séparé cadré `plans/aide-patient/index.md`,
-  **non démarré** — aucune validation visuelle à faire pour l'instant.
+
+## App d'aide patient (aide-patient, T16 — vagues S1-S5, 2026-07-13)
+
+> **État** : S1-S5 **terminées, gates automatics verts** (`tsc --noEmit` + `npm run build` deux entrées +
+> `npm test` 95/95). **Validation VISUELLE humaine à faire** : parcourir `/patient.html` et ses deux écrans
+> (substituts + situations), scanner/tester le QR sur fiches/livret, vérifier pas de fuite de consultation
+> dans le bundle patient.
+> Légende statut : [ ] à valider · [x] OK · [!] à corriger
+
+### Cadre transverse — app patient uniquement
+
+- [ ] Lancement `/patient.html` : affiche un **accueil patient distinct** (non la sélection de thème ni l'accueil
+      consultation). Titre de la page = « Mon aide à l'arrêt ». Aucune exposition du code/UX soignant.
+- [ ] Deux cartes cliquables : « Mes substituts » et « Agir face à une situation » ; lisible seul, voix patient
+      (« comment utiliser », « comment faire »), jamais « proposer au patient ».
+- [ ] **Zéro donnée patient** dans l'URL ou le navigateur (LocalStorage vide, pas de query param) — recharger la
+      page (F5) repart de l'accueil patient, aucune sélection conservée.
+- [ ] Bundle patient (`assets/patient-*.js`) petit (~7-8 kB gzip) ; vérifier que `npm run build` génère
+      **deux** fichiers HTML (`dist/index.html` consultation + `dist/patient.html` patient).
+- [ ] **Grep post-build** : aucune trace de `registry.ts`, `BoiteAOutilsModule`, `VagueCraving`, `SubstitutsModule`
+      ni contenu consultation dans le bundle patient (séparation physique stricte des bundles).
+
+### Écran « Mes substituts »
+
+- [ ] Cliquer la carte « Mes substituts » → liste des 6 formes (patch, gomme, pastille, comprimé sublingual,
+      spray buccal, vapoteuse) en cartes cliquables ; intro « Choisissez le substitut qu'on a vu ensemble pour
+      revoir comment l'utiliser. » (ou équivalent, à revalider éditoriale).
+- [ ] Cliquer une forme → écran détail : titre = nom de la forme, illustration (ou fallback neutre si pas encore
+      générée), deux sections « À faire » (bonnes pratiques) et « À éviter » (erreurs) — textes lisibles à ~1 m,
+      gros texte, aucun jargon soignant.
+- [ ] Bouton « Retour » du détail → revient à la liste (pas l'accueil) ; bouton « Accueil » de la liste → revient
+      à l'accueil patient.
+- [ ] Aucune titration du patch, aucune fiche imprimable (lecteur seul) ; contenu clinique rigoureusement
+      identique à celui de la consultation (source unique `src/content/tabac/substituts.ts`).
+
+### Écran « Agir face à une situation »
+
+- [ ] Cliquer la carte « Agir face à une situation » → écran de choix parmi 20 situations, groupées en 3 piliers
+      titrés (« Signes physiques du manque » / « Ce que la cigarette apporte » / « Automatismes du quotidien »),
+      couleurs piliers cohérentes (ambre physique, bleu psycho, vert comportement).
+- [ ] Intro « Quelle situation vous donne le plus envie de fumer ? » (à revalider).
+- [ ] Choisir une situation → écran de liste d'outils : titre « Voici ce qui peut vous aider dans cette
+      situation. » (à revalider), outils filtrés par `outil.situations.includes(sel)` **plus** `outil.transverse`,
+      même règle que consultation.
+- [ ] Chaque outil affiche : illustration, titre, libellé de preuve qualitative (jamais chiffre), paragraphe
+      « principe », bloc « Comment faire » — **aucun mot « proposer »**, voix patient pure.
+- [ ] **Aucun bouton interactif** (`outil.interactif`) ni bouton de renvoi (`outil.renvoi`) — la boîte à outils
+      (vague 4D) et autres outils avec renvoi restent texte seul (consultation ≠ patient).
+- [ ] Bouton « Autre situation » → retour à étape 1 (nouvelle sélection repartie du vierge, zéro persistance) ;
+      bouton « Accueil » → accueil patient. Navigation sans scroll infini, lisible à ~1 m.
+
+### QR statique + impressions
+
+- [ ] Visibles sur les **fiches individuelles** (Module 3, 4, 7 du tabac — substituts, raisons, boîte à outils) :
+      bloc « Retrouvez ces conseils chez vous — scannez ce code » contenant l'image QR (30×30 mm à l'impression),
+      au-dessus ou à côté de « Rien n'est enregistré ».
+- [ ] Visible sur le **livret** (« Mon plan d'arrêt ») : même bloc QR dans la section Contacts, après Tabac Info
+      Service 39 89.
+- [ ] **Ctrl+P** (aperçu d'impression) : QR sort net et fortement contrasté (noir/blanc, pas d'inversion ni
+      suppression de couleur), pagination A4 tient, aucune section coupée.
+- [ ] **Scanner le QR** avec un téléphone (scanner d'app OS ou app tierce) : ouvre vers le placeholder
+      `https://<A-DEFINIR>.example/patient` (comportement attendu pour l'instant).
+- [ ] **Une fois l'URL définitive fixée** (au déploiement) : mettre à jour `PATIENT_APP_URL` dans
+      `src/content/patientAppUrl.ts`, régénérer `public/qr/patient.png` (même script Python, contenu = nouvelle
+      URL), re-scanner pour confirmer l'ouverture de l'app patient réelle.
+
+### Points ouverts à revalider (Thibault)
+
+- Trois phrases de cadrage patient ajoutées, marquées `// à revalider (Thibault)` dans le code :
+  - Home : intro de liste substituts (« Choisissez le substitut qu'on a vu ensemble… »)
+  - Home : intro de carte situations (« Quelle situation vous donne le plus envie de fumer ? »)
+  - PatientSituations : intro de résultats (« Voici ce qui peut vous aider dans cette situation »)
+  - PatientSituations : reformulation voix patient d'une proposition d'outil (`outil-journal`, de « on équipera »
+    → « vous équiperez »)
+  - QRBlock : libellé du bloc QR (« Retrouvez ces conseils chez vous — scannez ce code »)
+- URL patient `PATIENT_APP_URL` placeholder + génération `public/qr/patient.png` : différé au déploiement
+  (hébergement URL, 2ᵉ projet Vercel ou sous-domaine, non décidé).

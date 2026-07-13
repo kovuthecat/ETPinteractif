@@ -188,18 +188,21 @@ Rôle : place réservée pour le 2e thème. `src/features/diabete/registry.ts` e
 Fichiers clés : `src/features/diabete/registry.ts`, `docs/diabete/00-global.md` (index + grammaire commune), `docs/diabete/module-*.md`, `docs/evidence-diabete/` (sources probantes brutes).
 Points de vigilance : ne pas ajouter de module au registre avant le cadrage clinique complet avec Thibault (cf. `docs/diabete/00-global.md`, table de statut par module).
 
-### Feature 4bis — App d'aide patient autonome (cadrage complet, chantier séparé, non démarré)
+### Feature 4bis — App d'aide patient autonome (chantier aide-patient S1-S5, 2026-07-13, gates verts)
 Rôle : 2ᵉ surface applicative, atteinte par un QR code posé sur les fiches/le livret, offrant au patient
 **seul** (chez lui, sans soignant) « Mes substituts » (comment les utiliser) et « Agir face à une situation »
 (situation → outils). Bundle Vite **séparé** de l'app de consultation (2ᵉ point d'entrée `patient.html`/
-`src/patient/main.tsx`), contenu générique consommé via une couche `src/content/` partagée (source unique,
-à créer), zéro donnée patient dans l'URL/le build/un serveur, zéro dépendance runtime ajoutée.
-Fichiers clés (à venir, cadrés dans `plans/aide-patient/index.md`) : `patient.html`, `src/patient/`,
-`src/content/`, `vite.config.ts` (2ᵉ entrée via `build.rollupOptions.input`).
+`src/patient/main.tsx`), contenu générique consommé via la couche `src/content/tabac/` partagée (source
+unique, créée en S1), zéro donnée patient dans l'URL/le build/un serveur, zéro dépendance runtime ajoutée.
+Fichiers clés (créés S1-S5) : `patient.html`, `src/patient/{main.tsx, PatientApp.tsx, Home.tsx,
+substituts/PatientSubstituts.tsx, situations/PatientSituations.tsx}`, `src/content/patientAppUrl.ts`,
+`public/qr/patient.png`, composant `QRBlock` réutilisé par fiches/livret, `vite.config.ts` (2ᵉ entrée via
+`build.rollupOptions.input`).
 Points de vigilance : le graphe d'import de l'entrée patient ne doit **jamais** atteindre
-`src/features/*/registry.ts` ni un module de consultation (séparation physique du code, pas une route
-masquée) ; textes reformulés en « voix patient » (comment faire, pas comment le proposer) ; **cadré mais
-non démarré** — à lancer après commit/push du chantier `corrections-audit-tabac`.
+`src/features/*/registry.ts` ni un module de consultation (séparation physique du code, vérifiée grep
+post-build) ; textes reformulés en « voix patient » (comment faire, pas comment le proposer), marqués
+`// à revalider (Thibault)` ; **validation VISUELLE** (Thibault, `npm run dev` sur les deux apps)
+toujours attendue avant push (cf. `VALIDATION.md`).
 
 ---
 
