@@ -4,6 +4,7 @@ import { ArrowRight, Check } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import { SITUATIONS } from '../situations';
 import type { SelectionSituations } from '../situations';
+import { useSelection } from '../../../state/SelectionContext';
 import styles from './AddictionModule.module.css';
 
 type Pilier = 'physique' | 'psychologique' | 'comportementale';
@@ -23,7 +24,7 @@ interface PilierData {
 }
 
 const VIEW_W = 600;
-const VIEW_H = 460;
+const VIEW_H = 560;
 const R = 130;
 /** Rayon du menu radial des situations, légèrement au-delà du cercle. */
 const ITEM_RADIUS = R + 100;
@@ -81,31 +82,16 @@ function itemPosition(p: PilierData, index: number, count: number): CSSPropertie
 }
 
 export default function AddictionModule({ onNavigate }: ModuleProps) {
+  const { state, toggle } = useSelection();
+  const selection = state.situations;
   const [selected, setSelected] = useState<Pilier | null>(null);
-  const [selection, setSelection] = useState<Set<string>>(new Set());
 
   function togglePilier(pilier: Pilier) {
     setSelected((cur) => (cur === pilier ? null : pilier));
   }
 
   function toggleSituation(id: string) {
-    setSelection((cur) => {
-      const next = new Set(cur);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      return next;
-    });
-  }
-
-  function countSelected(pilier: Pilier): number {
-    let n = 0;
-    for (const s of SITUATIONS) {
-      if (s.pilier === pilier && selection.has(s.id)) n += 1;
-    }
-    return n;
+    toggle('situations', id);
   }
 
   function handleGoToOutils() {
@@ -172,7 +158,7 @@ export default function AddictionModule({ onNavigate }: ModuleProps) {
 
           {data &&
             items.map((s, i) => {
-              const isChecked = selection.has(s.id);
+              const isChecked = selection.includes(s.id);
               return (
                 <button
                   key={s.id}
@@ -189,27 +175,13 @@ export default function AddictionModule({ onNavigate }: ModuleProps) {
             })}
         </div>
 
-        <div className={styles.legend}>
-          {ORDER.map((pilier) => {
-            const p = PILLARS_DATA[pilier];
-            const n = countSelected(pilier);
-            return (
-              <span key={pilier} className={styles.legendItem} style={pillarVars(p)}>
-                <span className={styles.legendDot} aria-hidden="true" />
-                {p.label}
-                {n > 0 && <span className={styles.legendBadge}>· {n}</span>}
-              </span>
-            );
-          })}
-        </div>
-
         {!data && <p className={styles.emptyCaption}>Ces dimensions s'alimentent entre elles.</p>}
       </div>
 
       <div className={styles.ctaBar}>
-        {selection.size > 0 ? (
+        {selection.length > 0 ? (
           <button type="button" className="btn btn--primary" onClick={handleGoToOutils}>
-            <span>Stratégies et outils ({selection.size})</span>
+            <span>Stratégies et outils ({selection.length})</span>
             <ArrowRight size={16} aria-hidden="true" />
           </button>
         ) : (

@@ -53,31 +53,6 @@
   font-size: 24px;
 }
 
-.legend {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--space-lg);
-  padding-top: var(--space-md);
-  border-top: 1px solid var(--color-line);
-}
-
-.legendItem {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.legendDot {
-  width: 13px;
-  height: 13px;
-  border-radius: 50%;
-  background: var(--pillar-color);
-  flex-shrink: 0;
-}
-
 .emptyCaption {
   margin: 0;
   padding: var(--space-md);
@@ -142,11 +117,6 @@
 
 .situationCheck {
   flex-shrink: 0;
-}
-
-.legendBadge {
-  font-weight: 800;
-  color: var(--pillar-color);
 }
 
 .ctaBar {
