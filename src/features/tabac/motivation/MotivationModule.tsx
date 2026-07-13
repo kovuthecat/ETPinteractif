@@ -1,9 +1,11 @@
-import { useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from 'react';
 import { Plus } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import FicheOverlay from '../../../components/FicheOverlay';
+import { useSelection } from '../../../state/SelectionContext';
 import Dial from './Dial';
+import { MOTIVATION_SEED, iconForRaison } from './data';
 import styles from './MotivationModule.module.css';
 
 const MOVE_THRESHOLD = 4;
@@ -33,14 +35,32 @@ const MOTIVATION_COLORS = [
   'oklch(48% 0.08 230)',
 ];
 
-const MOTIVATION_SEED = [
-  'Ma santé',
-  'Mes proches',
-  'Le budget',
-  "Le goût / l'odorat",
-  'Mon souffle / ma forme',
-  'Ma liberté',
-];
+function boardGridPosition(index: number): { x: number; y: number } {
+  const col = index % 3;
+  const row = Math.floor(index / 3);
+  return { x: 18 + col * 32, y: 20 + row * 30 };
+}
+
+/** Amorce le tableau/la réserve depuis les raisons déjà retenues (état partagé).
+ *  Chaque raison retenue devient une carte ; les graines non retenues restent en
+ *  réserve. Les ids sont uniques sur les deux listes. */
+function seedFromRaisons(chosen: string[]): {
+  board: CarteBoard[];
+  reserve: CarteReserve[];
+  nextId: number;
+} {
+  let counter = 1;
+  const board: CarteBoard[] = chosen.map((label, i) => {
+    const id = counter++;
+    const { x, y } = boardGridPosition(i);
+    return { id, label, detail: '', color: MOTIVATION_COLORS[id % MOTIVATION_COLORS.length], x, y };
+  });
+  const reserve: CarteReserve[] = MOTIVATION_SEED.filter((s) => !chosen.includes(s)).map((label) => ({
+    id: counter++,
+    label,
+  }));
+  return { board, reserve, nextId: counter };
+}
 
 function relance(valeur: number): { bas?: string; haut?: string } {
   return {
@@ -53,6 +73,7 @@ type Onglet = 'echelles' | 'raisons';
 type Etape = 0 | 1 | 2;
 
 export default function MotivationModule(_props: ModuleProps) {
+  const { state, setList } = useSelection();
   const boardRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<{ id: number; startX: number; startY: number; moved: boolean } | null>(null);
 
@@ -64,12 +85,22 @@ export default function MotivationModule(_props: ModuleProps) {
   const [confianceTouched, setConfianceTouched] = useState(false);
   const [ficheOpen, setFicheOpen] = useState(false);
 
-  const [raisonsReserve, setRaisonsReserve] = useState<CarteReserve[]>(() =>
-    MOTIVATION_SEED.map((label, i) => ({ id: i + 1, label })),
-  );
-  const [raisonsBoard, setRaisonsBoard] = useState<CarteBoard[]>([]);
+  // Amorçage au montage uniquement (l'état partagé est la source des raisons).
+  const initialSeed = useMemo(() => seedFromRaisons(state.raisons), []);
+  const [raisonsReserve, setRaisonsReserve] = useState<CarteReserve[]>(initialSeed.reserve);
+  const [raisonsBoard, setRaisonsBoard] = useState<CarteBoard[]>(initialSeed.board);
   const [editingCardId, setEditingCardId] = useState<number | null>(null);
-  const nextCardId = useRef(MOTIVATION_SEED.length + 1);
+  const nextCardId = useRef(initialSeed.nextId);
+
+  // Reflète les libellés des cartes du tableau dans l'état partagé. Ne se
+  // déclenche que lorsque les LIBELLÉS changent (pas au simple déplacement).
+  const raisonsLabelsKey = JSON.stringify(raisonsBoard.map((c) => c.label));
+  useEffect(() => {
+    const labels = raisonsBoard
+      .map((c) => c.label)
+      .filter((label, i, arr) => arr.indexOf(label) === i);
+    setList('raisons', labels);
+  }, [raisonsLabelsKey, setList]);
 
   const importanceRelance = relance(importance);
   const confianceRelance = relance(confiance);
@@ -103,12 +134,6 @@ export default function MotivationModule(_props: ModuleProps) {
   }
 
   // ── Réserve → tableau ────────────────────────────────────────────────────
-  function boardGridPosition(index: number): { x: number; y: number } {
-    const col = index % 3;
-    const row = Math.floor(index / 3);
-    return { x: 18 + col * 32, y: 20 + row * 30 };
-  }
-
   function addToBoard(reserveId: number) {
     const item = raisonsReserve.find((r) => r.id === reserveId);
     if (!item) return;
@@ -365,7 +390,11 @@ export default function MotivationModule(_props: ModuleProps) {
                   onKeyDown={(e) => handleCardKeyDown(e, carte.id)}
                   aria-label={`${carte.label}${carte.detail ? ` — ${carte.detail}` : ''} — glisser pour repositionner, Entrée pour modifier`}
                 >
-                  {carte.label}
+                  {(() => {
+                    const Icon = iconForRaison(carte.label);
+                    return <Icon size={17} aria-hidden="true" />;
+                  })()}
+                  <span>{carte.label}</span>
                   {carte.detail && <span className={styles.boardCardDetail}>{carte.detail}</span>}
                 </button>
               )}
@@ -375,11 +404,15 @@ export default function MotivationModule(_props: ModuleProps) {
 
         <p className={styles.reserveLabel}>Réserve · cliquez pour ajouter au tableau</p>
         <div className={styles.reserveRow}>
-          {raisonsReserve.map((r) => (
-            <button key={r.id} type="button" className={styles.reserveCard} onClick={() => addToBoard(r.id)}>
-              {r.label}
-            </button>
-          ))}
+          {raisonsReserve.map((r) => {
+            const Icon = iconForRaison(r.label);
+            return (
+              <button key={r.id} type="button" className={styles.reserveCard} onClick={() => addToBoard(r.id)}>
+                <Icon size={16} aria-hidden="true" className={styles.reserveCardIcon} />
+                <span>{r.label}</span>
+              </button>
+            );
+          })}
           <button type="button" className={`btn btn--primary ${styles.addCardBtn}`} onClick={addFreeCard}>
             <Plus size={16} aria-hidden="true" />
             une raison

@@ -251,7 +251,10 @@
 }
 
 .boardCard {
-  display: block;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
   width: 100%;
   padding: 14px 12px;
   border: none;
@@ -266,6 +269,11 @@
   touch-action: none;
 }
 
+.boardCard svg {
+  flex: none;
+  color: #fff;
+}
+
 .boardCard:active {
   cursor: grabbing;
 }
@@ -277,6 +285,7 @@
 
 .boardCardDetail {
   display: block;
+  flex-basis: 100%;
   margin-top: 5px;
   font-size: 11.5px;
   font-weight: 500;
@@ -367,6 +376,7 @@
 .reserveCard {
   display: inline-flex;
   align-items: center;
+  gap: 8px;
   padding: 10px 14px;
   background: var(--color-surface);
   border: 2px dashed var(--color-line);
@@ -376,6 +386,11 @@
   font-weight: 700;
   cursor: pointer;
   box-sizing: border-box;
+}
+
+.reserveCardIcon {
+  flex: none;
+  color: var(--color-nav);
 }
 
 .reserveCard:hover,
