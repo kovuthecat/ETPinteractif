@@ -4,6 +4,7 @@ import type { ModuleId, ThemeId } from './features/types';
 import ThemeSelector from './components/ThemeSelector';
 import Home from './components/Home';
 import ModuleShell from './components/ModuleShell';
+import { SelectionProvider, SelectionScope } from './state/SelectionContext';
 
 type View =
   | { type: 'themes' }
@@ -33,35 +34,47 @@ function App() {
     }
   };
 
-  if (currentView.type === 'themes') {
-    return <ThemeSelector themes={THEMES} onNavigate={navigateToTheme} />;
-  }
-
-  const theme = THEMES.find((t) => t.id === currentView.themeId);
-  if (!theme) return null;
-
-  if (currentView.type === 'home') {
-    return <Home theme={theme} onNavigate={navigateToModule} />;
-  }
-
-  const module = theme.modules.find((m) => m.id === currentView.moduleId);
-  if (!module) return null;
-
-  const { Component, titre, sources, rendersOwnShell } = module;
-  if (rendersOwnShell) {
+  const renderModule = (
+    theme: (typeof THEMES)[number],
+    view: Extract<View, { type: 'module' }>,
+  ) => {
+    const module = theme.modules.find((m) => m.id === view.moduleId);
+    if (!module) return null;
+    const { Component, titre, sources, rendersOwnShell } = module;
+    if (rendersOwnShell) {
+      return (
+        <Component
+          onNavigate={navigateToModule}
+          context={view.context}
+          shell={{ titre, sources, onBack: handleBack }}
+        />
+      );
+    }
     return (
-      <Component
-        onNavigate={navigateToModule}
-        context={currentView.context}
-        shell={{ titre, sources, onBack: handleBack }}
-      />
+      <ModuleShell titre={titre} sources={sources} onBack={handleBack}>
+        <Component onNavigate={navigateToModule} context={view.context} />
+      </ModuleShell>
     );
-  }
-  return (
-    <ModuleShell titre={titre} sources={sources} onBack={handleBack}>
-      <Component onNavigate={navigateToModule} context={currentView.context} />
-    </ModuleShell>
-  );
+  };
+
+  const renderView = () => {
+    if (currentView.type === 'themes') {
+      return <ThemeSelector themes={THEMES} onNavigate={navigateToTheme} />;
+    }
+    const theme = THEMES.find((t) => t.id === currentView.themeId);
+    if (!theme) return null;
+    const inner =
+      currentView.type === 'home' ? (
+        <Home theme={theme} onNavigate={navigateToModule} />
+      ) : (
+        renderModule(theme, currentView)
+      );
+    return <SelectionScope themeId={currentView.themeId}>{inner}</SelectionScope>;
+  };
+
+  // Le SelectionProvider est la racine stable de l'app : il ne se démonte jamais,
+  // donc l'état de sélection (en mémoire) survit au changement de vue/module.
+  return <SelectionProvider>{renderView()}</SelectionProvider>;
 }
 
 export default App;
