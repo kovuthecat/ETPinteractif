@@ -2,7 +2,7 @@
 
 Carte synthétique du projet. Permet à ChatGPT et Claude Code de localiser vite les zones pertinentes.
 
-> État : **lot `PLAN_modules-tabac.md` (T1-T11) terminé le 2026-06-28** — scaffolding + les 6 modules du thème tabac sont implémentés et naviguables. **`plans/PLAN_corrections-v2.md` (R1-R9) terminé le 2026-07-01** — dont R9 : ajout d'un 7ᵉ module transverse, `motivation/`. **Moteur multi-thèmes introduit le 2026-07-08** : le thème tabac a été déplacé sous `features/tabac/`, un écran de sélection de thème (`ThemeSelector`) a été ajouté, et un thème `diabete` est scaffoldé (sans contenu, en attente de cadrage). **Chantier `plans/extensions-tabac/` (X1-X7) clos le 2026-07-09** (brief `docs/BRIEF_TABAC.md`) : 8ᵉ module `plan-arret/`, 4 fiches imprimables via `FicheOverlay`, portes de fin de module via `ModuleFooterNav`, fil rouge du thème, composant `InfoHover` (créé, non câblé). **Chantier `plans/approfondissement-tabac/` (S1-S7) clos le 2026-07-10** : modèle `nicotineCurve.ts` réaliste, `SilhouetteCorps` générique, modules 9 (Ce que l'arrêt répare) et 10 (Vrai ou faux ?). **Chantier `plans/boite-a-outils/` (BO1-BO9) clos le 2026-07-10** : `craving/` remplacé par `boite-a-outils/` (14 outils filtrables, fiche « Ma boîte à outils »), refonte du module Composantes (sélection radiale de situations, `situations.ts` partagé), contexte de navigation générique (`unknown`) dans le moteur, vapoteuse réintégrée dans les Substituts, section « Si j'ai un écart » dans Plan d'arrêt, 6 nouvelles cartes Vrai/faux (21 au total), interrupteur « toniques uniquement » côté diabète/Activité. Cette carte décrit l'arborescence réelle.
+> État : **lot `PLAN_modules-tabac.md` (T1-T11) terminé le 2026-06-28** — scaffolding + les 6 modules du thème tabac sont implémentés et naviguables. **`plans/PLAN_corrections-v2.md` (R1-R9) terminé le 2026-07-01** — dont R9 : ajout d'un 7ᵉ module transverse, `motivation/`. **Moteur multi-thèmes introduit le 2026-07-08** : le thème tabac a été déplacé sous `features/tabac/`, un écran de sélection de thème (`ThemeSelector`) a été ajouté, et un thème `diabete` est scaffoldé (sans contenu, en attente de cadrage). **Chantier `plans/extensions-tabac/` (X1-X7) clos le 2026-07-09** (brief `docs/BRIEF_TABAC.md`) : 8ᵉ module `plan-arret/`, 4 fiches imprimables via `FicheOverlay`, portes de fin de module via `ModuleFooterNav`, fil rouge du thème, composant `InfoHover` (créé, non câblé). **Chantier `plans/approfondissement-tabac/` (S1-S7) clos le 2026-07-10** : modèle `nicotineCurve.ts` réaliste, `SilhouetteCorps` générique, modules 9 (Ce que l'arrêt répare) et 10 (Vrai ou faux ?). **Chantier `plans/boite-a-outils/` (BO1-BO9) clos le 2026-07-10** : `craving/` remplacé par `boite-a-outils/` (14 outils filtrables, fiche « Ma boîte à outils »), refonte du module Composantes (sélection radiale de situations, `situations.ts` partagé), contexte de navigation générique (`unknown`) dans le moteur, vapoteuse réintégrée dans les Substituts, section « Si j'ai un écart » dans Plan d'arrêt, 6 nouvelles cartes Vrai/faux (21 au total), interrupteur « toniques uniquement » côté diabète/Activité. **Chantier `plans/corrections-audit-tabac/` (S1-S13) clos le 2026-07-13** : retouches UI/a11y sur 6 modules tabac + 1 composant diabète partagé (S1-S9), nouveau `src/state/SelectionContext.tsx` (état de sélection partagé **en mémoire**, S10), nouveau livret d'accompagnement imprimable `src/components/PrintableLivret.tsx` (S11, proposition livrée sans validation visuelle, à ajuster). Chantier séparé cadré `plans/aide-patient/` (T16, app patient autonome, 2ᵉ surface applicative) : cadrage produit complet, **non démarré**. Cette carte décrit l'arborescence réelle.
 
 ---
 
@@ -34,6 +34,15 @@ src/
     FicheOverlay.tsx / .module.css    # fiche à emporter générique (aperçu A4 + impression, X1)
     ModuleFooterNav.tsx / .module.css # porte de fin de module générique « Continuer l'exploration » (X6)
     InfoHover.tsx / .module.css       # 2ᵉ niveau de lecture générique, survol/focus+clic verrouillant (X6, créé ; câblé diabète/alimentation)
+    PrintableLivret.tsx / .module.css # livret d'accompagnement imprimable multi-pages A4 (couverture + sections
+                                       # imprimables assemblées depuis SelectionContext ; consommé par le module
+                                       # plan-arret tabac ; S11 corrections-audit-tabac, 2026-07-13, proposition
+                                       # livrée sans validation visuelle)
+  state/
+    SelectionContext.tsx    # état de sélection partagé EN MÉMOIRE (jamais localStorage/sessionStorage/cookies),
+                             # Provider générique indexé par themeId + hook useSelection() ; monté dans App.tsx
+                             # au-dessus du switcher de vues (survit à la navigation inter-modules, se
+                             # réinitialise au rechargement) ; S10 corrections-audit-tabac, 2026-07-13
   features/
     types.ts                # ModuleId/FamilleId (string génériques), Hue, ModuleDef, FamilleDef, ThemeDef, exergue?
     registry.ts              # THEMES: ThemeDef[] — registre des thèmes (tabac + diabete)
@@ -44,16 +53,23 @@ src/
       addiction/AddictionModule.tsx              # Module 1 — composantes de l'addiction (refonte BO3 2026-07-10 :
                                                   # sélection radiale de situations, sans description ni solution à l'écran)
       nicotine/NicotineModule.tsx                # Module 2 — nicotine, frise 24 h cliquable (S4, X6 : ModuleFooterNav)
-      substituts/SubstitutsModule.tsx            # Module 3 — substituts & titration, 6 formes dont vapoteuse
-                                                  # (T9, X3 : fiche, X6 : ModuleFooterNav, BO5 2026-07-10 : vapoteuse)
+      substituts/SubstitutsModule.tsx + data.ts  # Module 3 — substituts & titration, 6 formes dont vapoteuse
+                                                  # (T9, X3 : fiche, X6 : ModuleFooterNav, BO5 2026-07-10 : vapoteuse) ;
+                                                  # data.ts (FORMES_DATA/FormeId/FORMES_PONCTUELLES) extrait du
+                                                  # module en S11 corrections-audit-tabac, réutilisé par le livret
       nicotine-toxique/NicotineToxiqueModule.tsx # Module 4 — nicotine ≠ toxique (T10, X6 : migré sur ModuleFooterNav)
       soulagement/SoulagementModule.tsx          # Module 5 — le piège du soulagement (S7, X6 : ModuleFooterNav)
       boite-a-outils/BoiteAOutilsModule.tsx      # Module 6 — Stratégies & outils, ex-Craving (BO1-BO2, 2026-07-10) :
                                                   # 14 outils filtrables par situation, VagueCraving.tsx (4D hérité),
                                                   # fiche « Ma boîte à outils », X6 : ModuleFooterNav
-      motivation/MotivationModule.tsx            # Module 7 — explorer ma motivation (S9 cadran Dial, X4 : fiche, X6)
-      plan-arret/PlanArretModule.tsx             # Module 8 — mon plan d'arrêt (X5, ajouté 2026-07-09 ; section 7
-                                                  # « Si j'ai un écart » ajoutée BO6, 2026-07-10 ; famille agir)
+      motivation/MotivationModule.tsx + data.ts  # Module 7 — explorer ma motivation (S9 cadran Dial, X4 : fiche, X6) ;
+                                                  # data.ts (MOTIVATION_SEED/RAISON_ICONS/iconForRaison) extrait du
+                                                  # module en S11 corrections-audit-tabac, réutilisé par le livret
+      plan-arret/PlanArretModule.tsx + livretSections.tsx  # Module 8 — mon plan d'arrêt (X5, ajouté 2026-07-09 ;
+                                                  # section 7 « Si j'ai un écart » ajoutée BO6, 2026-07-10 ; famille
+                                                  # agir ; lit ET écrit SelectionContext depuis S10 (bidirectionnel) ;
+                                                  # livretSections.tsx = contrat PrintableSection + builder
+                                                  # buildLivretSections(state) consommé par PrintableLivret, S11)
       benefices-arret/BeneficesArretModule.tsx   # Module 9 — ce que l'arrêt répare
                                                   # (silhouette générique + frise 10 jalons, S5 approfondissement-tabac)
       idees-recues/IdeesRecuesModule.tsx + data.ts  # Module 10 — Vrai ou faux ? (21 cartes, S6 approfondissement-tabac
@@ -102,14 +118,14 @@ docs/
     2026-07-10-rapport-openevidence-sevrage.md  # stratégies comportementales du sevrage — autorité chiffrée
                                                  # du Module 6 (Stratégies & outils) ; chiffres jamais à l'écran
 plans/
-  extensions-tabac/           # X1-X7 : socle fiches, 3 fiches modules, module « Mon plan d'arrêt » + sa fiche,
-                               # portes de fin de module + fil rouge + InfoHover, resync docs — chantier clos 2026-07-09
-  approfondissement-tabac/    # S1-S7 : modèle nicotineCurve.ts réaliste, SilhouetteCorps générique, modules
-                               # 9 (Ce que l'arrêt répare) et 10 (Vrai ou faux ?) — chantier clos 2026-07-10
-  boite-a-outils/             # BO1-BO9 : craving → Stratégies & outils, refonte Composantes, vapoteuse
-                               # substituts, section « Si j'ai un écart », 6 cartes Vrai/faux, filtre diabète
-                               # activité — chantier clos 2026-07-10
-PLAN_modules-tabac.md         # plan d'exécution T1-T11 (clos)
+  # un dossier par chantier EN COURS (index.md + S<n>.md) ; le détail de chaque chantier clos
+  # est synthétisé dans STATUS.md/TASKS.md puis le dossier est purgé (historique → git log,
+  # cf. commit "chore: purge des dossiers plans/ des chantiers déjà clos", 2026-07-11)
+  aide-patient/
+    index.md    # cadrage complet (2026-07-13) de la future app patient autonome (2ᵉ surface applicative,
+                # bundle Vite séparé, contenu générique, v1 « Mes substituts » + « Agir face à une
+                # situation », QR unique) — sorti de corrections-audit-tabac (T16) ; chantier séparé,
+                # sessions P1-P6 à écrire au lancement, non démarré
 STATUS.md / VALIDATION.md / PROJECT_MAP.md
 ```
 
@@ -151,17 +167,46 @@ Fichiers clés : `src/components/FicheOverlay.tsx`, `src/components/ModuleFooter
 Points de vigilance : composants génériques, agnostiques du thème (aucun contenu en dur) ; les portes ne
 sont jamais un enchaînement forcé ; ne pas câbler `InfoHover` sans validation Thibault (§5 du brief).
 
+### Feature 3ter — État de sélection partagé + livret d'accompagnement (S10-S11, corrections-audit-tabac, 2026-07-13)
+Rôle : les sélections faites dans les modules tabac (situations, forme de substitut, outils « Dans ma
+fiche », raisons) survivent désormais à la navigation entre modules (perdues auparavant, chaque module
+avait son state local isolé) via un état **en mémoire**, partagé et lu/écrit par « Mon plan d'arrêt » ; ces
+mêmes sélections sont ensuite assemblées en un livret d'accompagnement imprimable multi-pages A4 (remplace
+l'ancienne fiche récap texte de « Mon plan d'arrêt »).
+Fichiers clés : `src/state/SelectionContext.tsx` (Provider générique par `themeId` + `useSelection()`,
+monté dans `App.tsx`), `src/components/PrintableLivret.tsx`, `src/features/tabac/plan-arret/
+livretSections.tsx` (contrat `PrintableSection` + `buildLivretSections`), `src/features/tabac/substituts/
+data.ts` et `src/features/tabac/motivation/data.ts` (contenu factorisé, consommé par les modules **et** le
+livret).
+Points de vigilance : **zéro persistance** (Context React uniquement, jamais localStorage/sessionStorage/
+cookies — se réinitialise à un rechargement de page, c'est voulu) ; le livret est une **proposition livrée
+sans validation visuelle** (cf. `VALIDATION.md` §S11), à considérer comme un brouillon tant que Thibault ne
+l'a pas revu à l'écran.
+
 ### Feature 4 — Thème diabète (scaffold, cadrage en cours)
 Rôle : place réservée pour le 2e thème. `src/features/diabete/registry.ts` exporte `MODULES: []` ; le thème apparaît dans `ThemeSelector` avec un badge « Bientôt disponible » (non cliquable). Le cadrage clinique (4 modules sur 8 déjà spécifiés en détail) avance dans `docs/diabete/`, avant tout câblage.
 Fichiers clés : `src/features/diabete/registry.ts`, `docs/diabete/00-global.md` (index + grammaire commune), `docs/diabete/module-*.md`, `docs/evidence-diabete/` (sources probantes brutes).
 Points de vigilance : ne pas ajouter de module au registre avant le cadrage clinique complet avec Thibault (cf. `docs/diabete/00-global.md`, table de statut par module).
+
+### Feature 4bis — App d'aide patient autonome (cadrage complet, chantier séparé, non démarré)
+Rôle : 2ᵉ surface applicative, atteinte par un QR code posé sur les fiches/le livret, offrant au patient
+**seul** (chez lui, sans soignant) « Mes substituts » (comment les utiliser) et « Agir face à une situation »
+(situation → outils). Bundle Vite **séparé** de l'app de consultation (2ᵉ point d'entrée `patient.html`/
+`src/patient/main.tsx`), contenu générique consommé via une couche `src/content/` partagée (source unique,
+à créer), zéro donnée patient dans l'URL/le build/un serveur, zéro dépendance runtime ajoutée.
+Fichiers clés (à venir, cadrés dans `plans/aide-patient/index.md`) : `patient.html`, `src/patient/`,
+`src/content/`, `vite.config.ts` (2ᵉ entrée via `build.rollupOptions.input`).
+Points de vigilance : le graphe d'import de l'entrée patient ne doit **jamais** atteindre
+`src/features/*/registry.ts` ni un module de consultation (séparation physique du code, pas une route
+masquée) ; textes reformulés en « voix patient » (comment faire, pas comment le proposer) ; **cadré mais
+non démarré** — à lancer après commit/push du chantier `corrections-audit-tabac`.
 
 ---
 
 ## Fichiers transversaux importants
 - Configuration : `vite.config.ts`, `tsconfig*.json`, `package.json` (scripts `dev`/`build`/`test`)
 - Navigation : état local dans `src/App.tsx` (pas de router)
-- État global : minimal, **éphémère uniquement** (pas de persistance ; pas de localStorage)
+- État global : minimal, **éphémère uniquement** (pas de persistance ; pas de localStorage) — `src/state/SelectionContext.tsx` (thème tabac, Context React monté dans `App.tsx`, depuis S10 corrections-audit-tabac 2026-07-13)
 - API / persistance : **aucune** (décision structurante)
 - UI partagée : `src/components/`
 - Logique pure testée : `src/features/tabac/lib/nicotineCurve.ts` (Vitest) — spécifique au thème tabac, pas un utilitaire du moteur générique

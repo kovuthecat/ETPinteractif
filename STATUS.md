@@ -4,7 +4,96 @@
 
 > **Frontières** — STATUS : état actuel · `TASKS.md` : backlog + tâches · `plans/` : plan d'une tâche active · `VALIDATION.md` : checklist visuelle.
 >
-> **Dernière mise à jour :** 2026-07-12 (chantier `illustrations-tabac` — 42 vignettes tabac intégrées, 1ʳᵉ génération d'illustrations du thème)
+> **Dernière mise à jour :** 2026-07-13 (chantier corrections-audit-tabac — 16 points d'audit tabac+diabète
+> traités, consolidation S13 ; ménage du dépôt — purge scories techniques + chantiers clos)
+
+**Corrections audit Chrome — thème Tabac + 2 retours Diabète (2026-07-13)** — chantier
+`plans/corrections-audit-tabac/` (index + S1-S13), 16 points d'un audit navigateur manuel de Thibault
+(Claude in Chrome sur le déployé, reconstruit dans `rapport-bugs-etp-tabac.md` + `rapport-bugs-etp-diabete.md`)
+traités : 15 côté tabac (T1-T15, sessions S1-S9 en vague parallèle + S10-S11 en solo) + 1 côté diabète
+(AT-D1, déjà fait antérieurement — Hypoglycémie en dernier + renommage « Insuline : adapter les doses » →
+« Insuline basale »). **Retouches UI/tailles/icônes** (S1-S9) : titration du patch conditionnée à la forme
+Patch + illustration vapoteuse responsive (S1) ; grille Vrai/faux modernisée + fix a11y `role="listitem"`
+posé à tort sur un `<button>` + illustration détail agrandie (S2) ; case « Dans ma fiche » en icône Lucide
+compacte + illustrations agrandies + overlay des 4 D rendu transparent au-dessus de la courbe de l'envie
+(S3) ; anti-débordement du cercle « Comportementale » (viewBox agrandi) + retrait de la légende redondante
+(S4) ; box de courbe Nicotine agrandie et modernisée (S5) ; illustrations d'organes désormais visibles dans
+la vue frise « Ce que l'arrêt répare », pas seulement au clic d'un organe (S6) ; marqueurs Repas/Injection
+de `CourbeGlycemie` (composant diabète **partagé** par tous les onglets Insuline) passés en icônes Lucide
+`Utensils`/`Syringe` (S7) ; icônes Lucide en tête des cartes-raisons Motivation (S8) ; ordre des familles de
+l'accueil tabac réordonné « Se motiver → Comprendre → Agir » (S9, thème diabète intact).
+
+**Socle d'état partagé en mémoire (S10, T11)** — nouveau `src/state/SelectionContext.tsx` : Provider React
+générique (indexé par `themeId`) + hook `useSelection()`, monté dans `App.tsx` **au-dessus du switcher de
+vues** — survit à la navigation inter-modules (contrairement au state local des modules) mais se
+réinitialise à un rechargement de page (comportement éphémère voulu, conforme à l'invariant « zéro
+persistance » : jamais de `localStorage`/`sessionStorage`/cookies). Câblé en écriture depuis Composantes
+(situations), Substituts (forme, via un nouveau toggle « Retenir pour mon plan »), Boîte à outils (outils
+« Dans ma fiche ») et Motivation (raisons) ; « Mon plan d'arrêt » lit **et** écrit désormais toutes ses
+sections (bidirectionnel) + `dateArret` + un nouveau bouton « Réinitialiser mon plan ». Grep de persistance
+vérifié clean sur le diff.
+
+**Livret d'accompagnement (S11, T14, proposition)** — « Mon plan d'arrêt » n'imprime plus un récapitulatif
+texte mais un **livret multi-pages A4 illustré** (`src/components/PrintableLivret.tsx` + builder
+`src/features/tabac/plan-arret/livretSections.tsx`) : couverture → Comprendre (situations) → Mes substituts
+(forme + bonnes pratiques + illustration) → Mes parades & outils (outils illustrés + parades 4D) → Mes
+raisons (icônes) → Si j'ai un écart → Ce que l'arrêt répare (7 zones) → Contacts (39 89). Factorisation au
+passage pour éviter la duplication de contenu clinique : `FORMES_DATA`/`FormeId`/`FORMES_PONCTUELLES`
+extraits vers `tabac/substituts/data.ts`, `MOTIVATION_SEED`/`RAISON_ICONS`/`iconForRaison` vers
+`tabac/motivation/data.ts` (supprime une duplication `RAISONS` préexistante dans `PlanArretModule`). **Livré
+sans validation visuelle** (demande explicite de Thibault, « on ajustera après ») — points ouverts consignés
+dans `VALIDATION.md` (bouton « Imprimer mon plan » remplacé par « Imprimer mon livret complet » : plus de
+fiche « plan » courte isolée ; « Mes bénéfices »/« Contacts » toujours des sections fixes ; pagination A4
+fine à valider en aperçu Ctrl+P ; illustration substituts affichée aussi pour le patch, alors que le module
+lui-même n'en montre pas).
+
+**Cadrage séparé de l'app patient (T16)** — sorti du chantier en **chantier séparé cadré**,
+`plans/aide-patient/index.md` : 2ᵉ surface applicative autonome (2ᵉ point d'entrée Vite, bundle qui
+n'importe jamais le registre ni un module de consultation), contenu **générique** (jamais les choix d'un
+patient, zéro donnée patient), v1 = « Mes substituts » + « Agir face à une situation », **un seul QR** vers
+la racine de cette app. Cadrage produit complet (2026-07-13), **non démarré**. Reste différable :
+hébergement de l'URL (2ᵉ projet Vercel ou sous-domaine) au moment du déploiement.
+
+Gate finale du chantier (S1-S11 + S13) : `npx tsc --noEmit` OK · `npm run build` OK · `npm test` 95/95 OK,
+aucune dépendance runtime ajoutée. **La validation VISUELLE humaine (Thibault, `npm run dev`) reste
+entièrement à faire**, session par session (cf. `VALIDATION.md`) — aucune vérification navigateur n'a été
+faite côté Claude. Le « ménage du dépôt » du 2026-07-13 ci-dessous reste par ailleurs **non committé**, à
+trancher par Thibault avant tout commit/push groupé de ce chantier.
+
+**Ménage du dépôt (2026-07-13)** — nettoyage technique, aucun changement fonctionnel :
+
+- **Purge des 5 derniers dossiers `plans/` de chantiers clos** (`audit-diabete`, `corrections-visuelles-diabete`,
+  `-v2`, `-v3`, `illustrations-diabete`) — même traitement que la purge du 2026-07-11 (`extensions-tabac`,
+  `approfondissement-tabac`, `boite-a-outils`, etc.) : contenu déjà synthétisé dans `STATUS.md`/`TASKS.md`,
+  détail complet retrouvable via `git log`. `plans/` est désormais vide (attend le prochain chantier).
+- **Scories techniques supprimées** : `.audit-temp/` (captures + specs Playwright ad hoc, suivies par erreur
+  dans git, contenu jamais référencé), `.codex-tmp/` (cache d'outil Codex), `dist/` (build, régénérable),
+  `test-results/` et `output/playwright/` — sauf les captures de l'audit diabète 2026-07-12, **déplacées vers
+  `Audit/evidence-audit-diabete/`** pour rester à côté du rapport qui les référence (`Audit/AUDIT-DIABETE.md`,
+  chemins mis à jour).
+- **`Audit/`** (rapports d'audit manuel, jusqu'ici non suivi par git par oubli) **ajouté au suivi git** —
+  c'est le dépôt permanent désigné pour ces rapports depuis la purge des audits racine du 2026-07-12.
+  Vérification point par point avant purge (ne pas supprimer un audit sur la seule foi de sa date) :
+  - **Supprimés, entièrement traités** — `audit-etp-interactif.md` (source des 12 points du chantier
+    `audit-diabete` T1-T11, clos) et `audit chrome.md` (source 1:1 des 10 sections du chantier
+    `corrections-visuelles-diabete-v3` S1-S10, clos, vérifié point par point).
+  - **Conservés** — `audit-etp-interactif-iteration2.md` (6 points corrigés en working tree mais
+    **jamais committés**, en attente de la validation visuelle Thibault — cf. `VALIDATION.md`) ;
+    `AUDIT-DIABETE.md` (audit Chromium/Playwright distinct, thème diabète) dont le tableau de synthèse
+    contient plusieurs points **encore non traités par aucun chantier** : chiffres/dosages bruts à
+    l'écran (`CG`, `mg/dL`, `15 g`, `%` — Alimentation/Activité/Hypoglycémie/Insuline/Sources,
+    contredit l'invariant « pas de texte médical chiffré brut »), animation Mécanisme non pilotable
+    par temps pédagogique, libellé « Accueil » vs « Retour aux modules », zones Complications déjà
+    vues dès l'état initial. **Reste un backlog réel** (candidat à un futur chantier), pas une simple
+    scorie — évidence déplacée vers `Audit/evidence-audit-diabete/` (voir plus bas).
+- **`.gitignore`** : ajout de `.audit-temp/`, `.codex-tmp/`, `output/`, `test-results/` pour éviter que ces
+  scories reviennent (les rapports d'audit vivent dans `Audit/`, pas dans les dossiers de sortie d'outils).
+- **`PROJECT_MAP.md`** : référence morte à `PLAN_modules-tabac.md` (supprimé depuis le 2026-06-28) retirée ;
+  section `plans/` généralisée pour ne plus lister de chantiers nommés (source de péremption à chaque purge).
+- **`maquettes/` supprimé en entier** (handoffs Claude Design tabac + diabète, zips + extraits + snapshot de
+  référence) — les deux chantiers de câblage sont clos (`refonte-ui` S1-S10 pour le tabac 2026-07-08, `theme-diabete`
+  D1-D14 pour le diabète 2026-07-09) et l'UI a depuis largement divergé du maquette d'origine via 3 tours de
+  corrections visuelles ; plus aucune valeur de référence active. Historique complet → `git log`.
 
 **Illustrations tabac (2026-07-12)** — le thème tabac n'avait **aucune** illustration (tous les
 `IllustrationSlot` en placeholder depuis leur création). Thibault a livré un lot de sources dans

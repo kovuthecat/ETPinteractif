@@ -1150,3 +1150,131 @@ point principal à valider ici : la bonne image doit apparaître au bon endroit.
       (aspect ratio d'origine préservé, pas de recadrage carré forcé).
 - [ ] Poids de page raisonnable au chargement (42 PNG, 3,2 Mo au total, chargés à la demande par
       panneau — jamais tous en même temps).
+
+## Chantier corrections-audit-tabac (S1-S11) — validation du 2026-07-13
+
+> Corrections livrées 2026-07-13 (Sonnet, vague 1 parallèle S1-S9 ; Opus, solo S10-S11) : 15 points de
+> l'audit navigateur tabac (`rapport-bugs-etp-tabac.md` T1-T15) + le socle d'état partagé + le livret
+> d'accompagnement. Gate : `tsc --noEmit` ✓ · `npm run build` ✓ · `npm test` ✓ (95/95). **Sans navigateur
+> côté Claude** — tout ci-dessous est à confirmer à l'écran (`npm run dev`). **Statut global : en attente de
+> validation visuelle Thibault, aucun point ci-dessous vérifié à l'écran.**
+
+### S1 — Substituts : titration conditionnelle + illustration vapoteuse (T6/T7)
+
+- [ ] La section « Méthode de titration du patch » n'apparaît que sur la forme **Patch** ; absente sur
+      Gomme/Pastille/Comprimé/Spray/Vapoteuse.
+- [ ] L'illustration technique de la **vapoteuse** tient dans le cadre, non déformée (`object-fit: contain`,
+      max-width ~360px) ; les 5 autres formes restent correctes (non rognées/déformées).
+
+### S2 — Vrai ou faux : grille attractive + a11y + taille illustration (T4/T5)
+
+- [ ] Illustration de la carte détail nettement plus grande (176px), nette, ne casse pas le mobile
+      (boutons Vrai/Faux restent visibles sous 560px).
+- [ ] Grille d'accueil des 21 affirmations : hover évident (bordure/ombre), coins arrondis, hauteurs de
+      carte homogènes, cartes déjà vues distinguées (badge « vu » / opacité), compteur `.progressText`
+      devenu une barre de progression visuelle.
+- [ ] Lecteur d'écran : la grille est annoncée comme une **liste de boutons** (le `role="listitem"` posé à
+      tort directement sur un `<button>` a été déplacé sur un `<li>` enveloppant, dans un `<ul role="list">`
+      — à vérifier avec l'inspecteur d'accessibilité du navigateur si possible).
+
+### S3 — Boîte à outils : checkbox → icône + tailles + overlay 4D (T8/T9/T10)
+
+- [ ] Case « Dans ma fiche » : icône Lucide compacte (`Circle`/`CheckCircle2`) au lieu d'une grosse
+      checkbox 44×44px ; cible cliquable toujours ≥ 44px (padding invisible) ; focus clavier visible.
+- [ ] Illustrations des tuiles de la grille agrandies (~96px) et de la vue détail (~160px), nettes.
+- [ ] Outil « Laisser passer la vague — les 4 D » : la courbe de l'envie reste visible **en transparence**
+      sous les 4 cartes D (fond `rgba(255,255,255,.72)` + flou) ; texte lisible même sur la montée dorée
+      (zone la plus sombre) ; la carte **« Se détendre »** reste au premier plan et son cercle de
+      respiration reste cliquable (aucune couche transparente ne l'intercepte).
+
+### S4 — Composantes : cercle « Comportementale » + retrait légende (T1)
+
+- [ ] Le cercle **« Comportementale »** ne chevauche plus la légende ni les puces de situations, à
+      1440×900 et en mobile (viewBox agrandi `0 0 600 460` → `0 0 600 560`, cercle non déplacé).
+- [ ] La légende du bas (3 items couleur/symptômes/stratégies) a bien disparu — l'info reste lisible via
+      les cercles eux-mêmes.
+
+### S5 — Nicotine : agrandir + moderniser la box de courbe (T2)
+
+- [ ] Box nettement plus grande/aérée (viewBox 640×262 → 720×420).
+- [ ] Les 3 bandes (SURDOSAGE / ZONE DE CONFORT / MANQUE) lisibles, MANQUE n'a plus l'air d'une simple
+      barre fine.
+- [ ] Rendu modernisé : coins arrondis du cadre (clipPath), dégradé doux (sheen), courbe plus épaisse avec
+      aire teintée, marqueurs en pastilles à ombre douce + tooltip natif au survol, labels de zone en
+      pastille discrète, axe temporel allégé.
+- [ ] Placement/retrait d'événements (cigarette, substitut, patch ± dose) fonctionne comme avant ; aucun
+      décalage introduit par le changement de viewBox.
+
+### S6 — Ce que l'arrêt répare : illustrations en vue frise (T12)
+
+- [ ] En vue frise (jalon courant, avant de cliquer un organe), l'illustration `benef-<zone>` de la/les
+      zone(s) du jalon s'affiche déjà (plus seulement en vue détail d'organe après clic sur un pin).
+- [ ] Vérifier en particulier goût/odorat → illustration `benef-bouche` correcte (pas de placeholder
+      silencieux).
+- [ ] La vue détail d'organe (clic sur un pin de la silhouette) reste inchangée.
+
+### S7 — Marqueurs Repas/Injection → icônes Lucide (T3, `CourbeGlycemie`, tous onglets Insuline)
+
+- [ ] Les marqueurs affichent une icône **`Utensils`** (repas) ou **`Syringe`** (injection d'insuline) au
+      lieu d'une lettre R/A, sur tous les onglets du module Insuline (composant partagé — un seul
+      changement doit couvrir tous les onglets).
+- [ ] Ligne repère + label « Repas » toujours présents ; contraste correct de l'icône (blanc) sur le badge
+      coloré.
+
+### S8 — Cartes-raisons : icônes Lucide + retrait placeholders (T13)
+
+- [ ] Chaque carte-raison (tableau **et** réserve) affiche une icône Lucide en tête (`HeartPulse`/
+      `Utensils`/`Users`/`Wallet`/`Wind`/`Bird`, `Star` par défaut) alignée au titre, colorisée selon la
+      carte.
+- [ ] Aucun sous-texte placeholder « exemple »/« blablabla » visible (le code n'en contenait déjà plus au
+      moment de la session — seul l'ajout des icônes était nécessaire ; à confirmer qu'aucun résidu
+      n'apparaît à l'écran).
+
+### S9 — Accueil tabac : ordre des familles (T15)
+
+- [ ] Sur l'accueil du thème tabac, l'ordre des familles est **Se motiver → Comprendre → Agir**.
+- [ ] Le thème diabète reste inchangé (Comprendre / Agir au quotidien / Se soigner).
+
+### S10 — État de sélection partagé en mémoire (T11)
+
+- [ ] Cocher des situations (Composantes), une forme (Substituts → nouveau toggle « Retenir pour mon
+      plan »), des outils (« Dans ma fiche », Boîte à outils), des raisons (Motivation) dans leurs modules
+      respectifs, puis ouvrir **« Mon plan d'arrêt »** → toutes les sections apparaissent **pré-remplies**.
+- [ ] Naviguer entre modules (aller/retour) conserve la sélection (le Context ne se démonte pas, contraste
+      avec le state local perdu auparavant).
+- [ ] **Recharger la page (F5) remet tout à zéro** (comportement attendu — zéro persistance, pas un bug).
+- [ ] Le bouton **« Réinitialiser mon plan »** vide bien l'état.
+- [ ] Éditer une section directement dans « Mon plan d'arrêt » met à jour le Context (cohérence
+      bidirectionnelle avec les modules sources).
+
+### S11 — Livret d'accompagnement (T14) — proposition à ajuster
+
+> **Livré sans validation visuelle** (demande explicite de Thibault : « on ajustera après »). À vérifier
+> intégralement à l'écran, avec un parcours de sélection complet (S10) avant impression.
+
+- [ ] Depuis « Mon plan d'arrêt », le bouton **« Imprimer mon livret complet »** ouvre l'aperçu
+      d'impression (Ctrl+P) d'un livret multi-pages A4 illustré : couverture (titre + date d'arrêt) →
+      Comprendre (situations) → Mes substituts (forme + bonnes pratiques + illustration) → Mes parades &
+      outils (outils « Dans ma fiche » illustrés + parades 4D) → Mes raisons (icônes) → Si j'ai un écart →
+      Ce que l'arrêt répare (7 zones) → Contacts (39 89 / Tabac Info Service).
+- [ ] Aucun débordement/coupure malvenue de page A4 ; couleurs et illustrations sortent bien à
+      l'impression (`print-color-adjust: exact`).
+- [ ] Les sections sans sélection affichent un défaut doux (« À compléter avec votre soignant ») plutôt
+      que d'être masquées.
+- [ ] Les 4 fiches individuelles existantes (substituts, méthode patch, raisons, boîte à outils) impriment
+      toujours correctement (non régressées par l'introduction du livret).
+- [ ] **Points ouverts à trancher avec Thibault** (cf. `S11.md` §Validation) :
+  - le bouton « Imprimer mon plan » (ancienne fiche récap texte) a été **remplacé** par « Imprimer mon
+    livret complet » — il n'existe plus de fiche « plan » courte isolée : à confirmer que c'est voulu ;
+  - « Mes bénéfices » et « Contacts » sont des sections **fixes**, toujours affichées (il n'existe pas de
+    champ de sélection dédié aux bénéfices) : à confirmer ;
+  - pagination A4 fine (sauts de page forcés/naturels) à valider à l'œil en aperçu Ctrl+P ;
+  - l'illustration substituts est affichée aussi pour le **patch** dans le livret, alors que le module
+    Substituts lui-même n'en montre pas à l'écran : à confirmer que c'est cohérent.
+
+### Hors périmètre de cette checklist
+
+- **AT-D1** (diabète, ordre Hypoglycémie + renommage « Insuline basale ») : déjà fait antérieurement au
+  chantier, pas de checklist dédiée ici.
+- **T16** (module d'aide patient autonome) : sorti en chantier séparé cadré `plans/aide-patient/index.md`,
+  **non démarré** — aucune validation visuelle à faire pour l'instant.
