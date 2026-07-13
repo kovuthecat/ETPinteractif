@@ -208,49 +208,52 @@ export default function VagueCraving({ onBack }: VagueCravingProps) {
             <p className={styles.clock}>{formatClock(timeLeft)}</p>
           </div>
 
-          <div className={styles.stage}>
-            <svg viewBox="0 0 580 130" preserveAspectRatio="xMidYMid meet" className={styles.svg}>
-              <path d={WAVE_BG_PATH} className={styles.waveBg} />
-              <path d={wavePath} className={styles.waveProgress} />
-              <circle cx={dot.x} cy={dot.y} r={13} className={styles.markerHalo} />
-              <circle cx={dot.x} cy={dot.y} r={7} className={styles.marker} />
-            </svg>
-          </div>
+          <div className={styles.overlayZone}>
+            <div className={styles.stage}>
+              <svg viewBox="0 0 580 130" preserveAspectRatio="xMidYMid meet" className={styles.svg}>
+                <path d={WAVE_BG_PATH} className={styles.waveBg} />
+                <path d={wavePath} className={styles.waveProgress} />
+                <circle cx={dot.x} cy={dot.y} r={13} className={styles.markerHalo} />
+                <circle cx={dot.x} cy={dot.y} r={7} className={styles.marker} />
+              </svg>
+            </div>
 
-          <div className={styles.dRow}>
-            {D_ORDER.map((id) => {
-              const info = D_INFO[id];
-              const active = activeDs.has(id);
-              const cardStyle = {
-                '--d-color': info.couleur,
-                '--d-soft': info.couleurSoft,
-                '--active-color': info.couleur,
-              } as CSSProperties;
-              return (
-                <button
-                  key={id}
-                  type="button"
-                  className={`${styles.dCard} card${active ? ' activeDoubled' : ''}`}
-                  style={cardStyle}
-                  onClick={() => toggleD(id)}
-                  aria-pressed={active}
-                >
-                  <p className={styles.dTitre}>{info.titre}</p>
-                  <p className={styles.dCorps}>{info.corps}</p>
-                  {id === 'detendre' && active && (
-                    <div className={styles.respiration}>
-                      <svg viewBox="0 0 120 120" className={styles.respirationSvg} aria-hidden="true">
-                        <circle cx="60" cy="60" r="42" className={styles.respirationOutline} />
-                        <circle cx="60" cy="60" r="22" className={styles.respirationCercle} />
-                      </svg>
-                      <p className={styles.respirationHint}>
-                        Inspirez 5s en le regardant grandir, expirez 5s
-                      </p>
-                    </div>
-                  )}
-                </button>
-              );
-            })}
+            <div className={styles.dRow}>
+              {D_ORDER.map((id) => {
+                const info = D_INFO[id];
+                const active = activeDs.has(id);
+                const isDetendre = id === 'detendre';
+                const cardStyle = {
+                  '--d-color': info.couleur,
+                  '--d-soft': info.couleurSoft,
+                  '--active-color': info.couleur,
+                } as CSSProperties;
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    className={`${styles.dCard} card${isDetendre ? ` ${styles.dCardDetendre}` : ''}${active ? ' activeDoubled' : ''}`}
+                    style={cardStyle}
+                    onClick={() => toggleD(id)}
+                    aria-pressed={active}
+                  >
+                    <p className={styles.dTitre}>{info.titre}</p>
+                    <p className={styles.dCorps}>{info.corps}</p>
+                    {isDetendre && active && (
+                      <div className={styles.respiration}>
+                        <svg viewBox="0 0 120 120" className={styles.respirationSvg} aria-hidden="true">
+                          <circle cx="60" cy="60" r="42" className={styles.respirationOutline} />
+                          <circle cx="60" cy="60" r="22" className={styles.respirationCercle} />
+                        </svg>
+                        <p className={styles.respirationHint}>
+                          Inspirez 5s en le regardant grandir, expirez 5s
+                        </p>
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
           </div>
           <p className={styles.dHint}>Touchez un D pour agir — il aide à tenir pendant le pic de l'envie</p>
         </div>

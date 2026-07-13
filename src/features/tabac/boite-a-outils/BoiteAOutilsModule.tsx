@@ -1,11 +1,12 @@
-import { useMemo, useState } from 'react';
-import { ArrowRight, Check, ChevronLeft } from 'lucide-react';
+import { useState } from 'react';
+import { ArrowRight, Check, CheckCircle2, ChevronLeft, Circle } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import IllustrationSlot from '../components/IllustrationSlot';
 import FicheOverlay from '../../../components/FicheOverlay';
 import VagueCraving from './VagueCraving';
 import { OUTILS, PREUVE_LABELS, type Outil } from './data';
 import { SITUATIONS, parseSelectionSituations, type PilierId, type SituationDef } from '../situations';
+import { useSelection } from '../../../state/SelectionContext';
 import styles from './BoiteAOutilsModule.module.css';
 
 const PILIER_ORDER: PilierId[] = ['physique', 'psychologique', 'comportementale'];
@@ -32,11 +33,15 @@ const SITUATIONS_PAR_ID = new Map<string, SituationDef>(SITUATIONS.map((s) => [s
  * et sélection de fiche sont du state React éphémère.
  */
 export default function BoiteAOutilsModule({ onNavigate, context }: ModuleProps) {
-  const situationsInitiales = useMemo(() => parseSelectionSituations(context), [context]);
-  const [activeSituations, setActiveSituations] = useState<Set<string>>(() => new Set(situationsInitiales));
+  const { state, toggle } = useSelection();
+  const ficheItems = state.outilsFiche;
+  // Filtre local (éphémère) : pré-alimenté au montage depuis les situations
+  // partagées (cochées dans « Composantes ») ∪ le contexte de navigation.
+  const [activeSituations, setActiveSituations] = useState<Set<string>>(
+    () => new Set([...parseSelectionSituations(context), ...state.situations]),
+  );
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [vagueOpen, setVagueOpen] = useState(false);
-  const [ficheItems, setFicheItems] = useState<Set<string>>(new Set());
   const [ficheOpen, setFicheOpen] = useState(false);
 
   function toggleSituation(id: string) {
@@ -49,12 +54,7 @@ export default function BoiteAOutilsModule({ onNavigate, context }: ModuleProps)
   }
 
   function toggleFiche(id: string) {
-    setFicheItems((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
+    toggle('outilsFiche', id);
   }
 
   function outilVisible(outil: Outil): boolean {
@@ -65,7 +65,7 @@ export default function BoiteAOutilsModule({ onNavigate, context }: ModuleProps)
 
   const visibleOutils = OUTILS.filter(outilVisible);
   const activeSituationDefs = SITUATIONS.filter((s) => activeSituations.has(s.id));
-  const ficheOutils = OUTILS.filter((o) => ficheItems.has(o.id));
+  const ficheOutils = OUTILS.filter((o) => ficheItems.includes(o.id));
 
   // Si bloqué (plans/boite-a-outils/S2.md « Si bloqué ») : au-delà de 10 outils
   // cochés, on retire le titre des blocs à partir du 9e pour tenir sur l'A4.
@@ -81,7 +81,7 @@ export default function BoiteAOutilsModule({ onNavigate, context }: ModuleProps)
     const situationsLiees = outilDetail.situations
       .map((id) => SITUATIONS_PAR_ID.get(id))
       .filter((s): s is SituationDef => Boolean(s));
-    const dansLaFiche = ficheItems.has(outilDetail.id);
+    const dansLaFiche = ficheItems.includes(outilDetail.id);
 
     return (
       <div className={styles.module}>
@@ -90,7 +90,7 @@ export default function BoiteAOutilsModule({ onNavigate, context }: ModuleProps)
         </button>
 
         <div className={`${styles.detailCard} card`}>
-          <IllustrationSlot id={outilDetail.id} label={outilDetail.titre} size={96} />
+          <IllustrationSlot id={outilDetail.id} label={outilDetail.titre} size={160} />
           <p className={styles.detailTitre}>{outilDetail.titre}</p>
 
           {situationsLiees.length > 0 && (
@@ -202,7 +202,7 @@ export default function BoiteAOutilsModule({ onNavigate, context }: ModuleProps)
 
       <div className={styles.grid} role="list">
         {visibleOutils.map((outil) => {
-          const dansLaFiche = ficheItems.has(outil.id);
+          const dansLaFiche = ficheItems.includes(outil.id);
           return (
             <div key={outil.id} className={`${styles.tile} card`} role="listitem">
               <button
@@ -210,18 +210,27 @@ export default function BoiteAOutilsModule({ onNavigate, context }: ModuleProps)
                 className={styles.tileBtn}
                 onClick={() => setSelectedId(outil.id)}
               >
-                <IllustrationSlot id={outil.id} label={outil.titre} size={64} />
+                <IllustrationSlot id={outil.id} label={outil.titre} size={96} />
                 <span className={styles.tileBody}>
                   <span className={styles.tileTitre}>{outil.titre}</span>
                   <span className={styles.tileAccroche}>{outil.accroche}</span>
                 </span>
               </button>
-              <label className={styles.tileCheck} onClick={(e) => e.stopPropagation()}>
+              <label
+                className={`${styles.tileCheck}${dansLaFiche ? ` ${styles.tileCheckActive}` : ''}`}
+                onClick={(e) => e.stopPropagation()}
+              >
                 <input
                   type="checkbox"
+                  className={styles.tileCheckInput}
                   checked={dansLaFiche}
                   onChange={() => toggleFiche(outil.id)}
                 />
+                {dansLaFiche ? (
+                  <CheckCircle2 aria-hidden="true" className={styles.tileCheckIcon} />
+                ) : (
+                  <Circle aria-hidden="true" className={styles.tileCheckIcon} />
+                )}
                 Dans ma fiche
               </label>
             </div>
