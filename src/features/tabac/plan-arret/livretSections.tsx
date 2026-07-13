@@ -2,9 +2,10 @@ import type { ReactNode } from 'react';
 import type { SelectionState } from '../../../state/SelectionContext';
 import type { PrintableSection } from '../../../components/PrintableLivret';
 import IllustrationSlot from '../components/IllustrationSlot';
-import { FORMES_DATA, type FormeId } from '../substituts/data';
-import { OUTILS, type Outil } from '../boite-a-outils/data';
-import { SITUATIONS } from '../situations';
+import QRBlock from '../../../components/QRBlock';
+import { FORMES_DATA, type FormeId } from '../../../content/tabac/substituts';
+import { OUTILS, type Outil } from '../../../content/tabac/outils';
+import { SITUATIONS } from '../../../content/tabac/situations';
 import { ZONES, beneficesDeZone } from '../benefices-arret/data';
 import { iconForRaison } from '../motivation/data';
 import styles from '../../../components/PrintableLivret.module.css';
@@ -197,13 +198,16 @@ function beneficesBody(): ReactNode {
 /** 7 · Contacts — section fixe (Tabac Info Service 39 89). */
 function contactsBody(): ReactNode {
   return (
-    <div className="fiche-contact">
-      <span className="fiche-contact-numero">39 89</span>
-      <div>
-        <p>Tabac Info Service — appel non surtaxé, du lundi au samedi.</p>
-        <p>En parler à un proche · être accompagné·e par un professionnel.</p>
+    <>
+      <div className="fiche-contact">
+        <span className="fiche-contact-numero">39 89</span>
+        <div>
+          <p>Tabac Info Service — appel non surtaxé, du lundi au samedi.</p>
+          <p>En parler à un proche · être accompagné·e par un professionnel.</p>
+        </div>
       </div>
-    </div>
+      <QRBlock />
+    </>
   );
 }
 

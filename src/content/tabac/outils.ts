@@ -1,4 +1,4 @@
-import type { ModuleId } from '../../types';
+import type { ModuleId } from '../../features/types';
 
 /**
  * Données du module « Stratégies & outils » (plans/boite-a-outils/S2.md).

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { FormeId } from './data';
+import type { FormeId } from '../../../content/tabac/substituts';
 import styles from './SubstitutsModule.module.css';
 
 /** Cible `public/illustrations/tabac/substitut-<forme>.png` (chantier illustrations-tabac, S1). */

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
 import type { ModuleProps } from '../../types';
 import PrintableLivret from '../../../components/PrintableLivret';
-import { SITUATIONS } from '../situations';
+import { SITUATIONS } from '../../../content/tabac/situations';
 import { MOTIVATION_SEED } from '../motivation/data';
 import { useSelection } from '../../../state/SelectionContext';
 import { buildLivretSections } from './livretSections';

@@ -4,7 +4,7 @@ import type { ModuleProps } from '../../types';
 import FicheOverlay from '../../../components/FicheOverlay';
 import { useSelection } from '../../../state/SelectionContext';
 import TechniqueIllustration from './TechniqueIllustration';
-import { FORMES_DATA, FORMES_PONCTUELLES, type FormeId } from './data';
+import { FORMES_DATA, FORMES_PONCTUELLES, type FormeId } from '../../../content/tabac/substituts';
 import styles from './SubstitutsModule.module.css';
 
 const QUARTS_PAR_PATCH = 4;

@@ -4,8 +4,8 @@ import type { ModuleProps } from '../../types';
 import IllustrationSlot from '../components/IllustrationSlot';
 import FicheOverlay from '../../../components/FicheOverlay';
 import VagueCraving from './VagueCraving';
-import { OUTILS, PREUVE_LABELS, type Outil } from './data';
-import { SITUATIONS, parseSelectionSituations, type PilierId, type SituationDef } from '../situations';
+import { OUTILS, PREUVE_LABELS, type Outil } from '../../../content/tabac/outils';
+import { SITUATIONS, parseSelectionSituations, type PilierId, type SituationDef } from '../../../content/tabac/situations';
 import { useSelection } from '../../../state/SelectionContext';
 import styles from './BoiteAOutilsModule.module.css';
 

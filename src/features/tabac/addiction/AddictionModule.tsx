@@ -2,8 +2,8 @@ import { useState } from 'react';
 import type { CSSProperties } from 'react';
 import { ArrowRight, Check } from 'lucide-react';
 import type { ModuleProps } from '../../types';
-import { SITUATIONS } from '../situations';
-import type { SelectionSituations } from '../situations';
+import { SITUATIONS } from '../../../content/tabac/situations';
+import type { SelectionSituations } from '../../../content/tabac/situations';
 import { useSelection } from '../../../state/SelectionContext';
 import styles from './AddictionModule.module.css';
 
