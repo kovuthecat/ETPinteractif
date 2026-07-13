@@ -44,7 +44,7 @@
 }
 
 .graphCard {
-  padding: 24px 26px 18px;
+  padding: 28px 30px 22px;
 }
 
 .graphWrap {
@@ -56,6 +56,10 @@
   width: 100%;
   height: auto;
   cursor: crosshair;
+}
+
+.sheen {
+  pointer-events: none;
 }
 
 .zoneLabelHit {
@@ -95,9 +99,9 @@
 }
 
 .seuil {
-  stroke: rgba(40, 30, 20, 0.3);
-  stroke-width: 1.5;
-  stroke-dasharray: 5 5;
+  stroke: rgba(40, 30, 20, 0.18);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
   pointer-events: none;
 }
 
@@ -108,18 +112,32 @@
   pointer-events: none;
 }
 
-.curve {
-  fill: none;
-  stroke: oklch(30% 0.02 50);
-  stroke-width: 4;
-  stroke-linecap: round;
+.curveArea {
+  fill: oklch(30% 0.02 50 / 0.08);
   pointer-events: none;
 }
 
-.zoneLabel {
-  paint-order: stroke;
-  stroke: var(--color-bg);
-  stroke-width: 4px;
+.curve {
+  fill: none;
+  stroke: oklch(30% 0.02 50);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.zonePill {
+  fill: var(--color-surface);
+  fill-opacity: 0.88;
+  stroke-width: 1.5;
+  filter: drop-shadow(0 1px 3px rgba(60, 40, 20, 0.12));
+}
+
+.zonePillText {
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.02em;
   pointer-events: none;
 }
 
@@ -136,7 +154,7 @@
 .markerGlyph {
   font-family: 'Work Sans', sans-serif;
   font-weight: 800;
-  font-size: 12px;
+  font-size: 13px;
   fill: #fff;
   pointer-events: none;
 }
@@ -144,7 +162,7 @@
 .doseLabel {
   font-family: 'Work Sans', sans-serif;
   font-weight: 700;
-  font-size: 11px;
+  font-size: 12px;
   pointer-events: none;
 }
 
@@ -166,9 +184,10 @@
 
 .axisTick {
   font-family: 'Work Sans', sans-serif;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 11px;
   fill: var(--color-text-faint);
+  opacity: 0.8;
   pointer-events: none;
 }
 
