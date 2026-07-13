@@ -21,10 +21,33 @@
   gap: var(--space-sm);
 }
 
+.progressWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 200px;
+}
+
 .progressText {
   font-weight: 700;
   font-size: var(--font-size-small);
   color: var(--color-text-soft);
+}
+
+.progressBar {
+  width: 100%;
+  max-width: 280px;
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: var(--color-line);
+  overflow: hidden;
+}
+
+.progressBarFill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--color-nav);
+  transition: width 0.2s ease;
 }
 
 .progressRow .btn--tertiary {
@@ -36,7 +59,16 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: var(--space-md);
+  gap: var(--space-lg);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tileItem {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .tile {
@@ -45,19 +77,34 @@
   flex-direction: column;
   align-items: flex-start;
   gap: var(--space-sm);
-  min-height: 96px;
+  width: 100%;
+  height: 100%;
+  min-height: 168px;
   padding: var(--space-md);
-  border: 2px solid var(--color-line);
-  border-radius: var(--radius);
+  box-sizing: border-box;
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius-lg);
   background: var(--color-surface);
+  box-shadow: var(--shadow-1);
   text-align: left;
   font: inherit;
   cursor: pointer;
+  transition:
+    box-shadow 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
 }
 
 .tile:hover,
 .tile:focus-visible {
   border-color: var(--color-nav);
+  box-shadow: var(--shadow-2);
+  transform: translateY(-2px);
+}
+
+.tile:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
 }
 
 .tileVrai {
@@ -71,6 +118,9 @@
 }
 
 .tileBadge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
   font-size: var(--font-size-small);
   font-weight: 700;
 }

@@ -42,9 +42,14 @@ export default function IdeesRecuesModule({ onNavigate }: ModuleProps) {
         </p>
 
         <div className={styles.progressRow}>
-          <span className={styles.progressText}>
-            {answeredCount} / {total} vues
-          </span>
+          <div className={styles.progressWrap}>
+            <span className={styles.progressText}>
+              {answeredCount} / {total} vues
+            </span>
+            <div className={styles.progressBar} role="progressbar" aria-valuenow={answeredCount} aria-valuemin={0} aria-valuemax={total}>
+              <div className={styles.progressBarFill} style={{ width: `${(answeredCount / total) * 100}%` }} />
+            </div>
+          </div>
           {answeredCount > 0 && (
             <button type="button" className="btn btn--tertiary" onClick={reset}>
               <RotateCcw aria-hidden="true" /> Recommencer
@@ -52,28 +57,29 @@ export default function IdeesRecuesModule({ onNavigate }: ModuleProps) {
           )}
         </div>
 
-        <div className={styles.grid} role="list">
+        <ul className={styles.grid} role="list">
           {cards.map((c) => {
             const done = Boolean(answers[c.id]);
             return (
-              <button
-                key={c.id}
-                type="button"
-                role="listitem"
-                className={`${styles.tile}${done ? ` ${c.verdict === 'vrai' ? styles.tileVrai : styles.tileFaux}` : ''}`}
-                onClick={() => setSelectedId(c.id)}
-              >
-                {done && (
-                  <span className={`chip ${c.verdict === 'vrai' ? 'chip--confort' : 'chip--vigilance'} ${styles.tileBadge}`}>
-                    {c.verdict === 'vrai' ? <Check aria-hidden="true" /> : <X aria-hidden="true" />}
-                    {c.verdict === 'vrai' ? 'VRAI' : 'FAUX'}
-                  </span>
-                )}
-                <span className={styles.tileText}>{c.affirmation}</span>
-              </button>
+              <li key={c.id} role="listitem" className={styles.tileItem}>
+                <button
+                  type="button"
+                  className={`${styles.tile}${done ? ` ${c.verdict === 'vrai' ? styles.tileVrai : styles.tileFaux}` : ''}`}
+                  onClick={() => setSelectedId(c.id)}
+                >
+                  <IllustrationSlot id={c.id} label={c.affirmation} size={56} />
+                  <span className={styles.tileText}>{c.affirmation}</span>
+                  {done && (
+                    <span className={`chip ${c.verdict === 'vrai' ? 'chip--confort' : 'chip--vigilance'} ${styles.tileBadge}`}>
+                      {c.verdict === 'vrai' ? <Check aria-hidden="true" /> : <X aria-hidden="true" />}
+                      {c.verdict === 'vrai' ? 'VRAI' : 'FAUX'}
+                    </span>
+                  )}
+                </button>
+              </li>
             );
           })}
-        </div>
+        </ul>
 
       </div>
     );
@@ -86,7 +92,7 @@ export default function IdeesRecuesModule({ onNavigate }: ModuleProps) {
       </button>
 
       <div className={`${styles.card} card`}>
-        <IllustrationSlot id={card.id} label={card.affirmation} size={96} />
+        <IllustrationSlot id={card.id} label={card.affirmation} size={176} />
         <p className={styles.affirmation}>{card.affirmation}</p>
 
         {!chosen ? (
