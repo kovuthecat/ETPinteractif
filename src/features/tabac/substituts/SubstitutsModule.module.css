@@ -171,10 +171,13 @@
 }
 
 .techniqueCard {
+  display: flex;
+  justify-content: center;
   padding: var(--space-md);
   background: var(--color-surface);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-1);
+  overflow: hidden;
 }
 
 .techniquePlaceholder {
@@ -203,8 +206,10 @@
 
 .techniqueImage {
   width: 100%;
+  max-width: 360px;
   height: auto;
   display: block;
+  object-fit: contain;
   border-radius: var(--radius);
 }
 

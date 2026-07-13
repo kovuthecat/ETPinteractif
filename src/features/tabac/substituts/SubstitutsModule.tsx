@@ -1,104 +1,14 @@
 import { useState } from 'react';
-import { AlertTriangle, Flame, Info, Moon, Sun } from 'lucide-react';
+import { AlertTriangle, Check, Flame, Info, Moon, Sun } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import FicheOverlay from '../../../components/FicheOverlay';
+import { useSelection } from '../../../state/SelectionContext';
 import TechniqueIllustration from './TechniqueIllustration';
+import { FORMES_DATA, FORMES_PONCTUELLES, type FormeId } from './data';
 import styles from './SubstitutsModule.module.css';
-
-type FormeId =
-  | 'patch'
-  | 'gomme'
-  | 'pastille'
-  | 'sublingual'
-  | 'spray'
-  | 'vapoteuse';
-
-type FormeContent = { label: string; bonnesPratiques: string[]; erreurs: string[] };
-
-const FORMES_DATA: Record<FormeId, FormeContent> = {
-  patch: {
-    label: 'Patch (24 h / 16 h)',
-    bonnesPratiques: [
-      "Appliquer 1 patch le matin au réveil.",
-      "Changer de site d'application chaque jour.",
-      "L'effet commence à se faire sentir ~30 min après l'application.",
-      "Autant que possible, garder le patch la nuit pour ne pas manquer de nicotine le matin.",
-    ],
-    erreurs: [
-      "Attendre un effet immédiat (il faut ~30 min).",
-      "Retirer le patch la nuit alors qu'on a besoin de nicotine au réveil (sauf sommeil perturbé → dose de nuit plus faible, cf. titration).",
-      "Reposer le patch toujours au même endroit.",
-    ],
-  },
-  gomme: {
-    label: 'Gomme',
-    bonnesPratiques: [
-      "Prendre une gomme dès que l'envie de fumer se fait sentir.",
-      "Mâcher lentement 5–6 fois, puis garder la gomme contre la joue ~2 min (la nicotine se libère et est absorbée par la muqueuse buccale).",
-      "Remâcher lentement puis reposer contre la joue, et recommencer ainsi pendant ~30 min.",
-      "Gérer « au coup par coup » : une gomme dès que l'envie réapparaît dans la journée.",
-    ],
-    erreurs: [
-      "Mâcher vite et en continu comme un chewing-gum (la nicotine est avalée, moins efficace).",
-      "Avaler la salive au lieu de laisser absorber par la joue.",
-    ],
-  },
-  pastille: {
-    label: 'Pastille',
-    bonnesPratiques: [
-      "Prendre une pastille dès que l'envie de fumer se fait sentir.",
-      "Laisser se dissoudre sous la langue, ou contre la joue en la déplaçant régulièrement d'un côté à l'autre de la bouche.",
-      "En 2–3 min, l'effet se fait sentir et l'envie s'estompe.",
-    ],
-    erreurs: [
-      "Croquer ou avaler la pastille (elle doit fondre lentement).",
-    ],
-  },
-  sublingual: {
-    label: 'Comprimé sublingual',
-    bonnesPratiques: [
-      "Prendre un ou deux comprimés dès que l'envie se fait sentir.",
-      "Placer le comprimé sous la langue ou contre la joue et le laisser fondre.",
-      "L'effet se fait sentir en quelques minutes.",
-    ],
-    erreurs: [
-      "Croquer ou avaler le comprimé.",
-    ],
-  },
-  spray: {
-    label: 'Spray buccal',
-    bonnesPratiques: [
-      "Une ou deux pulvérisations à chaque fois que l'envie de fumer se fait sentir.",
-      "Pulvériser dans la bouche, sur l'intérieur des joues (placer le spray un peu de côté pour atteindre l'intérieur de la joue).",
-      "On peut vaporiser sous la langue puis répartir sur l'intérieur des joues en bougeant la langue ; l'essentiel est de bien couvrir la muqueuse des joues.",
-      "Efficace en ~1 min.",
-    ],
-    erreurs: [
-      "Viser le fond de la gorge / inhaler la pulvérisation.",
-    ],
-  },
-  vapoteuse: {
-    label: 'Vapoteuse',
-    bonnesPratiques: [
-      "Choisir le dosage de nicotine avec un professionnel : assez dosé pour calmer réellement les envies — un dosage trop faible est la première cause de retour à la cigarette.",
-      "Tirer lentement, en bouffées longues et espacées : la nicotine arrive plus progressivement qu'avec une cigarette (quelques minutes).",
-      "Vapoter dès les premiers signes d'envie, sans attendre que le manque soit intense, autant que nécessaire dans la journée.",
-      "Objectif : remplacer complètement le tabac fumé. Ensuite, à distance et sans se presser, réduire progressivement le dosage de nicotine.",
-    ],
-    erreurs: [
-      "Sous-doser la nicotine « pour faire moins fort » : l'envie revient, et la cigarette avec.",
-      "Continuer à fumer en parallèle durablement : le bénéfice n'existe que si la vapoteuse remplace complètement le tabac (piège du double usage).",
-      "Reproduire les bouffées courtes et rapides de la cigarette.",
-      "Acheter du matériel ou des e-liquides hors des circuits contrôlés (normes UE/AFNOR).",
-    ],
-  },
-  // Contenu vapoteuse rédigé d'après HAS/HCSP + rapport OE — à revalider (Thibault)
-};
 
 const QUARTS_PAR_PATCH = 4;
 const INITIAL_QUARTS = QUARTS_PAR_PATCH;
-
-const FORMES_PONCTUELLES: FormeId[] = ['gomme', 'pastille', 'sublingual', 'spray'];
 
 const FRACTIONS_RESTE: Record<number, string> = { 1: '1/4', 2: '1/2', 3: '3/4' };
 
@@ -151,6 +61,7 @@ function PatchQuarts({
 }
 
 export default function SubstitutsModule(_props: ModuleProps) {
+  const { state, toggle } = useSelection();
   const [selectedForme, setSelectedForme] = useState<FormeId | null>(null);
 
   const [quartsJour, setQuartsJour] = useState(INITIAL_QUARTS);
@@ -237,6 +148,25 @@ export default function SubstitutsModule(_props: ModuleProps) {
             </div>
           </div>
         )}
+
+        {formeData && selectedForme && (
+          <div style={{ marginTop: '1rem' }}>
+            <button
+              type="button"
+              className={`btn ${state.substituts.includes(selectedForme) ? 'btn--ghost' : 'btn--primary'}`}
+              aria-pressed={state.substituts.includes(selectedForme)}
+              onClick={() => toggle('substituts', selectedForme)}
+            >
+              {state.substituts.includes(selectedForme) ? (
+                <>
+                  <Check size={16} aria-hidden="true" /> Retenu dans mon plan
+                </>
+              ) : (
+                'Retenir pour mon plan'
+              )}
+            </button>
+          </div>
+        )}
       </section>
 
       {showTechnique && formeData && selectedForme && (
@@ -246,158 +176,160 @@ export default function SubstitutsModule(_props: ModuleProps) {
         </section>
       )}
 
-      <section className={styles.section}>
-        <p className={styles.sectionEyebrow}>Méthode de titration du patch</p>
+      {selectedForme === 'patch' && (
+        <section className={styles.section}>
+          <p className={styles.sectionEyebrow}>Méthode de titration du patch</p>
 
-        <div className={styles.titrationCard}>
-          <div className={styles.stateCards}>
-            <label className={`${styles.stateCard} ${envie ? styles.stateCardActive : ''}`}>
-              <input
-                type="checkbox"
-                className={styles.stateInput}
-                checked={envie}
-                onChange={(e) => setEnvie(e.target.checked)}
-              />
-              <Flame size={20} aria-hidden="true" />
-              <span>Envie de fumer persiste</span>
-            </label>
-            <label
-              className={`${styles.stateCard} ${styles.stateCardWarn} ${surdosage ? styles.stateCardActive : ''}`}
-            >
-              <input
-                type="checkbox"
-                className={styles.stateInput}
-                checked={surdosage}
-                onChange={(e) => setSurdosage(e.target.checked)}
-              />
-              <AlertTriangle size={20} aria-hidden="true" />
-              <span>Signes de surdosage</span>
-            </label>
-            <label className={`${styles.stateCard} ${jourNuit ? styles.stateCardActive : ''}`}>
-              <input
-                type="checkbox"
-                className={styles.stateInput}
-                checked={jourNuit}
-                onChange={(e) => setJourNuit(e.target.checked)}
-              />
-              <Moon size={20} aria-hidden="true" />
-              <span>Distinguer jour / nuit</span>
-            </label>
-          </div>
-
-          {surdosage && (
-            <div className={`${styles.alertBanner} alert`} role="alert">
-              <AlertTriangle size={22} aria-hidden="true" />
-              <p className={styles.alertText}>
-                Signes de surdosage (impression d'avoir trop fumé, nausées, vertiges, palpitations) — revenez à la
-                dose précédente : c'est la dose dont vous avez besoin.
-              </p>
-              <button
-                type="button"
-                className={styles.btnWarn}
-                onClick={retirerQuart}
-                disabled={quartsJour === 0}
+          <div className={styles.titrationCard}>
+            <div className={styles.stateCards}>
+              <label className={`${styles.stateCard} ${envie ? styles.stateCardActive : ''}`}>
+                <input
+                  type="checkbox"
+                  className={styles.stateInput}
+                  checked={envie}
+                  onChange={(e) => setEnvie(e.target.checked)}
+                />
+                <Flame size={20} aria-hidden="true" />
+                <span>Envie de fumer persiste</span>
+              </label>
+              <label
+                className={`${styles.stateCard} ${styles.stateCardWarn} ${surdosage ? styles.stateCardActive : ''}`}
               >
-                Revenir en arrière (− ¼)
-              </button>
+                <input
+                  type="checkbox"
+                  className={styles.stateInput}
+                  checked={surdosage}
+                  onChange={(e) => setSurdosage(e.target.checked)}
+                />
+                <AlertTriangle size={20} aria-hidden="true" />
+                <span>Signes de surdosage</span>
+              </label>
+              <label className={`${styles.stateCard} ${jourNuit ? styles.stateCardActive : ''}`}>
+                <input
+                  type="checkbox"
+                  className={styles.stateInput}
+                  checked={jourNuit}
+                  onChange={(e) => setJourNuit(e.target.checked)}
+                />
+                <Moon size={20} aria-hidden="true" />
+                <span>Distinguer jour / nuit</span>
+              </label>
             </div>
-          )}
 
-          <div className={styles.doseGroups}>
-            <div className={styles.doseGroup}>
-              <p className={styles.doseGroupTitle}>
-                <Sun size={18} aria-hidden="true" />
-                Dose de jour
-              </p>
-              <PatchQuarts quarts={quartsJour} label="Jour" />
-              <div className={styles.doseControls}>
+            {surdosage && (
+              <div className={`${styles.alertBanner} alert`} role="alert">
+                <AlertTriangle size={22} aria-hidden="true" />
+                <p className={styles.alertText}>
+                  Signes de surdosage (impression d'avoir trop fumé, nausées, vertiges, palpitations) — revenez à la
+                  dose précédente : c'est la dose dont vous avez besoin.
+                </p>
                 <button
                   type="button"
-                  className={styles.btn}
-                  onClick={ajouterQuart}
-                  disabled={!envie || surdosage}
-                >
-                  + ¼ (tous les 3 jours)
-                </button>
-                <button
-                  type="button"
-                  className={styles.btnNeutral}
+                  className={styles.btnWarn}
                   onClick={retirerQuart}
                   disabled={quartsJour === 0}
                 >
-                  − ¼
+                  Revenir en arrière (− ¼)
                 </button>
               </div>
-              <p className={styles.titrationAide}>
-                Augmentez d'¼ tous les 3 jours tant que l'envie persiste (&gt;3 cig/j), sans signe de surdosage.
-              </p>
-            </div>
+            )}
 
-            {jourNuit && (
+            <div className={styles.doseGroups}>
               <div className={styles.doseGroup}>
                 <p className={styles.doseGroupTitle}>
-                  <Moon size={18} aria-hidden="true" />
-                  Dose de nuit
+                  <Sun size={18} aria-hidden="true" />
+                  Dose de jour
                 </p>
-                <PatchQuarts quarts={quartsNuitAffiche} label="Nuit" />
+                <PatchQuarts quarts={quartsJour} label="Jour" />
                 <div className={styles.doseControls}>
                   <button
                     type="button"
-                    className={styles.btnNeutral}
-                    onClick={() => setQuartsNuit((q) => Math.max(0, q - 1))}
-                    disabled={quartsNuitAffiche === 0}
+                    className={styles.btn}
+                    onClick={ajouterQuart}
+                    disabled={!envie || surdosage}
                   >
-                    − ¼
+                    + ¼ (tous les 3 jours)
                   </button>
                   <button
                     type="button"
-                    className={styles.btn}
-                    onClick={() => setQuartsNuit((q) => Math.min(quartsJour, q + 1))}
-                    disabled={quartsNuitAffiche >= quartsJour}
+                    className={styles.btnNeutral}
+                    onClick={retirerQuart}
+                    disabled={quartsJour === 0}
                   >
-                    + ¼
+                    − ¼
                   </button>
                 </div>
+                <p className={styles.titrationAide}>
+                  Augmentez d'¼ tous les 3 jours tant que l'envie persiste (&gt;3 cig/j), sans signe de surdosage.
+                </p>
               </div>
-            )}
-          </div>
 
-          <p className={styles.message}>Expérimentez, fiez-vous à votre ressenti.</p>
-
-          <div className={styles.ficheFormeGroup}>
-            <p className={styles.ficheFormeLabel}>Ajouter une prise ponctuelle à ma fiche</p>
-            <div className={styles.ficheFormeOptions}>
-              <button
-                type="button"
-                className={`${styles.ficheFormeOption} ${ficheForme === null ? styles.ficheFormeOptionActive : ''}`}
-                onClick={() => setFicheForme(null)}
-                aria-pressed={ficheForme === null}
-              >
-                Aucune
-              </button>
-              {FORMES_PONCTUELLES.map((forme) => (
-                <button
-                  key={forme}
-                  type="button"
-                  className={`${styles.ficheFormeOption} ${ficheForme === forme ? styles.ficheFormeOptionActive : ''}`}
-                  onClick={() => setFicheForme(forme)}
-                  aria-pressed={ficheForme === forme}
-                >
-                  {FORMES_DATA[forme].label}
-                </button>
-              ))}
+              {jourNuit && (
+                <div className={styles.doseGroup}>
+                  <p className={styles.doseGroupTitle}>
+                    <Moon size={18} aria-hidden="true" />
+                    Dose de nuit
+                  </p>
+                  <PatchQuarts quarts={quartsNuitAffiche} label="Nuit" />
+                  <div className={styles.doseControls}>
+                    <button
+                      type="button"
+                      className={styles.btnNeutral}
+                      onClick={() => setQuartsNuit((q) => Math.max(0, q - 1))}
+                      disabled={quartsNuitAffiche === 0}
+                    >
+                      − ¼
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.btn}
+                      onClick={() => setQuartsNuit((q) => Math.min(quartsJour, q + 1))}
+                      disabled={quartsNuitAffiche >= quartsJour}
+                    >
+                      + ¼
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
 
-          <button
-            type="button"
-            className={`btn btn--ghost ${styles.ficheButton}`}
-            onClick={() => setFicheOpen(true)}
-          >
-            Imprimer ma méthode
-          </button>
-        </div>
-      </section>
+            <p className={styles.message}>Expérimentez, fiez-vous à votre ressenti.</p>
+
+            <div className={styles.ficheFormeGroup}>
+              <p className={styles.ficheFormeLabel}>Ajouter une prise ponctuelle à ma fiche</p>
+              <div className={styles.ficheFormeOptions}>
+                <button
+                  type="button"
+                  className={`${styles.ficheFormeOption} ${ficheForme === null ? styles.ficheFormeOptionActive : ''}`}
+                  onClick={() => setFicheForme(null)}
+                  aria-pressed={ficheForme === null}
+                >
+                  Aucune
+                </button>
+                {FORMES_PONCTUELLES.map((forme) => (
+                  <button
+                    key={forme}
+                    type="button"
+                    className={`${styles.ficheFormeOption} ${ficheForme === forme ? styles.ficheFormeOptionActive : ''}`}
+                    onClick={() => setFicheForme(forme)}
+                    aria-pressed={ficheForme === forme}
+                  >
+                    {FORMES_DATA[forme].label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <button
+              type="button"
+              className={`btn btn--ghost ${styles.ficheButton}`}
+              onClick={() => setFicheOpen(true)}
+            >
+              Imprimer ma méthode
+            </button>
+          </div>
+        </section>
+      )}
 
       {ficheOpen && (
         <FicheOverlay

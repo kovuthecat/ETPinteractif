@@ -1,7 +1,6 @@
 import { useState } from 'react';
+import type { FormeId } from './data';
 import styles from './SubstitutsModule.module.css';
-
-type FormeId = 'patch' | 'gomme' | 'pastille' | 'sublingual' | 'spray' | 'vapoteuse';
 
 /** Cible `public/illustrations/tabac/substitut-<forme>.png` (chantier illustrations-tabac, S1). */
 export default function TechniqueIllustration({
