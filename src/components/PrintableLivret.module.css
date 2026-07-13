@@ -1,0 +1,422 @@
+/* Livret d'accompagnement personnalisé (S11) — aperçu écran + mise en page A4.
+   Le socle d'impression (masquer #root, dé-fixer l'overlay, print-color-adjust)
+   vit dans global.css, section « Livret », comme pour les fiches. */
+
+/* ---------- Écran : overlay + « papier » scrollable ---------- */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-lg) var(--space-md);
+  background: rgba(30, 20, 10, 0.55);
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.doc {
+  width: min(820px, 94vw);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-3);
+  box-sizing: border-box;
+  padding: 44px 48px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- Couverture ---------- */
+
+.cover {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding-bottom: var(--space-xl, 40px);
+  border-bottom: 2px solid var(--color-line);
+  margin-bottom: var(--space-lg);
+}
+
+.coverEyebrow {
+  margin: 0;
+}
+
+.coverTitle {
+  margin: 6px 0 4px;
+  font-family: 'Source Serif 4', serif;
+  font-weight: 700;
+  font-size: 38px;
+  line-height: 1.1;
+  color: var(--color-text);
+}
+
+.coverDate {
+  margin: var(--space-sm) 0 0;
+  align-self: flex-start;
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  background: var(--color-nav-soft);
+  color: var(--color-nav);
+  font-family: 'Source Serif 4', serif;
+  font-size: 20px;
+}
+
+.coverDate strong {
+  font-weight: 700;
+}
+
+.coverDateVide {
+  margin: var(--space-sm) 0 0;
+  font-size: 15px;
+  font-style: italic;
+  color: var(--color-text-faint);
+}
+
+.coverNote {
+  margin: var(--space-md) 0 0;
+  max-width: 54ch;
+  font-family: 'Source Serif 4', serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--color-text-soft);
+}
+
+/* ---------- Sections ---------- */
+
+.section {
+  margin-top: var(--space-lg);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-line);
+}
+
+.section:first-of-type {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.sectionHead {
+  margin-bottom: var(--space-md);
+}
+
+.sectionEyebrow {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--color-nav);
+}
+
+.sectionTitle {
+  margin: 0;
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 24px;
+  color: var(--color-text);
+}
+
+.sectionBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  color: var(--color-text);
+}
+
+.intro {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--color-text-soft);
+}
+
+.empty {
+  margin: 0;
+  padding: var(--space-md);
+  border: 1.5px dashed var(--color-line);
+  border-radius: var(--radius);
+  font-size: 15px;
+  font-style: italic;
+  color: var(--color-text-faint);
+}
+
+/* Étiquettes (situations, parades, gestes) */
+
+.tagRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--color-nav-soft);
+  color: var(--color-text);
+  font: 600 14px 'Work Sans', sans-serif;
+}
+
+/* Listes simples */
+
+.list {
+  margin: 0;
+  padding-left: 1.2em;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* Substituts : un bloc par forme retenue */
+
+.substitutBlock {
+  break-inside: avoid;
+  display: grid;
+  grid-template-columns: 132px 1fr;
+  gap: var(--space-md);
+  align-items: start;
+  padding: var(--space-md);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+}
+
+.substitutIllus {
+  margin: 0;
+}
+
+.substitutMain {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.substitutLabel {
+  margin: 0;
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--color-text);
+}
+
+.pratiquesList {
+  margin: 0;
+  padding-left: 1.1em;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--color-text);
+}
+
+/* Outils « Situations & parades » */
+
+.outilGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-md);
+}
+
+.outilCard {
+  break-inside: avoid;
+  display: flex;
+  gap: var(--space-sm);
+  align-items: center;
+  padding: var(--space-sm);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+}
+
+.outilBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.outilTitre {
+  margin: 0;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--color-text);
+}
+
+.outilConsigne {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--color-text-soft);
+}
+
+.subLabel {
+  margin: var(--space-sm) 0 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+}
+
+/* Raisons (icônes) */
+
+.raisonList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.raisonItem {
+  break-inside: avoid;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  background: var(--color-nav-soft);
+  font-size: 16px;
+  color: var(--color-text);
+}
+
+.raisonIcon {
+  flex: none;
+  color: var(--color-nav);
+}
+
+/* Bénéfices (organes) */
+
+.beneficeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-md);
+}
+
+.beneficeCard {
+  break-inside: avoid;
+  display: flex;
+  gap: var(--space-sm);
+  align-items: flex-start;
+  padding: var(--space-sm);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+}
+
+.beneficeBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.beneficeLabel {
+  margin: 0;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--color-text);
+}
+
+.beneficeText {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--color-text-soft);
+}
+
+.beneficeNote {
+  margin: 0;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--color-text-soft);
+}
+
+/* ---------- Pied ---------- */
+
+.docFooter {
+  margin-top: var(--space-lg);
+  padding-top: var(--space-md);
+  border-top: 2px solid var(--color-line);
+}
+
+.mention {
+  margin: var(--space-sm) 0 0;
+  font-size: 12px;
+  font-style: italic;
+  color: var(--color-text-faint);
+}
+
+/* ---------- Actions (masquées à l'impression) ---------- */
+
+.actions {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-3);
+}
+
+@media (max-width: 640px) {
+  .doc {
+    padding: 28px 22px;
+  }
+
+  .coverTitle {
+    font-size: 30px;
+  }
+
+  .substitutBlock {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Impression : pagination A4 ---------- */
+
+@media print {
+  .overlay {
+    position: static;
+    display: block;
+    overflow: visible;
+    background: none;
+    padding: 0;
+  }
+
+  .doc {
+    width: auto;
+    padding: 0;
+    box-shadow: none;
+    border-radius: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .cover {
+    break-after: page;
+    min-height: 60vh;
+    justify-content: center;
+  }
+
+  .section {
+    break-inside: auto;
+  }
+
+  .sectionBreak {
+    break-before: page;
+  }
+
+  .sectionHead {
+    break-after: avoid;
+  }
+
+  .actions {
+    display: none !important;
+  }
+}

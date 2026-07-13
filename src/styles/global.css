@@ -304,6 +304,28 @@ select {
     border: none;
     border-radius: 0;
   }
+
+  /* Livret d'accompagnement (S11) : même socle que les fiches — dé-fixer l'overlay
+     (porté hors #root), masquer les actions, et forcer l'impression des couleurs /
+     illustrations (sinon supprimées à l'impression, cf. rapport Diabète #4). */
+  .livret-overlay {
+    position: static;
+    display: block;
+    overflow: visible;
+    background: none;
+    padding: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .livret-overlay [data-no-print] {
+    display: none !important;
+  }
+
+  .livret-overlay img {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 }
 
 /* Titre très grand (date du plan, titre de boucle) */
