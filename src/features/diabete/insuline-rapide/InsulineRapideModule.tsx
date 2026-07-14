@@ -67,21 +67,26 @@ const DOMAIN_OPTS = {
 const REPAS_MARQUEUR: MarqueurDef = { t: frac(0), type: 'repas', label: 'Repas' };
 
 // --- Temps ① — trois crans qualitatifs de glucides (mêmes proportions frein/retard, seule la
-// charge varie) ; la dose de rapide « couvre » proportionnellement à la charge (S10-implementation
-// §2.2-①). ---
+// charge varie). La dose de rapide est FIXE (calée sur le repas moyen via `DOSE_ADEQUATE`), plus
+// proportionnelle à la charge : le résultat suit donc l'écart (dose − glucides) — c'est la
+// correction de fond du point 11 de l'audit (S5.md T1-E). L'écart de charge peu/moyen/beaucoup est
+// volontairement large pour que la MÊME dose fixe donne un résultat nettement contrasté
+// (hypo pour un petit repas / cible pour un moyen / reste haut pour un gros). `// à revalider (Thibault)`. ---
 type RepasCranId = 'peu' | 'moyen' | 'beaucoup';
 type RepasCran = { id: RepasCranId; label: string; params: RepasParams };
 
 const REPAS_CRANS: RepasCran[] = [
-  { id: 'peu', label: 'Peu de glucides', params: { charge: 0.3, frein: 0.35, retard: 0.3 } },
+  { id: 'peu', label: 'Peu de glucides', params: { charge: 0.2, frein: 0.35, retard: 0.3 } }, // à revalider (Thibault)
   { id: 'moyen', label: 'Repas moyen', params: { charge: 0.55, frein: 0.35, retard: 0.3 } },
-  { id: 'beaucoup', label: 'Beaucoup de glucides', params: { charge: 0.8, frein: 0.35, retard: 0.3 } },
+  { id: 'beaucoup', label: 'Beaucoup de glucides', params: { charge: 1.0, frein: 0.35, retard: 0.3 } }, // à revalider (Thibault)
 ];
 
 const REPAS_MOYEN = REPAS_CRANS[1].params;
-/** Dose de référence pour un repas moyen, injectée juste avant — utilisée aux temps ②③④.
- *  `// à revalider (Thibault)`. */
-const DOSE_ADEQUATE = 0.5;
+/** Dose de référence (« habituelle ») calée pour couvrir un repas moyen, injectée juste avant —
+ *  utilisée aux temps ①②③④. Abaissée 0.5 → 0.40 (S5.md T1-E/T2-E) pour que le creux du cas
+ *  « repas moyen / dose habituelle » (identique au temps ③ « cible + habituelle ») ne passe plus
+ *  sous la bande-cible. `// à revalider (Thibault)`. */
+const DOSE_ADEQUATE = 0.4;
 /** Timing standard « juste avant le repas » — `// à revalider (Thibault)`. */
 const T_INJECTION_DEFAUT = -15;
 
@@ -91,12 +96,15 @@ const DELAY_MIN = -60;
 const DELAY_MAX = 90;
 const DELAY_STEP = 5;
 
-// --- Temps ③ — glycémie de départ avant le repas, 3 paliers qualitatifs (`// à caler`). ---
+// --- Temps ③ — glycémie de départ avant le repas, 3 paliers qualitatifs. `basse` remontée -10 → -7
+// (S5.md T2-E) pour un léger retour vers la cible pendant le repas (le message « traiter l'hypo
+// d'abord » reste juste) ; `haute` montée +30 → +45 pour démarrer NETTEMENT dans le rouge (à +30
+// le départ était posé pile sur la limite cible/hyper). `// à revalider (Thibault)`. ---
 type DepartId = 'basse' | 'cible' | 'haute';
 const DEPART_OPTIONS: { id: DepartId; label: string; value: number }[] = [
-  { id: 'basse', label: 'Basse', value: BASELINE - 10 },
+  { id: 'basse', label: 'Basse', value: BASELINE - 7 }, // à revalider (Thibault)
   { id: 'cible', label: 'Dans la cible', value: BASELINE },
-  { id: 'haute', label: 'Haute', value: BASELINE + 30 },
+  { id: 'haute', label: 'Haute', value: BASELINE + 45 }, // à revalider (Thibault)
 ];
 // --- Axe de dose partagé aux temps ①/③ (audit itération 2, points 5/6) : 3 crans qualitatifs
 // appliqués en facteur à la dose de référence de chaque temps (charge du repas au ①, dose adéquate
@@ -130,14 +138,33 @@ const RECORRECTION_OPTIONS: { id: Recorrection; label: string }[] = [
   { id: 'attente', label: "J'attends que la 1ʳᵉ ait fini, puis je recorrige" },
 ];
 
-/** Élévation persistante (situation B) : `exces` de `glycemieCurve.ts`, ne se résorbe pas avec le
- *  temps seul, uniquement via une recorrection réelle — `// à caler (Thibault)`. */
-const EXCES_SITUATION_B = 35;
-/** Délais (minutes, non affichés) de la 2ᵉ dose selon le choix de recorrection — « tôt » : la 1ʳᵉ
- *  dose agit encore fortement ; « attente » : elle a quasi fini d'agir. `// à caler (Thibault)`. */
+/** Repas de référence du temps ④ (« piège du cumul »), COMMUN aux deux situations. Charge relevée
+ *  (0.85 vs 0.55 du repas moyen) pour que la montée post-prandiale de la courbe de base (dose de
+ *  repas volontairement faible, cf. `DOSE_BASE_CUMUL`) culmine NETTEMENT dans le rouge (au-dessus du
+ *  haut de cible) et donne « envie » de recorriger (correctif A, 2026-07-14), tout en revenant à la
+ *  baseline avant +3h (situation A). Frein/retard relevés pour un pic un peu plus tardif et étalé.
+ *  `// à revalider (Thibault)`. */
+const REPAS_CUMUL: RepasParams = { charge: 0.85, frein: 0.45, retard: 0.4 }; // à revalider (Thibault)
+/** Dose du repas (« 1ʳᵉ dose ») du temps ④, COMMUNE aux deux situations pour que leurs courbes de
+ *  base (« je n'ajoute pas de dose ») aient exactement le même départ (plat, à la baseline) et la
+ *  même montée (correctif B, 2026-07-14). Volontairement faible : elle ne couvre pas tout le repas →
+ *  le pic monte haut dans le rouge (correctif A). `// à revalider (Thibault)`. */
+const DOSE_BASE_CUMUL = 0.1; // à revalider (Thibault)
+/** Élévation persistante (situation B « reste haute ») : `exces` de `glycemieCurve.ts`, désormais
+ *  **gaté** (n'apparaît qu'après le pic post-prandial, cf. `excesGate`) → plateau haut ~BASELINE+exces
+ *  atteint après le pic, sans relever le départ ni la montée. `// à caler (Thibault)`. */
+const EXCES_SITUATION_B = 36; // à revalider (Thibault)
+/** Dose de la recorrection (2ᵉ dose) du temps ④. Plus généreuse que la dose de repas de base : elle
+ *  doit faire PLONGER sous la cible quand on recorrige à tort/trop tôt (situation A « aucune dose
+ *  n'était nécessaire » et situation B « recorriger tout de suite »), tout en laissant « B + attente »
+ *  revenir dans la cible. Calée avec le repas plus chargé du temps ④. `// à revalider (Thibault)`. */
+const DOSE_RECORRECTION = 0.6; // à revalider (Thibault)
+/** Délais (minutes, non affichés) de la 2ᵉ dose selon le choix de recorrection — « tôt » : recorrige
+ *  pendant la montée / vers le pic (cumul → plonge) ; « attente » : recorrige tard, la 1ʳᵉ dose ayant
+ *  quasi fini d'agir. `// à caler (Thibault)`. */
 const RECORR_DELAIS: Record<Exclude<Recorrection, 'aucune'>, number> = {
-  tot: T_INJECTION_DEFAUT + 30,
-  attente: T_INJECTION_DEFAUT + 165,
+  tot: T_INJECTION_DEFAUT + 45,
+  attente: T_INJECTION_DEFAUT + 150,
 };
 
 /** Message + issue (plonge ou non) pour la case courante de la matrice (audit point 12, cf.
@@ -145,7 +172,7 @@ const RECORR_DELAIS: Record<Exclude<Recorrection, 'aucune'>, number> = {
 function matriceCumul(situation: SituationCumul, recorrection: Recorrection): { message: string; plonge: boolean } {
   if (situation === 'revient') {
     if (recorrection === 'aucune') {
-      return { message: 'Sans rien ajouter, la glycémie redescend seule dans la cible : la dose de départ suffisait.', plonge: false };
+      return { message: 'Le repas fait monter la glycémie assez haut — on aurait envie d’ajouter une dose — mais elle redescend seule dans la cible : inutile de recorriger.', plonge: false }; // à revalider (Thibault)
     }
     if (recorrection === 'tot') {
       return { message: "Recorriger tout de suite, alors que ce n'était pas nécessaire, fait plonger sous la cible.", plonge: true };
@@ -153,7 +180,7 @@ function matriceCumul(situation: SituationCumul, recorrection: Recorrection): { 
     return { message: "Même après avoir attendu, ajouter une dose qui n'était pas nécessaire fait plonger sous la cible.", plonge: true };
   }
   if (recorrection === 'aucune') {
-    return { message: 'Sans correction, la glycémie reste haute après le repas.', plonge: false };
+    return { message: 'Le repas fait monter la glycémie de la même façon, mais cette fois, sans correction, elle reste haute au lieu de redescendre.', plonge: false }; // à revalider (Thibault)
   }
   if (recorrection === 'tot') {
     return { message: "Recorriger tout de suite, pendant que la 1ʳᵉ dose agit encore, fait plonger sous la cible : les deux doses s'additionnent.", plonge: true };
@@ -168,16 +195,28 @@ function timingHint(delay: number): string {
   return "Injectée après le repas, la rapide arrive en retard : le pic a une longueur d'avance sur elle.";
 }
 
-/** Temps ① — message selon la dose de rapide choisie face au repas (point 5). */
-function messageCouvrir(dose: DoseNiveau): string {
-  switch (dose) {
-    case 'moins':
-      return "Trop peu de rapide pour ce repas : le pic n'est pas couvert, le sucre reste au-dessus de la cible.";
-    case 'plus':
-      return 'Trop de rapide pour ce repas : le sucre est poussé sous la cible — risque d’hypo.';
-    default:
-      return 'Avec une dose ajustée à ce repas, le pic est couvert : le sucre revient vers la cible.';
-  }
+/** Temps ① — message selon LE REPAS **et** LA DOSE (point 11 : la dose « habituelle » est fixe, le
+ *  résultat suit l'écart dose − glucides, pas la dose seule). 9 cases cohérentes avec la courbe ;
+ *  la diagonale (peu+moins, moyen+habituelle, beaucoup+plus) est le cas couvert. `// à revalider (Thibault)`. */
+function messageCouvrir(repas: RepasCranId, dose: DoseNiveau): string {
+  const MESSAGES: Record<RepasCranId, Record<DoseNiveau, string>> = {
+    peu: {
+      moins: 'Petit repas, un peu moins de rapide : le sucre reste tranquillement dans la cible.',
+      standard: "Petit repas mais dose habituelle : c'est trop de rapide pour si peu de glucides, le sucre plonge sous la cible.",
+      plus: 'Petit repas et encore plus de rapide : le sucre plonge nettement sous la cible — risque d’hypo.',
+    },
+    moyen: {
+      moins: "Repas moyen, un peu moins de rapide : le pic n'est pas tout à fait couvert, le sucre reste un peu plus haut.",
+      standard: 'Repas moyen et dose habituelle : le pic est couvert, le sucre revient dans la cible.',
+      plus: 'Repas moyen mais plus de rapide que nécessaire : le sucre passe sous la cible — risque d’hypo.',
+    },
+    beaucoup: {
+      moins: "Gros repas et peu de rapide : le pic n'est pas couvert, le sucre reste très haut.",
+      standard: 'Gros repas mais seulement la dose habituelle : elle ne couvre pas tous les glucides, le sucre reste haut.',
+      plus: 'Gros repas et plus de rapide : cette fois le pic est couvert, le sucre revient vers la cible.',
+    },
+  };
+  return MESSAGES[repas][dose];
 }
 
 /** Temps ③ — message selon la glycémie de départ ET la dose de correction (point 6). La bonne
@@ -254,7 +293,10 @@ export default function InsulineRapideModule({ onNavigate, shell }: ModuleProps)
     () => ({
       sans: sampleRepas(cran.params, { tStart: T_MIN, tEnd: T_MAX }),
       avec: sampleRepasAvecBolus(cran.params, {
-        dose: cran.params.charge * DOSE_FACTOR[doseCouvrir],
+        // Dose FIXE (calée sur le repas moyen), indépendante de la charge du repas — comme au
+        // temps ③ : c'est ce qui fait dépendre le résultat de l'écart (dose − glucides) et non de
+        // la dose seule (correction du point 11, S5.md T1-E).
+        dose: DOSE_ADEQUATE * DOSE_FACTOR[doseCouvrir],
         tInjection: T_INJECTION_DEFAUT,
       }),
     }),
@@ -310,20 +352,32 @@ export default function InsulineRapideModule({ onNavigate, shell }: ModuleProps)
 
   // ── Temps ④ — le piège du cumul (2 situations × 3 recorrections, point 12) ──────────────
   const t4BolusBase = useMemo(
-    () => ({
-      dose: DOSE_ADEQUATE,
-      tInjection: T_INJECTION_DEFAUT,
-      ...(situationCumul === 'reste-haut' ? { exces: EXCES_SITUATION_B } : {}),
-    }),
+    () =>
+      situationCumul === 'reste-haut'
+        ? // Situation B « reste haute » : même dose de repas + même repas (REPAS_CUMUL) que A, PLUS
+          // l'excès persistant. Celui-ci étant gaté post-pic (cf. glycemieCurve.ts `excesGate`), le
+          // départ et la montée restent superposés à A ; la divergence n'a lieu qu'après le pic
+          // (la glycémie plafonne haut au lieu de redescendre) — correctif B (2026-07-14).
+          { dose: DOSE_BASE_CUMUL, tInjection: T_INJECTION_DEFAUT, exces: EXCES_SITUATION_B }
+        : // Situation A « redescend toute seule » : dose de repas faible → montée post-prandiale nette
+          // (haut dans le rouge, correctif A) puis retour spontané dans la cible vers +3h.
+          { dose: DOSE_BASE_CUMUL, tInjection: T_INJECTION_DEFAUT },
     [situationCumul],
   );
   const t4Points = useMemo(
     () => ({
-      sansRecorrection: sampleRepasAvecBolus(REPAS_MOYEN, t4BolusBase),
+      sansRecorrection: sampleRepasAvecBolus(REPAS_CUMUL, t4BolusBase),
       avecRecorrection:
         recorrection === 'aucune'
           ? null
-          : sampleRepasAvecBolus(REPAS_MOYEN, { ...t4BolusBase, tSecondeDose: RECORR_DELAIS[recorrection] }),
+          : sampleRepasAvecBolus(REPAS_CUMUL, {
+              ...t4BolusBase,
+              tSecondeDose: RECORR_DELAIS[recorrection],
+              // La recorrection est une vraie dose de correction, plus généreuse que la dose de repas
+              // de base → l'ajout fait plonger sous la cible quand il n'était pas nécessaire (A) ou
+              // trop précoce (B, cumul).
+              doseCorrection: DOSE_RECORRECTION,
+            }),
     }),
     [t4BolusBase, recorrection],
   );
@@ -383,36 +437,38 @@ export default function InsulineRapideModule({ onNavigate, shell }: ModuleProps)
     <div className={styles.module}>
       {/* ── Temps ① — Couvrir le repas ────────────────────────────────────── */}
       <section id="m10-panel-1" role="tabpanel" aria-labelledby="m10-tab-1" hidden={temps !== 1} className={styles.panel}>
-        <div className={styles.chipRow} role="radiogroup" aria-label="Glucides du repas">
-          {REPAS_CRANS.map((c) => {
-            const active = repasId === c.id;
-            return (
-              <button
-                key={c.id}
-                type="button"
-                role="radio"
-                aria-checked={active}
-                className={`chip ${styles.cranChip}${active ? ' activeDoubled' : ''}`}
-                onClick={() => setRepasId(c.id)}
-              >
-                {c.label}
-              </button>
-            );
-          })}
-        </div>
-
-        <DoseSelector value={doseCouvrir} onChange={setDoseCouvrir} />
-
-        <div className={`card ${styles.courbeCard}`}>
-          <p className="eyebrow">Ce que fait le sucre après le repas</p>
-          <CourbeGlycemie courbes={t1Courbes} bandes={bandes} marqueurs={[REPAS_MARQUEUR]} axeLabels={AXE_LABELS} />
-          <div className={styles.legendeRow}>
-            <span className={styles.legendeFantome}>- - Sans rapide</span>
-            <span className={styles.legendePrincipale}>— Avec rapide, à la dose choisie</span>
+        <div className={`card ${styles.situationCard}`}>
+          <div className={styles.chipRow} role="radiogroup" aria-label="Glucides du repas">
+            {REPAS_CRANS.map((c) => {
+              const active = repasId === c.id;
+              return (
+                <button
+                  key={c.id}
+                  type="button"
+                  role="radio"
+                  aria-checked={active}
+                  className={`chip ${styles.cranChip}${active ? ' activeDoubled' : ''}`}
+                  onClick={() => setRepasId(c.id)}
+                >
+                  {c.label}
+                </button>
+              );
+            })}
           </div>
-        </div>
 
-        <p className={styles.message}>{messageCouvrir(doseCouvrir)}</p>
+          <DoseSelector value={doseCouvrir} onChange={setDoseCouvrir} />
+
+          <div className={styles.courbeCard}>
+            <p className="eyebrow">Ce que fait le sucre après le repas</p>
+            <CourbeGlycemie courbes={t1Courbes} bandes={bandes} marqueurs={[REPAS_MARQUEUR]} axeLabels={AXE_LABELS} />
+            <div className={styles.legendeRow}>
+              <span className={styles.legendeFantome}>- - Sans rapide</span>
+              <span className={styles.legendePrincipale}>— Avec rapide, à la dose choisie</span>
+            </div>
+          </div>
+
+          <p className={styles.message}>{messageCouvrir(repasId, doseCouvrir)}</p>
+        </div>
       </section>
 
       {/* ── Temps ② — Le bon moment ───────────────────────────────────────── */}
@@ -446,102 +502,106 @@ export default function InsulineRapideModule({ onNavigate, shell }: ModuleProps)
 
       {/* ── Temps ③ — Corriger avant le repas ─────────────────────────────── */}
       <section id="m10-panel-3" role="tabpanel" aria-labelledby="m10-tab-3" hidden={temps !== 3} className={styles.panel}>
-        <div className={styles.chipRow} role="radiogroup" aria-label="Glycémie avant le repas">
-          {DEPART_OPTIONS.map((d) => {
-            const active = departId === d.id;
-            return (
-              <button
-                key={d.id}
-                type="button"
-                role="radio"
-                aria-checked={active}
-                className={`chip ${styles.cranChip}${active ? ' activeDoubled' : ''}`}
-                onClick={() => setDepartId(d.id)}
-              >
-                {d.label}
+        <div className={`card ${styles.situationCard}`}>
+          <div className={styles.chipRow} role="radiogroup" aria-label="Glycémie avant le repas">
+            {DEPART_OPTIONS.map((d) => {
+              const active = departId === d.id;
+              return (
+                <button
+                  key={d.id}
+                  type="button"
+                  role="radio"
+                  aria-checked={active}
+                  className={`chip ${styles.cranChip}${active ? ' activeDoubled' : ''}`}
+                  onClick={() => setDepartId(d.id)}
+                >
+                  {d.label}
+                </button>
+              );
+            })}
+          </div>
+
+          <DoseSelector value={doseCorriger} onChange={setDoseCorriger} />
+
+          <div className={styles.courbeCard}>
+            <p className="eyebrow">Ce que fait le sucre, selon la glycémie de départ et la dose</p>
+            <CourbeGlycemie courbes={t3Courbes} bandes={bandes} marqueurs={[REPAS_MARQUEUR]} axeLabels={AXE_LABELS} />
+          </div>
+
+          <div className={styles.bridgeRow}>
+            <p className={styles.message}>{messageCorriger(departId, doseCorriger)}</p>
+            {departId === 'basse' && (
+              <button type="button" className="btn btn--ghost" onClick={() => onNavigate('hypoglycemie')}>
+                Traiter l'hypo d'abord
               </button>
-            );
-          })}
-        </div>
-
-        <DoseSelector value={doseCorriger} onChange={setDoseCorriger} />
-
-        <div className={`card ${styles.courbeCard}`}>
-          <p className="eyebrow">Ce que fait le sucre, selon la glycémie de départ et la dose</p>
-          <CourbeGlycemie courbes={t3Courbes} bandes={bandes} marqueurs={[REPAS_MARQUEUR]} axeLabels={AXE_LABELS} />
-        </div>
-
-        <div className={styles.bridgeRow}>
-          <p className={styles.message}>{messageCorriger(departId, doseCorriger)}</p>
-          {departId === 'basse' && (
-            <button type="button" className="btn btn--ghost" onClick={() => onNavigate('hypoglycemie')}>
-              Traiter l'hypo d'abord
-            </button>
-          )}
+            )}
+          </div>
         </div>
       </section>
 
       {/* ── Temps ④ — Le piège du cumul ───────────────────────────────────── */}
       <section id="m10-panel-4" role="tabpanel" aria-labelledby="m10-tab-4" hidden={temps !== 4} className={styles.panel}>
-        <div className={styles.chipRow} aria-label="Après le repas">
-          {SITUATION_CUMUL_OPTIONS.map((opt) => {
-            const active = situationCumul === opt.id;
-            return (
-              <button
-                key={opt.id}
-                type="button"
-                aria-pressed={active}
-                className={`chip ${styles.cranChip}${active ? ' activeDoubled' : ''}`}
-                onClick={() => {
-                  setSituationCumul(opt.id);
-                  setRecorrection('aucune');
-                }}
-              >
-                {opt.label}
-              </button>
-            );
-          })}
-        </div>
+        <div className={`card ${styles.situationCard}`}>
+          <div className={styles.chipRow} aria-label="Après le repas">
+            {SITUATION_CUMUL_OPTIONS.map((opt) => {
+              const active = situationCumul === opt.id;
+              return (
+                <button
+                  key={opt.id}
+                  type="button"
+                  aria-pressed={active}
+                  className={`chip ${styles.cranChip}${active ? ' activeDoubled' : ''}`}
+                  onClick={() => {
+                    setSituationCumul(opt.id);
+                    setRecorrection('aucune');
+                  }}
+                >
+                  {opt.label}
+                </button>
+              );
+            })}
+          </div>
 
-        <div className={styles.chipRow} aria-label="Recorriger ou attendre">
-          {RECORRECTION_OPTIONS.map((opt) => {
-            const active = recorrection === opt.id;
-            return (
-              <button
-                key={opt.id}
-                type="button"
-                aria-pressed={active}
-                className={`chip ${styles.cranChip}${active ? ' activeDoubled' : ''}`}
-                onClick={() => setRecorrection(opt.id)}
-              >
-                {opt.label}
-              </button>
-            );
-          })}
-        </div>
+          <div className={styles.chipRow} aria-label="Recorriger ou attendre">
+            {RECORRECTION_OPTIONS.map((opt) => {
+              const active = recorrection === opt.id;
+              return (
+                <button
+                  key={opt.id}
+                  type="button"
+                  aria-pressed={active}
+                  className={`chip ${styles.cranChip}${active ? ' activeDoubled' : ''}`}
+                  onClick={() => setRecorrection(opt.id)}
+                >
+                  {opt.label}
+                </button>
+              );
+            })}
+          </div>
 
-        <div className={`card ${styles.courbeCard}`}>
-          <p className="eyebrow">Ce que fait le sucre selon ce qu'on fait après le repas</p>
-          <CourbeGlycemie courbes={t4Courbes} bandes={bandes} marqueurs={t4Marqueurs} axeLabels={AXE_LABELS} />
-          <div className={styles.legendeRow}>
-            <span className={styles.legendePrincipale}>
-              — {situationCumul === 'revient' ? 'Sans recorrection : redescend seule' : 'Sans recorrection : reste haute'}
-            </span>
-            {recorrection !== 'aucune' && (
-              <span className={t4Issue.plonge ? styles.legendeVigilance : styles.legendePrincipale}>
-                - - {t4Issue.plonge ? 'Avec cette recorrection : ça plonge sous la cible' : 'Avec cette recorrection : ça revient dans la cible'}
+          <div className={styles.courbeCard}>
+            <p className="eyebrow">Ce que fait le sucre selon ce qu'on fait après le repas</p>
+            <CourbeGlycemie courbes={t4Courbes} bandes={bandes} marqueurs={t4Marqueurs} axeLabels={AXE_LABELS} />
+            <div className={styles.legendeRow}>
+              <span className={styles.legendePrincipale}>
+                — {situationCumul === 'revient' ? 'Sans recorrection : redescend seule' : 'Sans recorrection : reste haute'}
               </span>
+              {recorrection !== 'aucune' && (
+                <span className={t4Issue.plonge ? styles.legendeVigilance : styles.legendePrincipale}>
+                  - - {t4Issue.plonge ? 'Avec cette recorrection : ça plonge sous la cible' : 'Avec cette recorrection : ça revient dans la cible'}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className={styles.bridgeRow}>
+            <p className={styles.message}>{t4Issue.message}</p>
+            {t4Issue.plonge && (
+              <button type="button" className="btn btn--ghost" onClick={() => onNavigate('hypoglycemie')}>
+                Ça ressemble à une hypo → le réflexe
+              </button>
             )}
           </div>
-        </div>
-
-        <div className={styles.bridgeRow}>
-          <p className={styles.message}>{t4Issue.message}</p>
-          {t4Issue.plonge && (
-            <button type="button" className="btn btn--ghost" onClick={() => onNavigate('hypoglycemie')}>
-              Ça ressemble à une hypo → le réflexe
-            </button>
-          )}
         </div>
       </section>
 

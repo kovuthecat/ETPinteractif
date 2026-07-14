@@ -1,7 +1,10 @@
 .module {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xl);
+  /* Compacté xl → lg (S5.md T4-E) : le panneau temps ④ (2 rangées de chips + légende 2 lignes +
+     bloc résultat avec bouton) débordait sous la ligne de flottaison. On resserre les espacements
+     verticaux du module sans toucher COURBE_GRAPH_HEIGHT (partagé par 9 modules diabète). */
+  gap: var(--space-lg);
 }
 
 /* ── Onglets des 4 temps ────────────────────────────────────────────────── */
@@ -32,11 +35,25 @@
 .panel {
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
+  /* lg → md (S5.md T4-E) : resserre l'empilement chips / courbe / résultat de chaque temps. */
+  gap: var(--space-md);
 }
 
 .panel[hidden] {
   display: none;
+}
+
+/* ── Encadré situation → réponse → résultat (S6, aligné sur .situationCard de
+   la basale InsulineModule.module.css) : regroupe pour un temps donné les chips
+   de situation, les chips de réponse (dose), la courbe et le message de résultat
+   dans une même carte, au lieu de laisser ces blocs flotter séparément. ── */
+
+.situationCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg);
+  border: 2px solid var(--color-line);
 }
 
 /* ── Sélecteurs qualitatifs (chips) ─────────────────────────────────────── */
@@ -60,7 +77,8 @@
 /* ── Courbe ──────────────────────────────────────────────────────────────── */
 
 .courbeCard {
-  padding: var(--space-lg);
+  /* lg → md (S5.md T4-E) : rogne la marge autour du graphe pour dégager le bloc résultat. */
+  padding: var(--space-md);
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
@@ -99,7 +117,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-md);
+  /* md → sm (S5.md T4-E) : rapproche le bouton du message de résultat (temps ③/④). */
+  gap: var(--space-sm);
 }
 
 /* ── Temps ② — curseur de délai (grammaire du module 3 Activité ③) ───────── */
