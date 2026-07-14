@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AlertTriangle, Check, Flame, Info, Moon, Sun } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import FicheOverlay from '../../../components/FicheOverlay';
@@ -71,6 +71,7 @@ export default function SubstitutsModule(_props: ModuleProps) {
   const [quartsNuit, setQuartsNuit] = useState(INITIAL_QUARTS);
   const [ficheOpen, setFicheOpen] = useState(false);
   const [ficheForme, setFicheForme] = useState<FormeId | null>(null);
+  const techniqueRef = useRef<HTMLElement>(null);
 
   const quartsNuitAffiche = Math.min(quartsNuit, quartsJour);
 
@@ -87,6 +88,18 @@ export default function SubstitutsModule(_props: ModuleProps) {
 
   const formeData = selectedForme ? FORMES_DATA[selectedForme] : null;
   const showTechnique = !!formeData && selectedForme !== 'patch';
+
+  // Filet : à la sélection d'une forme, garantir que la carte technique de prise est visible
+  // sans défiler (point 6, cf. plan corrections-revue-guidee/S2). `block: 'nearest'` ne fait
+  // rien si l'élément est déjà dans le viewport (cas des 5 autres formes une fois le bloc
+  // supérieur compacté) : aucun effet sur les formes déjà correctes.
+  useEffect(() => {
+    if (!showTechnique) return;
+    const node = techniqueRef.current;
+    if (!node) return;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    node.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'nearest' });
+  }, [selectedForme, showTechnique]);
 
   return (
     <div className={styles.module}>
@@ -150,7 +163,7 @@ export default function SubstitutsModule(_props: ModuleProps) {
         )}
 
         {formeData && selectedForme && (
-          <div style={{ marginTop: '1rem' }}>
+          <div style={{ marginTop: '0.5rem' }}>
             <button
               type="button"
               className={`btn ${state.substituts.includes(selectedForme) ? 'btn--ghost' : 'btn--primary'}`}
@@ -170,7 +183,7 @@ export default function SubstitutsModule(_props: ModuleProps) {
       </section>
 
       {showTechnique && formeData && selectedForme && (
-        <section className={styles.section}>
+        <section className={styles.section} ref={techniqueRef}>
           <p className={styles.sectionEyebrow}>Technique de prise — {formeData.label}</p>
           <TechniqueIllustration forme={selectedForme} label={formeData.label} />
         </section>
