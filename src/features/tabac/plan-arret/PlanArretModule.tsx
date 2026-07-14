@@ -4,7 +4,7 @@ import type { ModuleProps } from '../../types';
 import PrintableLivret from '../../../components/PrintableLivret';
 import { SITUATIONS } from '../../../content/tabac/situations';
 import { MOTIVATION_SEED } from '../motivation/data';
-import { useSelection } from '../../../state/SelectionContext';
+import { useSelection, type StrategieArret } from '../../../state/SelectionContext';
 import { buildLivretSections } from './livretSections';
 import styles from './PlanArretModule.module.css';
 
@@ -21,6 +21,13 @@ const FORME_OPTIONS: { id: string; label: string }[] = [
   { id: 'sublingual', label: 'Comprimé sublingual' },
   { id: 'spray', label: 'Spray buccal' },
   { id: 'vapoteuse', label: 'Vapoteuse' },
+];
+
+// Stratégie d'arrêt (section 1) — deux options également valables. Portée v1 :
+// libellés seuls, aucun protocole/palier calculé. Textes cliniques à revalider.
+const STRATEGIE_OPTIONS: { id: StrategieArret; label: string }[] = [
+  { id: 'complet', label: 'Arrêt complet' }, // à revalider (Thibault)
+  { id: 'progressive', label: 'Réduction progressive' }, // à revalider (Thibault)
 ];
 
 // Situations à risque = automatismes comportementaux (source partagée `situations.ts`).
@@ -118,10 +125,22 @@ function ChipGroup({
 }
 
 export default function PlanArretModule(_: ModuleProps) {
-  const { state, toggle, add, remove, setDate, reset } = useSelection();
+  const { state, toggle, add, remove, setDate, setStrategie, reset } = useSelection();
   const [livretOpen, setLivretOpen] = useState(false);
 
   const date = state.dateArret;
+  const strategie = state.strategie;
+
+  // Libellés adaptés à la stratégie — LIBELLÉS SEULS (aucun calcul de palier/date).
+  // Sans choix (`null`), on garde le rendu d'aujourd'hui (rétrocompatibilité).
+  // Tout texte clinique nouveau est à revalider (Thibault).
+  const sectionDateLabel = strategie === null ? '1. Ma date' : '1. Ma stratégie et ma date'; // à revalider (Thibault)
+  const dateFieldLabel =
+    strategie === 'progressive' ? 'Ma date de début de réduction' : "Ma date d'arrêt"; // à revalider (Thibault)
+  const dateVideAide =
+    strategie === 'progressive'
+      ? 'votre date de début de réduction — à choisir ensemble, à votre rythme' // à revalider (Thibault)
+      : 'à choisir ensemble, quand vous serez prêt·e';
 
   const situationsFixesLabels = new Set(
     COMPORTEMENTALE.filter((s) => state.situations.includes(s.id)).map((s) => s.label),
@@ -151,18 +170,38 @@ export default function PlanArretModule(_: ModuleProps) {
       </p>
 
       <section className={`card ${styles.section}`}>
-        <p className={styles.sectionLabel}>1. Ma date</p>
+        <p className={styles.sectionLabel}>{sectionDateLabel}</p>
+        {/* Sélecteur de stratégie : 2 options également valables, même grammaire
+            visuelle que les chips du module (radiogroup, cible ≥ 44 px). */}
+        <p className={styles.renvoi}>Comment souhaitez-vous procéder ?</p>{/* à revalider (Thibault) */}
+        <div className={styles.chipRow} role="radiogroup" aria-label="Ma stratégie d'arrêt">
+          {STRATEGIE_OPTIONS.map(({ id, label }) => {
+            const active = strategie === id;
+            return (
+              <button
+                key={id}
+                type="button"
+                role="radio"
+                aria-checked={active}
+                className={`chip ${styles.chipBtn}${active ? ' activeDoubled' : ''}`}
+                onClick={() => setStrategie(id)}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
         <input
           type="date"
           className={styles.dateInput}
           value={date}
           onChange={(event) => setDate(event.target.value)}
-          aria-label="Ma date d'arrêt"
+          aria-label={dateFieldLabel}
         />
         {date ? (
           <p className={styles.dateRappel}>{dateFormatee}</p>
         ) : (
-          <p className={styles.dateVide}>à choisir ensemble, quand vous serez prêt·e</p>
+          <p className={styles.dateVide}>{dateVideAide}</p>
         )}
       </section>
 

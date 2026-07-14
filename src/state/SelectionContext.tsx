@@ -13,8 +13,17 @@ import type { ThemeId } from '../features/types';
  * Les champs ci-dessous sont le vocabulaire de sélection ETP courant ; un thème
  * qui n'en utilise pas certains les laisse simplement vides.
  */
+/**
+ * Stratégie d'arrêt retenue dans le plan (thème tabac). Deux options également
+ * valables ; `null` = pas encore choisi (rendu rétro-compatible). Portée v1 :
+ * libellés seuls — ne modifie ni le protocole ni le contenu du livret.
+ */
+export type StrategieArret = 'complet' | 'progressive';
+
 export interface SelectionState {
   dateArret: string;
+  /** stratégie d'arrêt retenue (tabac) — `null` tant qu'aucun choix. */
+  strategie: StrategieArret | null;
   /** ids de situations cochées (canoniques — cf. `tabac/situations.ts`). */
   situations: string[];
   /** situations saisies librement dans « Mon plan d'arrêt ». */
@@ -31,10 +40,11 @@ export interface SelectionState {
   gestesEcart: string[];
 }
 
-export type SelectionListField = Exclude<keyof SelectionState, 'dateArret'>;
+export type SelectionListField = Exclude<keyof SelectionState, 'dateArret' | 'strategie'>;
 
 const EMPTY_STATE: SelectionState = Object.freeze({
   dateArret: '',
+  strategie: null,
   situations: [],
   situationsLibres: [],
   substituts: [],
@@ -52,6 +62,7 @@ type Action =
   | { type: 'REMOVE'; theme: ThemeId; field: SelectionListField; value: string }
   | { type: 'SET_LIST'; theme: ThemeId; field: SelectionListField; values: string[] }
   | { type: 'SET_DATE'; theme: ThemeId; value: string }
+  | { type: 'SET_STRATEGIE'; theme: ThemeId; value: StrategieArret | null }
   | { type: 'RESET'; theme: ThemeId };
 
 function sameOrder(a: string[], b: string[]): boolean {
@@ -97,6 +108,10 @@ function reducer(state: StatesByTheme, action: Action): StatesByTheme {
       if (current.dateArret === action.value) return state;
       return { ...state, [action.theme]: { ...current, dateArret: action.value } };
     }
+    case 'SET_STRATEGIE': {
+      if (current.strategie === action.value) return state;
+      return { ...state, [action.theme]: { ...current, strategie: action.value } };
+    }
     case 'RESET': {
       if (!state[action.theme]) return state;
       const rest = { ...state };
@@ -137,6 +152,7 @@ export interface UseSelectionResult {
   remove: (field: SelectionListField, value: string) => void;
   setList: (field: SelectionListField, values: string[]) => void;
   setDate: (value: string) => void;
+  setStrategie: (value: StrategieArret | null) => void;
   reset: () => void;
 }
 
@@ -159,6 +175,8 @@ export function useSelection(): UseSelectionResult {
       remove: (field: SelectionListField, value: string) => dispatch({ type: 'REMOVE', theme, field, value }),
       setList: (field: SelectionListField, values: string[]) => dispatch({ type: 'SET_LIST', theme, field, values }),
       setDate: (value: string) => dispatch({ type: 'SET_DATE', theme, value }),
+      setStrategie: (value: StrategieArret | null) => dispatch({ type: 'SET_STRATEGIE', theme, value }),
+      // `reset` supprime l'entrée du thème → `strategie` repart à `null` (défaut).
       reset: () => dispatch({ type: 'RESET', theme }),
     }),
     [dispatch, theme],
