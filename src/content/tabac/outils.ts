@@ -55,7 +55,6 @@ export const OUTILS: Outil[] = [
       "Formulez 3 à 5 plans précis : “SI un collègue me propose une cigarette, ALORS je réponds : non merci, j'ai arrêté — et je prends un verre d'eau.” “SI l'envie monte après le repas, ALORS je sors marcher 5 minutes.” Écrivez-les, et relisez-les chaque matin les premières semaines.",
     preuve: 'demontree',
     consigneFiche: "J'écris 3 à 5 plans “SI… ALORS…” et je les relis chaque matin.",
-    renvoi: { id: 'plan-arret', label: "Les inscrire dans mon plan d'arrêt" },
   },
   {
     id: 'outil-bouger',
@@ -191,7 +190,6 @@ export const OUTILS: Outil[] = [
       "Préparez, avant le jour J, un plan de secours en 3 gestes : 1. Je jette immédiatement le paquet et le briquet. 2. J'appelle quelqu'un — un proche, mon soignant, le 39 89. 3. Je relis mes raisons d'arrêter. Puis je continue mes substituts exactement comme avant : les 24 heures qui suivent sont décisives, et une cigarette ne fait pas de vous un fumeur — c'est acheter un paquet qui le ferait. Comprendre ce qui a déclenché l'écart, sans se blâmer, prépare la suite.",
     preuve: 'experts',
     consigneFiche: "Un écart n'est pas une rechute : je jette le paquet, j'appelle, je relis mes raisons.",
-    renvoi: { id: 'plan-arret', label: "Le préparer dans mon plan d'arrêt" },
   },
   {
     id: 'outil-substituts',
