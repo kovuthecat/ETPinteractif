@@ -16,30 +16,6 @@
   border: 0;
 }
 
-/* --- Onglets des 3 temps --- */
-
-.tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-sm);
-}
-
-.tab {
-  padding: 10px 20px;
-  border-radius: var(--radius-pill);
-  border: 2px solid var(--color-line);
-  background: var(--color-surface);
-  color: var(--color-text);
-  font: 600 15px 'Work Sans', sans-serif;
-  cursor: pointer;
-}
-
-.tabActive {
-  border-color: var(--color-text);
-  background: var(--color-text);
-  color: var(--color-bg);
-}
-
 /* --- Carte courbe --- */
 
 .graphCard {
@@ -150,7 +126,7 @@
   outline-offset: 2px;
 }
 
-/* --- Temps ③ : situations --- */
+/* --- Bloc décision : situations (toujours visible, plus d'onglet) --- */
 
 .situations {
   display: flex;
@@ -216,7 +192,7 @@
   line-height: 1.4;
 }
 
-/* --- Temps ② : réglage manipulable de la lente (T8) --- */
+/* --- Réglage manipulable de la lente (T8) --- */
 
 .ajustementRow {
   display: flex;

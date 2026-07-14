@@ -26,15 +26,10 @@ import styles from './InsulineModule.module.css';
  * Aucun nombre à l'écran : le pas d'ajustement est un geste, la cible une bande (SPEC §13.2).
  */
 
-// S4-v2 : l'onglet ① Zone-cible disparaît (ce n'était qu'un choix de profil, pas un contenu
-// propre) — le profil devient un toggle d'état près de la courbe, visible sur les 2 onglets
-// restants, renumérotés ①/②.
-type TempsId = 1 | 2;
-
-const TEMPS_TABS: { id: TempsId; label: string }[] = [
-  { id: 1, label: '① Lire la courbe' },
-  { id: 2, label: '② Décider' },
-];
+// Écran unique continu (décision Thibault 2026-07-14) : plus d'onglets. Le découpage « Lire la
+// courbe » / « Décider » était artificiel — la courbe reste toujours visible et « Décider » ne
+// faisait que révéler le bloc situations. Tout est désormais rendu d'un seul tenant : profil →
+// courbe → situations (toujours visibles) → refrain.
 
 const TON_VAR: Record<ActionTon, string> = {
   vigilance: 'var(--color-vigilance)',
@@ -49,7 +44,6 @@ const TREND_LABEL: Record<'↗' | '↘' | '→', string> = {
 };
 
 export default function InsulineModule({ onNavigate, shell }: ModuleProps) {
-  const [temps, setTemps] = useState<TempsId>(1);
   const [profileId, setProfileId] = useState<ProfileId>('jeune');
   const [situationId, setSituationId] = useState<SituationId | null>(null);
   const [segmentId, setSegmentId] = useState<'nuit' | 'repas' | null>(null);
@@ -58,11 +52,11 @@ export default function InsulineModule({ onNavigate, shell }: ModuleProps) {
   const profile = PROFILES[profileId];
   const situation = situationId ? SITUATIONS[situationId] : null;
   const baseScenario = situation ? situation.scenario : 'stable';
-  // T8 : au temps ② « Décider », courbe ET message viennent du couple (situation, ajustement)
-  // via `deciderCell` — chaque case porte son propre sens (audit itération 2, points 1/3/4),
-  // là où l'ancien code dérivait le message du seul scénario résultant.
+  // T8 : courbe ET message viennent du couple (situation, ajustement) via `deciderCell` — chaque
+  // case porte son propre sens (audit itération 2, points 1/3/4), là où l'ancien code dérivait le
+  // message du seul scénario résultant.
   const cell =
-    temps === 2 && situationId && situationId !== 'bas' && ajustement
+    situationId && situationId !== 'bas' && ajustement
       ? deciderCell(situationId, ajustement)
       : null;
   const scenario = cell ? cell.scenario : baseScenario;
@@ -87,27 +81,10 @@ export default function InsulineModule({ onNavigate, shell }: ModuleProps) {
 
   if (!shell) return null;
 
-  const navBar = (
-    <div className={styles.tabs}>
-      {TEMPS_TABS.map((t) => (
-        <button
-          key={t.id}
-          type="button"
-          className={`${styles.tab}${temps === t.id ? ` ${styles.tabActive}` : ''}`}
-          aria-pressed={temps === t.id}
-          onClick={() => setTemps(t.id)}
-        >
-          {t.label}
-        </button>
-      ))}
-    </div>
-  );
-
   return (
-    <ModuleShell titre={shell.titre} sources={shell.sources} onBack={shell.onBack} wide nav={navBar}>
+    <ModuleShell titre={shell.titre} sources={shell.sources} onBack={shell.onBack} wide>
     <div className={styles.module}>
-      {/* S4-v2 (T1) : profil = toggle d'état discret près de la courbe, plus un onglet plein
-          écran — visible sur les 2 onglets, règle la zone-cible en continu. */}
+      {/* Profil = toggle d'état discret près de la courbe ; il règle la zone-cible en continu. */}
       <div className={styles.profileToggleRow}>
         <span className={styles.profileToggleLabel}>Profil</span>
         <div className={styles.profileToggle} role="group" aria-label="Profil patient — règle la zone-cible">
@@ -160,89 +137,89 @@ export default function InsulineModule({ onNavigate, shell }: ModuleProps) {
         )}
       </div>
 
-      {temps === 2 && (
-        <div className={styles.situations}>
-          <div className={`card ${styles.situationCard}${cardAActive ? ` ${styles.situationCardActive}` : ''}`}>
-            <div className={styles.chips}>
-              {SUB_SITUATIONS.map((s) => (
-                <button
-                  key={s.id}
-                  type="button"
-                  className={`${styles.situationChip}${situationId === s.id ? ` ${styles.situationChipActive}` : ''}`}
-                  aria-pressed={situationId === s.id}
-                  onClick={() => toggleSituation(s.id)}
-                >
-                  {s.label}
-                </button>
-              ))}
-            </div>
-            {cardAActive && situation && (
-              <>
-                {/* Point 2 (audit itération 2) : plus de phrase narrative qui donne la réponse
-                    avant l'interaction — on garde le chip + les 3 boutons + le message de résultat. */}
-                <div className={styles.ajustementRow} role="group" aria-label="Réglage de la lente">
-                  <button
-                    type="button"
-                    className={`chip ${styles.ajustementBtn}${ajustement === 'baisse' ? ' activeDoubled' : ''}`}
-                    aria-pressed={ajustement === 'baisse'}
-                    onClick={() => setAjustement('baisse')}
-                  >
-                    <TrendingDown size={18} aria-hidden="true" />
-                    Baisser la lente
-                  </button>
-                  <button
-                    type="button"
-                    className={`chip ${styles.ajustementBtn}${ajustement === 'pareil' ? ' activeDoubled' : ''}`}
-                    aria-pressed={ajustement === 'pareil'}
-                    onClick={() => setAjustement('pareil')}
-                  >
-                    <Minus size={18} aria-hidden="true" />
-                    Laisser pareil
-                  </button>
-                  <button
-                    type="button"
-                    className={`chip ${styles.ajustementBtn}${ajustement === 'hausse' ? ' activeDoubled' : ''}`}
-                    aria-pressed={ajustement === 'hausse'}
-                    onClick={() => setAjustement('hausse')}
-                  >
-                    <TrendingUp size={18} aria-hidden="true" />
-                    Monter la lente
-                  </button>
-                </div>
-                {outcome && (
-                  <p className={styles.ajustementMessage} style={{ color: TON_VAR[outcome.ton] }} aria-live="polite">
-                    {outcome.texte}
-                  </p>
-                )}
-              </>
-            )}
+      {/* Bloc décision, toujours visible (plus d'onglet « Décider ») : chips situations +
+          réglage de la lente + message, et la carte « La trace plonge dans le bas ». */}
+      <div className={styles.situations}>
+        <div className={`card ${styles.situationCard}${cardAActive ? ` ${styles.situationCardActive}` : ''}`}>
+          <div className={styles.chips}>
+            {SUB_SITUATIONS.map((s) => (
+              <button
+                key={s.id}
+                type="button"
+                className={`${styles.situationChip}${situationId === s.id ? ` ${styles.situationChipActive}` : ''}`}
+                aria-pressed={situationId === s.id}
+                onClick={() => toggleSituation(s.id)}
+              >
+                {s.label}
+              </button>
+            ))}
           </div>
-
-          <div className={`card ${styles.situationCard}${cardBActive ? ` ${styles.situationCardActive}` : ''}`}>
-            <button
-              type="button"
-              className={styles.situationToggle}
-              aria-pressed={cardBActive}
-              onClick={() => toggleSituation('bas')}
-            >
-              <h3 className={styles.situationTitre}>La trace plonge dans le bas</h3>
-            </button>
-            {cardBActive && (
-              <>
-                <p className={styles.situationDesc}>{BAS.desc}</p>
+          {cardAActive && situation && (
+            <>
+              {/* Point 2 (audit itération 2) : plus de phrase narrative qui donne la réponse
+                  avant l'interaction — on garde le chip + les 3 boutons + le message de résultat. */}
+              <div className={styles.ajustementRow} role="group" aria-label="Réglage de la lente">
                 <button
                   type="button"
-                  className={styles.situationActionPorte}
-                  style={{ color: TON_VAR[BAS.ton] }}
-                  onClick={() => onNavigate('hypoglycemie')}
+                  className={`chip ${styles.ajustementBtn}${ajustement === 'baisse' ? ' activeDoubled' : ''}`}
+                  aria-pressed={ajustement === 'baisse'}
+                  onClick={() => setAjustement('baisse')}
                 >
-                  {BAS.action}
+                  <TrendingDown size={18} aria-hidden="true" />
+                  Baisser la lente
                 </button>
-              </>
-            )}
-          </div>
+                <button
+                  type="button"
+                  className={`chip ${styles.ajustementBtn}${ajustement === 'pareil' ? ' activeDoubled' : ''}`}
+                  aria-pressed={ajustement === 'pareil'}
+                  onClick={() => setAjustement('pareil')}
+                >
+                  <Minus size={18} aria-hidden="true" />
+                  Laisser pareil
+                </button>
+                <button
+                  type="button"
+                  className={`chip ${styles.ajustementBtn}${ajustement === 'hausse' ? ' activeDoubled' : ''}`}
+                  aria-pressed={ajustement === 'hausse'}
+                  onClick={() => setAjustement('hausse')}
+                >
+                  <TrendingUp size={18} aria-hidden="true" />
+                  Monter la lente
+                </button>
+              </div>
+              {outcome && (
+                <p className={styles.ajustementMessage} style={{ color: TON_VAR[outcome.ton] }} aria-live="polite">
+                  {outcome.texte}
+                </p>
+              )}
+            </>
+          )}
         </div>
-      )}
+
+        <div className={`card ${styles.situationCard}${cardBActive ? ` ${styles.situationCardActive}` : ''}`}>
+          <button
+            type="button"
+            className={styles.situationToggle}
+            aria-pressed={cardBActive}
+            onClick={() => toggleSituation('bas')}
+          >
+            <h3 className={styles.situationTitre}>La trace plonge dans le bas</h3>
+          </button>
+          {cardBActive && (
+            <>
+              <p className={styles.situationDesc}>{BAS.desc}</p>
+              <button
+                type="button"
+                className={styles.situationActionPorte}
+                style={{ color: TON_VAR[BAS.ton] }}
+                onClick={() => onNavigate('hypoglycemie')}
+              >
+                {BAS.action}
+              </button>
+            </>
+          )}
+        </div>
+      </div>
 
       <div className={styles.piedRefrain}>
         <p className="filrouge">Dans le doute, on ne monte pas — on traite l'hypo d'abord.</p>
