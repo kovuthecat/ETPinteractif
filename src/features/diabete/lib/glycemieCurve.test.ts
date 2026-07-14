@@ -438,6 +438,21 @@ describe('invariant 10 — sampleRepasAvecBolus', () => {
     expect(derniere).toBeGreaterThanOrEqual(BANDE_CIBLE_DEFAUT.basse);
     expect(derniere).toBeLessThanOrEqual(BANDE_CIBLE_DEFAUT.haute);
   });
+
+  // Correctif visuel 2026-07-14 (InsulineRapideModule temps ④, correctif B) : l'excès persistant est
+  // désormais gaté (`excesGate`) et n'apparaît qu'APRÈS le pic post-prandial. Conséquence : « reste
+  // haute » (B) partage exactement départ + montée avec « redescend seule » (A) et n'en diverge
+  // qu'après le pic — supprime le creux artificiel de départ de l'ancienne courbe B.
+  it("point 12-bis : l'excès ne modifie rien avant le pic post-prandial (situations A et B superposées au départ et à la montée)", () => {
+    const sansExces = sampleRepasAvecBolus(params, { dose: 0.2, tInjection: -15 });
+    const avecExces = sampleRepasAvecBolus(params, { dose: 0.2, tInjection: -15, exces: 35 });
+    // Le pic du repas (params ci-dessus) tombe à ~43 min : avant lui, les deux courbes coïncident.
+    for (const t of [-20, -10, 0, 20, 40]) {
+      expect(valueAt(avecExces, t)).toBeCloseTo(valueAt(sansExces, t), 6);
+    }
+    // Après le pic, l'excès relève nettement la courbe (la glycémie « reste haute »).
+    expect(valueAt(avecExces, 160) - valueAt(sansExces, 160)).toBeGreaterThan(20);
+  });
 });
 
 // ---------------------------------------------------------------------------

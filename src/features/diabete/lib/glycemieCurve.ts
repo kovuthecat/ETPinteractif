@@ -287,7 +287,10 @@ export type BolusParams = {
    *  Contrairement à `depart` (T9), qui se résorbe automatiquement, cet excès ne diminue que sous
    *  l'effet d'une recorrection réelle (`tSecondeDose`), proportionnellement à la dose ajoutée et
    *  à l'insuline encore active de la 1ʳᵉ dose au moment de l'injection (IOB qualitatif).
-   *  `// à revalider (Thibault)`. */
+   *  Depuis le correctif visuel 2026-07-14, il **n'apparaît qu'après le pic post-prandial**
+   *  (`excesGate`) : nul avant/pendant la montée du repas, si bien que les situations A
+   *  (« redescend seule ») et B (« reste haute ») ont exactement le même départ et la même montée,
+   *  et ne divergent qu'après le pic. `// à revalider (Thibault)`. */
   exces?: number;
   /** Dose de la 2ᵉ injection (recorrection), si distincte de `dose` — défaut : `dose`. */
   doseCorrection?: number;
@@ -341,6 +344,24 @@ function fractionEffetDelivree(dt: number): number {
 }
 
 /**
+ * Fenêtre d'apparition de l'excès persistant (`exces`, situation B « reste haute », temps ④) :
+ * **0 avant/au pic post-prandial**, monte (ease) jusqu'à 1 quand le repas est revenu à la baseline
+ * (`endTimeMinutes`), puis reste à 1. Résultat pédagogique (correctif visuel 2026-07-14, cf.
+ * `InsulineRapideModule` temps ④) : l'excès ne relève la courbe qu'**après** le pic — la situation
+ * « reste haute » (B) partage donc exactement le départ (plat, à la baseline) et la montée post-
+ * prandiale de « redescend seule » (A), et n'en diverge qu'ensuite (elle plafonne haut au lieu de
+ * redescendre). Avant ce correctif l'excès était un décalage constant qui relevait aussi le départ
+ * (d'où un creux artificiel au tout début de la courbe B). `// à revalider (Thibault)`.
+ */
+function excesGate(params: RepasParams, t: number): number {
+  const peakT = peakTimeMinutes(params);
+  const endT = endTimeMinutes(params);
+  if (t <= peakT) return 0;
+  if (t >= endT) return 1;
+  return ease((t - peakT) / (endT - peakT));
+}
+
+/**
  * Courbe post-repas + effet d'un bolus rapide (avec correction de départ, excès persistant et
  * 2ᵉ dose optionnelle). Sur le patron de `sampleActivite` : n'altère jamais `repasLevelAt`, se
  * contente d'ajouter/soustraire des contributions par-dessus.
@@ -348,15 +369,17 @@ function fractionEffetDelivree(dt: number): number {
  * - L'écart de départ (`decalageDepart`, T9) n'est pas un décalage constant : il vaut plein avant
  *   le repas (t≤0) puis se **résorbe** (ease) vers 0 sur `DEPART_RESORPTION` minutes → une
  *   glycémie de départ haute/basse revient vers la baseline (formes convergentes, point 11).
- * - L'excès persistant (`exces`, temps ④, point 12, situation B « reste haute ») est, lui,
- *   **constant tant qu'aucune recorrection n'a lieu** (pas de résorption temporelle propre — la
- *   glycémie « reste haute » par définition). Une recorrection (`tSecondeDose`) le consomme
- *   progressivement (rampe `ease`, jamais de clamp à 0 : une sur-correction laisse un solde
- *   négatif = hypo durable), proportionnellement à la dose de recorrection **et** à l'insuline
- *   encore active de la 1ʳᵉ dose au moment de l'injection (IOB qualitatif via
- *   `fractionEffetDelivree`) — c'est cette somme, pas un simple écart temporel, qui distingue une
- *   recorrection trop précoce (IOB encore élevé → plonge) d'une recorrection après attente (IOB
- *   quasi nul → atterrit dans la cible).
+ * - L'excès persistant (`exces`, temps ④, point 12, situation B « reste haute ») **n'apparaît
+ *   qu'après le pic post-prandial** (gate `excesGate`, correctif 2026-07-14) puis reste **stable au
+ *   plateau `exces`** tant qu'aucune recorrection n'a lieu (pas de résorption temporelle propre — la
+ *   glycémie « reste haute » par définition). Avant le pic il est nul → la courbe B est identique à
+ *   la même sans excès (départ + montée superposés à la situation A). Une recorrection
+ *   (`tSecondeDose`) le consomme progressivement (rampe `ease`, jamais de clamp à 0 : une
+ *   sur-correction laisse un solde négatif = hypo durable), proportionnellement à la dose de
+ *   recorrection **et** à l'insuline encore active de la 1ʳᵉ dose au moment de l'injection (IOB
+ *   qualitatif via `fractionEffetDelivree`) — c'est cette somme, pas un simple écart temporel, qui
+ *   distingue une recorrection trop précoce (IOB encore élevé → plonge) d'une recorrection après
+ *   attente (IOB quasi nul → atterrit dans la cible).
  */
 export function sampleRepasAvecBolus(params: RepasParams, bolus: BolusParams): Point[] {
   const decalageDepart = (bolus.depart ?? BASELINE) - BASELINE; // temps ③ : correction du point de départ
@@ -371,8 +394,10 @@ export function sampleRepasAvecBolus(params: RepasParams, bolus: BolusParams): P
   return sampleRange(-20, tEnd, 1, (t) => {
     const deviation =
       t <= 0 ? decalageDepart : decalageDepart * (1 - ease(clamp01(t / DEPART_RESORPTION)));
-    // Rampe permanente (pas de clamp à 0) : un solde négatif = sur-correction installée (hypo durable).
-    const plateau = exces - (t2 !== undefined ? conso * fractionEffetDelivree(t - t2) : 0);
+    // Excès « reste haute » gaté (nul avant le pic → situations A et B superposées au départ et à la
+    // montée, cf. `excesGate`). Consommation par recorrection en rampe permanente (pas de clamp à
+    // 0) : un solde négatif = sur-correction installée (hypo durable).
+    const plateau = exces * excesGate(params, t) - (t2 !== undefined ? conso * fractionEffetDelivree(t - t2) : 0);
     const repas = repasLevelAt(params, t) + deviation + plateau;
     let effet = bolusEffet(t - bolus.tInjection, bolus.dose);
     if (bolus.tSecondeDose !== undefined) {
