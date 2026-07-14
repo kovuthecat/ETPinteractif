@@ -1353,3 +1353,101 @@ point principal à valider ici : la bonne image doit apparaître au bon endroit.
   - QRBlock : libellé du bloc QR (« Retrouvez ces conseils chez vous — scannez ce code »)
 - URL patient `PATIENT_APP_URL` placeholder + génération `public/qr/patient.png` : différé au déploiement
   (hébergement URL, 2ᵉ projet Vercel ou sous-domaine, non décidé).
+
+## Corrections revue guidée — Tabac A-D + Diabète E (revue guidée Thibault, 2026-07-14) · plan: → plans/corrections-revue-guidee/
+
+> **État** : S1-S6 + 3 correctifs de séance **validés visuellement par Thibault le 2026-07-14** (`npm run dev`).
+> Gate finale : `npx tsc --noEmit` ✓ · `npm run build` ✓ · `npm test` ✓ **96/96**.
+> Légende statut : [ ] à valider · [x] OK · [!] à corriger
+
+### S1 — « Ce que l'arrêt répare » : nav par silhouette (hotspot) + illustration détail
+
+- [x] T1-A — plus aucun « Étape X / 10 » à l'écran.
+- [x] T2-A — plus de chips-pills ni de flèches ; frise chronologique à points cliquables ; cliquer un point
+      allume les organes + met à jour le panneau ; cliquer un organe ouvre son détail daté ; densité des 10
+      points lisible (mobile compris).
+- [x] T3-A — silhouette anatomique pleine, zéro cercle blanc, 7 zones cliquables bien posées sur les organes ;
+      modules diabète (« Complications » notamment) inchangés.
+- [x] T4-A — illustration de détail nettement plus grande et centrée, sur mobile comme en large.
+- [x] **Correctif post-validation** : `.silhouetteCol` 260→380px (desktop) / max-width 300→420px (mobile) et
+      illustration de détail (`size` 160→220) — tailles jugées encore trop petites au 1ᵉʳ passage, recalées.
+
+### S2 — Substituts : technique de prise vapoteuse visible sans scroller
+
+- [x] Vapoteuse : illustration « Technique de prise » visible sans scroller (viewport desktop standard).
+- [x] Gomme, Pastille, Comprimé sublingual, Spray, Patch : rendu toujours correct après compactage (rien de
+      dégradé).
+- [x] Pas de saut de scroll perceptible/agressif au changement de forme (le filet `scrollIntoView` reste
+      discret) ; comportement neutre si `prefers-reduced-motion` est actif.
+
+### S3 — Boîte à outils : retrait toggle grille + lien plan redondant
+
+- [x] T1-C — plus de toggle « Dans ma fiche » sur les cartes de la grille ; l'ajout à la fiche fonctionne
+      toujours depuis la vue détail (bouton « Ajouter à ma fiche » / « Dans ma fiche »).
+- [x] T2-C — dans le détail de « Mes plans SI…ALORS… » et « Si j'ai un écart — le plan de secours », plus de
+      lien vers le plan d'arrêt ; le bouton « Ajouter à ma fiche » demeure ; renvois vers soulagement
+      (outil-respiration) et substituts (outil-substituts) intacts ; app patient inchangée.
+
+### S4 — Plan d'arrêt : sélecteur de stratégie (arrêt complet / réduction)
+
+- [x] Le sélecteur 2 options (radiogroup) apparaît en tête de « 1. Ma date » ; le choix ajuste le titre de
+      section + le libellé/aide de la date ; l'état survit à la navigation inter-modules et se réinitialise
+      au rechargement (mémoire). Libellés cliniques annotés `// à revalider (Thibault)`.
+
+### S5 — Insuline rapide : cohérence pédagogique des courbes + visibilité
+
+- [x] T1-E — à « Dose habituelle » : Peu → creux en zone hypo ; Moyen → dans la cible ; Beaucoup → reste haut
+      (ne plonge pas). Message cohérent avec la courbe dans chacune des 9 cases.
+- [x] T2-E — départ Haute nettement dans le rouge ; creux « cible + habituelle » dans le vert ; « basse +
+      moins » amorce un retour vers la cible.
+- [x] T3-E — « redescend toute seule », sans dose : montée nette puis retour cible vers +3h ; recorrections →
+      plongée hypo.
+- [x] T4-E — « reste haute » + recorrection : message de résultat et bouton « le réflexe » visibles sans
+      défiler (viewport desktop) ; temps ①/②/③ non dégradés par le compactage CSS partagé.
+- [x] **Correctifs post-validation A/B** (recalage du temps ④, cf. `DECISIONS.md`) :
+  - A — « redescend seule » sans dose : le pic monte nettement dans le rouge (au-dessus du haut de cible) et
+    dure un peu, puis redescend seul dans la cible vers +3h.
+  - B — « reste haute » sans dose : même départ plat et même montée que « redescend seule » (courbes
+    superposées jusqu'au pic, plus de creux au tout début), divergence seulement après le pic → reste haut
+    au lieu de redescendre.
+  - Recorrections inchangées côté sens : « redescend seule » + recorriger (tôt/attente) → plonge ; « reste
+    haute » + tout de suite → plonge ; « reste haute » + attente → revient vers la cible.
+
+### S6 — Insuline rapide : harmonisation de présentation (encadré)
+
+- [x] Temps ① (« Couvrir le repas ») : chips glucides + sélecteur de dose + courbe + message regroupés dans
+      un même encadré (bordure visible), comme dans la basale onglet « Décider ».
+- [x] Temps ③ (« Corriger avant le repas ») : chips départ + sélecteur de dose + courbe + message (+ bouton
+      « Traiter l'hypo d'abord » si départ bas) dans le même encadré.
+- [x] Temps ④ (« Le piège du cumul ») : les deux rangées de chips + courbe/légende + message (+ bouton si
+      plonge) dans le même encadré.
+- [x] Temps ② (« Le bon moment ») : inchangé visuellement (courbe + slider dans leur carte habituelle, pas
+      d'encadré situation → pas de chips situation sur ce temps).
+- [x] Harmonie avec la basale : même hiérarchie visuelle situation → réponse → résultat, même bordure/fond
+      d'encadré.
+- [x] Accessibilité : rôles `radiogroup`/`radio` (temps ①③), `aria-pressed` (temps ④), `aria-label` des
+      groupes de chips, cibles ≥ 44 px — tous préservés (aucun rôle/attribut modifié, seul l'enveloppement
+      DOM a changé).
+- [x] Pas de régression de mise en page (pas de débordement/chevauchement) sur les 4 temps, y compris temps
+      ④ (2 rangées de chips + légende 2 lignes + bloc résultat).
+
+### Correctifs de séance (hors plan initial, décidés par Thibault le 2026-07-14)
+
+- [x] **Les 4D (Boîte à outils, `VagueCraving.tsx`)** : par défaut la vague de l'envie est dégagée + 4
+      pastilles compactes (titres seuls) ; activation exclusive (un seul D actif à la fois, `activeD: DKey |
+      null`), le D actif s'affiche superposé sur la vague ; re-clic → retour à la vague seule. Textes
+      `D_INFO` et fiche « Ma carte anti-envie » inchangés.
+- [x] **Insuline basale en écran unique (`InsulineModule.tsx`)** : les onglets sont retirés (machinerie
+      `tablist`/`tab`/`tabpanel` supprimée), le bloc « Décider » (situations) est désormais toujours visible
+      en un seul écran continu ; aucune régression de la logique (`scenarios.ts` intact) ; insuline rapide
+      (module de référence) inchangée par ce correctif.
+
+### Points ouverts à revalider (Thibault) — non bloquants
+
+- Ancres % de la silhouette anatomique (S1/T3-A) — calées à l'œil par Claude, rendu validé visuellement par
+  Thibault, calage fin des organes reste à affiner si besoin.
+- Libellés de stratégie d'arrêt (S4) — contenu clinique `// à revalider (Thibault)`.
+- Constantes de courbe insuline rapide (S5 + correctifs A/B) — `REPAS_CRANS`, `DOSE_ADEQUATE`,
+  `DEPART_OPTIONS`, `REPAS_CUMUL`, `DOSE_BASE_CUMUL`, `DOSE_RECORRECTION`, `EXCES_SITUATION_B`,
+  `RECORR_DELAIS`, `excesGate` — toutes `// à revalider (Thibault)` : rendu et dynamique validés
+  visuellement, valeurs cliniques non encore confirmées.

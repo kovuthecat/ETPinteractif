@@ -4,8 +4,87 @@
 
 > **Frontières** — STATUS : état actuel · `TASKS.md` : backlog + tâches · `plans/` : plan d'une tâche active · `VALIDATION.md` : checklist visuelle.
 >
-> **Dernière mise à jour :** 2026-07-13 (chantier corrections-audit-tabac — 16 points d'audit tabac+diabète
-> traités, consolidation S13 ; ménage du dépôt — purge scories techniques + chantiers clos)
+> **Dernière mise à jour :** 2026-07-14 (chantier corrections-revue-guidee — 13 points de revue guidée
+> Thibault, blocs A-E, traités + 3 correctifs de séance, **validé visuellement par Thibault** ; reste la
+> consolidation S7 — commits + push)
+
+**Corrections revue guidée — Tabac A-D + Diabète E (2026-07-14)** — chantier
+`plans/corrections-revue-guidee/` (index + S1-S7), 13 points d'une revue guidée de l'app par Thibault
+(auteur, sur `etp-interactif.vercel.app`), reconstruite dans `rapport-ameliorations-etp-interactif.md`,
+traités en **vague parallèle multi-agent** (S1-S5) + solo (S6, même fichier que S5) + consolidation (S7).
+**Validé visuellement par Thibault le jour même** (`npm run dev`).
+
+- **S1** (tabac « Ce que l'arrêt répare ») : retrait du compteur « Étape X/N » ; barre de chips + flèches +
+  footer « Recommencer » remplacés par une **frise chronologique à hotspots** (axe 20 min → 10-15 ans,
+  `jalonIndex`/`selectionnerJalon` conservés, `aria-current="step"`) ; silhouette schématique + cercles
+  blancs → **silhouette anatomique en mode hotspot** (`SilhouetteCorps` générique via sa prop `bodyImage`,
+  **sans importer** le wrapper diabète — asset copié dans `public/illustrations/tabac/silhouette-corps.png`,
+  ancres des 7 zones en % dans `benefices-arret/data.ts`) ; illustration de détail agrandie (96→160px) et
+  centrée. **+ correctif post-validation** : silhouette (`.silhouetteCol` 260→380px desktop / 300→420px
+  mobile) et illustration de détail (160→220px) jugées encore trop petites, réagrandies.
+- **S2** (tabac Substituts) : technique de prise « Vapoteuse » (illustration + info clé) rendue visible sans
+  défiler — compactage des espacements (`.module`/`.section`/`.panels`) + `scrollIntoView({block:
+  'nearest'})` en filet sur changement de forme, `prefers-reduced-motion` respecté ; les 5 autres formes
+  non dégradées.
+- **S3** (tabac Boîte à outils) : retrait du toggle « Dans ma fiche » des cartes de la **grille** (conservé
+  en vue détail, `toggleFiche` toujours utilisé) ; retrait des **deux** renvois redondants vers le plan
+  d'arrêt (« Les inscrire… » / « Le préparer… ») dans `src/content/tabac/outils.ts` — app patient
+  (`PatientSituations.tsx`) vérifiée par grep, ne rend aucun `renvoi`, donc non impactée.
+- **S4** (tabac Plan d'arrêt) : **sélecteur de stratégie « Arrêt complet / Réduction progressive »**
+  (`role="radiogroup"`) dans la section « 1. Ma date » ; champ `strategie: 'complet' | 'progressive' |
+  null` ajouté à `SelectionContext` **en mémoire uniquement** (zéro persistance, inclus dans le reset) ;
+  **libellés conditionnels seuls** (aucun protocole/palier chiffré inventé — titre de section + aide de la
+  date s'ajustent au choix), textes annotés `// à revalider (Thibault)` ; livret (`buildLivretSections`)
+  **inchangé** en v1.
+- **S5** (diabète Insuline rapide) : cohérence pédagogique des courbes de `glycemieCurve.ts`/
+  `InsulineRapideModule.tsx` — temps ① « couvrir » : dose « habituelle » devient **fixe** (calée sur un
+  repas moyen, `DOSE_ADEQUATE × DOSE_FACTOR`, comme le temps ③) au lieu de se recaler sur la charge du
+  repas ; le résultat suit désormais l'écart **(dose − glucides)** (Peu+Habituelle → hypo,
+  Beaucoup+Habituelle → reste haut sans plonger) ; `messageCouvrir` réécrit en matrice 9 cases. Temps ③ :
+  réglages fins (départ « Haute » nettement dans le rouge, creux « cible+habituelle » recalé dans le vert,
+  « basse+moins » amorce un retour cible). Temps ④ « redescend toute seule » : la base sans dose est
+  redessinée pour montrer une **montée post-prandiale nette puis un retour spontané en cible** (au lieu
+  d'un quasi-plat). Temps ④ : résultat + bouton « le réflexe » compactés pour rester visibles sans défiler.
+  Constantes recalées (`REPAS_CRANS`, `DOSE_ADEQUATE`, `DEPART_OPTIONS`), toutes `// à revalider
+  (Thibault)` ; `glycemieCurve.ts`/`.test.ts` **non touchés** par S5 lui-même (levier resté au niveau module).
+- **S6** (diabète Insuline rapide) : encadré commun **situation → réponse → résultat** (nouvelle classe
+  `.situationCard`, reprise de la basale) posé sur les temps ①③④ (chips + sélecteur de dose + courbe +
+  message dans un même conteneur) ; temps ② inchangé (pas de chips situation) ; accessibilité (`radiogroup`/
+  `radio`/`aria-pressed`, cibles ≥ 44px) préservée à l'identique, seul l'enveloppement DOM a changé.
+
+**Correctifs de séance (hors plan initial, décidés par Thibault en cours de validation visuelle, 2026-07-14)** :
+
+- **Courbes temps ④** (diabète Insuline rapide + lib) : les 2 courbes de base (« redescend seule » /
+  « reste haute », option sans dose ajoutée) **partent identiques** (creux initial supprimé, même dose de
+  repas/même repas — `REPAS_CUMUL`, `DOSE_BASE_CUMUL`) et montent en un **pic marqué dans le rouge et
+  étalé** (≈69, au-dessus du haut de cible), puis **divergent après le pic** (l'une redescend en cible vers
+  +2,5-3h, l'autre plafonne). Levier lib jugé **indispensable** : nouvelle fonction `excesGate(params, t)`
+  dans `src/features/diabete/lib/glycemieCurve.ts` — l'excès de la situation « reste haute » n'est plus un
+  décalage constant mais **gaté post-pic** (nul avant/au pic) ; `exces` n'est consommé **que** par
+  `sampleRepasAvecBolus` / ce module (8 autres modules diabète non impactés). **+1 invariant** de test
+  « excès nul avant le pic » dans `glycemieCurve.test.ts` (les invariants existants restent verts, 96/96).
+  Constantes du module recalées (`REPAS_CUMUL`, `DOSE_BASE_CUMUL`, `DOSE_RECORRECTION`,
+  `EXCES_SITUATION_B`, `RECORR_DELAIS`), toutes `// à revalider (Thibault)`.
+- **Les 4D** (tabac Boîte à outils, `VagueCraving.tsx` + `.module.css`) : les 4 D (Différer/Détourner/Se
+  détendre/D'eau) ne s'affichent plus tous en permanence — par défaut la **vague de l'envie** est dégagée +
+  4 pastilles compactes (titres seuls) ; **activation exclusive** (état `activeDs: Set` devenu
+  `activeD: DKey | null`, un seul D actif à la fois), le D actif s'affiche **superposé sur la vague**,
+  re-clic → retour à la vague seule. Contenu (`D_INFO`, fiche « Ma carte anti-envie ») inchangé.
+- **Insuline basale en écran unique** (diabète, `InsulineModule.tsx` + `.module.css`) : décision Thibault —
+  au lieu d'aligner la nav de la basale sur les onglets de la rapide (idée initiale du rapport, point 10),
+  **retrait complet des onglets** de la basale (les 2 « temps » étaient un découpage artificiel, la courbe
+  restant toujours visible) ; machinerie `tablist`/`tab`/`tabpanel` retirée, prop `nav` de `ModuleShell` non
+  passée, bloc « Décider » (situations) désormais **toujours visible** en un seul écran continu ; CSS
+  d'onglets nettoyé ; `scenarios.ts` (logique métier) **intact**. Insuline **rapide** reste le module de
+  référence, inchangée par ce correctif.
+
+Gate finale du chantier (S1-S6 + les 3 correctifs de séance) : `npx tsc --noEmit` ✓ · `npm run build` ✓ ·
+`npm test` ✓ **96/96**, aucune dépendance runtime ajoutée. **Validation visuelle humaine (Thibault, `npm run
+dev`) faite le 2026-07-14** — seule la consolidation contexte + commits/push (S7) reste à finaliser. Points
+encore à revalider **cliniquement** (rendu visuel déjà validé, contenu chiffré non tranché) : libellés de
+stratégie d'arrêt (S4, `// à revalider`) et l'ensemble des constantes de courbe d'insuline rapide
+(`REPAS_CRANS`, `DOSE_ADEQUATE`, `DEPART_OPTIONS`, `REPAS_CUMUL`, `DOSE_BASE_CUMUL`, `DOSE_RECORRECTION`,
+`EXCES_SITUATION_B`, `RECORR_DELAIS`, `excesGate` — S5 + correctifs de séance).
 
 **Corrections audit Chrome — thème Tabac + 2 retours Diabète (2026-07-13)** — chantier
 `plans/corrections-audit-tabac/` (index + S1-S13), 16 points d'un audit navigateur manuel de Thibault

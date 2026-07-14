@@ -2,7 +2,7 @@
 
 Carte synthétique du projet. Permet à ChatGPT et Claude Code de localiser vite les zones pertinentes.
 
-> État : **lot `PLAN_modules-tabac.md` (T1-T11) terminé le 2026-06-28** — scaffolding + les 6 modules du thème tabac sont implémentés et naviguables. **`plans/PLAN_corrections-v2.md` (R1-R9) terminé le 2026-07-01** — dont R9 : ajout d'un 7ᵉ module transverse, `motivation/`. **Moteur multi-thèmes introduit le 2026-07-08** : le thème tabac a été déplacé sous `features/tabac/`, un écran de sélection de thème (`ThemeSelector`) a été ajouté, et un thème `diabete` est scaffoldé (sans contenu, en attente de cadrage). **Chantier `plans/extensions-tabac/` (X1-X7) clos le 2026-07-09** (brief `docs/BRIEF_TABAC.md`) : 8ᵉ module `plan-arret/`, 4 fiches imprimables via `FicheOverlay`, portes de fin de module via `ModuleFooterNav`, fil rouge du thème, composant `InfoHover` (créé, non câblé). **Chantier `plans/approfondissement-tabac/` (S1-S7) clos le 2026-07-10** : modèle `nicotineCurve.ts` réaliste, `SilhouetteCorps` générique, modules 9 (Ce que l'arrêt répare) et 10 (Vrai ou faux ?). **Chantier `plans/boite-a-outils/` (BO1-BO9) clos le 2026-07-10** : `craving/` remplacé par `boite-a-outils/` (14 outils filtrables, fiche « Ma boîte à outils »), refonte du module Composantes (sélection radiale de situations, `situations.ts` partagé), contexte de navigation générique (`unknown`) dans le moteur, vapoteuse réintégrée dans les Substituts, section « Si j'ai un écart » dans Plan d'arrêt, 6 nouvelles cartes Vrai/faux (21 au total), interrupteur « toniques uniquement » côté diabète/Activité. **Chantier `plans/corrections-audit-tabac/` (S1-S13) clos le 2026-07-13** : retouches UI/a11y sur 6 modules tabac + 1 composant diabète partagé (S1-S9), nouveau `src/state/SelectionContext.tsx` (état de sélection partagé **en mémoire**, S10), nouveau livret d'accompagnement imprimable `src/components/PrintableLivret.tsx` (S11, proposition livrée sans validation visuelle, à ajuster). Chantier séparé cadré `plans/aide-patient/` (T16, app patient autonome, 2ᵉ surface applicative) : cadrage produit complet, **non démarré**. Cette carte décrit l'arborescence réelle.
+> État : **lot `PLAN_modules-tabac.md` (T1-T11) terminé le 2026-06-28** — scaffolding + les 6 modules du thème tabac sont implémentés et naviguables. **`plans/PLAN_corrections-v2.md` (R1-R9) terminé le 2026-07-01** — dont R9 : ajout d'un 7ᵉ module transverse, `motivation/`. **Moteur multi-thèmes introduit le 2026-07-08** : le thème tabac a été déplacé sous `features/tabac/`, un écran de sélection de thème (`ThemeSelector`) a été ajouté, et un thème `diabete` est scaffoldé (sans contenu, en attente de cadrage). **Chantier `plans/extensions-tabac/` (X1-X7) clos le 2026-07-09** (brief `docs/BRIEF_TABAC.md`) : 8ᵉ module `plan-arret/`, 4 fiches imprimables via `FicheOverlay`, portes de fin de module via `ModuleFooterNav`, fil rouge du thème, composant `InfoHover` (créé, non câblé). **Chantier `plans/approfondissement-tabac/` (S1-S7) clos le 2026-07-10** : modèle `nicotineCurve.ts` réaliste, `SilhouetteCorps` générique, modules 9 (Ce que l'arrêt répare) et 10 (Vrai ou faux ?). **Chantier `plans/boite-a-outils/` (BO1-BO9) clos le 2026-07-10** : `craving/` remplacé par `boite-a-outils/` (14 outils filtrables, fiche « Ma boîte à outils »), refonte du module Composantes (sélection radiale de situations, `situations.ts` partagé), contexte de navigation générique (`unknown`) dans le moteur, vapoteuse réintégrée dans les Substituts, section « Si j'ai un écart » dans Plan d'arrêt, 6 nouvelles cartes Vrai/faux (21 au total), interrupteur « toniques uniquement » côté diabète/Activité. **Chantier `plans/corrections-audit-tabac/` (S1-S13) clos le 2026-07-13** : retouches UI/a11y sur 6 modules tabac + 1 composant diabète partagé (S1-S9), nouveau `src/state/SelectionContext.tsx` (état de sélection partagé **en mémoire**, S10), nouveau livret d'accompagnement imprimable `src/components/PrintableLivret.tsx` (S11, proposition livrée sans validation visuelle, à ajuster). Chantier séparé cadré `plans/aide-patient/` (T16, app patient autonome, 2ᵉ surface applicative) : cadrage produit complet, **non démarré**. **Chantier `plans/corrections-revue-guidee/` (S1-S6 + 3 correctifs de séance) validé visuellement par Thibault le 2026-07-14** (13 points d'une revue guidée, blocs A-E ; consolidation S7 en cours) : benefices-arret passe en nav par frise chronologique à hotspots + silhouette anatomique hotspot, plan-arret gagne un sélecteur de stratégie, insuline-rapide corrige son modèle « couvrir » (dose fixe) et gagne un encadré `.situationCard` + `excesGate` en lib, insuline basale perd ses onglets (écran unique), VagueCraving (Boîte à outils) passe les 4D en activation exclusive. Cette carte décrit l'arborescence réelle.
 
 ---
 
@@ -60,18 +60,33 @@ src/
       nicotine-toxique/NicotineToxiqueModule.tsx # Module 4 — nicotine ≠ toxique (T10, X6 : migré sur ModuleFooterNav)
       soulagement/SoulagementModule.tsx          # Module 5 — le piège du soulagement (S7, X6 : ModuleFooterNav)
       boite-a-outils/BoiteAOutilsModule.tsx      # Module 6 — Stratégies & outils, ex-Craving (BO1-BO2, 2026-07-10) :
-                                                  # 14 outils filtrables par situation, VagueCraving.tsx (4D hérité),
-                                                  # fiche « Ma boîte à outils », X6 : ModuleFooterNav
+                                                  # 14 outils filtrables par situation, VagueCraving.tsx (4D hérité ;
+                                                  # activation exclusive d'un D à la fois depuis le correctif de
+                                                  # séance corrections-revue-guidee, 2026-07-14 — la vague de
+                                                  # l'envie est visible par défaut, le D actif se superpose dessus),
+                                                  # fiche « Ma boîte à outils », X6 : ModuleFooterNav ; toggle grille
+                                                  # « Dans ma fiche » retiré (S3 corrections-revue-guidee, reste en
+                                                  # vue détail) ; les 2 renvois `outils.ts` vers plan-arret retirés
       motivation/MotivationModule.tsx + data.ts  # Module 7 — explorer ma motivation (S9 cadran Dial, X4 : fiche, X6) ;
                                                   # data.ts (MOTIVATION_SEED/RAISON_ICONS/iconForRaison) extrait du
                                                   # module en S11 corrections-audit-tabac, réutilisé par le livret
       plan-arret/PlanArretModule.tsx + livretSections.tsx  # Module 8 — mon plan d'arrêt (X5, ajouté 2026-07-09 ;
                                                   # section 7 « Si j'ai un écart » ajoutée BO6, 2026-07-10 ; famille
                                                   # agir ; lit ET écrit SelectionContext depuis S10 (bidirectionnel) ;
+                                                  # section « 1. Ma date » gagne un sélecteur de stratégie « Arrêt
+                                                  # complet / Réduction progressive » (S4 corrections-revue-guidee,
+                                                  # 2026-07-14 — champ `strategie` en mémoire dans SelectionContext,
+                                                  # libellés conditionnels seuls, livret inchangé) ;
                                                   # livretSections.tsx = contrat PrintableSection + builder
                                                   # buildLivretSections(state) consommé par PrintableLivret, S11)
-      benefices-arret/BeneficesArretModule.tsx   # Module 9 — ce que l'arrêt répare
-                                                  # (silhouette générique + frise 10 jalons, S5 approfondissement-tabac)
+      benefices-arret/BeneficesArretModule.tsx   # Module 9 — ce que l'arrêt répare (silhouette générique + frise
+                                                  # 10 jalons, S5 approfondissement-tabac) ; nav par **frise
+                                                  # chronologique à hotspots** (remplace chips + compteur « Étape
+                                                  # X/N ») + silhouette en **mode hotspot anatomique** (bodyImage,
+                                                  # asset copié public/illustrations/tabac/silhouette-corps.png,
+                                                  # ancres % dans data.ts, sans importer le wrapper diabète) ;
+                                                  # illustration de détail agrandie (S1 corrections-revue-guidee,
+                                                  # 2026-07-14)
       idees-recues/IdeesRecuesModule.tsx + data.ts  # Module 10 — Vrai ou faux ? (21 cartes, S6 approfondissement-tabac
                                                      # + BO4 2026-07-10 : 6 cartes poids/vapoteuse + reformulation faux-pas)
       lib/
@@ -96,11 +111,23 @@ src/
       suivi/SuiviModule.tsx / .module.css / logic.ts              # Module 6 — Suivi (cadran année, fiche calendrier, S9)
       traitements/TraitementsModule.tsx / .module.css / data.ts   # Module 7 — Traitements (ordonnance ↔ silhouette, S10)
       hypoglycemie/HypoglycemieModule.tsx / .module.css           # Module 8 — Hypoglycémie (15/15, récupération/overshoot, carte, S11)
-      insuline/InsulineModule.tsx / .module.css / scenarios.ts    # Module 9 — Insuline (traces capteur, TIR vivant, S12)
+      insuline/InsulineModule.tsx / .module.css / scenarios.ts    # Module 9 — Insuline basale (traces capteur, TIR vivant, S12) ;
+                                                                    # onglets retirés, **écran unique continu** (correctif de séance
+                                                                    # corrections-revue-guidee, 2026-07-14 — remplace l'alignement prévu
+                                                                    # sur les onglets de la rapide ; bloc « Décider » toujours visible ;
+                                                                    # scenarios.ts intact, retouche présentation/nav uniquement)
       insuline-rapide/InsulineRapideModule.tsx / .module.css      # Module 10 — Insuline rapide pré-prandiale (4 temps : couvrir
                                                                     # le repas / bon moment / corriger / cumul → hypo ;
                                                                     # CVD3-S10, 2026-07-11 ; contenu : docs/diabete/10-insuline-rapide.md,
-                                                                    # relecture finale Thibault encore attendue)
+                                                                    # relecture finale Thibault encore attendue). S5-S6 + correctif
+                                                                    # corrections-revue-guidee (2026-07-14) : temps ① dose « habituelle »
+                                                                    # devenue fixe (résultat = écart dose−glucides, alignée sur temps ③) ;
+                                                                    # réglages fins temps ③ ; temps ④ « redescend seule » redessinée +
+                                                                    # correctif post-validation (2 courbes de base partent identiques,
+                                                                    # divergent après le pic, via `excesGate` gaté post-pic dans
+                                                                    # glycemieCurve.ts) ; encadré commun `.situationCard`
+                                                                    # (situation→réponse→résultat) posé sur les temps ①③④, aligné sur
+                                                                    # la présentation de l'insuline basale
 docs/
   architecture.md
   BRIEF_TABAC.md               # brief design & pédagogie tabac (Fable, 2026-07-09) — §2 fiches rétroactives des 7
