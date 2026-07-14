@@ -118,7 +118,9 @@ interface VagueCravingProps {
 export default function VagueCraving({ onBack }: VagueCravingProps) {
   const [phase, setPhase] = useState<Phase>('idle');
   const [timeLeft, setTimeLeft] = useState(CRAVING_DURATION);
-  const [activeDs, setActiveDs] = useState<Set<DKey>>(new Set());
+  // Un seul D actif à la fois : l'activer superpose son contenu sur la vague ;
+  // le désactiver (reclic) revient à « aucun D actif » et laisse la vague dégagée.
+  const [activeD, setActiveD] = useState<DKey | null>(null);
   const [selectedDs, setSelectedDs] = useState<Set<DKey>>(new Set());
   const [ficheOpen, setFicheOpen] = useState(false);
   const intervalRef = useRef<number | null>(null);
@@ -133,7 +135,7 @@ export default function VagueCraving({ onBack }: VagueCravingProps) {
     if (intervalRef.current !== null) clearInterval(intervalRef.current);
     setPhase('active');
     setTimeLeft(CRAVING_DURATION);
-    setActiveDs(new Set());
+    setActiveD(null);
     intervalRef.current = window.setInterval(() => {
       setTimeLeft((t) => {
         const next = t - 1;
@@ -155,16 +157,11 @@ export default function VagueCraving({ onBack }: VagueCravingProps) {
     }
     setPhase('idle');
     setTimeLeft(CRAVING_DURATION);
-    setActiveDs(new Set());
+    setActiveD(null);
   }
 
-  function toggleD(id: DKey) {
-    setActiveDs((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
+  function selectD(id: DKey) {
+    setActiveD((prev) => (prev === id ? null : id));
   }
 
   function toggleSelectedD(id: DKey) {
@@ -218,28 +215,24 @@ export default function VagueCraving({ onBack }: VagueCravingProps) {
               </svg>
             </div>
 
-            <div className={styles.dRow}>
-              {D_ORDER.map((id) => {
-                const info = D_INFO[id];
-                const active = activeDs.has(id);
-                const isDetendre = id === 'detendre';
-                const cardStyle = {
+            {activeD &&
+              (() => {
+                const info = D_INFO[activeD];
+                const isDetendre = activeD === 'detendre';
+                const overlayStyle = {
                   '--d-color': info.couleur,
                   '--d-soft': info.couleurSoft,
-                  '--active-color': info.couleur,
                 } as CSSProperties;
                 return (
-                  <button
-                    key={id}
-                    type="button"
-                    className={`${styles.dCard} card${isDetendre ? ` ${styles.dCardDetendre}` : ''}${active ? ' activeDoubled' : ''}`}
-                    style={cardStyle}
-                    onClick={() => toggleD(id)}
-                    aria-pressed={active}
+                  <div
+                    id="vague-d-overlay"
+                    className={styles.dOverlay}
+                    style={overlayStyle}
+                    role="status"
                   >
-                    <p className={styles.dTitre}>{info.titre}</p>
-                    <p className={styles.dCorps}>{info.corps}</p>
-                    {isDetendre && active && (
+                    <p className={styles.dOverlayTitre}>{info.titre}</p>
+                    <p className={styles.dOverlayCorps}>{info.corps}</p>
+                    {isDetendre && (
                       <div className={styles.respiration}>
                         <svg viewBox="0 0 120 120" className={styles.respirationSvg} aria-hidden="true">
                           <circle cx="60" cy="60" r="42" className={styles.respirationOutline} />
@@ -250,12 +243,38 @@ export default function VagueCraving({ onBack }: VagueCravingProps) {
                         </p>
                       </div>
                     )}
-                  </button>
+                  </div>
                 );
-              })}
-            </div>
+              })()}
           </div>
-          <p className={styles.dHint}>Touchez un D pour agir — il aide à tenir pendant le pic de l'envie</p>
+
+          <div className={styles.dRow}>
+            {D_ORDER.map((id) => {
+              const info = D_INFO[id];
+              const active = activeD === id;
+              const pillStyle = {
+                '--d-color': info.couleur,
+                '--d-soft': info.couleurSoft,
+              } as CSSProperties;
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  className={`${styles.dPill}${active ? ` ${styles.dPillActive}` : ''}`}
+                  style={pillStyle}
+                  onClick={() => selectD(id)}
+                  aria-pressed={active}
+                >
+                  {info.titre}
+                </button>
+              );
+            })}
+          </div>
+          <p className={styles.dHint}>
+            {activeD
+              ? 'Touchez à nouveau le D actif pour revenir à la vague'
+              : "Touchez un D pour agir — il aide à tenir pendant le pic de l'envie"}
+          </p>
         </div>
       )}
 

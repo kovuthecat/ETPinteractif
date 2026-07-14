@@ -95,12 +95,14 @@
   color: var(--color-vigilance);
 }
 
-/* --- Zone superposée : la courbe (fond) et les 4 cartes D (dessus, semi-
-   transparentes) occupent la même emprise, empilées via une grille à cellule
-   unique — la hauteur est pilotée par le contenu réel du .dRow. --- */
+/* --- Zone superposée : la courbe (fond) occupe toute l'emprise. Par défaut
+   (aucun D actif) elle reste seule et dégagée. Quand un D est activé, son
+   contenu (.dOverlay) vient se superposer dessus dans la même cellule de
+   grille — un seul D à la fois, jamais empilé avec les 3 autres. --- */
 
 .overlayZone {
   display: grid;
+  min-height: 160px;
 }
 
 .stage {
@@ -148,60 +150,73 @@
   font-weight: 600;
 }
 
+/* --- Rangée compacte des 4D : par défaut, seules les pastilles-titres sont
+   visibles, sous la vague, sans déballer leur contenu. --- */
+
 .dRow {
-  grid-area: 1 / 1;
-  position: relative;
-  z-index: 1;
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-sm);
   justify-content: center;
-  align-content: center;
   margin-top: var(--space-md);
 }
 
-.dCard {
-  flex: 1 1 220px;
-  max-width: 260px;
-  padding: var(--space-sm) var(--space-md);
+.dPill {
+  flex: 0 1 auto;
+  min-height: var(--target-min);
+  padding: 10px 18px;
   border: 2px solid var(--d-soft, var(--color-line));
-  background: rgba(255, 255, 255, 0.72);
-  -webkit-backdrop-filter: blur(3px);
-  backdrop-filter: blur(3px);
-  text-align: left;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  text-align: center;
   cursor: pointer;
   font: inherit;
-  color: inherit;
+  font-weight: 800;
+  font-size: 0.9em;
+  color: var(--d-color);
 }
 
-.dCard:hover,
-.dCard:focus-visible {
-  border-color: var(--d-color, var(--color-line));
+.dPill:hover,
+.dPill:focus-visible {
+  border-color: var(--d-color);
 }
 
-.dCard.activeDoubled {
+.dPillActive {
   background: var(--d-soft);
   border-color: var(--d-color);
 }
 
-.dCardDetendre {
-  position: relative;
-  z-index: 2;
-  pointer-events: auto;
+/* --- Contenu du D actif : superposé sur la vague (même cellule de grille que
+   .stage), un seul à la fois — cf. .overlayZone plus haut. --- */
+
+.dOverlay {
+  grid-area: 1 / 1;
+  z-index: 1;
+  align-self: center;
+  justify-self: center;
+  width: min(100%, 420px);
+  padding: var(--space-md) var(--space-lg);
+  border: 2px solid var(--d-color);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.88);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  box-shadow: var(--shadow-2);
+  text-align: center;
 }
 
-.dTitre {
+.dOverlayTitre {
   margin: 0 0 var(--space-xs);
   font-weight: 800;
-  font-size: 0.95em;
+  font-size: 1.05em;
   color: var(--d-color);
 }
 
-.dCorps {
+.dOverlayCorps {
   margin: 0;
-  font-size: 0.85em;
+  font-size: 0.9em;
   line-height: 1.4;
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
 .respiration {
