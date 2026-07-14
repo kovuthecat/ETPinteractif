@@ -16,17 +16,19 @@ export interface ZoneDef {
   illustrationLabel: string;
 }
 
-// Ancres dans le repère SILHOUETTE_VIEWBOX (340×760, cf. SilhouetteCorps.tsx). Table de
-// départ du plan S5 : cerveau/bouche et coeur/poumons se chevauchaient à l'écran — ancres
-// ajustées ici (valeurs finales consignées dans plans/approfondissement-tabac/S5.md §Statut).
+// Ancres en POURCENTAGES (0–100) de l'illustration carrée `silhouette-corps.png` — mode
+// hotspot de SilhouetteCorps (bodyImage). x = position horizontale, y = verticale ; r = rayon
+// d'emprise du hotspot en px (≥ 22 → cible tactile ≥ 44 px). Calées à l'œil sur la silhouette
+// anatomique (repère : ancres diabète SILHOUETTE_ANCHORS).
+// à revalider (Thibault) — calage visuel des 7 zones sur les organes de l'illustration.
 export const ZONES: ZoneDef[] = [
-  { id: 'cerveau', label: 'Cerveau', x: 170, y: 48, r: 22, illustrationLabel: 'Cerveau apaisé' },
-  { id: 'bouche', label: 'Goût & odorat', x: 170, y: 96, r: 16, illustrationLabel: 'Goût et odorat retrouvés' },
-  { id: 'coeur', label: 'Cœur', x: 142, y: 232, r: 24, illustrationLabel: 'Cœur soulagé' },
-  { id: 'poumons', label: 'Poumons', x: 202, y: 206, r: 24, illustrationLabel: 'Poumons qui respirent' },
-  { id: 'sang', label: 'Sang & vaisseaux', x: 88, y: 300, r: 22, illustrationLabel: 'Sang mieux oxygéné' },
-  { id: 'peau', label: 'Peau', x: 252, y: 300, r: 22, illustrationLabel: 'Peau qui s’éclaircit' },
-  { id: 'jambes', label: 'Jambes & circulation', x: 170, y: 520, r: 30, illustrationLabel: 'Jambes qui repartent' },
+  { id: 'cerveau', label: 'Cerveau', x: 50, y: 7, r: 24, illustrationLabel: 'Cerveau apaisé' },
+  { id: 'bouche', label: 'Goût & odorat', x: 50, y: 13, r: 22, illustrationLabel: 'Goût et odorat retrouvés' },
+  { id: 'coeur', label: 'Cœur', x: 47, y: 26, r: 26, illustrationLabel: 'Cœur soulagé' },
+  { id: 'poumons', label: 'Poumons', x: 55, y: 23, r: 26, illustrationLabel: 'Poumons qui respirent' },
+  { id: 'sang', label: 'Sang & vaisseaux', x: 33, y: 40, r: 22, illustrationLabel: 'Sang mieux oxygéné' },
+  { id: 'peau', label: 'Peau', x: 67, y: 45, r: 22, illustrationLabel: 'Peau qui s’éclaircit' },
+  { id: 'jambes', label: 'Jambes & circulation', x: 46, y: 66, r: 30, illustrationLabel: 'Jambes qui repartent' },
 ];
 
 export const ZONES_BY_ID: Record<ZoneId, ZoneDef> = Object.fromEntries(

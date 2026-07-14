@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowLeft, CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, CheckCircle2 } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import SilhouetteCorps, { type SilhouetteZone } from '../../../components/SilhouetteCorps';
 import IllustrationSlot from '../components/IllustrationSlot';
@@ -42,18 +42,6 @@ export default function BeneficesArretModule(_props: ModuleProps) {
     setSelectedZone(null);
   }
 
-  function reculer() {
-    if (jalonIndex > 0) selectionnerJalon(jalonIndex - 1);
-  }
-
-  function avancer() {
-    if (jalonIndex < DERNIER_JALON_INDEX) selectionnerJalon(jalonIndex + 1);
-  }
-
-  function recommencer() {
-    selectionnerJalon(0);
-  }
-
   function basculerZone(id: string) {
     setSelectedZone((current) => (current === id ? null : (id as ZoneId)));
   }
@@ -70,58 +58,40 @@ export default function BeneficesArretModule(_props: ModuleProps) {
 
       <div className={styles.layout}>
         <div className={styles.silhouetteCol}>
-          <SilhouetteCorps zones={silhouetteZones} onZoneClick={basculerZone} />
+          <SilhouetteCorps
+            zones={silhouetteZones}
+            onZoneClick={basculerZone}
+            bodyImage={`${import.meta.env.BASE_URL}illustrations/tabac/silhouette-corps.png`}
+          />
         </div>
 
         <div className={styles.panneau}>
           <div className={styles.frise}>
-            <div className={styles.friseControls}>
-              <button
-                type="button"
-                className={styles.friseNavBtn}
-                onClick={reculer}
-                disabled={jalonIndex === 0}
-                aria-label="Étape précédente"
-              >
-                <ChevronLeft aria-hidden="true" />
-              </button>
-
-              <div className={styles.friseTrack} role="group" aria-label="Étapes de l'arrêt">
-                {JALONS.map((jalon, index) => {
-                  const passe = index < jalonIndex;
-                  const actuel = index === jalonIndex;
-                  return (
+            <div
+              className={styles.friseTrack}
+              role="group"
+              aria-label="Frise chronologique de l'arrêt"
+            >
+              {JALONS.map((jalon, index) => {
+                const passe = index < jalonIndex;
+                const actuel = index === jalonIndex;
+                return (
+                  <div key={jalon.echeance + index} className={styles.frisePoint}>
                     <button
-                      key={jalon.echeance + index}
                       type="button"
-                      className={`${styles.friseChip}${actuel ? ` ${styles.friseChipActuel}` : ''}${passe ? ` ${styles.friseChipAcquis}` : ''}`}
+                      className={`${styles.friseDot}${actuel ? ` ${styles.friseDotActuel}` : ''}${passe ? ` ${styles.friseDotPasse}` : ''}`}
                       aria-current={actuel ? 'step' : undefined}
+                      aria-label={`Étape ${jalon.echeance}`}
                       onClick={() => selectionnerJalon(index)}
                     >
-                      {passe && <CheckCircle2 size={14} aria-hidden="true" />}
-                      {jalon.echeance}
+                      {passe && <CheckCircle2 size={16} aria-hidden="true" />}
                     </button>
-                  );
-                })}
-              </div>
-
-              <button
-                type="button"
-                className={styles.friseNavBtn}
-                onClick={avancer}
-                disabled={jalonIndex === DERNIER_JALON_INDEX}
-                aria-label="Étape suivante"
-              >
-                <ChevronRight aria-hidden="true" />
-              </button>
+                    <span className={styles.friseLabel}>{jalon.echeance}</span>
+                  </div>
+                );
+              })}
             </div>
-
-            <div className={styles.friseFooter}>
-              <p className={styles.friseNote}>Échelle non linéaire — repères chronologiques.</p>
-              <button type="button" className="btn btn--tertiary" onClick={recommencer}>
-                Recommencer
-              </button>
-            </div>
+            <p className={styles.friseNote}>Échelle non linéaire — repères chronologiques.</p>
           </div>
 
           <div className={`${styles.panel} panel`}>
@@ -136,7 +106,7 @@ export default function BeneficesArretModule(_props: ModuleProps) {
                     id={`benef-${zoneDetail.id}`}
                     label={zoneDetail.illustrationLabel}
                     shape="rounded"
-                    size={96}
+                    size={220}
                   />
                   <span className="eyebrow">{zoneDetail.label}</span>
                 </div>
@@ -166,9 +136,6 @@ export default function BeneficesArretModule(_props: ModuleProps) {
               </div>
             ) : (
               <div className={styles.detailJalon}>
-                <span className="eyebrow">
-                  Étape {jalonIndex + 1} / {JALONS.length}
-                </span>
                 <p className={styles.echeance}>{jalonCourant.echeance}</p>
                 <p className={styles.texteBenefice}>{jalonCourant.texte}</p>
 

@@ -21,7 +21,7 @@
 
 .silhouetteCol {
   flex: 0 0 auto;
-  width: 260px;
+  width: 380px;
 }
 
 .panneau {
@@ -32,116 +32,133 @@
   gap: var(--space-md);
 }
 
-/* --- Frise des jalons --- */
+/* --- Frise chronologique à hotspots --- */
 
 .frise {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--space-xs);
 }
 
-.friseControls {
+.friseTrack {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--space-sm);
+  overflow-x: auto;
+  padding: 6px 4px var(--space-xs);
 }
 
-.friseNavBtn {
+.frisePoint {
+  position: relative;
+  flex: 1 0 72px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+/* Axe horizontal reliant chaque point au suivant (passe sous les pastilles). */
+.frisePoint::after {
+  content: '';
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  width: calc(100% + var(--space-sm));
+  height: 2px;
+  background: var(--color-line);
+  z-index: 0;
+}
+
+.frisePoint:last-child::after {
+  display: none;
+}
+
+.friseDot {
+  position: relative;
+  z-index: 1;
   flex: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 44px;
   height: 44px;
-  border-radius: var(--radius-pill);
-  border: 1.5px solid var(--color-line);
+  border-radius: 50%;
+  border: 2px solid var(--color-line);
   background: var(--color-surface);
-  color: var(--color-text);
-  cursor: pointer;
-}
-
-.friseNavBtn:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-}
-
-.friseNavBtn:not(:disabled):hover,
-.friseNavBtn:not(:disabled):focus-visible {
-  border-color: var(--color-confort);
   color: var(--color-confort-strong);
-}
-
-.friseTrack {
-  position: relative;
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  overflow-x: auto;
-  padding: 6px 4px;
-}
-
-.friseTrack::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 4px;
-  right: 4px;
-  height: 2px;
-  background: var(--color-line);
-  transform: translateY(-50%);
-  z-index: 0;
-}
-
-.friseChip {
-  position: relative;
-  z-index: 1;
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 44px;
-  padding: 8px 14px;
-  border-radius: var(--radius-pill);
-  border: 1.5px solid var(--color-line);
-  background: var(--color-surface);
-  color: var(--color-text-soft);
-  font: 700 13px 'Work Sans', sans-serif;
-  white-space: nowrap;
   cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
 
-.friseChip:hover,
-.friseChip:focus-visible {
+/* Point visuel discret au centre (état au repos). */
+.friseDot::after {
+  content: '';
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-line);
+  transition: background 0.15s ease;
+}
+
+.friseDot:hover,
+.friseDot:focus-visible {
   border-color: var(--color-confort);
 }
 
-.friseChipAcquis {
+.friseDot:hover::after,
+.friseDot:focus-visible::after {
+  background: var(--color-confort);
+}
+
+.friseDot:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
+}
+
+/* Étape déjà franchie : anneau confort + coche (le point central s'efface). */
+.friseDotPasse {
   border-color: var(--color-confort);
   background: var(--color-confort-soft);
-  color: var(--color-confort-strong);
 }
 
-.friseChipActuel {
+.friseDotPasse::after {
+  display: none;
+}
+
+/* Étape courante : pastille pleine, mise en avant. */
+.friseDotActuel {
   border-color: var(--color-confort);
   background: var(--color-confort);
   color: #fff;
   box-shadow: var(--shadow-1);
+  transform: scale(1.08);
 }
 
-.friseFooter {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-sm);
-  flex-wrap: wrap;
+.friseDotActuel::after {
+  background: #fff;
+}
+
+.friseLabel {
+  max-width: 88px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-text-soft);
 }
 
 .friseNote {
   margin: 0;
   font-size: 13px;
   color: var(--color-text-faint);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .friseDot,
+  .friseDotActuel {
+    transition: none;
+    transform: none;
+  }
 }
 
 /* --- Panneau (jalon ou détail de zone) --- */
@@ -234,8 +251,17 @@
 
 .detailHeader {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: var(--space-md);
+  gap: var(--space-sm);
+  text-align: center;
+}
+
+/* Illustration de détail : agrandie (prop size) et fluide sur petits écrans. */
+.detailHeader img,
+.detailHeader > [role='img'] {
+  max-width: 100%;
+  margin-inline: auto;
 }
 
 .beneficesListe {
@@ -305,7 +331,7 @@
 
   .silhouetteCol {
     width: 100%;
-    max-width: 300px;
+    max-width: 420px;
   }
 
   .panneau {
