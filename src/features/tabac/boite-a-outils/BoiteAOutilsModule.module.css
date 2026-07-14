@@ -170,54 +170,6 @@
   overflow: hidden;
 }
 
-.tileCheck {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  align-self: flex-start;
-  min-height: var(--target-min);
-  margin-top: var(--space-sm);
-  padding: 8px 6px 8px 2px;
-  font-size: 0.8em;
-  font-weight: 600;
-  color: var(--color-text-soft);
-  cursor: pointer;
-}
-
-.tileCheckInput {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  -webkit-appearance: none;
-  appearance: none;
-  background: transparent;
-  cursor: pointer;
-}
-
-.tileCheckInput:focus-visible {
-  outline: 2px solid var(--color-nav);
-  outline-offset: 2px;
-  border-radius: var(--radius-sm);
-}
-
-.tileCheckIcon {
-  flex: none;
-  width: 20px;
-  height: 20px;
-  color: var(--color-text-faint);
-}
-
-.tileCheckActive {
-  color: var(--color-nav);
-}
-
-.tileCheckActive .tileCheckIcon {
-  color: var(--color-nav);
-}
-
 /* --- Bouton retour depuis le détail --- */
 
 .backBtn {

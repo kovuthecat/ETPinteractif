@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowRight, Check, CheckCircle2, ChevronLeft, Circle } from 'lucide-react';
+import { ArrowRight, Check, ChevronLeft } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import IllustrationSlot from '../components/IllustrationSlot';
 import FicheOverlay from '../../../components/FicheOverlay';
@@ -201,41 +201,21 @@ export default function BoiteAOutilsModule({ onNavigate, context }: ModuleProps)
       </div>
 
       <div className={styles.grid} role="list">
-        {visibleOutils.map((outil) => {
-          const dansLaFiche = ficheItems.includes(outil.id);
-          return (
-            <div key={outil.id} className={`${styles.tile} card`} role="listitem">
-              <button
-                type="button"
-                className={styles.tileBtn}
-                onClick={() => setSelectedId(outil.id)}
-              >
-                <IllustrationSlot id={outil.id} label={outil.titre} size={96} />
-                <span className={styles.tileBody}>
-                  <span className={styles.tileTitre}>{outil.titre}</span>
-                  <span className={styles.tileAccroche}>{outil.accroche}</span>
-                </span>
-              </button>
-              <label
-                className={`${styles.tileCheck}${dansLaFiche ? ` ${styles.tileCheckActive}` : ''}`}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <input
-                  type="checkbox"
-                  className={styles.tileCheckInput}
-                  checked={dansLaFiche}
-                  onChange={() => toggleFiche(outil.id)}
-                />
-                {dansLaFiche ? (
-                  <CheckCircle2 aria-hidden="true" className={styles.tileCheckIcon} />
-                ) : (
-                  <Circle aria-hidden="true" className={styles.tileCheckIcon} />
-                )}
-                Dans ma fiche
-              </label>
-            </div>
-          );
-        })}
+        {visibleOutils.map((outil) => (
+          <div key={outil.id} className={`${styles.tile} card`} role="listitem">
+            <button
+              type="button"
+              className={styles.tileBtn}
+              onClick={() => setSelectedId(outil.id)}
+            >
+              <IllustrationSlot id={outil.id} label={outil.titre} size={96} />
+              <span className={styles.tileBody}>
+                <span className={styles.tileTitre}>{outil.titre}</span>
+                <span className={styles.tileAccroche}>{outil.accroche}</span>
+              </span>
+            </button>
+          </div>
+        ))}
       </div>
 
       <p className={styles.aparte}>
