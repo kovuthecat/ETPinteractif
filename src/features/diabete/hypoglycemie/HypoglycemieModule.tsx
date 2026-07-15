@@ -76,6 +76,12 @@ function slugify(label: string): string {
     .replace(/(^-+|-+$)/g, '');
 }
 
+/** Mapping unique signe → id d'`IllustrationSlot` (convention `signe-${slugify(label)}`),
+ * réutilisé par la page, la carte-écran ③ et la modale imprimable — évite toute divergence. */
+function signeIllustrationId(label: string): string {
+  return `signe-${slugify(label)}`;
+}
+
 function handleTabsKeyDown(e: ReactKeyboardEvent<HTMLButtonElement>, index: number, onSelect: (n: Temps) => void) {
   if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
   e.preventDefault();
@@ -208,7 +214,7 @@ export default function HypoglycemieModule({ shell }: ModuleProps) {
               <div className={styles.preview}>
                 {mySignes.map((s) => (
                   <div key={s} className={styles.previewItem}>
-                    <IllustrationSlot id={`signe-${slugify(s)}`} label={s} size={100} />
+                    <IllustrationSlot id={signeIllustrationId(s)} label={s} size={100} />
                     <span className={styles.previewLabel}>{s}</span>
                   </div>
                 ))}
@@ -329,7 +335,7 @@ export default function HypoglycemieModule({ shell }: ModuleProps) {
                 <div className={styles.cartePreview}>
                   {mySignes.map((s) => (
                     <div key={s} className={styles.cartePreviewItem}>
-                      <IllustrationSlot id={`signe-${slugify(s)}`} label={s} size={64} />
+                      <IllustrationSlot id={signeIllustrationId(s)} label={s} size={64} />
                       <span className={styles.previewLabel}>{s}</span>
                     </div>
                   ))}
@@ -381,11 +387,12 @@ export default function HypoglycemieModule({ shell }: ModuleProps) {
           <div className="fiche-bloc">
             <span className="fiche-bloc-eyebrow">Mes signes</span>
             {mySignes.length > 0 ? (
-              <div className={styles.chipRow}>
+              <div className={styles.cartePreview}>
                 {mySignes.map((s) => (
-                  <span key={s} className="chip">
-                    {s}
-                  </span>
+                  <div key={s} className={styles.cartePreviewItem}>
+                    <IllustrationSlot id={signeIllustrationId(s)} label={s} size={64} />
+                    <span className={styles.previewLabel}>{s}</span>
+                  </div>
                 ))}
               </div>
             ) : (
@@ -395,7 +402,19 @@ export default function HypoglycemieModule({ shell }: ModuleProps) {
 
           <div className="fiche-bloc">
             <span className="fiche-bloc-eyebrow">Mon resucrage</span>
-            <p className={styles.carteResucrageValeur}>{resucrageChoisi ? resucrageChoisi.label : 'À définir'}</p>
+            {resucrageChoisi ? (
+              <div className={styles.carteResucrageRow}>
+                <IllustrationSlot
+                  id={`resucrage-${resucrageChoisi.id}`}
+                  label={resucrageChoisi.label}
+                  shape="circle"
+                  size={44}
+                />
+                <p className={styles.carteResucrageValeur}>{resucrageChoisi.label}</p>
+              </div>
+            ) : (
+              <p className={styles.carteResucrageValeur}>À définir</p>
+            )}
           </div>
 
           <div className="fiche-bloc">

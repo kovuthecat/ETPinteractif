@@ -275,8 +275,8 @@ select {
 /* --- Fiches (cf. plans/extensions-tabac/X1.md, FicheOverlay + impression) --- */
 
 @page {
-  size: A4 portrait;
-  margin: 14mm;
+  size: A5 portrait;
+  margin: 12mm;
 }
 
 @media print {
@@ -293,6 +293,13 @@ select {
   .fiche-overlay .fiche-actions,
   .fiche-overlay [data-no-print] {
     display: none !important;
+  }
+
+  /* C6 (diabète/hypoglycémie) : illustrations de signes/resucrage dans la fiche imprimable —
+     sans ceci, Chrome peut ne pas restituer l'arrière-plan des tuiles `IllustrationSlot`. */
+  .fiche-overlay img {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
   .fiche-sheet {

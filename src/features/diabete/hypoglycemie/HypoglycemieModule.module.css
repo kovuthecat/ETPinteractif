@@ -302,6 +302,13 @@
   font-weight: 600;
 }
 
+/* C6 : illustration + libellé du resucrage choisi, dans la modale imprimable. */
+.carteResucrageRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
 .rappelSucre {
   font-size: 16px;
   line-height: 1.5;
