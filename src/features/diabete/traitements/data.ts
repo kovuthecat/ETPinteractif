@@ -125,7 +125,7 @@ export function newLigne(molecule: string, classId: string): Ligne {
   return { uid: `l${ligneUid}`, molecule, classId };
 }
 
-/** Lignes initiales (D10 « Décision clé »). */
+/** Lignes initiales (C3 « revue-chrome-2026-07 ») : ordonnance vide à l'ouverture. */
 export function lignesInitiales(): Ligne[] {
-  return [newLigne('Metformine 1000', 'metformine'), newLigne('Dapagliflozine 10 mg', 'gliflozine')];
+  return [];
 }

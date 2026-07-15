@@ -72,6 +72,17 @@
   gap: 2px;
 }
 
+/* C3 (revue-chrome-2026-07) : état vide léger quand l'ordonnance n'a aucune ligne. */
+.emptyState {
+  margin: var(--space-sm) 0;
+  padding: var(--space-md);
+  border: 1px dashed var(--color-line);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-faint);
+  font-size: 14px;
+  text-align: center;
+}
+
 .ligne {
   position: relative;
   display: flex;

@@ -151,6 +151,12 @@ export default function TraitementsModule({ onNavigate, shell }: ModuleProps) {
             Dr ________________________ &nbsp;·&nbsp; Patient : ________________________
           </p>
 
+          {lignes.length === 0 && (
+            <p className={styles.emptyState}>
+              Aucune ligne — cliquez sur « + Ajouter une ligne ».
+            </p>
+          )}
+
           <ul className={styles.lignesList}>
             {lignes.map((l, i) => {
               const cls = classById(l.classId);
