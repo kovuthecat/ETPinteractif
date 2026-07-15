@@ -7,7 +7,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        main: 'index.html',
+        consultation: 'consultation.html',
         patient: 'patient.html',
       },
     },
