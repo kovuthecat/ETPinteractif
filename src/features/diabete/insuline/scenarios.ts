@@ -12,34 +12,6 @@ export { bandeToY };
  * clé ») — remplace le `dayPath(bedtime, wake)` à bosses figées de la maquette.
  */
 
-export type ProfileId = 'jeune' | 'age';
-
-export interface ProfileDef {
-  id: ProfileId;
-  nom: string;
-  desc: string;
-  /** Bande-cible dans l'échelle 0–100 de la lib (BASELINE=30, cf. glycemieCurve.ts en-tête). */
-  bande: { basse: number; haute: number };
-}
-
-// jeune = bande basse et serrée (contrôle strict) ; âgé/fragile = bande plus haute et plus
-// large, la marge basse s'éloigne du plancher hypo pour prioriser l'évitement de l'hypo
-// (SPEC §13.3 : « on vise plus doux, éviter l'hypo prime »).
-export const PROFILES: Record<ProfileId, ProfileDef> = {
-  jeune: {
-    id: 'jeune',
-    nom: 'Profil jeune, actif',
-    desc: 'Zone-cible basse et serrée : on vise un contrôle plus strict.',
-    bande: { basse: 22, haute: 45 },
-  },
-  age: {
-    id: 'age',
-    nom: 'Profil âgé / fragile',
-    desc: "Zone-cible plus haute et plus large : éviter l'hypo prime avant tout.",
-    bande: { basse: 30, haute: 68 },
-  },
-};
-
 export type SituationId = 'tendance' | 'descend' | 'rapide' | 'bas';
 export type ActionTon = 'vigilance' | 'neutre' | 'toxique';
 

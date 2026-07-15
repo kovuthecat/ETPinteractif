@@ -65,6 +65,24 @@
   --chip-fg: var(--color-bg);
 }
 
+/* Légende sous le graphe (S3, harmonisation avec la rapide — même format). */
+.legendeRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-lg);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.legendePrincipale {
+  color: var(--color-text);
+}
+
+.legendeFantome {
+  color: var(--color-text-soft);
+}
+
 /* Pied : refrain de sécurité (.filrouge, dominant) + note d'accompagnement discrète en dessous. */
 .piedRefrain {
   display: flex;
@@ -79,51 +97,6 @@
   color: var(--color-text-soft);
   font-size: var(--font-size-small);
   line-height: 1.45;
-}
-
-/* --- Profil : toggle d'état (S4-v2, remplace l'ancien onglet ① plein écran) --- */
-
-.profileToggleRow {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-}
-
-.profileToggleLabel {
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--color-text-soft);
-}
-
-.profileToggle {
-  display: flex;
-  gap: 4px;
-  padding: 4px;
-  border-radius: var(--radius-pill);
-  background: var(--color-surface);
-  border: 1.5px solid var(--color-line);
-}
-
-.profileToggleBtn {
-  padding: 7px 14px;
-  border: none;
-  border-radius: var(--radius-pill);
-  background: transparent;
-  color: var(--color-text-soft);
-  font: 600 13px 'Work Sans', sans-serif;
-  cursor: pointer;
-}
-
-.profileToggleBtnActive {
-  background: var(--color-text);
-  color: var(--color-bg);
-}
-
-.profileToggleBtn:focus-visible {
-  outline: 3px solid var(--color-nav);
-  outline-offset: 2px;
 }
 
 /* --- Bloc décision : situations (toujours visible, plus d'onglet) --- */

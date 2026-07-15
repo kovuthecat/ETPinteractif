@@ -3,8 +3,9 @@ import { TrendingDown, Minus, TrendingUp } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import ModuleShell from '../../../components/ModuleShell';
 import CourbeGlycemie from '../components/CourbeGlycemie';
+import type { MarqueurDef } from '../components/CourbeGlycemie';
+import { BANDE_CIBLE_DEFAUT } from '../lib/glycemieCurve';
 import {
-  PROFILES,
   SUB_SITUATIONS,
   BAS,
   SITUATIONS,
@@ -15,7 +16,7 @@ import {
   computeTrendArrow,
   deciderCell,
 } from './scenarios';
-import type { ProfileId, SituationId, ActionTon, Ajustement } from './scenarios';
+import type { SituationId, ActionTon, Ajustement } from './scenarios';
 import styles from './InsulineModule.module.css';
 
 /**
@@ -28,8 +29,9 @@ import styles from './InsulineModule.module.css';
 
 // Écran unique continu (décision Thibault 2026-07-14) : plus d'onglets. Le découpage « Lire la
 // courbe » / « Décider » était artificiel — la courbe reste toujours visible et « Décider » ne
-// faisait que révéler le bloc situations. Tout est désormais rendu d'un seul tenant : profil →
-// courbe → situations (toujours visibles) → refrain.
+// faisait que révéler le bloc situations. Tout est désormais rendu d'un seul tenant : courbe →
+// situations (toujours visibles) → refrain. Le sélecteur de profil a été retiré (S3
+// revue-chrome-2026-07, C5) : la bande-cible est désormais fixe, harmonisée sur la rapide.
 
 const TON_VAR: Record<ActionTon, string> = {
   vigilance: 'var(--color-vigilance)',
@@ -43,13 +45,24 @@ const TREND_LABEL: Record<'↗' | '↘' | '→', string> = {
   '→': 'stable',
 };
 
+// Axe temporel + repères — harmonisation avec la rapide (S3, retrait du profil). La trace
+// couvre 24h « coucher → coucher » (`glycemieCurve.ts`, NUIT_MINUTES=480/JOURNEE_MINUTES=1440) ;
+// les 5 étiquettes sont réparties à intervalles réguliers sur ce domaine (mécanisme `axeLabels`
+// de `CourbeGlycemie`, non calé sur les fractions exactes nuit/jour). // à revalider (Thibault)
+const AXE_LABELS = ['Coucher', 'Nuit', 'Réveil', 'Matin', 'Midi']; // à revalider (Thibault)
+
+/** Repères verticaux « Coucher » (t=0) / « Réveil » (fin du segment nuit, cf. `SEGMENTS`) —
+ *  même mécanisme que les marqueurs de la rapide (repas/injection). */
+const MARQUEURS: MarqueurDef[] = [
+  { t: 0, type: 'attente', label: 'Coucher' },
+  { t: SEGMENTS[0].t1, type: 'attente', label: 'Réveil' },
+];
+
 export default function InsulineModule({ onNavigate, shell }: ModuleProps) {
-  const [profileId, setProfileId] = useState<ProfileId>('jeune');
   const [situationId, setSituationId] = useState<SituationId | null>(null);
   const [segmentId, setSegmentId] = useState<'nuit' | 'repas' | null>(null);
   const [ajustement, setAjustement] = useState<Ajustement | null>(null);
 
-  const profile = PROFILES[profileId];
   const situation = situationId ? SITUATIONS[situationId] : null;
   const baseScenario = situation ? situation.scenario : 'stable';
   // T8 : courbe ET message viennent du couple (situation, ajustement) via `deciderCell` — chaque
@@ -64,7 +77,9 @@ export default function InsulineModule({ onNavigate, shell }: ModuleProps) {
 
   const traces = useMemo(() => tracesForScenario(scenario), [scenario]);
   const courbes = useMemo(() => buildCourbes(traces), [traces]);
-  const bandesY = useMemo(() => bandeToY(profile.bande), [profile]);
+  // Bande fixe (S3, retrait du profil) : harmonisée sur la rapide → bandes 80/70/50 (`BANDE_CIBLE_DEFAUT`
+  // = { basse: 25, haute: 60 }), au lieu de la bande dérivée du profil (110/46/44).
+  const bandesY = useMemo(() => bandeToY(BANDE_CIBLE_DEFAUT), []);
   const trendArrow = useMemo(() => computeTrendArrow(traces), [traces]);
 
   function toggleSituation(id: SituationId) {
@@ -84,27 +99,6 @@ export default function InsulineModule({ onNavigate, shell }: ModuleProps) {
   return (
     <ModuleShell titre={shell.titre} sources={shell.sources} onBack={shell.onBack} wide>
     <div className={styles.module}>
-      {/* Profil = toggle d'état discret près de la courbe ; il règle la zone-cible en continu. */}
-      <div className={styles.profileToggleRow}>
-        <span className={styles.profileToggleLabel}>Profil</span>
-        <div className={styles.profileToggle} role="group" aria-label="Profil patient — règle la zone-cible">
-          {Object.values(PROFILES).map((p) => (
-            <button
-              key={p.id}
-              type="button"
-              className={`${styles.profileToggleBtn}${profileId === p.id ? ` ${styles.profileToggleBtnActive}` : ''}`}
-              aria-pressed={profileId === p.id}
-              onClick={() => {
-                setProfileId(p.id);
-                setAjustement(null);
-              }}
-            >
-              {p.nom}
-            </button>
-          ))}
-        </div>
-      </div>
-
       <div className={`card ${styles.graphCard}`}>
         <div className={styles.graphHeader}>
           <span className={styles.graphLabel}>Courbe du capteur</span>
@@ -119,7 +113,14 @@ export default function InsulineModule({ onNavigate, shell }: ModuleProps) {
           bandes={bandesY}
           segments={SEGMENTS}
           onSegmentClick={handleSegmentClick}
+          axeLabels={AXE_LABELS}
+          marqueurs={MARQUEURS}
         />
+
+        <div className={styles.legendeRow}>
+          <span className={styles.legendePrincipale}>— Glycémie nuit/à jeun (nuit la plus récente)</span>
+          <span className={styles.legendeFantome}>- - Nuits précédentes</span>
+        </div>
 
         <div className={styles.axisCaptions}>
           <span className={segmentId === 'nuit' ? styles.axisCaptionActive : undefined}>
