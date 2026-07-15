@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Play } from 'lucide-react';
 import {
   SITUATIONS,
   type PilierId,
   type SituationDef,
 } from '../../content/tabac/situations';
-import { OUTILS, PREUVE_LABELS, type Outil } from '../../content/tabac/outils';
+import { OUTILS, PREUVE_LABELS, selectionnerOutilsPertinents, type Outil } from '../../content/tabac/outils';
+import RespirationGuidee from '../../components/RespirationGuidee';
 import styles from './PatientSituations.module.css';
 
 interface PatientSituationsProps {
@@ -21,7 +22,7 @@ const PILIER_ORDER: PilierId[] = ['physique', 'psychologique', 'comportementale'
 // §Architecture cible).
 const PILIER_LABELS: Record<PilierId, string> = {
   physique: 'Signes physiques du manque',
-  psychologique: 'Ce que la cigarette apporte',
+  psychologique: 'Émotions propices au tabac', // à revalider (Thibault)
   comportementale: 'Automatismes du quotidien',
 };
 
@@ -93,16 +94,19 @@ function commentFaire(outil: Outil): string {
  * d'une situation à risque (parmi les 20 de `situations.ts`, groupées par pilier) puis
  * outils adaptés (mapping `Outil.situations` ∪ `Outil.transverse`, même règle que la
  * consultation — cf. `BoiteAOutilsModule.tsx`, non importé). v1 patient = lecture
- * seule : aucun bouton interactif, aucun renvoi inter-modules (cf. S4 « Hors périmètre »).
+ * seule : aucun bouton interactif, aucun renvoi inter-modules (cf. S4 « Hors périmètre »),
+ * SAUF l'outil `outil-respiration` (`interactif === 'respiration'`) — évolution assumée
+ * du cadrage v1, limitée à cet outil (E6, plans/revue-chrome-2026-07/S15.md).
  */
 export default function PatientSituations({ onBack }: PatientSituationsProps) {
   const [selectedSituation, setSelectedSituation] = useState<string | null>(null);
+  const [respirationOpen, setRespirationOpen] = useState(false);
 
   if (selectedSituation) {
     const situation = SITUATIONS.find((s) => s.id === selectedSituation) ?? null;
-    const outilsAdaptes = OUTILS.filter(
-      (o) => o.transverse || o.situations.includes(selectedSituation),
-    );
+    // Pertinence par pilier (E4) : même fonction de sélection/tri que la consultation
+    // (BoiteAOutilsModule) — repli sur `OUTILS` en entier si la situation est introuvable.
+    const outilsAdaptes = selectionnerOutilsPertinents(OUTILS, situation ? [situation] : []);
 
     return (
       <div className={styles.screen}>
@@ -141,9 +145,21 @@ export default function PatientSituations({ onBack }: PatientSituationsProps) {
                 <span className="eyebrow">Comment faire</span>
                 <p className={styles.commentFaire}>{commentFaire(outil)}</p>
               </div>
+              {outil.interactif === 'respiration' && (
+                <button
+                  type="button"
+                  className="btn btn--primary"
+                  onClick={() => setRespirationOpen(true)}
+                >
+                  <Play size={16} aria-hidden="true" />
+                  Démarrer l'exercice
+                </button>
+              )}
             </article>
           ))}
         </div>
+
+        {respirationOpen && <RespirationGuidee onClose={() => setRespirationOpen(false)} />}
       </div>
     );
   }
