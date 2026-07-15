@@ -1314,7 +1314,7 @@ point principal à valider ici : la bonne image doit apparaître au bon endroit.
 ### Écran « Agir face à une situation »
 
 - [ ] Cliquer la carte « Agir face à une situation » → écran de choix parmi 20 situations, groupées en 3 piliers
-      titrés (« Signes physiques du manque » / « Ce que la cigarette apporte » / « Automatismes du quotidien »),
+      titrés (« Signes physiques du manque » / « Émotions propices au tabac » / « Automatismes du quotidien »),
       couleurs piliers cohérentes (ambre physique, bleu psycho, vert comportement).
 - [ ] Intro « Quelle situation vous donne le plus envie de fumer ? » (à revalider).
 - [ ] Choisir une situation → écran de liste d'outils : titre « Voici ce qui peut vous aider dans cette

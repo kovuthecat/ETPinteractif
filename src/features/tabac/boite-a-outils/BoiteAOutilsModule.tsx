@@ -13,7 +13,7 @@ const PILIER_ORDER: PilierId[] = ['physique', 'psychologique', 'comportementale'
 
 const PILIER_LABELS: Record<PilierId, string> = {
   physique: 'Signes physiques du manque',
-  psychologique: 'Ce que la cigarette apporte',
+  psychologique: 'Émotions propices au tabac', // à revalider (Thibault)
   comportementale: 'Automatismes du quotidien',
 };
 
