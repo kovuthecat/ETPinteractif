@@ -4,7 +4,7 @@ import type { ModuleProps } from '../../types';
 import IllustrationSlot from '../components/IllustrationSlot';
 import FicheOverlay from '../../../components/FicheOverlay';
 import VagueCraving from './VagueCraving';
-import { OUTILS, PREUVE_LABELS, type Outil } from '../../../content/tabac/outils';
+import { OUTILS, PREUVE_LABELS, selectionnerOutilsPertinents } from '../../../content/tabac/outils';
 import { SITUATIONS, parseSelectionSituations, type PilierId, type SituationDef } from '../../../content/tabac/situations';
 import { useSelection } from '../../../state/SelectionContext';
 import styles from './BoiteAOutilsModule.module.css';
@@ -57,14 +57,11 @@ export default function BoiteAOutilsModule({ onNavigate, context }: ModuleProps)
     toggle('outilsFiche', id);
   }
 
-  function outilVisible(outil: Outil): boolean {
-    if (activeSituations.size === 0) return true;
-    if (outil.transverse) return true;
-    return outil.situations.some((s) => activeSituations.has(s));
-  }
-
-  const visibleOutils = OUTILS.filter(outilVisible);
   const activeSituationDefs = SITUATIONS.filter((s) => activeSituations.has(s.id));
+  // Pertinence par pilier (E4) : même fonction de sélection/tri que l'app patient
+  // (PatientSituations) — filtre inchangé (transverse ∪ situations actives), tri par
+  // pilier ajouté par-dessus.
+  const visibleOutils = selectionnerOutilsPertinents(OUTILS, activeSituationDefs);
   const ficheOutils = OUTILS.filter((o) => ficheItems.includes(o.id));
 
   // Si bloqué (plans/boite-a-outils/S2.md « Si bloqué ») : au-delà de 10 outils

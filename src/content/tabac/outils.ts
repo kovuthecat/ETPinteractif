@@ -1,4 +1,5 @@
 import type { ModuleId } from '../../features/types';
+import type { PilierId, SituationDef } from './situations';
 
 /**
  * Données du module « Stratégies & outils » (plans/boite-a-outils/S2.md).
@@ -20,12 +21,19 @@ export interface Outil {
   accroche: string; // 1 ligne, carte
   situations: string[]; // ids de situations.ts
   transverse?: boolean; // affiché quel que soit le filtre
+  // Pertinence par pilier (E4, plans/revue-chrome-2026-07/S7.md) : sert au TRI, pas au
+  // filtre — un outil transverse ou déjà rattaché à la situation reste affiché même sans
+  // `piliers` ; ce champ ne fait que le faire remonter en tête quand il matche le pilier
+  // de la situation active. Renseigné seulement quand la dominante est claire (piliers
+  // uniques des `situations` liées, ou choix explicite du plan) ; laissé vide sinon pour
+  // ne pas trancher une pertinence clinique ambiguë seul.
+  piliers?: PilierId[];
   principe: string; // 1-2 phrases, panneau détail
   proposition: string; // « Comment le proposer » — formulation patient
   preuve: Preuve;
   consigneFiche: string; // 1 ligne, fiche imprimée
   renvoi?: { id: ModuleId; label: string };
-  interactif?: 'vague4d'; // ouvre l'outil interactif au lieu d'un simple détail
+  interactif?: 'vague4d' | 'respiration'; // ouvre l'outil interactif au lieu d'un simple détail
 }
 
 export const OUTILS: Outil[] = [
@@ -35,6 +43,7 @@ export const OUTILS: Outil[] = [
     accroche: "L'envie monte, culmine, puis retombe d'elle-même en quelques minutes.",
     situations: [],
     transverse: true,
+    piliers: ['physique'], // envie/craving = signe physique du manque
     principe:
       "Une envie de fumer est une vague de 3 à 5 minutes : elle redescend toujours, qu'on fume ou non. Les 4D — Différer, Détourner l'attention, se Détendre, boire De l'eau — aident à tenir pendant le pic.",
     proposition:
@@ -49,6 +58,7 @@ export const OUTILS: Outil[] = [
     accroche: "Décider sa parade à l'avance, pour ne pas avoir à décider au moment critique.",
     situations: [],
     transverse: true,
+    piliers: ['psychologique', 'comportementale'], // parade préparée : utile aux déclencheurs émotionnels comme aux automatismes
     principe:
       "Pré-programmer une réponse précise pour chaque situation à risque court-circuite la décision au moment où l'envie frappe. C'est la technique la mieux démontrée du sevrage comportemental.",
     proposition:
@@ -73,6 +83,7 @@ export const OUTILS: Outil[] = [
     titre: 'Respirer pour redescendre',
     accroche: "Deux minutes de respiration lente calment plus durablement qu'une cigarette.",
     situations: ['stress', 'anxiete', 'nervosite', 'irritabilite'],
+    piliers: ['psychologique'], // apaisement émotionnel (stress/anxiété) — devant en priorité sur ces situations
     principe:
       "La respiration lente active le système d'apaisement du corps. Rappel utile : la cigarette ne réduit pas le stress — elle soulage le manque qu'elle a elle-même créé ; après le sevrage, le niveau de stress de fond diminue chez la plupart des personnes.",
     proposition:
@@ -80,6 +91,7 @@ export const OUTILS: Outil[] = [
     preuve: 'experts',
     consigneFiche: 'Inspirez 4 s — retenez 7 s — soufflez 8 s, 3 fois.',
     renvoi: { id: 'soulagement', label: 'Pourquoi la cigarette ne détend pas vraiment' },
+    interactif: 'respiration',
   },
   {
     id: 'outil-surfer',
@@ -98,6 +110,7 @@ export const OUTILS: Outil[] = [
     titre: 'Faire place nette',
     accroche: "Ce qu'on ne voit plus déclenche moins l'envie.",
     situations: ['cafe', 'repas', 'voiture'],
+    piliers: ['comportementale'], // retrait des déclencheurs = automatisme du quotidien
     principe:
       "Chaque objet ou lieu associé à la cigarette est un déclencheur. Les retirer du champ de vision désamorce l'automatisme avant qu'il ne se lance.",
     proposition:
@@ -110,6 +123,7 @@ export const OUTILS: Outil[] = [
     titre: 'Casser la routine',
     accroche: 'Changer un détail du rituel suffit souvent à désamorcer le geste.',
     situations: ['cafe', 'repas', 'pause', 'voiture', 'telephone'],
+    piliers: ['comportementale'], // rupture de routine = automatisme du quotidien
     principe:
       "Le café, la fin du repas ou la pause déclenchent la cigarette parce qu'ils forment une séquence automatique. Modifier un élément de la séquence — lieu, ordre, boisson — casse l'enchaînement.",
     proposition:
@@ -147,6 +161,7 @@ export const OUTILS: Outil[] = [
     titre: 'Ma phrase de refus',
     accroche: 'Une réponse courte, ferme, préparée à l\'avance.',
     situations: ['social', 'alcool', 'pause'],
+    piliers: ['comportementale'], // pression sociale = automatisme du quotidien
     principe:
       "La pression sociale — l'offre de cigarette, l'ambiance festive — est un déclencheur majeur. Une phrase de refus préparée évite d'avoir à improviser au moment vulnérable. Vigilance particulière avec l'alcool, qui baisse la garde : les premières semaines, mieux vaut le limiter.",
     proposition:
@@ -159,6 +174,7 @@ export const OUTILS: Outil[] = [
     titre: 'Se récompenser — la tirelire',
     accroche: 'Remplacer la récompense de la cigarette par de vraies récompenses.',
     situations: ['plaisir', 'deprime', 'stimulation'],
+    piliers: ['psychologique'], // fonction de la cigarette (récompense/humeur)
     principe:
       "Le cerveau était habitué à une “récompense” nicotinique répétée. Les premières semaines, planifier des plaisirs de remplacement — et matérialiser l'argent économisé — soutient la motivation. Ce n'est pas du luxe, c'est une stratégie.",
     proposition:
@@ -196,6 +212,7 @@ export const OUTILS: Outil[] = [
     titre: 'Traiter le manque — les substituts',
     accroche: 'Les signes physiques du manque se traitent — c\'est le rôle des substituts.',
     situations: ['manque', 'irritabilite', 'nervosite', 'concentration', 'sommeil', 'fringales', 'craving'],
+    piliers: ['physique'], // signes du manque = pilier physique
     principe:
       "Irritabilité, nervosité, troubles de la concentration ou du sommeil, fringales : ces signes traduisent le manque de nicotine. Bien dosés, les substituts les font disparaître — et toutes les techniques de cette boîte à outils marchent mieux avec eux.",
     proposition:
@@ -205,3 +222,34 @@ export const OUTILS: Outil[] = [
     renvoi: { id: 'substituts', label: 'Voir les substituts et la titration' },
   },
 ];
+
+/**
+ * Sélection + tri partagés (E4, plans/revue-chrome-2026-07/S7.md) : consultation
+ * (`BoiteAOutilsModule`) et app patient (`PatientSituations`) doivent avoir le même
+ * comportement de pertinence par pilier vis-à-vis d'une ou plusieurs situations actives.
+ *
+ * - Filtre (inchangé) : un outil est retenu s'il est `transverse` OU si l'une de ses
+ *   `situations` correspond à une situation active. Aucune situation active → tout est
+ *   retenu (état « pas de filtre »).
+ * - Tri : les outils dont `piliers` contient au moins un des piliers des situations
+ *   actives passent en tête (dont les transverses pertinents, ex. `si-alors` sur une
+ *   situation psychologique). Les autres (transverses génériques inclus, ex. 4D) suivent,
+ *   dans leur ordre d'origine — tri stable, aucune situation active → ordre inchangé.
+ */
+export function selectionnerOutilsPertinents(
+  outils: Outil[],
+  situationsActives: SituationDef[],
+): Outil[] {
+  const ids = new Set(situationsActives.map((s) => s.id));
+  const piliers = new Set(situationsActives.map((s) => s.pilier));
+
+  const retenus =
+    ids.size === 0
+      ? outils
+      : outils.filter((o) => o.transverse || o.situations.some((s) => ids.has(s)));
+
+  if (piliers.size === 0) return retenus;
+
+  const pertinent = (o: Outil) => Boolean(o.piliers?.some((p) => piliers.has(p)));
+  return [...retenus].sort((a, b) => Number(pertinent(b)) - Number(pertinent(a)));
+}
