@@ -1,8 +1,8 @@
-import { Pill, Compass } from 'lucide-react';
+import { Pill, Compass, NotebookPen } from 'lucide-react';
 import ModuleCard from '../components/ModuleCard';
 import styles from './Home.module.css';
 
-type PatientView = 'substituts' | 'situations';
+type PatientView = 'substituts' | 'situations' | 'carnet';
 
 interface HomeProps {
   onNavigate: (view: PatientView) => void;
@@ -35,6 +35,14 @@ export default function Home({ onNavigate }: HomeProps) {
           Icon={Compass}
           hue="nav"
           onClick={() => onNavigate('situations')}
+        />
+        <ModuleCard
+          titre="Mon carnet de suivi"
+          // à revalider (Thibault) : reformulation voix patient
+          resume="Notez chaque consommation pour repérer vos moments à risque."
+          Icon={NotebookPen}
+          hue="vigilance"
+          onClick={() => onNavigate('carnet')}
         />
       </div>
     </div>
