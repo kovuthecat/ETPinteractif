@@ -33,24 +33,29 @@
 }
 
 /* --- Frise chronologique à hotspots --- */
+/* Pleine largeur, en tête du module (A3) : les 10 repères se répartissent sur toute la
+   largeur disponible, sans scroll latéral (le scroll ne revient qu'en repli étroit, cf.
+   media query en bas de fichier). */
 
 .frise {
   display: flex;
   flex-direction: column;
   gap: var(--space-xs);
+  width: 100%;
 }
 
 .friseTrack {
   display: flex;
   align-items: flex-start;
+  justify-content: space-between;
   gap: var(--space-sm);
-  overflow-x: auto;
   padding: 6px 4px var(--space-xs);
 }
 
 .frisePoint {
   position: relative;
-  flex: 1 0 72px;
+  flex: 1 1 0;
+  min-width: 72px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -336,5 +341,16 @@
 
   .panneau {
     width: 100%;
+  }
+
+  /* Repli étroit : plus assez de place pour répartir les 10 jalons sans les tasser →
+     on réautorise le scroll horizontal plutôt que de les écraser. */
+  .friseTrack {
+    justify-content: flex-start;
+    overflow-x: auto;
+  }
+
+  .frisePoint {
+    flex: 1 0 72px;
   }
 }
