@@ -457,70 +457,44 @@
 
 .d4Layout {
   display: flex;
-  gap: var(--space-xl);
-  flex-wrap: wrap;
-  /* S4-v3 : flex-start (au lieu de center) — remonte le bloc, même logique que `.d1Layout`. */
-  align-items: flex-start;
+  flex-direction: column;
+  gap: var(--space-md);
+  align-items: center;
   justify-content: center;
 }
 
+/* C2b (S18) : le camembert lui-même porte le réglage (drag des frontières) + les %/icônes ;
+ * l'encadré latéral et les boutons ± ont disparu (C2a). */
 .d4Pie {
   width: 300px;
   height: 300px;
   flex-shrink: 0;
+  touch-action: none;
 }
 
-.d4Zones {
-  flex: 1;
-  min-width: 340px;
-  max-width: 480px;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-md);
+.d4SliceLabel {
+  font-size: 11px;
+  font-weight: 700;
+  fill: #fff;
+  pointer-events: none;
 }
 
-.d4Zone {
-  display: flex;
-  align-items: center;
-  gap: var(--space-md);
-  background: var(--color-surface);
-  border: 2px dashed var(--color-line);
-  border-radius: var(--radius-lg);
-  padding: 10px var(--space-md);
+/* Poignée de frontière entre 2 parts adjacentes — desktop/souris uniquement (pas de clavier,
+ * assumé côté produit, cf. S18 « Hors périmètre »). */
+.d4Handle {
+  fill: var(--color-bg);
+  stroke: var(--color-line);
+  stroke-width: 2px;
+  cursor: grab;
 }
 
-.d4Dot {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  flex-shrink: 0;
+.d4Handle:hover {
+  stroke: var(--color-text);
 }
 
-.d4Label {
-  flex: 1;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.d4Pct {
-  font-size: 14px;
-  color: var(--color-text-soft);
-  width: 48px;
-  text-align: right;
-}
-
-.roundBtn {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: var(--color-bg);
-  border: 1.5px solid var(--color-line);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 18px;
-  font-weight: 600;
+.d4HandleDragging {
+  cursor: grabbing;
+  stroke: var(--color-text);
 }
 
 .achieved {

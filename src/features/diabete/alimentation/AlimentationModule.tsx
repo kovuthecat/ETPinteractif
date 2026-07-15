@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
-import type { DragEvent, KeyboardEvent as ReactKeyboardEvent } from 'react';
-import { Check, RotateCcw } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import type { DragEvent, KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from 'react';
+import { Beef, Carrot, Check, RotateCcw, Wheat } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import ModuleShell from '../../../components/ModuleShell';
 import FicheOverlay from '../../../components/FicheOverlay';
@@ -169,6 +170,69 @@ const D4_CATEGORIES: { id: D4Category; label: string; colorVar: string; repFoodI
 ];
 /** Écart maximal à l'assiette-modèle (½ · ¼ · ¼) pour la considérer atteinte (règle maquette). */
 const D4_ACHIEVED_TOLERANCE = 0.14;
+
+// ── C2a/C2b (S18) : modèle en % continu, réglage au drag ──────────────────────────────
+/** Icône Lucide par secteur (C2b), décorative — le label texte porte le sens. */
+const D4_ICONS: Record<D4Category, LucideIcon> = { legumes: Carrot, proteines: Beef, feculents: Wheat };
+/** Assiette de départ — équivalente à l'ancien défaut par compteurs (1 légume / 0 protéine /
+ *  3 féculents, soit 25 % / 0 % / 75 %), volontairement loin de l'assiette-modèle. */
+const D4_PCT_DEFAULT: Record<D4Category, number> = { legumes: 0.25, proteines: 0, feculents: 0.75 };
+/** Angle de départ (12h) du camembert — fixe, sert de référence aux 2 frontières draggables
+ *  (génération d'arcs S1, sweep clockwise). */
+const D4_ANGLE_START = -90;
+/** Nombre d'aliments représentatifs utilisés pour reconstruire la courbe glycémie à partir des
+ *  proportions continues (arrondi au plus fort reste sur ce total — préserve la forme de courbe).
+ *  // à revalider (Thibault) : ni trop « steppy » (T petit), ni une courbe qui saute en drag. */
+const D4_CURVE_TOTAL = 8;
+/** Sous ce seuil de part, l'icône du secteur est masquée (elle ne rentrerait plus proprement).
+ *  // à revalider (Thibault). */
+const D4_ICON_MIN_FRAC = 0.06;
+
+/** Position sur le cercle de rayon `r` à l'angle absolu `a` (degrés, convention du camembert :
+ *  0 = est, 90 = sud, -90 = nord, sweep clockwise — cf. génération d'arcs `d4PieSlices`). */
+function d4PointOnCircle(a: number, r: number): [number, number] {
+  const rad = (a * Math.PI) / 180;
+  return [100 + r * Math.cos(rad), 100 + r * Math.sin(rad)];
+}
+
+/** Ramène `angle` (degrés, quelconque) dans l'intervalle continu [from, from + 360) — sert à
+ *  comparer/clamper un angle souris avec les angles absolus (non normalisés) du camembert. */
+function d4UnwrapAngle(angle: number, from: number): number {
+  const delta = ((angle - from) % 360 + 360) % 360;
+  return from + delta;
+}
+
+/** Angle absolu (même convention que `d4PointOnCircle`) du pointeur, dans le repère local du
+ *  camembert (viewBox `0 0 200 200`) — mapping écran→viewBox via `getScreenCTM` (zoom/mise en
+ *  page sans dérive), cf. décision clé C2b. */
+function d4AngleFromPointer(svg: SVGSVGElement, e: { clientX: number; clientY: number }): number {
+  const pt = svg.createSVGPoint();
+  pt.x = e.clientX;
+  pt.y = e.clientY;
+  const ctm = svg.getScreenCTM();
+  const loc = ctm ? pt.matrixTransform(ctm.inverse()) : pt;
+  return Math.atan2(loc.y - 100, loc.x - 100) * (180 / Math.PI);
+}
+
+/** Dérive les compteurs entiers (pour la courbe glycémie) à partir des proportions continues,
+ *  par arrondi au plus fort reste sur un total fixe `total` — conserve `total` (donc la forme de
+ *  courbe) quel que soit le réglage du drag. */
+function d4CountsFromPct(pct: Record<D4Category, number>, total: number): Record<D4Category, number> {
+  const ids = D4_CATEGORIES.map((cat) => cat.id);
+  const exact = ids.map((id) => pct[id] * total);
+  const floors = exact.map((v) => Math.floor(v));
+  const counts = Object.fromEntries(ids.map((id, i) => [id, floors[i]])) as Record<D4Category, number>;
+  let remaining = total - floors.reduce((a, b) => a + b, 0);
+  const byRemainder = ids
+    .map((id, i) => ({ id, remainder: exact[i] - floors[i] }))
+    .sort((a, b) => b.remainder - a.remainder);
+  for (const { id } of byRemainder) {
+    if (remaining <= 0) break;
+    counts[id] += 1;
+    remaining -= 1;
+  }
+  return counts;
+}
 
 /** Points de palier (●●○, C3) — glyphe sans contenu textuel, décoratif (le libellé porte le sens). */
 function PalierDots({ level }: { level: Palier3 }) {
@@ -501,31 +565,60 @@ export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
   const d3RefLabel = `Si ${ordreLabel(d3OrdreFracFantome).toLowerCase()}`;
 
   // ── Défi 4 — Proportion ───────────────────────────────────────────────
-  const [d4Counts, setD4Counts] = useState<Record<D4Category, number>>({
-    legumes: 1,
-    proteines: 0,
-    feculents: 3,
-  });
+  // C2a (S18) : source de vérité = proportions continues (somme 100 %, 0 % permis), pilotées
+  // par le drag des frontières du camembert (C2b). Les compteurs entiers pour la courbe glycémie
+  // sont dérivés (arrondi au plus fort reste), cf. `d4CountsFromPct`.
+  const [d4Pct, setD4Pct] = useState<Record<D4Category, number>>(D4_PCT_DEFAULT);
   const [d4Touched, setD4Touched] = useState(false);
+  const [d4Dragging, setD4Dragging] = useState<'b1' | 'b2' | null>(null);
+  const d4SvgRef = useRef<SVGSVGElement>(null);
 
-  function handleD4Inc(cat: D4Category) {
-    setD4Touched(true);
-    setD4Counts((prev) => (prev[cat] >= 8 ? prev : { ...prev, [cat]: prev[cat] + 1 }));
-  }
-  function handleD4Dec(cat: D4Category) {
-    setD4Touched(true);
-    setD4Counts((prev) => (prev[cat] <= 0 ? prev : { ...prev, [cat]: prev[cat] - 1 }));
+  /** Frontière b1 = entre légumes et protéines ; b2 = entre protéines et féculents (angles
+   *  absolus, mêmes conventions que `d4PointOnCircle`). Déplacer une frontière ne redistribue
+   *  qu'entre les 2 parts voisines, l'autre reste inchangée (ordre des secteurs stable). */
+  function handleD4BoundaryPointerDown(boundary: 'b1' | 'b2') {
+    return (e: ReactPointerEvent<SVGCircleElement>) => {
+      e.currentTarget.setPointerCapture(e.pointerId);
+      setD4Dragging(boundary);
+      setD4Touched(true);
+    };
   }
 
-  const d4CountsTotal = d4Counts.legumes + d4Counts.proteines + d4Counts.feculents;
-  const d4Total = d4CountsTotal || 1;
-  const d4Pct: Record<D4Category, number> = {
-    legumes: d4Counts.legumes / d4Total,
-    proteines: d4Counts.proteines / d4Total,
-    feculents: d4Counts.feculents / d4Total,
-  };
+  function handleD4BoundaryPointerMove(boundary: 'b1' | 'b2') {
+    return (e: ReactPointerEvent<SVGCircleElement>) => {
+      if (d4Dragging !== boundary) return;
+      const svg = d4SvgRef.current;
+      if (!svg) return;
+      const angle = d4UnwrapAngle(d4AngleFromPointer(svg, e), D4_ANGLE_START);
+      setD4Pct((prev) => {
+        const angleB1 = D4_ANGLE_START + prev.legumes * 360;
+        const angleB2 = angleB1 + prev.proteines * 360;
+        const angleEnd = D4_ANGLE_START + 360;
+        if (boundary === 'b1') {
+          const next = Math.min(Math.max(angle, D4_ANGLE_START), angleB2);
+          return {
+            legumes: (next - D4_ANGLE_START) / 360,
+            proteines: (angleB2 - next) / 360,
+            feculents: prev.feculents,
+          };
+        }
+        const next = Math.min(Math.max(angle, angleB1), angleEnd);
+        return {
+          legumes: prev.legumes,
+          proteines: (next - angleB1) / 360,
+          feculents: (angleEnd - next) / 360,
+        };
+      });
+    };
+  }
+
+  function handleD4BoundaryPointerUp(e: ReactPointerEvent<SVGCircleElement>) {
+    e.currentTarget.releasePointerCapture(e.pointerId);
+    setD4Dragging(null);
+  }
+
   const d4Diff = Math.abs(d4Pct.legumes - 0.5) + Math.abs(d4Pct.proteines - 0.25) + Math.abs(d4Pct.feculents - 0.25);
-  const d4Achieved = d4Touched && d4Diff < D4_ACHIEVED_TOLERANCE && d4CountsTotal >= 3;
+  const d4Achieved = d4Touched && d4Diff < D4_ACHIEVED_TOLERANCE;
 
   // A2 · critère défi ④ : l'assiette-modèle est atteinte.
   useEffect(() => {
@@ -533,46 +626,63 @@ export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [d4Achieved]);
 
+  // C2a : compteurs entiers dérivés des % continus, pour la courbe glycémie uniquement.
+  const d4CountsForCurve = d4CountsFromPct(d4Pct, D4_CURVE_TOTAL);
+
   // B3 : portions réelles — chaque catégorie apporte son aliment représentatif répété
-  // `d4Counts[cat]` fois (plus de paramètre `proportions` : l'effet émerge de la composition).
+  // `d4CountsForCurve[cat]` fois (plus de paramètre `proportions` : l'effet émerge de la composition).
   const d4Aliments = D4_CATEGORIES.flatMap((cat) => {
     const food = foodById(cat.repFoodId);
-    return food ? Array.from({ length: d4Counts[cat.id] }, () => toAliment(food)) : [];
+    return food ? Array.from({ length: d4CountsForCurve[cat.id] }, () => toAliment(food)) : [];
   });
   const d4Courbe = buildCourbe({ aliments: d4Aliments });
   // S2 : courbe fantôme « féculents seuls » — même principe que le défi ①, pour donner un
   // contraste à la courbe unique du défi ④ (capture #5). Masquée si l'assiette ne contient
   // aucun féculent (fantôme plat et vide, sans intérêt).
   const d4FeculentFood = foodById(D4_CATEGORIES.find((c) => c.id === 'feculents')!.repFoodId);
-  const d4ShowFantome = d4Counts.feculents >= 1 && !!d4FeculentFood;
+  const d4ShowFantome = d4CountsForCurve.feculents >= 1 && !!d4FeculentFood;
   const d4CourbeFeculents =
     d4ShowFantome && d4FeculentFood
       ? buildCourbe({
-          aliments: Array.from({ length: d4Counts.feculents }, () => toAliment(d4FeculentFood)),
+          aliments: Array.from({ length: d4CountsForCurve.feculents }, () => toAliment(d4FeculentFood)),
           ordreFeculent: 0,
         })
       : null;
 
-  let d4Angle = -90;
+  let d4Angle = D4_ANGLE_START;
   const d4PieSlices = D4_CATEGORIES.map((cat) => {
     const frac = d4Pct[cat.id];
     const start = d4Angle;
     const sweep = frac * 360;
     d4Angle += sweep;
     const end = start + sweep;
-    const toXY = (a: number): [number, number] => {
-      const rad = (a * Math.PI) / 180;
-      return [100 + 92 * Math.cos(rad), 100 + 92 * Math.sin(rad)];
-    };
-    const [x1, y1] = toXY(start);
-    const [x2, y2] = toXY(end);
+    const [x1, y1] = d4PointOnCircle(start, 92);
+    const [x2, y2] = d4PointOnCircle(end, 92);
     const largeArc = sweep > 180 ? 1 : 0;
+    const mid = (start + end) / 2;
+    const [iconX, iconY] = d4PointOnCircle(mid, 58);
+    const [labelX, labelY] = d4PointOnCircle(mid, 76);
     const d =
       frac > 0.001
         ? `M 100 100 L ${x1.toFixed(1)} ${y1.toFixed(1)} A 92 92 0 ${largeArc} 1 ${x2.toFixed(1)} ${y2.toFixed(1)} Z`
         : '';
-    return { id: cat.id, d, colorVar: cat.colorVar };
+    return {
+      id: cat.id,
+      d,
+      colorVar: cat.colorVar,
+      label: cat.label,
+      frac,
+      icon: D4_ICONS[cat.id],
+      iconX,
+      iconY,
+      labelX,
+      labelY,
+    };
   });
+  const d4AngleB1 = D4_ANGLE_START + d4Pct.legumes * 360;
+  const d4AngleB2 = d4AngleB1 + d4Pct.proteines * 360;
+  const [d4HandleB1X, d4HandleB1Y] = d4PointOnCircle(d4AngleB1, 92);
+  const [d4HandleB2X, d4HandleB2Y] = d4PointOnCircle(d4AngleB2, 92);
 
   // ── Synthèse ★ (= fiche) ───────────────────────────────────────────────
   const [synthPlate, setSynthPlate] = useState<{ uid: string; id: string }[]>([]);
@@ -972,44 +1082,59 @@ export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
           {defi === 4 && (
             <>
               <div className={styles.d4Layout}>
-                <svg className={styles.d4Pie} viewBox="0 0 200 200" role="img" aria-label="Répartition de l'assiette en parts">
+                <svg
+                  ref={d4SvgRef}
+                  className={styles.d4Pie}
+                  viewBox="0 0 200 200"
+                  role="img"
+                  aria-label={`Répartition de l'assiette : ${D4_CATEGORIES.map((cat) => `${cat.label} ${Math.round(d4Pct[cat.id] * 100)}%`).join(', ')}. Glissez les frontières entre les parts pour régler les proportions.`}
+                >
                   <circle cx="100" cy="100" r="92" fill="none" stroke="var(--color-line)" strokeWidth={2} strokeDasharray="3 5" />
                   {d4PieSlices.map(
                     (slice) =>
                       slice.d && <path key={slice.id} d={slice.d} fill={`var(${slice.colorVar})`} opacity={0.92} />,
                   )}
-                  <circle cx="100" cy="100" r="34" fill="var(--color-bg)" />
+                  {d4PieSlices.map((slice) => {
+                    const Icon = slice.icon;
+                    return (
+                      <g key={`label-${slice.id}`} aria-hidden="true">
+                        {slice.frac >= D4_ICON_MIN_FRAC && (
+                          <Icon x={slice.iconX - 9} y={slice.iconY - 9} size={18} color="#fff" strokeWidth={2} />
+                        )}
+                        <text x={slice.labelX} y={slice.labelY} textAnchor="middle" dominantBaseline="central" className={styles.d4SliceLabel}>
+                          {Math.round(slice.frac * 100)}%
+                        </text>
+                      </g>
+                    );
+                  })}
+                  {/* Frontières draggables (C2b) : redistribuent le % entre les 2 parts voisines
+                      uniquement ; 0 % permis, poignée conservée (superposée) pour rouvrir la part. */}
+                  <circle
+                    className={d4Dragging === 'b1' ? `${styles.d4Handle} ${styles.d4HandleDragging}` : styles.d4Handle}
+                    cx={d4HandleB1X}
+                    cy={d4HandleB1Y}
+                    r={9}
+                    aria-hidden="true"
+                    onPointerDown={handleD4BoundaryPointerDown('b1')}
+                    onPointerMove={handleD4BoundaryPointerMove('b1')}
+                    onPointerUp={handleD4BoundaryPointerUp}
+                  />
+                  <circle
+                    className={d4Dragging === 'b2' ? `${styles.d4Handle} ${styles.d4HandleDragging}` : styles.d4Handle}
+                    cx={d4HandleB2X}
+                    cy={d4HandleB2Y}
+                    r={9}
+                    aria-hidden="true"
+                    onPointerDown={handleD4BoundaryPointerDown('b2')}
+                    onPointerMove={handleD4BoundaryPointerMove('b2')}
+                    onPointerUp={handleD4BoundaryPointerUp}
+                  />
                 </svg>
-                <div className={styles.d4Zones}>
-                  {D4_CATEGORIES.map((cat) => (
-                    <div key={cat.id} className={styles.d4Zone}>
-                      <span className={styles.d4Dot} style={{ background: `var(${cat.colorVar})` }} aria-hidden="true" />
-                      <span className={styles.d4Label}>{cat.label}</span>
-                      <span className={styles.d4Pct}>{Math.round(d4Pct[cat.id] * 100)}%</span>
-                      <button
-                        type="button"
-                        className={styles.roundBtn}
-                        onClick={() => handleD4Dec(cat.id)}
-                        aria-label={`Diminuer la part de ${cat.label}`}
-                      >
-                        −
-                      </button>
-                      <button
-                        type="button"
-                        className={styles.roundBtn}
-                        onClick={() => handleD4Inc(cat.id)}
-                        aria-label={`Augmenter la part de ${cat.label}`}
-                      >
-                        +
-                      </button>
-                    </div>
-                  ))}
-                  {d4Achieved && (
-                    <p className={styles.achieved}>
-                      ✓ Proche de l'assiette-modèle ½ légumes · ¼ protéines · ¼ féculents
-                    </p>
-                  )}
-                </div>
+                {d4Achieved && (
+                  <p className={styles.achieved}>
+                    ✓ Proche de l'assiette-modèle ½ légumes · ¼ protéines · ¼ féculents
+                  </p>
+                )}
               </div>
               <CourbeSection
                 courbes={
