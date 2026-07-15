@@ -14,10 +14,22 @@ const FORME_IDS = Object.keys(FORMES_DATA) as FormeId[];
  * Illustration locale, propre à l'app patient : `IllustrationSlot` (src/features/tabac/components/)
  * n'est pas importée ici pour ne jamais faire dépendre le bundle patient de l'arbre
  * `src/features/**` (contrainte dure du plan aide-patient, cf. index.md §Architecture cible).
- * Cible `public/illustrations/tabac/substitut-<forme>.png` (même convention que TechniqueIllustration
- * côté consultation) ; fallback discret si l'image n'existe pas encore pour une forme.
+ * Deux usages, deux images distinctes (E1) :
+ * - `variant="produit"` → `public/illustrations/tabac/produit-<forme>.png` (visuel produit carré,
+ *   lisible à 72 px, grille « Mes substituts »).
+ * - `variant="schema"` → `public/illustrations/tabac/substitut-<forme>.png` (schéma multi-étapes,
+ *   même convention que TechniqueIllustration côté consultation, écran de détail).
+ * Fallback discret si l'image n'existe pas encore pour une forme.
  */
-function FormeIllustration({ forme, label }: { forme: FormeId; label: string }) {
+function FormeIllustration({
+  forme,
+  label,
+  variant,
+}: {
+  forme: FormeId;
+  label: string;
+  variant: 'produit' | 'schema';
+}) {
   const [errored, setErrored] = useState(false);
 
   if (errored) {
@@ -28,9 +40,11 @@ function FormeIllustration({ forme, label }: { forme: FormeId; label: string }) 
     );
   }
 
+  const fichier = variant === 'produit' ? `produit-${forme}` : `substitut-${forme}`;
+
   return (
     <img
-      src={`${import.meta.env.BASE_URL}illustrations/tabac/substitut-${forme}.png`}
+      src={`${import.meta.env.BASE_URL}illustrations/tabac/${fichier}.png`}
       alt={label}
       className={styles.illustration}
       onError={() => setErrored(true)}
@@ -60,7 +74,7 @@ export default function PatientSubstituts({ onBack }: PatientSubstitutsProps) {
         </button>
         <h1 className={styles.titre}>{forme.label}</h1>
         <div className={styles.illustrationWrap}>
-          <FormeIllustration forme={selectedForme} label={forme.label} />
+          <FormeIllustration forme={selectedForme} label={forme.label} variant="schema" />
         </div>
         <section className={`${styles.panel} ${styles.panelBonnes}`}>
           <h2 className={styles.panelTitle}>À faire</h2>
@@ -102,7 +116,7 @@ export default function PatientSubstituts({ onBack }: PatientSubstitutsProps) {
             onClick={() => setSelectedForme(forme)}
           >
             <span className={styles.cardIllustration}>
-              <FormeIllustration forme={forme} label={FORMES_DATA[forme].label} />
+              <FormeIllustration forme={forme} label={FORMES_DATA[forme].label} variant="produit" />
             </span>
             <span className={styles.cardLabel}>{FORMES_DATA[forme].label}</span>
           </button>
