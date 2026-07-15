@@ -8,6 +8,27 @@ Index des tâches : backlog + actives. Historique des tâches faites : `git log`
 
 ## Tâches
 
+### Revue Chrome — vague de corrections (revue navigateur Thibault, 2026-07-15) · plan: → plans/revue-chrome-2026-07/ (index + S1-S17)
+- [ ] S1 — Diabète : donut→camembert (C1) + ordonnance vide/état vide (C3) + bulle cardio fond+gras (C4) · modèle: Sonnet, effort: medium · plan: → plans/revue-chrome-2026-07/S1.md
+- [ ] S2 — « Ce que l'arrêt répare » : halo actif unique (A1) + illus agrandies (A2) + frise pleine largeur en tête (A3) + doublon Peau/Jambes + tri temporel (A4) · modèle: Sonnet, effort: medium · plan: → plans/revue-chrome-2026-07/S2.md
+- [ ] S3 — Insuline basale : retrait profil + bande {25,60} (80/70/50) + axe/repères/légende Coucher/Réveil (C5) · modèle: Sonnet, effort: high · plan: → plans/revue-chrome-2026-07/S3.md
+- [ ] S4 — Carte-réflexe hypo : illustrations signes + resucrage dans la modale imprimable (C6) · modèle: Sonnet, effort: medium · plan: → plans/revue-chrome-2026-07/S4.md
+- [ ] S5 — Substituts desktop : disposition 2 colonnes anti-scroll (B1) · modèle: Sonnet, effort: medium · plan: → plans/revue-chrome-2026-07/S5.md
+- [ ] S6 — Patient : schéma détail agrandi (E2) + label « Émotions propices au tabac » (E5) · modèle: Sonnet, effort: low · plan: → plans/revue-chrome-2026-07/S6.md
+- [ ] S7 — Outils : pertinence par pilier, Stress ≠ 4D en tête (E4, partagé consultation+patient) · modèle: Sonnet, effort: high · plan: → plans/revue-chrome-2026-07/S7.md
+- [ ] S8 — Titration : extraction composant partagé paramétré `TitrationPatch` (E3a, après S5) · modèle: Sonnet, effort: high · plan: → plans/revue-chrome-2026-07/S8.md
+- [ ] S9 — Livret : format A5 (D1) + impression N&B (D2) + pagination compacte · modèle: Sonnet, effort: medium · plan: → plans/revue-chrome-2026-07/S9.md
+- [ ] S10 — Livret : réordonnancement (D3) + « 4D » (D6) + situations par composante (D4) · modèle: Sonnet, effort: high · plan: → plans/revue-chrome-2026-07/S10.md
+- [ ] S11 — Titration → SelectionContext consultation, mémoire session (E3b, après S8) · modèle: Sonnet, effort: medium · plan: → plans/revue-chrome-2026-07/S11.md
+- [ ] S12 — Titration app patient + localStorage, jour/nuit (E3c, après S8) · modèle: Sonnet, effort: high · plan: → plans/revue-chrome-2026-07/S12.md
+- [ ] S13 — Livret : substituts `contain` (D5a) + carte patch page dédiée avec dose (D5b, après S10+S11) · modèle: Sonnet, effort: high · plan: → plans/revue-chrome-2026-07/S13.md
+- [ ] S14 — Patient : visuels produit substituts (E1, gate assets — 6 prompts dans S14) · modèle: Sonnet, effort: medium · plan: → plans/revue-chrome-2026-07/S14.md
+- [ ] S15 — Respiration guidée interactive (E6, gate rythme) · modèle: Sonnet, effort: high · plan: → plans/revue-chrome-2026-07/S15.md
+- [ ] S16 — Carnet de suivi localStorage (E7, après S12, gate champs) · modèle: Sonnet, effort: high · plan: → plans/revue-chrome-2026-07/S16.md
+- [ ] S18 — Camembert : réglage des proportions au drag, modèle % continu + dérivation courbe (C2, après S1) · modèle: Sonnet, effort: high · plan: → plans/revue-chrome-2026-07/S18.md
+- [ ] S17 — Consolidation : commits tâche par tâche + statuts + DECISIONS/STATUS/VALIDATION/PROJECT_MAP + push · modèle: Haiku, effort: minimal · plan: → plans/revue-chrome-2026-07/S17.md
+  - Vagues : V1 = S1·S2·S3·S4·S5·S6 (parallèles) → V2 = S7·S8·S9·S10 (S8 après S5) → V3 = S11∥S12 (après S8) puis S13 (après S10+S11) → V4 gated/features = S14·S15·S16·S18 (S18 après S1) → V finale = S17.
+
 ### Corrections revue guidée — Tabac A-D + Diabète E (revue guidée Thibault, 2026-07-14) · plan: → plans/corrections-revue-guidee/ (index + S1-S7)
 - [x] S1 — « Ce que l'arrêt répare » : retrait « Étape X/N » (T1-A) + frise chronologique à hotspots remplace la barre de chips (T2-A) + silhouette anatomique en mode hotspot, ancres % (T3-A) + illustration de détail agrandie/centrée (T4-A) · modèle: Opus, effort: xhigh · plan: → plans/corrections-revue-guidee/S1.md (auto OK : tsc + vite build + npm test 95/95 verts ; visuel validé Thibault 2026-07-14 → VALIDATION.md ; + correctif post-validation : silhouette et illustration de détail encore agrandies)
 - [x] S2 — Substituts : technique de prise Vapoteuse visible sans défiler (compactage + `scrollIntoView` filet) (T1-B) · modèle: Sonnet, effort: medium · plan: → plans/corrections-revue-guidee/S2.md (auto OK : tsc + vite build + npm test 95/95 verts ; visuel validé Thibault 2026-07-14 → VALIDATION.md)
