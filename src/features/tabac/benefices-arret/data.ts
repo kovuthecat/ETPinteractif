@@ -21,14 +21,17 @@ export interface ZoneDef {
 // d'emprise du hotspot en px (≥ 22 → cible tactile ≥ 44 px). Calées à l'œil sur la silhouette
 // anatomique (repère : ancres diabète SILHOUETTE_ANCHORS).
 // à revalider (Thibault) — calage visuel des 7 zones sur les organes de l'illustration.
+// Ordre du tableau = ordre chronologique croissant de la 1ère échéance concernant chaque zone
+// (A4 : 20 min → 8h → 24h → 48h → 2 sem.–3 mois → 5 ans), pour que la page ET le livret
+// (qui itère `ZONES`, cf. livretSections.tsx) présentent les zones dans cet ordre.
 export const ZONES: ZoneDef[] = [
-  { id: 'cerveau', label: 'Cerveau', x: 50, y: 7, r: 24, illustrationLabel: 'Cerveau apaisé' },
-  { id: 'bouche', label: 'Goût & odorat', x: 50, y: 13, r: 22, illustrationLabel: 'Goût et odorat retrouvés' },
   { id: 'coeur', label: 'Cœur', x: 47, y: 26, r: 26, illustrationLabel: 'Cœur soulagé' },
-  { id: 'poumons', label: 'Poumons', x: 55, y: 23, r: 26, illustrationLabel: 'Poumons qui respirent' },
   { id: 'sang', label: 'Sang & vaisseaux', x: 33, y: 40, r: 22, illustrationLabel: 'Sang mieux oxygéné' },
+  { id: 'poumons', label: 'Poumons', x: 55, y: 23, r: 26, illustrationLabel: 'Poumons qui respirent' },
+  { id: 'bouche', label: 'Goût & odorat', x: 50, y: 13, r: 22, illustrationLabel: 'Goût et odorat retrouvés' },
   { id: 'peau', label: 'Peau', x: 67, y: 45, r: 22, illustrationLabel: 'Peau qui s’éclaircit' },
   { id: 'jambes', label: 'Jambes & circulation', x: 46, y: 66, r: 30, illustrationLabel: 'Jambes qui repartent' },
+  { id: 'cerveau', label: 'Cerveau', x: 50, y: 7, r: 24, illustrationLabel: 'Cerveau apaisé' },
 ];
 
 export const ZONES_BY_ID: Record<ZoneId, ZoneDef> = Object.fromEntries(
@@ -38,7 +41,12 @@ export const ZONES_BY_ID: Record<ZoneId, ZoneDef> = Object.fromEntries(
 export interface Jalon {
   echeance: string;
   zones: ZoneId[];
+  /** Texte affiché sur la vue d'ensemble du jalon (registre commun aux zones concernées). */
   texte: string;
+  /** Override par zone pour le panneau de détail (A4) : évite le doublon quand un même jalon
+   *  concerne plusieurs zones dont le bénéfice diffère (ex. peau vs jambes). Si absent pour
+   *  une zone, `beneficesDeZone` retombe sur `texte`. */
+  textesParZone?: Partial<Record<ZoneId, string>>;
 }
 
 // chiffres à revalider (Thibault) — source : Tabac Info Service / OMS. Contenu verbatim du
@@ -77,6 +85,15 @@ export const JALONS: Jalon[] = [
     zones: ['jambes', 'peau'],
     texte:
       'La circulation sanguine s’améliore, la marche et l’effort deviennent plus faciles. Le teint s’éclaircit.',
+    // A4 — doublon Peau/Jambes : le panneau de détail de chaque zone affichait le même texte
+    // (jalon partagé). Textes distincts par zone, au-delà de la phrase sourcée ci-dessus
+    // // à revalider (Thibault) — source Tabac Info Service / OMS non trouvée pour le détail
+    // par zone, à confirmer avant mise en prod.
+    textesParZone: {
+      jambes:
+        'La circulation sanguine périphérique s’améliore : la marche et l’effort prolongé deviennent plus faciles, le risque vasculaire diminue.',
+      peau: 'Le teint s’éclaircit, la peau retrouve de l’éclat et la cicatrisation redevient plus rapide.',
+    },
   },
   {
     echeance: '1 à 9 mois',
@@ -114,7 +131,11 @@ export interface BeneficeZone {
 export function beneficesDeZone(zoneId: ZoneId): BeneficeZone[] {
   return JALONS.reduce<BeneficeZone[]>((acc, jalon, index) => {
     if (jalon.zones.includes(zoneId)) {
-      acc.push({ jalonIndex: index, echeance: jalon.echeance, texte: jalon.texte });
+      acc.push({
+        jalonIndex: index,
+        echeance: jalon.echeance,
+        texte: jalon.textesParZone?.[zoneId] ?? jalon.texte,
+      });
     }
     return acc;
   }, []);
