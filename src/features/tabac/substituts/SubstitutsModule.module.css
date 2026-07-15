@@ -3,7 +3,19 @@
   flex-direction: column;
   /* Compacté (S2/T1-B) : var(--space-xl) laissait trop d'air entre le bloc formes/pratiques
      et la technique de prise, qui passait sous la ligne de flottaison pour la vapoteuse. */
-  gap: var(--space-lg);
+  gap: var(--space-md);
+}
+
+/* B1 (S5) : au-delà de ~1024px, toutes les formes tiennent en 2 colonnes sans scroll
+   vertical — choix de forme + encadrés à gauche, titration/technique à droite. En dessous,
+   repli colonne unique (règle .module ci-dessus, inchangée). */
+@media (min-width: 1024px) {
+  .module {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    align-items: start;
+    gap: var(--space-md);
+  }
 }
 
 .section {
@@ -97,8 +109,9 @@
 }
 
 .vapoteuseNote {
+  /* B1 (S5) : bandeau fin plutôt que carte — moins de hauteur consommée. */
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: var(--space-sm);
   padding: var(--space-xs) var(--space-md);
   background: var(--color-nav-soft);
@@ -110,13 +123,12 @@
 .vapoteuseNote svg {
   flex-shrink: 0;
   color: var(--color-nav);
-  margin-top: 2px;
 }
 
 .vapoteuseNote p {
   margin: 0;
-  font-size: 13px;
-  line-height: 1.55;
+  font-size: 12.5px;
+  line-height: 1.35;
 }
 
 .panels {
@@ -175,7 +187,7 @@
 .techniqueCard {
   display: flex;
   justify-content: center;
-  padding: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
   background: var(--color-surface);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-1);
@@ -215,246 +227,6 @@
   border-radius: var(--radius);
 }
 
-.titrationCard {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-md);
-  padding: var(--space-lg);
-  background: var(--color-surface);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-1);
-}
-
-.stateCards {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-sm);
-  justify-content: center;
-}
-
-.stateCard {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  min-height: var(--target-min);
-  padding: var(--space-sm) var(--space-md);
-  border-radius: var(--radius);
-  background: var(--color-surface);
-  box-shadow: var(--shadow-1);
-  border: 2px solid transparent;
-  cursor: pointer;
-  font-weight: 700;
-  font-size: 14px;
-  transition: all 0.15s ease;
-}
-
-.stateCard:hover,
-.stateCard:focus-within {
-  border-color: var(--color-vigilance);
-}
-
-.stateInput {
-  position: absolute;
-  opacity: 0;
-  width: 1px;
-  height: 1px;
-}
-
-.stateCard.stateCardActive {
-  background: var(--color-vigilance-soft);
-  border-color: var(--color-vigilance);
-  color: var(--color-vigilance);
-  box-shadow: none;
-}
-
-.stateCardWarn.stateCardActive {
-  background: var(--color-toxique-soft);
-  border-color: var(--color-toxique);
-  color: var(--color-toxique);
-}
-
-.alertBanner {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--space-sm) var(--space-md);
-  color: var(--color-toxique);
-}
-
-.alertText {
-  margin: 0;
-  font-weight: 600;
-  flex: 1 1 200px;
-}
-
-.doseGroups {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-lg);
-  justify-content: center;
-  padding-top: var(--space-sm);
-  border-top: 1px solid var(--color-line);
-}
-
-.doseGroup {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-sm);
-  padding: var(--space-md);
-  flex: 1 1 220px;
-}
-
-.doseGroupTitle {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-  margin: 0;
-  font-weight: 700;
-  font-size: 13.5px;
-}
-
-.doseControls {
-  display: flex;
-  gap: var(--space-sm);
-}
-
-.doseControls .btn,
-.doseControls .btnNeutral {
-  min-height: var(--target-min);
-}
-
-.patchBlock {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-sm);
-}
-
-.patchesGrid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-sm);
-  justify-content: center;
-}
-
-.patch {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  width: 56px;
-  height: 56px;
-  gap: 2px;
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  border: 2px solid var(--color-confort);
-}
-
-.quartFilled,
-.quartEmpty {
-  border-radius: 2px;
-}
-
-.quartFilled {
-  background: var(--color-confort);
-}
-
-.quartEmpty {
-  background: var(--color-surface);
-}
-
-.patchLabel {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  text-align: center;
-}
-
-.patchLabelMain {
-  font-weight: 700;
-}
-
-.patchLabelDetail {
-  font-size: 13px;
-  color: var(--color-text-soft);
-}
-
-.btn,
-.btnNeutral,
-.btnWarn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: var(--target-min);
-  padding: var(--space-sm) var(--space-md);
-  border-radius: var(--radius);
-  font-weight: 700;
-  font-size: 14px;
-  cursor: pointer;
-  box-sizing: border-box;
-}
-
-.btn,
-.btnWarn {
-  border: none;
-  color: #fff;
-}
-
-.btn {
-  background: var(--color-confort);
-}
-
-.btnNeutral {
-  background: var(--color-surface);
-  color: var(--color-text);
-  border: 2px solid var(--color-line);
-  box-shadow: var(--shadow-1);
-}
-
-.btnWarn {
-  background: var(--color-toxique);
-}
-
-.btn:hover:not(:disabled),
-.btn:focus-visible:not(:disabled),
-.btnNeutral:hover:not(:disabled),
-.btnNeutral:focus-visible:not(:disabled),
-.btnWarn:hover:not(:disabled),
-.btnWarn:focus-visible:not(:disabled) {
-  opacity: 0.85;
-}
-
-.btn:disabled,
-.btnNeutral:disabled,
-.btnWarn:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-}
-
-.message {
-  margin: 0;
-  text-align: center;
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--color-text-soft);
-}
-
-.titrationAide {
-  margin: 0;
-  font-size: 12.5px;
-  color: var(--color-text-soft);
-  font-style: italic;
-  text-align: center;
-  max-width: 28ch;
-}
-
-.ficheButton {
-  align-self: center;
-}
-
 .ficheRegles {
   margin: 0;
   padding-left: 1.4em;
@@ -486,51 +258,6 @@
   color: var(--color-text-soft);
 }
 
-.ficheFormeGroup {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-sm);
-}
-
-.ficheFormeLabel {
-  margin: 0;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--color-text-soft);
-}
-
-.ficheFormeOptions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-sm);
-  justify-content: center;
-}
-
-.ficheFormeOption {
-  min-height: var(--target-min);
-  padding: var(--space-xs) var(--space-md);
-  border-radius: var(--radius);
-  background: var(--color-surface);
-  border: 2px solid var(--color-line);
-  color: var(--color-text);
-  font-weight: 700;
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.ficheFormeOption:hover,
-.ficheFormeOption:focus-visible {
-  border-color: var(--color-confort);
-}
-
-.ficheFormeOptionActive {
-  background: var(--color-confort-soft);
-  border-color: var(--color-confort);
-  color: var(--color-confort-strong);
-}
-
 .ficheFormeListe {
   margin: 0;
   padding-left: 1.4em;
@@ -539,18 +266,4 @@
   gap: 4px;
   line-height: 1.5;
   font-size: 13px;
-}
-
-/* Impression de la fiche : forcer l'aplat vert des quarts pris, rendre les quarts vides
-   coloriables au stylo (contour visible). Scopé à la feuille : l'écran ne change pas. */
-@media print {
-  :global(.fiche-sheet) .patch,
-  :global(.fiche-sheet) .quartFilled {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
-  :global(.fiche-sheet) .quartEmpty {
-    border: 1px dashed var(--color-confort);
-  }
 }
