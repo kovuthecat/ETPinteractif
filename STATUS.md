@@ -4,9 +4,7 @@
 
 > **Frontières** — STATUS : état actuel · `TASKS.md` : backlog + tâches · `plans/` : plan d'une tâche active · `VALIDATION.md` : checklist visuelle.
 >
-> **Dernière mise à jour :** 2026-07-14 (chantier corrections-revue-guidee — 13 points de revue guidée
-> Thibault, blocs A-E, traités + 3 correctifs de séance, **validé visuellement par Thibault** ; reste la
-> consolidation S7 — commits + push)
+> **Dernière mise à jour :** 2026-07-15 (chantier revue-chrome-2026-07 — corrections vagues Tabac/Diabète/Patient, 27 tâches (A1-A4, B1, C1-C6, D1-D6, E1-E7), parallèles S1-S16+S18, **consolidation S17 commits/statuts complète**)
 
 **Corrections revue guidée — Tabac A-D + Diabète E (2026-07-14)** — chantier
 `plans/corrections-revue-guidee/` (index + S1-S7), 13 points d'une revue guidée de l'app par Thibault

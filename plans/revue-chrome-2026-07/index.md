@@ -45,24 +45,24 @@ coller aux réponses point-par-point de Thibault (séance du 2026-07-15).
 
 | Session | Tâches | Titre | Modèle | Effort | Dépend de | Zone modifiée | Statut |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| [S1](S1.md) | C1, C3, C4 | Diabète : donut→camembert, ordonnance vide, bulle cardio | Sonnet | medium | — | `diabete/alimentation`, `diabete/traitements`, `diabete/risque-cardio` | [ ] |
-| [S2](S2.md) | A1, A2, A3, A4 | « Ce que l'arrêt répare » : halos, illus, frise, doublon | Sonnet | medium | — | `tabac/benefices-arret` | [ ] |
-| [S3](S3.md) | C5 | Insuline basale : retrait profil + harmonisation courbe | Sonnet | high | — | `diabete/insuline` | [ ] |
-| [S4](S4.md) | C6 | Carte-réflexe hypo : illustrations signes + resucrage | Sonnet | medium | — | `diabete/hypoglycemie` | [ ] |
-| [S5](S5.md) | B1 | Substituts desktop : 2 colonnes (anti-scroll) | Sonnet | medium | — | `tabac/substituts` (layout) | [ ] |
-| [S6](S6.md) | E2, E5 | Patient : schéma agrandi + label reformulé | Sonnet | low | — | `patient/substituts` (css), `patient/situations` (string) | [ ] |
-| [S7](S7.md) | E4 | Outils : pertinence par pilier (Stress ≠ 4D en tête) | Sonnet | high | — | `content/tabac/outils.ts` (+ tri) | [ ] |
-| [S8](S8.md) | E3a | Titration : extraction composant partagé paramétré | Sonnet | high | S5 | `components/TitrationPatch`, `tabac/substituts` | [ ] |
-| [S9](S9.md) | D1, D2 | Livret : format A5 + N&B + pagination | Sonnet | medium | — | `styles/global.css`, `PrintableLivret.module.css` | [ ] |
-| [S10](S10.md) | D3, D6, D4 | Livret : ordre + « 4D » + situations par composante | Sonnet | high | — | `plan-arret/livretSections.tsx` | [ ] |
-| [S11](S11.md) | E3b | Titration → `SelectionContext` (consultation) | Sonnet | medium | S8 | `state/SelectionContext`, `TitrationPatch` | [ ] |
-| [S12](S12.md) | E3c | Titration app patient + localStorage | Sonnet | high | S8 | `patient/substituts`, `patient/lib` | [ ] |
-| [S13](S13.md) | D5 | Livret : substituts `contain` + carte patch dédiée (dose) | Sonnet | high | S10, S11 | `PrintableLivret.*`, `livretSections.tsx` | [ ] |
-| [S14](S14.md) | E1 | Patient : visuels produit substituts (assets fournis) | Sonnet | medium | — | `patient/substituts` (assets déjà placés) | [ ] |
-| [S15](S15.md) | E6 | Respiration guidée interactive | Sonnet | high | *déc. rythme* | `patient` (nouveau composant) | [ ] |
-| [S16](S16.md) | E7 | Carnet de suivi (localStorage) | Sonnet | high | S12, *déc. champs* | `patient` (nouvel écran) | [ ] |
-| [S18](S18.md) | C2 | Camembert : réglage des proportions au drag | Sonnet | high | S1 | `diabete/alimentation` | [ ] |
-| [S17](S17.md) | — | Consolidation (commits, statuts, contexte, push) | Haiku | minimal | toutes | `STATUS/TASKS/VALIDATION/DECISIONS/PROJECT_MAP/index` | [ ] |
+| [S1](S1.md) | C1, C3, C4 | Diabète : donut→camembert, ordonnance vide, bulle cardio | Sonnet | medium | — | `diabete/alimentation`, `diabete/traitements`, `diabete/risque-cardio` | [x] |
+| [S2](S2.md) | A1, A2, A3, A4 | « Ce que l'arrêt répare » : halos, illus, frise, doublon | Sonnet | medium | — | `tabac/benefices-arret` | [x] |
+| [S3](S3.md) | C5 | Insuline basale : retrait profil + harmonisation courbe | Sonnet | high | — | `diabete/insuline` | [x] |
+| [S4](S4.md) | C6 | Carte-réflexe hypo : illustrations signes + resucrage | Sonnet | medium | — | `diabete/hypoglycemie` | [x] |
+| [S5](S5.md) | B1 | Substituts desktop : 2 colonnes (anti-scroll) | Sonnet | medium | — | `tabac/substituts` (layout) | [x] |
+| [S6](S6.md) | E2, E5 | Patient : schéma agrandi + label reformulé | Sonnet | low | — | `patient/substituts` (css), `patient/situations` (string) | [x] |
+| [S7](S7.md) | E4 | Outils : pertinence par pilier (Stress ≠ 4D en tête) | Sonnet | high | — | `content/tabac/outils.ts` (+ tri) | [x] |
+| [S8](S8.md) | E3a | Titration : extraction composant partagé paramétré | Sonnet | high | S5 | `components/TitrationPatch`, `tabac/substituts` | [x] |
+| [S9](S9.md) | D1, D2 | Livret : format A5 + N&B + pagination | Sonnet | medium | — | `styles/global.css`, `PrintableLivret.module.css` | [x] |
+| [S10](S10.md) | D3, D6, D4 | Livret : ordre + « 4D » + situations par composante | Sonnet | high | — | `plan-arret/livretSections.tsx` | [x] |
+| [S11](S11.md) | E3b | Titration → `SelectionContext` (consultation) | Sonnet | medium | S8 | `state/SelectionContext`, `TitrationPatch` | [x] |
+| [S12](S12.md) | E3c | Titration app patient + localStorage | Sonnet | high | S8 | `patient/substituts`, `patient/lib` | [x] |
+| [S13](S13.md) | D5 | Livret : substituts `contain` + carte patch dédiée (dose) | Sonnet | high | S10, S11 | `PrintableLivret.*`, `livretSections.tsx` | [x] |
+| [S14](S14.md) | E1 | Patient : visuels produit substituts (assets fournis) | Sonnet | medium | — | `patient/substituts` (assets déjà placés) | [x] |
+| [S15](S15.md) | E6 | Respiration guidée interactive | Sonnet | high | *déc. rythme* | `patient` (nouveau composant) | [x] |
+| [S16](S16.md) | E7 | Carnet de suivi (localStorage) | Sonnet | high | S12, *déc. champs* | `patient` (nouvel écran) | [x] |
+| [S18](S18.md) | C2 | Camembert : réglage des proportions au drag | Sonnet | high | S1 | `diabete/alimentation` | [x] |
+| [S17](S17.md) | — | Consolidation (commits, statuts, contexte, push) | Haiku | minimal | toutes | `STATUS/TASKS/VALIDATION/DECISIONS/PROJECT_MAP/index` | [x] |
 
 ## Ordonnancement
 
