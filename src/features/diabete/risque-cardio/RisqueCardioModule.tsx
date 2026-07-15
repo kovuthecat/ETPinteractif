@@ -75,24 +75,29 @@ const FEU_TOKENS: Record<FeuEtat, { fg: string; soft: string; borderWidth: strin
 interface ZoneDef {
   id: ZoneM4;
   nom: string;
-  desc: string;
+  /** Phrase d'explication, mot-résultat isolé (C4 revue-chrome-2026-07). */
+  mecanisme: string;
+  resultat: string;
 }
 
 const ZONES: ZoneDef[] = [
   {
     id: 'cou',
     nom: 'Cou',
-    desc: "Une artère du cou bouchée peut priver une partie du cerveau de sang : c'est l'AVC.",
+    mecanisme: "Une artère du cou bouchée peut priver une partie du cerveau de sang : c'est l'",
+    resultat: 'AVC',
   },
   {
     id: 'coeur',
     nom: 'Cœur',
-    desc: "Une artère du cœur bouchée l'empêche de recevoir assez de sang : c'est l'infarctus.",
+    mecanisme: "Une artère du cœur bouchée l'empêche de recevoir assez de sang : c'est l'",
+    resultat: 'infarctus',
   },
   {
     id: 'jambes',
     nom: 'Jambes',
-    desc: 'Des artères des jambes bouchées font mal à la marche : c\'est l\'artériopathie.',
+    mecanisme: 'Des artères des jambes bouchées font mal à la marche : c\'est l\'',
+    resultat: 'artériopathie',
   },
 ];
 
@@ -259,11 +264,16 @@ export default function RisqueCardioModule({ shell }: ModuleProps) {
             <div className={styles.zonesCol}>
               {/* Sélection directement sur la silhouette (S1) — plus de colonne de boutons
                   redondante, seul le panneau descriptif reste ici. */}
-              <div className={`${styles.zoneDescPanel} card`}>
+              <div className={styles.zoneDescPanel}>
                 <p>
-                  {zoneActiveDef
-                    ? zoneActiveDef.desc
-                    : 'Choisissez une zone pour voir ce que « l\'artère bouchée » veut dire, concrètement.'}
+                  {zoneActiveDef ? (
+                    <>
+                      {zoneActiveDef.mecanisme}
+                      <strong>{zoneActiveDef.resultat}</strong>.
+                    </>
+                  ) : (
+                    'Choisissez une zone pour voir ce que « l\'artère bouchée » veut dire, concrètement.'
+                  )}
                 </p>
               </div>
             </div>
