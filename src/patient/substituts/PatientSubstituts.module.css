@@ -105,13 +105,15 @@
 .illustrationWrap {
   display: flex;
   justify-content: center;
+  height: auto;
   padding: var(--space-sm);
 }
 
 .illustrationWrap .illustration,
 .illustrationWrap .illustrationFallback {
-  width: 160px;
-  height: 160px;
+  width: 100%;
+  max-width: 328px;
+  height: auto;
 }
 
 .panel {
