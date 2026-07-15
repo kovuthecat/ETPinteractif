@@ -3,9 +3,10 @@ import type { SelectionState } from '../../../state/SelectionContext';
 import type { PrintableSection } from '../../../components/PrintableLivret';
 import IllustrationSlot from '../components/IllustrationSlot';
 import QRBlock from '../../../components/QRBlock';
+import { PatchQuarts } from '../../../components/TitrationPatch';
 import { FORMES_DATA, type FormeId } from '../../../content/tabac/substituts';
 import { OUTILS, type Outil } from '../../../content/tabac/outils';
-import { SITUATIONS } from '../../../content/tabac/situations';
+import { SITUATIONS, type PilierId } from '../../../content/tabac/situations';
 import { ZONES, beneficesDeZone } from '../benefices-arret/data';
 import { iconForRaison } from '../motivation/data';
 import styles from '../../../components/PrintableLivret.module.css';
@@ -15,21 +16,49 @@ import styles from '../../../components/PrintableLivret.module.css';
 // jamais leur logique d'état). Le livret n'affiche que ce qui a été sélectionné ;
 // les sections vides retombent sur un défaut doux (« à compléter »), jamais masquées.
 
-const SITUATION_LABEL_BY_ID = new Map(SITUATIONS.map((s) => [s.id, s.label]));
+const SITUATION_BY_ID = new Map(SITUATIONS.map((s) => [s.id, s]));
 const OUTIL_BY_ID = new Map<string, Outil>(OUTILS.map((o) => [o.id, o]));
 const FORME_IDS = new Set<string>(Object.keys(FORMES_DATA));
+
+// Libellés des 3 composantes de l'addiction — repris du module Addiction
+// (`AddictionModule.tsx` PILLARS_DATA, lecture seule, non exporté : simple duplication
+// de libellé, aucune nouvelle taxonomie).
+const PILIER_ORDER: PilierId[] = ['physique', 'psychologique', 'comportementale'];
+const PILIER_LABELS: Record<PilierId, string> = {
+  physique: 'Physique',
+  psychologique: 'Psychologique',
+  comportementale: 'Comportementale',
+};
 
 function Empty({ children }: { children: ReactNode }) {
   return <p className={styles.empty}>{children}</p>;
 }
 
-/** 1 · Comprendre — situations à risque cochées (+ situations libres). */
+/** 1 · Comprendre — situations à risque cochées, regroupées par composante de l'addiction
+ * (physique / psychologique / comportementale), + situations libres et non mappables sous « Autres ». */
 function comprendreBody(state: SelectionState): ReactNode {
-  const situations = state.situations
-    .map((id) => SITUATION_LABEL_BY_ID.get(id))
-    .filter((label): label is string => Boolean(label));
-  const tags = [...situations, ...state.situationsLibres];
-  if (tags.length === 0) {
+  const parPilier = new Map<PilierId, string[]>();
+  const autres: string[] = [];
+  for (const id of state.situations) {
+    const def = SITUATION_BY_ID.get(id);
+    if (!def) {
+      // Situation sans pilier mappable (ex. donnée obsolète) : repli « Autres ».
+      autres.push(id);
+      continue;
+    }
+    const labels = parPilier.get(def.pilier) ?? [];
+    labels.push(def.label);
+    parPilier.set(def.pilier, labels);
+  }
+  autres.push(...state.situationsLibres);
+
+  const groupes = PILIER_ORDER.map((pilier) => ({
+    pilier,
+    label: PILIER_LABELS[pilier],
+    tags: parPilier.get(pilier) ?? [],
+  })).filter((groupe) => groupe.tags.length > 0);
+
+  if (groupes.length === 0 && autres.length === 0) {
     return (
       <Empty>À compléter avec votre soignant : les moments et les envies où le tabac s'invite.</Empty>
     );
@@ -39,39 +68,78 @@ function comprendreBody(state: SelectionState): ReactNode {
       <p className={styles.intro}>
         Les situations où l'envie se fait sentir — les repérer, c'est déjà pouvoir s'y préparer.
       </p>
-      <div className={styles.tagRow}>
-        {tags.map((tag) => (
-          <span key={tag} className={styles.tag}>
-            {tag}
-          </span>
-        ))}
-      </div>
+      {groupes.map((groupe) => (
+        <div key={groupe.pilier}>
+          <p className={styles.subLabel}>{groupe.label}</p>
+          <div className={styles.tagRow}>
+            {groupe.tags.map((tag) => (
+              <span key={tag} className={styles.tag}>
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      ))}
+      {autres.length > 0 && (
+        <div>
+          <p className={styles.subLabel}>Autres</p>
+          <div className={styles.tagRow}>
+            {autres.map((tag) => (
+              <span key={tag} className={styles.tag}>
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
     </>
   );
 }
 
-/** 2 · Mes substituts — formes retenues + bonnes pratiques + illustration technique. */
+/** 2 · Mes substituts — formes retenues + bonnes pratiques + illustration technique.
+ * N'affiche que les formes réellement retenues dans `state.substituts` (aucun défaut :
+ * un livret sans sélection tombe sur le repli « à compléter » ci-dessus). Le patch, s'il
+ * est retenu, remplace les bonnes pratiques textuelles par la dose de titration choisie
+ * (`state.titrationPatch`, cf. `SelectionContext` S11) et occupe sa propre page (D5b,
+ * `.substitutBlockPatch`, cf. `PrintableLivret.module.css`). */
 function substitutsBody(state: SelectionState): ReactNode {
   const formes = state.substituts.filter((id) => FORME_IDS.has(id)) as FormeId[];
   if (formes.length === 0) {
     return <Empty>À compléter avec votre soignant : la forme de substitut qui vous conviendra.</Empty>;
   }
+  const dose = state.titrationPatch;
+  const quartsNuitAffiche = Math.min(dose.quartsNuit, dose.quartsJour);
   return (
     <>
       {formes.map((forme) => {
         const data = FORMES_DATA[forme];
+        const isPatch = forme === 'patch';
         return (
-          <div key={forme} className={styles.substitutBlock}>
+          <div
+            key={forme}
+            className={isPatch ? `${styles.substitutBlock} ${styles.substitutBlockPatch}` : styles.substitutBlock}
+          >
             <div className={styles.substitutIllus}>
               <IllustrationSlot id={`substitut-${forme}`} label={`Technique — ${data.label}`} size={120} />
             </div>
             <div className={styles.substitutMain}>
               <p className={styles.substitutLabel}>{data.label}</p>
-              <ul className={styles.pratiquesList}>
-                {data.bonnesPratiques.map((pratique, index) => (
-                  <li key={index}>{pratique}</li>
-                ))}
-              </ul>
+              {isPatch ? (
+                <div className={styles.patchDose}>
+                  <PatchQuarts quarts={dose.quartsJour} label="Jour" />
+                  {dose.jourNuit && <PatchQuarts quarts={quartsNuitAffiche} label="Nuit" />}
+                  <p className={styles.patchDoseLegende}>
+                    Ma dose du moment — j'ajuste d'¼ tous les 3 jours selon mon ressenti, sans signe de
+                    surdosage.
+                  </p>
+                </div>
+              ) : (
+                <ul className={styles.pratiquesList}>
+                  {data.bonnesPratiques.map((pratique, index) => (
+                    <li key={index}>{pratique}</li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
         );
@@ -80,14 +148,18 @@ function substitutsBody(state: SelectionState): ReactNode {
   );
 }
 
-/** 3 · Situations & parades — outils « Dans ma fiche » (illustrés) + parades 4D. */
+/** 3 · Mes outils & les 4D — outils « Dans ma fiche » (illustrés) + les 4D, présentés comme un
+ * outil unique et identifiable. Si l'outil « Laisser passer la vague — les 4D » est déjà repris
+ * dans « Mes outils », on ne duplique pas un second bloc « Les 4D ». */
 function outilsParadesBody(state: SelectionState): ReactNode {
   const outils = state.outilsFiche
     .map((id) => OUTIL_BY_ID.get(id))
     .filter((outil): outil is Outil => Boolean(outil));
   const parades = state.parades;
-  if (outils.length === 0 && parades.length === 0) {
-    return <Empty>À compléter avec votre soignant : vos parades et les outils qui vous parlent.</Empty>;
+  const vague4DDejaPresente = outils.some((outil) => outil.interactif === 'vague4d');
+  const afficherLes4D = parades.length > 0 && !vague4DDejaPresente;
+  if (outils.length === 0 && !afficherLes4D) {
+    return <Empty>À compléter avec votre soignant : les 4D et les outils qui vous parlent.</Empty>;
   }
   return (
     <>
@@ -107,9 +179,9 @@ function outilsParadesBody(state: SelectionState): ReactNode {
           </div>
         </div>
       )}
-      {parades.length > 0 && (
+      {afficherLes4D && (
         <div>
-          <p className={styles.subLabel}>Mes parades</p>
+          <p className={styles.subLabel}>Les 4D</p>
           <div className={styles.tagRow}>
             {parades.map((parade) => (
               <span key={parade} className={styles.tag}>
@@ -211,7 +283,8 @@ function contactsBody(): ReactNode {
   );
 }
 
-/** Construit les sections du livret dans l'ordre du parcours. */
+/** Construit les sections du livret — ordre aide-mémoire d'usage (D3) : situations à risque,
+ * substituts, outils/4D, écart, motivations, ce que l'arrêt répare, contacts. */
 export function buildLivretSections(state: SelectionState): PrintableSection[] {
   return [
     { id: 'comprendre', eyebrow: 'Comprendre', title: 'Mes situations à risque', body: comprendreBody(state) },
@@ -219,11 +292,11 @@ export function buildLivretSections(state: SelectionState): PrintableSection[] {
     {
       id: 'outils-parades',
       eyebrow: 'Agir',
-      title: 'Mes parades & mes outils',
+      title: 'Mes outils & les 4D',
       body: outilsParadesBody(state),
     },
-    { id: 'raisons', eyebrow: 'Ma motivation', title: "Mes raisons d'arrêter", body: raisonsBody(state) },
     { id: 'ecart', eyebrow: 'Rebondir', title: "Si j'ai un écart", body: ecartBody(state) },
+    { id: 'raisons', eyebrow: 'Ma motivation', title: "Mes raisons d'arrêter", body: raisonsBody(state) },
     {
       id: 'benefices',
       eyebrow: 'Ce que ça change',
