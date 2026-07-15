@@ -1,6 +1,7 @@
 import { createContext, useContext, useMemo, useReducer } from 'react';
 import type { ReactNode } from 'react';
 import type { ThemeId } from '../features/types';
+import { DEFAULT_TITRATION_DOSE, type TitrationDose } from '../components/TitrationPatch';
 
 /**
  * État de sélection partagé, EN MÉMOIRE uniquement (invariant projet 1 : zéro
@@ -38,9 +39,14 @@ export interface SelectionState {
   raisons: string[];
   /** gestes « Si j'ai un écart » retenus dans « Mon plan d'arrêt ». */
   gestesEcart: string[];
+  /** dose de titration du patch choisie (mémoire de session, cf. `TitrationPatch`). */
+  titrationPatch: TitrationDose;
 }
 
-export type SelectionListField = Exclude<keyof SelectionState, 'dateArret' | 'strategie'>;
+export type SelectionListField = Exclude<
+  keyof SelectionState,
+  'dateArret' | 'strategie' | 'titrationPatch'
+>;
 
 const EMPTY_STATE: SelectionState = Object.freeze({
   dateArret: '',
@@ -52,6 +58,7 @@ const EMPTY_STATE: SelectionState = Object.freeze({
   parades: [],
   raisons: [],
   gestesEcart: [],
+  titrationPatch: DEFAULT_TITRATION_DOSE,
 });
 
 type StatesByTheme = Record<ThemeId, SelectionState>;
@@ -63,6 +70,7 @@ type Action =
   | { type: 'SET_LIST'; theme: ThemeId; field: SelectionListField; values: string[] }
   | { type: 'SET_DATE'; theme: ThemeId; value: string }
   | { type: 'SET_STRATEGIE'; theme: ThemeId; value: StrategieArret | null }
+  | { type: 'SET_TITRATION_PATCH'; theme: ThemeId; value: TitrationDose }
   | { type: 'RESET'; theme: ThemeId };
 
 function sameOrder(a: string[], b: string[]): boolean {
@@ -112,6 +120,10 @@ function reducer(state: StatesByTheme, action: Action): StatesByTheme {
       if (current.strategie === action.value) return state;
       return { ...state, [action.theme]: { ...current, strategie: action.value } };
     }
+    case 'SET_TITRATION_PATCH': {
+      if (current.titrationPatch === action.value) return state;
+      return { ...state, [action.theme]: { ...current, titrationPatch: action.value } };
+    }
     case 'RESET': {
       if (!state[action.theme]) return state;
       const rest = { ...state };
@@ -153,6 +165,7 @@ export interface UseSelectionResult {
   setList: (field: SelectionListField, values: string[]) => void;
   setDate: (value: string) => void;
   setStrategie: (value: StrategieArret | null) => void;
+  setTitrationPatch: (value: TitrationDose) => void;
   reset: () => void;
 }
 
@@ -176,6 +189,7 @@ export function useSelection(): UseSelectionResult {
       setList: (field: SelectionListField, values: string[]) => dispatch({ type: 'SET_LIST', theme, field, values }),
       setDate: (value: string) => dispatch({ type: 'SET_DATE', theme, value }),
       setStrategie: (value: StrategieArret | null) => dispatch({ type: 'SET_STRATEGIE', theme, value }),
+      setTitrationPatch: (value: TitrationDose) => dispatch({ type: 'SET_TITRATION_PATCH', theme, value }),
       // `reset` supprime l'entrée du thème → `strategie` repart à `null` (défaut).
       reset: () => dispatch({ type: 'RESET', theme }),
     }),
