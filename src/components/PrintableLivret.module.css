@@ -179,7 +179,7 @@
 .substitutBlock {
   break-inside: avoid;
   display: grid;
-  grid-template-columns: 132px 1fr;
+  grid-template-columns: 200px 1fr;
   gap: var(--space-md);
   align-items: start;
   padding: var(--space-md);
@@ -187,14 +187,52 @@
   border-radius: var(--radius);
 }
 
+/* D5a — la carte patch occupe sa propre page (cf. `@media print` ci-dessous) : même
+   gabarit que les autres substituts, elle affiche la dose choisie à la place des
+   bonnes pratiques (cf. `substitutsBody`, `.patchDose`). */
+.substitutBlockPatch {
+  break-inside: avoid;
+}
+
 .substitutIllus {
   margin: 0;
+}
+
+/* D5a — schéma entièrement visible : les illustrations substituts sont au format
+   paysage (~2.3:1) ; `contain` (au lieu de `cover`) évite de rogner la technique.
+   Règle scopée à `.substitutIllus img` (le livret uniquement) : `object-fit: cover`
+   par défaut d'`IllustrationSlot.module.css` reste inchangé pour les autres usages
+   (outils, bénéfices…). `!important` nécessaire : la taille (`size`) d'`IllustrationSlot`
+   est posée en style inline, plus spécifique que cette règle externe. */
+.substitutIllus img {
+  width: 200px !important;
+  height: 88px !important;
+  object-fit: contain !important;
+  background: var(--color-bg);
 }
 
 .substitutMain {
   display: flex;
   flex-direction: column;
   gap: 6px;
+}
+
+/* D5b — dose du patch (quarts jour/nuit), à la place des bonnes pratiques textuelles
+   pour cette seule forme (cf. `PatchQuarts`, réutilisé tel quel — composant partagé
+   S8/S11). */
+.patchDose {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  align-items: flex-start;
+}
+
+.patchDoseLegende {
+  margin: 0;
+  flex-basis: 100%;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--color-text-soft);
 }
 
 .substitutLabel {
@@ -376,6 +414,12 @@
   .substitutBlock {
     grid-template-columns: 1fr;
   }
+
+  .substitutIllus img {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 200 / 88;
+  }
 }
 
 /* ---------- Impression : pagination A4 ---------- */
@@ -398,14 +442,77 @@
     print-color-adjust: exact;
   }
 
+  /* D2 — noir & blanc : textes quasi-noirs, fonds blancs, bordures gris foncé/noir. */
+  .doc,
+  .coverTitle,
+  .coverNote,
+  .sectionTitle,
+  .sectionBody,
+  .intro,
+  .substitutLabel,
+  .pratiquesList,
+  .patchDoseLegende,
+  .outilTitre,
+  .outilConsigne,
+  .beneficeLabel,
+  .beneficeText,
+  .beneficeNote,
+  .raisonItem,
+  .tag,
+  .mention {
+    color: #111 !important;
+  }
+
+  .cover,
+  .section,
+  .empty,
+  .substitutBlock,
+  .outilCard,
+  .beneficeCard,
+  .docFooter {
+    border-color: #222 !important;
+  }
+
+  .coverDate {
+    background: #fff !important;
+    border: 1.5px solid #222;
+    color: #111 !important;
+  }
+
+  .sectionEyebrow,
+  .subLabel {
+    color: #222 !important;
+  }
+
+  /* Chips (situations/parades/gestes) : la couleur de fond seule ne suffit pas en N&B —
+     bordure visible en plus. */
+  .tag {
+    background: #fff !important;
+    border: 1.3px solid #444;
+    -webkit-print-color-adjust: economy;
+    print-color-adjust: economy;
+  }
+
+  .raisonItem {
+    background: #fff !important;
+    border: 1.3px solid #444;
+    -webkit-print-color-adjust: economy;
+    print-color-adjust: economy;
+  }
+
+  .raisonIcon {
+    color: #111 !important;
+  }
+
   .cover {
     break-after: page;
     min-height: 60vh;
     justify-content: center;
   }
 
+  /* D2b — pagination compacte : pas de saut forcé par section, cartes non coupées. */
   .section {
-    break-inside: auto;
+    break-inside: avoid;
   }
 
   .sectionBreak {
@@ -414,6 +521,13 @@
 
   .sectionHead {
     break-after: avoid;
+  }
+
+  /* D5b — la carte patch occupe sa propre page, quelle que soit sa position parmi
+     les substituts sélectionnés. */
+  .substitutBlockPatch {
+    break-before: page;
+    break-after: page;
   }
 
   .actions {
