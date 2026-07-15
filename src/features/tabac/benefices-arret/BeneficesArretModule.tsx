@@ -22,19 +22,16 @@ export default function BeneficesArretModule(_props: ModuleProps) {
 
   const jalonCourant = JALONS[jalonIndex];
 
-  const zonesPassees = new Set<ZoneId>();
-  for (let i = 0; i < jalonIndex; i++) {
-    for (const z of JALONS[i].zones) zonesPassees.add(z);
-  }
-  const zonesCourantes = new Set(jalonCourant.zones);
-
+  // Un seul halo vert actif à la fois (A1) : uniquement la zone sélectionnée pour le détail.
+  // Toutes les autres zones restent en `actif` (halo discret non-vert) — c'est le parent qui
+  // pilote cet état, SilhouetteCorps ne connaît pas de notion de « zone active » unique.
   const silhouetteZones: SilhouetteZone[] = ZONES.map((z) => ({
     id: z.id,
     label: z.label,
     x: z.x,
     y: z.y,
     r: z.r,
-    etat: zonesCourantes.has(z.id) ? 'allume' : zonesPassees.has(z.id) ? 'ouvert' : 'actif',
+    etat: z.id === selectedZone ? 'allume' : 'actif',
   }));
 
   function selectionnerJalon(index: number) {
@@ -56,6 +53,34 @@ export default function BeneficesArretModule(_props: ModuleProps) {
         par organe.
       </p>
 
+      <div className={styles.frise}>
+        <div
+          className={styles.friseTrack}
+          role="group"
+          aria-label="Frise chronologique de l'arrêt"
+        >
+          {JALONS.map((jalon, index) => {
+            const passe = index < jalonIndex;
+            const actuel = index === jalonIndex;
+            return (
+              <div key={jalon.echeance + index} className={styles.frisePoint}>
+                <button
+                  type="button"
+                  className={`${styles.friseDot}${actuel ? ` ${styles.friseDotActuel}` : ''}${passe ? ` ${styles.friseDotPasse}` : ''}`}
+                  aria-current={actuel ? 'step' : undefined}
+                  aria-label={`Étape ${jalon.echeance}`}
+                  onClick={() => selectionnerJalon(index)}
+                >
+                  {passe && <CheckCircle2 size={16} aria-hidden="true" />}
+                </button>
+                <span className={styles.friseLabel}>{jalon.echeance}</span>
+              </div>
+            );
+          })}
+        </div>
+        <p className={styles.friseNote}>Échelle non linéaire — repères chronologiques.</p>
+      </div>
+
       <div className={styles.layout}>
         <div className={styles.silhouetteCol}>
           <SilhouetteCorps
@@ -66,34 +91,6 @@ export default function BeneficesArretModule(_props: ModuleProps) {
         </div>
 
         <div className={styles.panneau}>
-          <div className={styles.frise}>
-            <div
-              className={styles.friseTrack}
-              role="group"
-              aria-label="Frise chronologique de l'arrêt"
-            >
-              {JALONS.map((jalon, index) => {
-                const passe = index < jalonIndex;
-                const actuel = index === jalonIndex;
-                return (
-                  <div key={jalon.echeance + index} className={styles.frisePoint}>
-                    <button
-                      type="button"
-                      className={`${styles.friseDot}${actuel ? ` ${styles.friseDotActuel}` : ''}${passe ? ` ${styles.friseDotPasse}` : ''}`}
-                      aria-current={actuel ? 'step' : undefined}
-                      aria-label={`Étape ${jalon.echeance}`}
-                      onClick={() => selectionnerJalon(index)}
-                    >
-                      {passe && <CheckCircle2 size={16} aria-hidden="true" />}
-                    </button>
-                    <span className={styles.friseLabel}>{jalon.echeance}</span>
-                  </div>
-                );
-              })}
-            </div>
-            <p className={styles.friseNote}>Échelle non linéaire — repères chronologiques.</p>
-          </div>
-
           <div className={`${styles.panel} panel`}>
             {zoneDetail ? (
               <div className={styles.detailZone}>
@@ -144,7 +141,7 @@ export default function BeneficesArretModule(_props: ModuleProps) {
                     const zone = ZONES_BY_ID[zid];
                     return (
                       <div key={zid} className={styles.zoneCard}>
-                        <IllustrationSlot id={`benef-${zid}`} label={zone.illustrationLabel} shape="rounded" size={80} />
+                        <IllustrationSlot id={`benef-${zid}`} label={zone.illustrationLabel} shape="rounded" size={150} />
                         <span className={styles.zoneChip}>
                           <CheckCircle2 size={14} aria-hidden="true" /> {zone.label}
                         </span>
@@ -155,7 +152,7 @@ export default function BeneficesArretModule(_props: ModuleProps) {
 
                 {jalonIndex === DERNIER_JALON_INDEX && (
                   <div className={styles.horizon}>
-                    <IllustrationSlot id="benef-horizon" label="L'horizon retrouvé" shape="rounded" size={110} />
+                    <IllustrationSlot id="benef-horizon" label="L'horizon retrouvé" shape="rounded" size={150} />
                   </div>
                 )}
               </div>
