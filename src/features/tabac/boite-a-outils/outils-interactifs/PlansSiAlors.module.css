@@ -1,0 +1,179 @@
+/* Constructeur de plans « SI… ALORS… » (OI5, plans/outils-interactifs-2026-07/S2.md) —
+   même grammaire visuelle que VagueCraving.module.css (référence de style du plan) :
+   bouton retour en tête, carte(s) sobres, chips + saisie libre. */
+
+.module {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  min-height: var(--target-min);
+  padding: 8px 14px;
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  font: inherit;
+}
+
+.backBtn:hover,
+.backBtn:focus-visible {
+  border-color: var(--color-nav);
+  color: var(--color-nav);
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.titre {
+  margin: 0;
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 1.2em;
+}
+
+.principe {
+  margin: 0;
+  max-width: 64ch;
+  color: var(--color-text-soft);
+}
+
+.cadrage {
+  margin: 0;
+  font-size: 0.9em;
+  font-style: italic;
+  color: var(--color-text-soft);
+}
+
+.composer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  align-items: flex-start;
+}
+
+.champ {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  width: 100%;
+}
+
+.champLabel {
+  margin: 0;
+  font-weight: 700;
+  font-size: 0.9em;
+  color: var(--color-nav);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.chipRow button.chipBtn {
+  min-height: var(--target-min);
+  padding: 8px 14px;
+  border: none;
+  cursor: pointer;
+  font: 700 13px 'Work Sans', sans-serif;
+  transition: outline-color 0.15s ease;
+}
+
+.chipRow button.chipBtn:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
+}
+
+.libreInput {
+  min-height: var(--target-min);
+  padding: 8px 14px;
+  border: 1.5px dashed var(--color-line);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--color-text);
+  font: 600 14px 'Work Sans', sans-serif;
+  width: 100%;
+  max-width: 360px;
+}
+
+.libreInput::placeholder {
+  color: var(--color-text-faint);
+}
+
+.hint {
+  margin: 0;
+  font-size: 0.85em;
+  font-style: italic;
+  color: var(--color-text-faint);
+}
+
+.liste {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.ligne {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.ligne span {
+  font-size: 0.95em;
+  line-height: 1.4;
+}
+
+.supprimerBtn {
+  flex: none;
+  min-height: var(--target-min);
+  padding: 6px 12px;
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--color-text-soft);
+  cursor: pointer;
+  font: 600 13px 'Work Sans', sans-serif;
+}
+
+.supprimerBtn:hover,
+.supprimerBtn:focus-visible {
+  border-color: var(--color-toxique);
+  color: var(--color-toxique);
+}
+
+.rappel {
+  margin: 0;
+  font-size: 0.9em;
+  font-weight: 600;
+  color: var(--color-text-soft);
+}
+
+@media (max-width: 600px) {
+  .composer {
+    padding: var(--space-md);
+  }
+}
