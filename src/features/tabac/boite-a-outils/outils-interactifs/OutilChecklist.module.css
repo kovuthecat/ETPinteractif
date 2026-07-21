@@ -1,0 +1,221 @@
+/* Style propre à `OutilChecklist` (OI7, S4) — remplace le shared `OutilStub.module.css`
+   pour cet outil désormais implémenté. Mêmes primitives que `VagueCraving.module.css`
+   (bouton retour, intro) pour rester cohérent avec les autres outils interactifs. */
+
+.module {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  min-height: var(--target-min);
+  padding: 8px 14px;
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  font: inherit;
+}
+
+.backBtn:hover,
+.backBtn:focus-visible {
+  border-color: var(--color-nav);
+  color: var(--color-nav);
+}
+
+.entete {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.titre {
+  margin: 0;
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 1.2em;
+}
+
+.principe {
+  margin: 0;
+  font-size: var(--font-size-small);
+  color: var(--color-text-soft);
+  max-width: 64ch;
+}
+
+.progression {
+  margin: 0;
+  font-size: 0.85em;
+  font-weight: 700;
+  color: var(--color-nav);
+}
+
+.groupes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.groupe,
+.itemsCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg);
+}
+
+.groupeLabel {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+}
+
+.itemsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-height: var(--target-min);
+  cursor: pointer;
+}
+
+.item input[type='checkbox'] {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  accent-color: var(--color-nav);
+}
+
+.paires {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.paire {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg);
+}
+
+.paireHead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-height: var(--target-min);
+  cursor: pointer;
+}
+
+.paireHead input[type='checkbox'] {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  accent-color: var(--color-nav);
+}
+
+.paireRituel {
+  font-weight: 700;
+}
+
+.paireSub {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding-left: calc(22px + var(--space-sm));
+}
+
+.paireFleche {
+  flex: none;
+  color: var(--color-text-faint);
+  font-weight: 700;
+}
+
+.paireInput {
+  flex: 1;
+  min-height: var(--target-min);
+  padding: 8px 12px;
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.95em;
+}
+
+.paireInput:focus-visible {
+  outline: none;
+  border-color: var(--color-nav);
+}
+
+.customList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.customItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border: 1.5px solid var(--color-nav);
+  border-radius: var(--radius);
+  background: var(--color-nav-soft);
+}
+
+.customRemove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--color-text-soft);
+  cursor: pointer;
+}
+
+.customRemove:hover,
+.customRemove:focus-visible {
+  color: var(--color-toxique);
+}
+
+.ajoutForm {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.ajoutInput {
+  flex: 1;
+  min-height: var(--target-min);
+  padding: 8px 14px;
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+}
+
+.ajoutInput:focus-visible {
+  outline: none;
+  border-color: var(--color-nav);
+}
