@@ -1,0 +1,207 @@
+/* Calculette « tirelire » (OI6, S3) — mêmes conventions que VagueCraving.module.css
+   (bouton retour, `.card`, tokens `--space-*`/`--color-*`) : gros contrôles ± lisibles
+   à ~1 m (cible ≥ --target-min), sorties chiffrées mises en avant (annuel = plus grand). */
+
+.module {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  min-height: var(--target-min);
+  padding: 8px 14px;
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  font: inherit;
+}
+
+.backBtn:hover,
+.backBtn:focus-visible {
+  border-color: var(--color-nav);
+  color: var(--color-nav);
+}
+
+.intro {
+  margin: 0;
+  font-size: var(--font-size-small);
+  opacity: 0.7;
+  max-width: 64ch;
+}
+
+.entreesCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  max-width: 480px;
+  padding: var(--space-lg);
+}
+
+.champ {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.champLabel {
+  font-weight: 700;
+  font-size: 0.95em;
+}
+
+.champControles {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.champBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: var(--target-min);
+  height: var(--target-min);
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-nav);
+  cursor: pointer;
+}
+
+.champBtn:hover,
+.champBtn:focus-visible {
+  border-color: var(--color-nav);
+  background: var(--color-nav-soft);
+}
+
+.champInput {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: var(--target-min);
+  padding: 8px 10px;
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-weight: 700;
+  font-size: 1.1em;
+  text-align: center;
+}
+
+.champInput:focus-visible {
+  outline: none;
+  border-color: var(--color-nav);
+}
+
+.champSuffixe {
+  flex: none;
+  font-weight: 700;
+  opacity: 0.6;
+}
+
+.avanceToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  min-height: var(--target-min);
+  padding: 6px 4px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-soft);
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.9em;
+  cursor: pointer;
+}
+
+.avanceToggle svg {
+  transition: transform 0.15s ease;
+}
+
+.chevronOuvert {
+  transform: rotate(180deg);
+}
+
+.paliers {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-sm);
+}
+
+.palier {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: var(--space-md);
+  text-align: center;
+}
+
+.palierLabel {
+  font-size: 0.8em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.55;
+}
+
+.palierValeur {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 1.3em;
+  color: var(--color-confort-strong);
+}
+
+.palierAn {
+  grid-column: 1 / -1;
+  background: var(--color-confort-soft);
+  border-color: var(--color-confort);
+}
+
+.palierAn .palierValeur {
+  font-size: 1.9em;
+}
+
+.recompenseBloc {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  max-width: 480px;
+}
+
+.recompenseLabel {
+  font-weight: 700;
+  font-size: 0.95em;
+}
+
+.recompenseInput {
+  min-height: var(--target-min);
+  padding: 10px 14px;
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+}
+
+.recompenseInput:focus-visible {
+  outline: none;
+  border-color: var(--color-nav);
+}
+
+.aparte {
+  margin: 0;
+  font-family: 'Source Serif 4', serif;
+  font-style: italic;
+  font-size: 0.95em;
+  opacity: 0.75;
+}
