@@ -35,6 +35,11 @@ Quatre idées à faire comprendre, **sans jamais afficher de dose réelle** (cf.
    précédent agit encore (insuline active résiduelle, « stacking ») est une cause classique
    d'**hypoglycémie post-prandiale**. Même leçon de patience que le 15/15 du module 8 :
    « l'insuline n'a pas fini d'agir — on n'empile pas ». Renvoi direct au module 8.
+5. **Rapide sans repas = hypo** *(ajout 2026-07-21, item 2, VALIDÉ Thibault G1 2026-07-21)* — une dose
+   prandiale injectée sans manger (repas **sauté**, **retardé** ou **trop pauvre en glucides**) fait
+   baisser le sucre « à vide » dans les 1-4 h : c'est une cause d'hypo fréquente, surtout chez la
+   personne âgée / en cas de maladie aiguë. Règle d'or : **pas de repas = pas de rapide** (la lente,
+   elle, continue). Renvoi direct au module 8.
 
 ## 2. Message clé (une phrase)
 
@@ -62,6 +67,24 @@ l'hypo d'abord, renvoi module 8).
 injectée alors que la première agit encore fait plonger la courbe sous la bande-cible (motif
 « overshoot »/fantôme du module 8, inversé). Message de patience : l'insuline rapide agit
 pendant plusieurs heures — on n'empile pas, on attend, on recontrôle. Porte vers le module 8.
+
+⑤ **Et si je ne mange pas ?** *(ajout 2026-07-21, item 2, VALIDÉ Thibault G1 2026-07-21)* — scénario
+« rapide sans repas ». Courbe : un repas de **charge nulle** (trace plate à la baseline, « sans
+rapide ») vs la même **avec** un bolus habituel injecté juste avant → la courbe **plonge sous la
+bande-cible** (aucun glucide pour « nourrir » l'insuline). Trois messages, du plus sûr au plus nuancé :
+- **Pas de repas prévu → ne pas injecter la rapide** (règle d'or ; la basale continue). Fondement :
+  suspension du prandial si le patient ne mange pas (Endocrine Society hospitalier ; ADA — réduire/
+  suspendre en cas de jeûne).
+- **Injection déjà faite, repas impossible → resucrage de rattrapage** : prendre des glucides
+  faciles à absorber pour « nourrir » l'insuline en circulation, surveiller pendant la durée d'action,
+  et en cas d'hypo → **module 8** (règle 15/15 + en-cas de glucides lents pour éviter la rechute).
+- **Appétit incertain → injecter après avoir mangé**, en adaptant à ce qui a été réellement consommé
+  (option réservée aux prises imprévisibles : personne âgée fragile, nausées, jeûne) — **à valider
+  avec le soignant** ; le pré-prandial reste le « gold standard ».
+Renvoi module 8 (bouton « Ça ressemble à une hypo → le réflexe », comme le temps ④).
+**G5 (tranché Thibault 2026-07-21)** : ⑤ = **5ᵉ onglet distinct** (le ④ traite un autre sujet — le
+cumul). Reste à caler : **le positionnement de l'onglet** dans la barre (après le ④, ou ailleurs) —
+l'implémenteur propose, validation visuelle Thibault. // à revalider (Thibault).
 
 **Refrain de sécurité du module** (proposition, à valider) : « La bonne dose, c'est celle de
 votre protocole — ici on apprend le raisonnement, pas les chiffres. » Complété par le verrou
@@ -101,6 +124,10 @@ règle numérique doit être traduite en **paliers qualitatifs** avant affichage
   supplémentaire ». À traduire visuellement (l'insuline « travaille encore ») **sans chiffrer**.
 - **Risque d'hypoglycémie post-prandiale** : conséquence qualitative d'un surdosage ou d'un
   cumul, montrée sur la courbe (creux sous la bande-cible), jamais quantifiée en dose.
+- **Rapide sans repas (temps ⑤, ajout 2026-07-21)** : « pas de repas = pas de rapide » ; option
+  post-prandiale **réservée aux prises imprévisibles** (personne âgée, maladie), jamais présentée
+  comme méthode de routine (le pré-prandial reste le gold standard) ; en cas d'injection déjà faite
+  sans repas → resucrage + renvoi module 8. Aucun chiffre de dose ni de délai affiché.
 
 **// à revalider (Thibault)** : les paliers qualitatifs exacts (combien de niveaux ? quels
 libellés ?) et la pertinence clinique de représenter le ratio I/G et le facteur de correction
@@ -159,6 +186,21 @@ basal-bolus** autant que possible. Chaque source est rattachée au temps pédago
 - **Règle de prudence retenue** (synthèse AACE/Endocrine Society du rapport) : ne pas corriger
   moins de **3-4 h** après un bolus rapide ; effet résiduel ≈ 50 % à 2 h, ≈ 25 % à 3 h. À rendre
   visuellement, jamais chiffré.
+
+### Rapide sans repas (temps ⑤, ajout 2026-07-21 — `evidence-diabete/rapport-insuline-affinement.txt` §3)
+
+- **Korytkowski MT et al.** — *Endocrine Society, hyperglycémie hospitalière* 2022 (dgac278) —
+  « For patients who are not eating, hold prandial insulin. » (suspension du prandial si NPO).
+- **ADA — Standards of Care 2026, §6** (dc26-S006) — hypoglycémie : glucose pur préféré, règle 15/15,
+  en-cas après correction (risque de récurrence tant que l'insuline agit).
+- **ADA 2026, §13 Older Adults** (dc26-S013) & **Endocrine Society 2019 (LeRoith)** — simplifier /
+  désintensifier chez la personne âgée ; injection adaptée à la prise réelle.
+- **De Block CEM et al.**, *Diabetes Obes Metab* 2022 — PK/PD des analogues rapides (fenêtre d'action
+  1-4 h) ; le pré-prandial reste le gold standard.
+- **Labels FDA Fiasp / Lyumjev** — ultra-rapides : injection possible en début ou peu après le repas
+  (option post-prandiale pour prise incertaine).
+- **Heise & Meneghini 2014 ; Hirsch (NEJM) 2005** — « insulin stacking » / insuline encore « à bord »
+  (lien avec le temps ④).
 
 ### Éducation thérapeutique (justification du module)
 
