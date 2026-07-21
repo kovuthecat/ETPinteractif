@@ -132,25 +132,66 @@ export default function PatientSituations({ onBack, onNavigate }: PatientSituati
       ? OUTILS_INTERACTIFS[activeOutil.interactif]
       : undefined;
 
+    const backRow = (
+      <div className={styles.backRow}>
+        <button type="button" className="btn btn--ghost" onClick={onBack}>
+          <ArrowLeft size={16} aria-hidden="true" />
+          Accueil
+        </button>
+        <button
+          type="button"
+          className="btn btn--ghost"
+          onClick={() => {
+            setSelectedSituation(null);
+            setActiveOutilId(null);
+          }}
+        >
+          <ArrowLeft size={16} aria-hidden="true" />
+          Autre situation
+        </button>
+      </div>
+    );
+
+    // Outil actif (S1/RP1, parité consultation) : l'outil REMPLACE la vue de la situation
+    // (early return), au lieu de se monter sous la liste — sinon il finissait hors écran et
+    // « Démarrer » semblait ne rien faire (cf. BoiteAOutilsModule.tsx, même schéma). La barre
+    // de retour (Accueil / Autre situation) reste affichée : c'est la seule nav de premier
+    // niveau du bundle patient (absente du module consultation).
+    // Journal (S7/OI11, Gate G5) : câblage direct plutôt que via `ActiveOutilComponent` (typé
+    // `OutilInteractifProps` par le registre, sans `onOuvrirCarnet`) — c'est le seul outil qui
+    // a besoin de naviguer vers une autre vue de l'app patient plutôt que de rester ici.
+    if (activeOutil && activeOutil.interactif === 'journal') {
+      return (
+        <div className={styles.screen}>
+          {backRow}
+          <GabaritJournal
+            outil={activeOutil}
+            store={patientStore}
+            contexte={{ situationsActives: situation ? [situation] : [] }}
+            onClose={() => setActiveOutilId(null)}
+            onOuvrirCarnet={() => onNavigate('carnet')}
+          />
+        </div>
+      );
+    }
+
+    if (activeOutil && ActiveOutilComponent) {
+      return (
+        <div className={styles.screen}>
+          {backRow}
+          <ActiveOutilComponent
+            outil={activeOutil}
+            store={patientStore}
+            contexte={{ situationsActives: situation ? [situation] : [] }}
+            onClose={() => setActiveOutilId(null)}
+          />
+        </div>
+      );
+    }
+
     return (
       <div className={styles.screen}>
-        <div className={styles.backRow}>
-          <button type="button" className="btn btn--ghost" onClick={onBack}>
-            <ArrowLeft size={16} aria-hidden="true" />
-            Accueil
-          </button>
-          <button
-            type="button"
-            className="btn btn--ghost"
-            onClick={() => {
-              setSelectedSituation(null);
-              setActiveOutilId(null);
-            }}
-          >
-            <ArrowLeft size={16} aria-hidden="true" />
-            Autre situation
-          </button>
-        </div>
+        {backRow}
         <h1 className={styles.titre}>{situation?.label ?? 'Situation'}</h1>
         {/* à revalider (Thibault) : phrase de cadrage auto-portante */}
         <p className={styles.intro}>Voici ce qui peut vous aider dans cette situation.</p>
@@ -185,28 +226,6 @@ export default function PatientSituations({ onBack, onNavigate }: PatientSituati
             </article>
           ))}
         </div>
-
-        {/* Journal (S7/OI11, Gate G5) : câblage direct plutôt que via `ActiveOutilComponent`
-            (typé `OutilInteractifProps` par le registre, sans `onOuvrirCarnet`) — c'est le
-            seul outil qui a besoin de naviguer vers une autre vue de l'app patient plutôt que
-            de rester dans l'overlay/la carte inline. */}
-        {activeOutil && activeOutil.interactif === 'journal' && (
-          <GabaritJournal
-            outil={activeOutil}
-            store={patientStore}
-            contexte={{ situationsActives: situation ? [situation] : [] }}
-            onClose={() => setActiveOutilId(null)}
-            onOuvrirCarnet={() => onNavigate('carnet')}
-          />
-        )}
-        {activeOutil && activeOutil.interactif !== 'journal' && ActiveOutilComponent && (
-          <ActiveOutilComponent
-            outil={activeOutil}
-            store={patientStore}
-            contexte={{ situationsActives: situation ? [situation] : [] }}
-            onClose={() => setActiveOutilId(null)}
-          />
-        )}
       </div>
     );
   }
