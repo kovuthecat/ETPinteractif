@@ -16,7 +16,7 @@ function PatientApp() {
     <div className={styles.app}>
       {view === 'home' && <Home onNavigate={go} />}
       {view === 'substituts' && <PatientSubstituts onBack={() => go('home')} />}
-      {view === 'situations' && <PatientSituations onBack={() => go('home')} />}
+      {view === 'situations' && <PatientSituations onBack={() => go('home')} onNavigate={go} />}
       {view === 'carnet' && <PatientCarnet onBack={() => go('home')} />}
     </div>
   );

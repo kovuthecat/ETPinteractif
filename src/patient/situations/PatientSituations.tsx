@@ -7,12 +7,19 @@ import {
 } from '../../content/tabac/situations';
 import { OUTILS, PREUVE_LABELS, selectionnerOutilsPertinents, type Outil } from '../../content/tabac/outils';
 import { OUTILS_INTERACTIFS } from '../../features/tabac/boite-a-outils/outils-interactifs/registry';
+import GabaritJournal from '../../features/tabac/boite-a-outils/outils-interactifs/GabaritJournal';
 import { usePatientStore } from './usePatientStore';
 import styles from './PatientSituations.module.css';
 
 interface PatientSituationsProps {
   /** Retour à l'accueil de l'app patient (géré par PatientApp). */
   onBack: () => void;
+  /**
+   * Navigation vers une autre vue de l'app patient (S7/OI11) : seul usage actuel, renvoyer
+   * vers le carnet existant (`PatientCarnet`) depuis l'outil « Une semaine d'observation »,
+   * sans dupliquer sa logique de persistance. Injectée par `PatientApp` (réutilise `go`).
+   */
+  onNavigate: (vue: 'carnet') => void;
 }
 
 const PILIER_ORDER: PilierId[] = ['physique', 'psychologique', 'comportementale'];
@@ -106,7 +113,7 @@ function commentFaire(outil: Outil): string {
  * spécial pour la respiration, elle devient une entrée générique du registre comme les
  * autres.
  */
-export default function PatientSituations({ onBack }: PatientSituationsProps) {
+export default function PatientSituations({ onBack, onNavigate }: PatientSituationsProps) {
   const [selectedSituation, setSelectedSituation] = useState<string | null>(null);
   // Outil interactif actuellement lancé (S1/OI3) — distinct de `selectedSituation`, réinitialisé
   // au changement de situation (cf. bouton « Autre situation » plus bas).
@@ -179,7 +186,20 @@ export default function PatientSituations({ onBack }: PatientSituationsProps) {
           ))}
         </div>
 
-        {activeOutil && ActiveOutilComponent && (
+        {/* Journal (S7/OI11, Gate G5) : câblage direct plutôt que via `ActiveOutilComponent`
+            (typé `OutilInteractifProps` par le registre, sans `onOuvrirCarnet`) — c'est le
+            seul outil qui a besoin de naviguer vers une autre vue de l'app patient plutôt que
+            de rester dans l'overlay/la carte inline. */}
+        {activeOutil && activeOutil.interactif === 'journal' && (
+          <GabaritJournal
+            outil={activeOutil}
+            store={patientStore}
+            contexte={{ situationsActives: situation ? [situation] : [] }}
+            onClose={() => setActiveOutilId(null)}
+            onOuvrirCarnet={() => onNavigate('carnet')}
+          />
+        )}
+        {activeOutil && activeOutil.interactif !== 'journal' && ActiveOutilComponent && (
           <ActiveOutilComponent
             outil={activeOutil}
             store={patientStore}
