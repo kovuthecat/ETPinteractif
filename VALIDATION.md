@@ -16,6 +16,69 @@
 
 ---
 
+## Chantier revue-prod-2026-07 — validation du 2026-07-21
+
+**Statut** : chantier S1-S6 consolidé (commits + contexte) · **en attente de validation visuelle
+Thibault** (`npm run dev`) — aucune vérification navigateur faite côté Claude (règle projet). Checklists
+reprises des bilans de fin de session (`plans/revue-prod-2026-07/S<n>.md`).
+
+### S1 — RP1 : patient, montage des outils interactifs
+
+- [ ] Dans `patient.html`, pour chaque archétype (SI-ALORS, tirelire, une checklist, un minuteur, plan
+      de secours, phrase de refus, journal, 4D, respiration) : « Démarrer » affiche bien l'outil à la
+      place de la liste (pas de scroll nécessaire) et il fonctionne.
+- [ ] Journal ouvre bien le carnet ; « Autre situation » revient à la grille ; « Accueil » revient à
+      l'accueil patient.
+- [ ] Mobile (~375px) : la barre Accueil/Autre situation ne casse pas la mise en page au-dessus de
+      l'outil actif.
+- [ ] `RespirationGuidee`/`VagueCraving` (4D) continuent de s'afficher en overlay plein écran, sans
+      régression.
+
+### S2 — RP2 : plan d'arrêt réduit + « + autre » Composantes
+
+- [ ] « Mon plan d'arrêt » n'affiche plus que stratégie/date et « Si j'ai un écart » (plus de
+      substituts/situations/parades/raisons/autour de moi à l'écran).
+- [ ] Après sélection d'un substitut, de situations et de raisons dans les modules amont, « Imprimer mon
+      livret complet » produit un livret contenant bien substituts/situations/raisons/4D/contacts.
+- [ ] Dans « Les composantes de l'addiction », le nouveau champ « + autre » sous le venn ajoute une
+      situation personnalisée (chip retirable), reprise dans le livret sous « Comprendre / Autres ».
+- [ ] Affichage mobile des deux écrans modifiés.
+
+### S3 — RP3 : QR honnête + « + autre » au blur
+
+- [ ] Livret et fiche outil individuelle (`QRBlock` partagé) : l'`alt`/la légende sous le QR ne promet
+      plus de reprise personnalisée ; le QR mène toujours à `patient.html`.
+- [ ] Taper un texte dans « + autre » (section « Si j'ai un écart » du plan, ou champ Composantes) sans
+      Entrée, cliquer directement « Imprimer mon livret complet » → l'entrée apparaît bien dans le
+      livret. Entrée seule fonctionne toujours à l'identique, sans doublon.
+- [ ] Affichage mobile des deux champs concernés.
+
+### S4 — RP4 : ergonomie consultation (5/5 points reproduits et corrigés)
+
+- [ ] Composantes : cliquer chaque dimension (Physique/Psychologique/Comportementale), aucune bulle ne
+      déborde ni ne déclenche de scrollbar horizontale (desktop + tablette).
+- [ ] Motivation, « Où en êtes-vous ? » : un simple clic/tap dans le cadran (centre, coin) ne change
+      plus la note ; un glissé volontaire depuis l'anneau fonctionne toujours ; le clic sur
+      « Suivant »/les relances n'est plus intercepté par le cadran.
+- [ ] Alimentation, défi ① : le nouveau libellé (« Touchez ... pour l'ajouter ») est cohérent, l'ajout
+      au clic/tactile fonctionne comme avant.
+- [ ] Traitements : choisir uniquement une classe (sans molécule), cliquer « Voir l'effet » → halo et
+      carte « ce que ça protège » s'affichent avec une phrase lisible.
+- [ ] Insuline rapide (5 onglets) et Risque cardiovasculaire : « Accueil »/« Sources » restent alignés
+      en haut de l'en-tête quel que soit le nombre de lignes d'onglets (desktop ~768px et ~380px).
+
+### S5 — RP6 : cohérence & finitions tabac
+
+- [ ] « Ce que l'arrêt répare » : en avançant sur la frise, l'organe/les organes correspondants
+      s'allument sur la silhouette sans clic ; un clic sur un hotspot bascule toujours vers le panneau
+      de détail (une seule zone allumée) ; rendu clair/sombre du halo correct.
+- [ ] Motivation, onglet « Mes raisons » : tableau vide perçu comme une zone d'ajout (bordure pointillée
+      + icône) ; l'état disparaît proprement dès la première carte ajoutée.
+- [ ] Boîte à outils : les titres les plus longs (« Si j'ai un écart — le plan de secours »,
+      « Traiter le manque — les substituts ») s'affichent en entier, desktop et mobile.
+- [ ] RP6c (quiz Vrai/Faux) : rien à valider visuellement — confirmer juste que la décision de rester
+      non-évaluatif est bien consignée dans `DECISIONS.md`.
+
 ## Chantier insuline-affinements-2026-07 — validation du 2026-07-21
 
 **Statut** : chantier S1-S6 consolidé (commits + contexte) · **en attente de validation visuelle

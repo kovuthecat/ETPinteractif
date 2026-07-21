@@ -4,9 +4,56 @@
 
 > **Frontières** — STATUS : état actuel · `TASKS.md` : backlog + tâches · `plans/` : plan d'une tâche active · `VALIDATION.md` : checklist visuelle.
 >
-> **Dernière mise à jour :** 2026-07-21 (chantier `insuline-affinements-2026-07` — 6 items de revue
-> prod sur les modules Insuline basale/rapide, S1-S6 **clos**, validation visuelle humaine restant à
-> faire)
+> **Dernière mise à jour :** 2026-07-21 (chantier `revue-prod-2026-07` — correctifs issus d'une revue
+> prod complète au navigateur in-app, S1-S6 **clos**, validation visuelle humaine restant à faire)
+
+**Revue prod — navigateur in-app (2026-07-21)** — chantier `plans/revue-prod-2026-07/` (index + S1-S6),
+issu d'une revue prod complète de Thibault + Opus sur `etp-interactif.vercel.app` (consultation tabac +
+diabète, livret imprimable, app patient). Deux constats structurants, plus des correctifs ciblés :
+
+- **RP1 — outils interactifs invisibles côté patient (régression du chantier `outils-interactifs-2026-07`)** :
+  l'app patient montait l'outil actif **après** la liste des cartes, sans overlay ni scroll — seul
+  `RespirationGuidee` (overlay `position: fixed`) restait visible ; tous les autres outils (SI-ALORS,
+  tirelire, checklists, minuteur, plan de secours, phrase de refus, journal, 4D) se montaient hors
+  écran, le bouton « Démarrer » semblait mort. `PatientSituations.tsx` adopte désormais le même schéma
+  *early-return* que la consultation (`BoiteAOutilsModule.tsx`) : l'outil actif remplace la liste, `backRow`
+  conservée. Aucun composant d'outil modifié.
+- **RP2 — « Mon plan d'arrêt » devient un plan « bornes »** (demande explicite Thibault) : l'UI du plan
+  n'affiche plus que la section 1 (stratégie + date) et la section « Si j'ai un écart » (ex-section 7) ;
+  les sections substituts/situations/parades/raisons/autour-de-moi disparaissent de l'écran **seulement**
+  — `livretSections.tsx` (non touché) continue de lire l'état partagé (`SelectionState`) en entier, le
+  livret imprimé reste complet. Gate G-RP2 (« + autre » situation) tranchée **oui** : un champ « + autre »
+  ajouté dans le module Composantes (`AddictionModule.tsx`) pousse dans `state.situationsLibres`, même
+  canal que l'ancien « + autre » retiré, déjà lu par le livret (bucket « Autres »).
+- **RP3 — livret honnête + saisies non perdues** : le QR du livret sur-promettait (« retrouvez mes
+  substituts et mes parades ») alors qu'il mène à l'app patient générique (zéro persistance + QR
+  statique) — reformulé (« Retrouvez l'application et ses outils chez vous ») dans le composant partagé
+  `QRBlock.tsx` (aussi utilisé par les fiches individuelles, sur-promesse corrigée au passage). Les champs
+  « + autre » restants (gestes d'écart du plan, situation personnalisée de Composantes) valident
+  désormais l'entrée au **blur** en plus de la touche Entrée, pour ne pas perdre une saisie tapée juste
+  avant d'imprimer.
+- **RP4 — ergonomie consultation, vérifiée puis corrigée (règle « reproduire avant de corriger »)** :
+  les 5 points étaient tous réellement présents dans le code à jour (aucun déjà traité par un chantier
+  antérieur) : clamp des positions de bulles dans Composantes (débordement horizontal des piliers
+  Physique/Psychologique) ; tolérance d'anneau + seuil de déplacement sur le cadran de motivation (un
+  simple tap ne change plus la note) ; libellé « Glissez » d'Alimentation aligné sur l'interaction réelle
+  au clic (« Touchez ... pour l'ajouter ») ; « Voir l'effet » de Traitements déclenché dès la classe
+  choisie (au lieu d'exiger le nom de molécule) ; en-tête commun (`ModuleShell`) aligné en haut
+  (`flex-start`) pour ne plus faire flotter Accueil/Sources sur les modules à onglets multiples.
+- **RP6 — cohérence & finitions tabac** : la silhouette de « Ce que l'arrêt répare » surligne désormais
+  l'organe concerné au repère temporel sélectionné (gate G-RP6, option **a** — réutilise le moteur de halo
+  déjà partagé avec le diabète, `SilhouetteCorps.tsx`, sans réplication) ; affordance renforcée du tableau
+  « Mes raisons » (bordure pointillée + icône, zone vide perçue comme zone de dépôt) ; troncature des
+  titres de la boîte à outils élargie (line-clamp 2→3) pour ne perdre aucun mot-clé. Le quiz Vrai/Faux
+  reste **volontairement non-évaluatif** (gate G-RP6, option **b** — posture ETP sans jugement assumée,
+  aucun code).
+
+Gate finale (S1-S6) : `npx tsc --noEmit` ✓ · `npm run build` ✓ (2 entrées `consultation.html`/
+`patient.html`) · `npm test` ✓ **106/106**, aucune dépendance runtime ajoutée. 6 commits atomiques par
+sujet (2 fichiers partagés par plusieurs sessions — `PlanArretModule.tsx` et `AddictionModule.tsx` —
+regroupés en un commit chacun, messages composés en conséquence) + 1 commit contexte. **Validation
+visuelle humaine (Thibault, `npm run dev`, les deux bundles) reste entièrement à faire** — cf.
+`VALIDATION.md`.
 
 **Insuline basale/rapide — affinements de revue prod (2026-07-21)** — chantier
 `plans/insuline-affinements-2026-07/` (index + S1-S6), issu d'une revue prod de Thibault sur les deux
