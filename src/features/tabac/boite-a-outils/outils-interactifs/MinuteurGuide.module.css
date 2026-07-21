@@ -1,0 +1,136 @@
+/* Minuteur guidé (S5, OI8) — mêmes proportions/tons que VagueCraving.module.css (référence
+   du pattern minuteur), classes propres à ce composant. */
+
+.module {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  min-height: var(--target-min);
+  padding: 8px 14px;
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  font: inherit;
+}
+
+.backBtn:hover,
+.backBtn:focus-visible {
+  border-color: var(--color-nav);
+  color: var(--color-nav);
+}
+
+.intro {
+  margin: 0;
+  font-size: var(--font-size-small);
+  opacity: 0.7;
+  max-width: 64ch;
+}
+
+.centerCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  max-width: 480px;
+  margin: 0 auto;
+  padding: var(--space-lg);
+  text-align: center;
+}
+
+.centerTitle {
+  margin: 0 0 var(--space-sm);
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 1.1em;
+}
+
+.centerHint {
+  margin: var(--space-sm) 0 0;
+  font-size: 0.85em;
+  font-weight: 600;
+  opacity: 0.5;
+}
+
+.doneTitle {
+  margin: 0 0 var(--space-sm);
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 1.3em;
+}
+
+.doneText {
+  margin: 0 0 var(--space-lg);
+  font-size: 0.95em;
+  line-height: 1.5;
+  opacity: 0.65;
+}
+
+.activeCard {
+  display: flex;
+  flex-direction: column;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: var(--space-md) var(--space-lg);
+}
+
+.activeHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.activeTitle {
+  margin: 0;
+  font-weight: 700;
+  font-size: 1em;
+}
+
+.clock {
+  margin: 0;
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 1.4em;
+  color: var(--color-vigilance);
+}
+
+.invite {
+  margin: 0 0 var(--space-md);
+  min-height: 2.8em;
+  padding: var(--space-md);
+  border-radius: var(--radius);
+  background: var(--color-vigilance-soft);
+  font-size: 1.05em;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.progressTrack {
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: var(--color-line);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--color-vigilance);
+  transition: width 1s linear;
+}
+
+.buttonRow {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-md);
+}
