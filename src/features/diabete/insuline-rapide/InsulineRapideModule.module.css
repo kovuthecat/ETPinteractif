@@ -121,6 +121,34 @@
   gap: var(--space-sm);
 }
 
+/* ── Temps ⑤ — option post-prandiale (exception, jamais une méthode) ─────────────────────── */
+
+.exceptionNote {
+  max-width: 900px;
+  margin: 0 auto;
+  color: var(--color-text-soft);
+  font-size: var(--font-size-small);
+  line-height: 1.45;
+  text-align: center;
+}
+
+/* ── Pied : refrain de sécurité (.filrouge, dominant) + phrase-pont vers la basale, discrète en
+   dessous (item 8b, plans/insuline-affinements-2026-07/S5.md) — même patron que
+   InsulineModule.module.css (basale, S4, item 8a). ── */
+
+.piedRefrain {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.pont {
+  margin: 0;
+  color: var(--color-text-soft);
+  font-size: var(--font-size-small);
+  line-height: 1.45;
+}
+
 /* ── Temps ② — curseur de délai (grammaire du module 3 Activité ③) ───────── */
 
 .sliderBlock {
@@ -160,10 +188,13 @@
   box-shadow: 0 0 0 1.5px var(--color-text);
 }
 
-.sliderTicks {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  color: var(--color-text-soft);
+/* Libellé dynamique unique (item 6) : remplace les 4 anciennes étiquettes équiréparties de
+   `.sliderTicks`, devenues incohérentes avec les seuils réels de `timingPhase`. Gros et centré
+   pour rester lisible à ~1 m, toujours = la phase courante quelle que soit la position. */
+.sliderLabel {
   margin-top: var(--space-sm);
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text);
 }

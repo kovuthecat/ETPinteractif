@@ -23,18 +23,26 @@ import styles from './InsulineRapideModule.module.css';
 /**
  * Module 10 — Insuline rapide (pré-prandial). Contenu : `docs/diabete/10-insuline-rapide.md`
  * (autorité) ; modèle : `sampleRepasAvecBolus` (`lib/glycemieCurve.ts`). Distinct du module 9
- * (insuline basale) : ici on couvre le repas, pas la glycémie à jeun. 4 temps (S10-implementation
- * §0) : ① couvrir le repas, ② le bon moment, ③ corriger avant le repas, ④ le piège du cumul.
- * Aucun chiffre à l'écran (dose/minutes) — paliers qualitatifs uniquement, cf. garde-fou du plan.
+ * (insuline basale) : ici on couvre le repas, pas la glycémie à jeun. 5 temps (S10-implementation
+ * §0 + plans/insuline-affinements-2026-07/S5, IA6) : ① couvrir le repas, ② le bon moment,
+ * ③ corriger avant le repas, ④ le piège du cumul, ⑤ et si je ne mange pas (repas sauté = hypo,
+ * G5 : onglet distinct, PAS une variante du ④). Aucun chiffre à l'écran (dose/minutes) — paliers
+ * qualitatifs uniquement, cf. garde-fou du plan.
  */
 
-type Temps = 1 | 2 | 3 | 4;
+type Temps = 1 | 2 | 3 | 4 | 5;
 
 const TEMPS_TABS: { n: Temps; label: string }[] = [
   { n: 1, label: '① Couvrir le repas' },
   { n: 2, label: '② Le bon moment' },
   { n: 3, label: '③ Corriger avant le repas' },
   { n: 4, label: '④ Le piège du cumul' },
+  // 5ᵉ onglet DISTINCT (G5, tranché Thibault 2026-07-21 — le ④ traite le cumul, un autre sujet ;
+  // cf. docs/diabete/10-insuline-rapide.md §3 temps ⑤). Positionnement par défaut : à la fin, après
+  // le ④ — proposition de l'implémenteur, `// à revalider (Thibault)` (validation visuelle : la
+  // barre à 5 onglets tient-elle à ~1 m ? `.tabs` a déjà `flex-wrap: wrap`, donc un repli sur 2
+  // lignes est automatique si besoin, sans changement de code).
+  { n: 5, label: '⑤ Et si je ne mange pas ?' },
 ];
 
 function handleTabsKeyDown(e: ReactKeyboardEvent<HTMLButtonElement>, index: number, onSelect: (n: Temps) => void) {
@@ -89,6 +97,45 @@ const REPAS_MOYEN = REPAS_CRANS[1].params;
 const DOSE_ADEQUATE = 0.4;
 /** Timing standard « juste avant le repas » — `// à revalider (Thibault)`. */
 const T_INJECTION_DEFAUT = -15;
+
+// --- Temps ⑤ — « Et si je ne mange pas ? » (item 2, ajout 2026-07-21, G5 : onglet distinct).
+// Repas de charge NULLE (`peakAmplitude` renvoie 0 dès que `charge<=0` → `sampleRepas` reste une
+// trace plate à la baseline, quels que soient frein/retard) vs le MÊME repas + le bolus habituel
+// (`DOSE_ADEQUATE`, même injection `T_INJECTION_DEFAUT` que les autres temps) injecté quand même →
+// plonge nettement sous la bande (aucun glucide pour « nourrir » l'insuline). Aucune interactivité
+// ici (scénario fixe, illustratif) : contenu verbatim `docs/diabete/10-insuline-rapide.md` §3 temps
+// ⑤ (validé G1 2026-07-21). Calculs au niveau module (pas de useMemo) : aucune dépendance à l'état. ---
+const REPAS_VIDE: RepasParams = { charge: 0, frein: 0.35, retard: 0.3 };
+
+const T5_POINTS = {
+  sans: sampleRepas(REPAS_VIDE, { tStart: T_MIN, tEnd: T_MAX }),
+  avec: sampleRepasAvecBolus(REPAS_VIDE, { dose: DOSE_ADEQUATE, tInjection: T_INJECTION_DEFAUT }),
+};
+const T5_COURBES: CourbeDef[] = [
+  { id: 'sans', d: toSvgPath(T5_POINTS.sans, DOMAIN_OPTS), label: 'Sans rapide', variante: 'fantome' },
+  { id: 'avec', d: toSvgPath(T5_POINTS.avec, DOMAIN_OPTS), label: 'Avec rapide', variante: 'principale' },
+];
+
+/** Message principal du temps ⑤ — **verbatim** du doc validé G1 (`10-insuline-rapide.md` §3 temps
+ *  ⑤ + plans/insuline-affinements-2026-07/S5.md, étape 3). Ne pas reformuler sans revalidation. */
+const MESSAGE_SANS_REPAS =
+  "Rapide sans manger → le sucre plonge : on n'injecte pas la rapide si on ne mange pas ; si le repas saute après → on resucre.";
+
+/** Option post-prandiale (doc §3 temps ⑤, 3ᵉ message) : présentée comme une EXCEPTION
+ *  (inappétence/maladie), jamais comme une méthode — le pré-prandial reste la référence.
+ *  `// à revalider (Thibault)`. */
+const MESSAGE_EXCEPTION_POST_PRANDIAL =
+  "Exception, pas une méthode : en cas d'appétit incertain (personne âgée fragile, nausées), la " +
+  "rapide peut s'injecter après le repas, ajustée à ce qui a été réellement mangé — à voir avec le " +
+  'soignant. Le pré-prandial reste la référence.';
+
+/** Pont inter-modules (item 8b, plan insuline-affinements-2026-07/S1 §Décisions structurantes) :
+ *  relie le zoom de CE module (un repas, −1 h/+3 h) à la lente, qui couvre la journée entière
+ *  (coucher → coucher, module Insuline basale). Paire avec la phrase-pont symétrique du module
+ *  basale (S4, item 8a) — même paire de zooms, formulée dans les deux sens. `// à revalider
+ *  (Thibault)` : à comparer à la formulation retenue côté basale pour la cohérence finale.  */
+const PONT_VERS_BASALE =
+  "La rapide ne couvre que ce repas ; le reste de la journée entière — et la nuit — c'est la lente qui s'en charge.";
 
 // --- Temps ② — délai d'injection, de « bien avant » à « après le repas » (jamais affiché en
 // minutes, cf. garde-fou : le curseur pilote le modèle, seuls des mots qualitatifs sont visibles). ---
@@ -188,11 +235,35 @@ function matriceCumul(situation: SituationCumul, recorrection: Recorrection): { 
   return { message: "Attendre que la 1ʳᵉ dose ait fini d'agir, puis recorriger, ramène la glycémie dans la cible.", plonge: false };
 }
 
+// --- Temps ② — phase qualitative du délai d'injection : SOURCE DE VÉRITÉ UNIQUE pour le
+// message (`timingHint`) et le libellé dynamique affiché sous le curseur (item 6 de l'audit
+// produit 2026-07-21 : les 4 anciennes étiquettes de piste étaient équiréparties sur
+// [DELAY_MIN, DELAY_MAX] alors que ces seuils ne le sont pas, d'où des contradictions
+// étiquette/message/marqueur à certaines positions). Mêmes bornes que l'ancien `timingHint`,
+// seule la bascule juste-avant/au-moment vaut la peine d'être revue. `// à revalider (Thibault)`. ---
+type TimingPhaseKey = 'bien-avant' | 'juste-avant' | 'au-moment' | 'apres';
+
+interface TimingPhase {
+  cle: TimingPhaseKey;
+  libelle: string;
+}
+
+function timingPhase(delay: number): TimingPhase {
+  if (delay <= -30) return { cle: 'bien-avant', libelle: 'bien avant' }; // à revalider (Thibault)
+  if (delay < 0) return { cle: 'juste-avant', libelle: 'juste avant' }; // à revalider (Thibault) : bascule juste-avant/au-moment
+  if (delay === 0) return { cle: 'au-moment', libelle: 'au moment du repas' };
+  return { cle: 'apres', libelle: 'après le repas' };
+}
+
+const TIMING_HINTS: Record<TimingPhaseKey, string> = {
+  'bien-avant': 'Injectée bien avant, la rapide a déjà commencé à agir quand le repas fait monter le sucre.',
+  'juste-avant': 'Injectée juste avant le repas, la rapide est prête à temps pour couvrir le pic.',
+  'au-moment': 'Injectée au moment du repas, la rapide part avec un léger retard sur la montée du sucre.',
+  apres: "Injectée après le repas, la rapide arrive en retard : le pic a une longueur d'avance sur elle.",
+};
+
 function timingHint(delay: number): string {
-  if (delay <= -30) return "Injectée bien avant, la rapide a déjà commencé à agir quand le repas fait monter le sucre.";
-  if (delay < 0) return 'Injectée juste avant le repas, la rapide est prête à temps pour couvrir le pic.';
-  if (delay === 0) return 'Injectée au moment du repas, la rapide part avec un léger retard sur la montée du sucre.';
-  return "Injectée après le repas, la rapide arrive en retard : le pic a une longueur d'avance sur elle.";
+  return TIMING_HINTS[timingPhase(delay).cle];
 }
 
 /** Temps ① — message selon LE REPAS **et** LA DOSE (point 11 : la dose « habituelle » est fixe, le
@@ -412,7 +483,7 @@ export default function InsulineRapideModule({ onNavigate, shell }: ModuleProps)
   if (!shell) return null;
 
   const navBar = (
-    <div className={styles.tabs} role="tablist" aria-label="Les 4 temps du module Insuline rapide">
+    <div className={styles.tabs} role="tablist" aria-label="Les 5 temps du module Insuline rapide">
       {TEMPS_TABS.map((tab, index) => (
         <button
           key={tab.n}
@@ -488,12 +559,15 @@ export default function InsulineRapideModule({ onNavigate, shell }: ModuleProps)
               className={styles.slider}
               aria-label="Moment de l'injection de la rapide par rapport au repas"
             />
-            <div className={styles.sliderTicks}>
-              <span>bien avant</span>
-              <span>juste avant</span>
-              <span>au moment du repas</span>
-              <span>après le repas</span>
-            </div>
+            {/* Libellé dynamique, seule source visuelle de la phase courante sur la piste (item 6) :
+                remplace les 4 anciennes étiquettes équiréparties, incohérentes avec les seuils réels
+                de `timingPhase`. Centré plutôt que calé sous le pouce du <input type=range> : suivre
+                le pouce au pixel près est fragile cross-navigateur (largeur de thumb non uniforme) —
+                un libellé centré reste toujours exact quant à la phase, ce qui est le seul invariant
+                exigé (cf. S2.md « Si bloqué »). */}
+            <p className={styles.sliderLabel} aria-live="polite">
+              {timingPhase(delay).libelle}
+            </p>
           </div>
         </div>
 
@@ -605,7 +679,37 @@ export default function InsulineRapideModule({ onNavigate, shell }: ModuleProps)
         </div>
       </section>
 
-      <p className="filrouge">La bonne dose, c'est celle de votre protocole — ici on apprend le raisonnement, pas les chiffres.</p>
+      {/* ── Temps ⑤ — Et si je ne mange pas ? (G5 : onglet distinct, item 2, S5.md IA6) ────── */}
+      <section id="m10-panel-5" role="tabpanel" aria-labelledby="m10-tab-5" hidden={temps !== 5} className={styles.panel}>
+        <div className={`card ${styles.situationCard}`}>
+          <div className={styles.courbeCard}>
+            <p className="eyebrow">Ce que fait le sucre si le repas est sauté</p>
+            <CourbeGlycemie courbes={T5_COURBES} bandes={bandes} marqueurs={[REPAS_MARQUEUR]} axeLabels={AXE_LABELS} />
+            <div className={styles.legendeRow}>
+              <span className={styles.legendeFantome}>- - Sans rapide</span>
+              <span className={styles.legendeVigilance}>— Avec rapide, injectée quand même</span>
+            </div>
+          </div>
+
+          <div className={styles.bridgeRow}>
+            <p className={styles.message}>{MESSAGE_SANS_REPAS}</p>
+            <button type="button" className="btn btn--ghost" onClick={() => onNavigate('hypoglycemie')}>
+              Ça ressemble à une hypo → le réflexe
+            </button>
+          </div>
+
+          {/* Option post-prandiale : EXCEPTION (inappétence/maladie), jamais une méthode de
+              routine (doc §3 temps ⑤, S5.md étape 4). `// à revalider (Thibault)`. */}
+          <p className={styles.exceptionNote}>{MESSAGE_EXCEPTION_POST_PRANDIAL}</p>
+        </div>
+      </section>
+
+      <div className={styles.piedRefrain}>
+        <p className="filrouge">La bonne dose, c'est celle de votre protocole — ici on apprend le raisonnement, pas les chiffres.</p>
+        {/* Pont (item 8b) : relie « ce repas » (rapide) à « la journée entière » (basale) — paire
+            avec la phrase-pont symétrique du module basale (S4, item 8a). `// à revalider (Thibault)`. */}
+        <p className={styles.pont}>{PONT_VERS_BASALE}</p>
+      </div>
     </div>
     </ModuleShell>
   );
