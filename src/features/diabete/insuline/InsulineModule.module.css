@@ -16,6 +16,15 @@
   border: 0;
 }
 
+/* --- Intro rôle de la lente (item 3, S4 IA5) : chapô au-dessus de la courbe, pas de carte
+   pour rester léger (« sobre », ne pas concurrencer visuellement la carte courbe juste après). */
+.introTexte {
+  margin: 0;
+  font-size: var(--font-size-lead);
+  line-height: 1.45;
+  color: var(--color-text);
+}
+
 /* --- Carte courbe --- */
 
 .graphCard {
@@ -196,5 +205,29 @@
   background: transparent;
   font: 700 15px 'Work Sans', sans-serif;
   cursor: pointer;
+}
+
+/* --- Régularité / horaire (item 1, S4 IA5) : bloc court, message générique unique (G2),
+   aucune molécule ni chiffre. Liseré bleu nav = information neutre, distinct du refrain de
+   sécurité (.filrouge) et des cartes de situation (bordure pleine). */
+.regulariteCard {
+  padding: var(--space-md) var(--space-lg);
+  border-left: 4px solid var(--color-nav);
+}
+
+.regulariteTexte {
+  margin: 0;
+  font-size: 1em;
+  line-height: 1.45;
+  color: var(--color-text);
+}
+
+/* --- Pont vers le module rapide (item 8a, S4 IA5) : phrase de transition discrète, même
+   registre visuel que .accompagnement (note d'accompagnement, pas un refrain de sécurité). */
+.pontTexte {
+  margin: 0;
+  color: var(--color-text-soft);
+  font-size: var(--font-size-small);
+  line-height: 1.45;
 }
 

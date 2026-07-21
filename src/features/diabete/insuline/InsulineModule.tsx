@@ -58,6 +58,34 @@ const MARQUEURS: MarqueurDef[] = [
   { t: SEGMENTS[0].t1, type: 'attente', label: 'Réveil' },
 ];
 
+// --- Ajouts S4 (plan insuline-affinements-2026-07, IA5) : intro rôle (item 3) + régularité/
+// horaire (item 1) + phrase-pont vers le module rapide (item 8a). Contenu dérivé du doc
+// d'autorité `docs/diabete/09-insuline-basale.md` (validé Thibault, gate G1, 2026-07-21).
+// Décision « Si bloqué » (S4.md) : pas de mini-visuel « sans lente, la nuit dérive » — le
+// réutiliser via `CourbeGlycemie` imposerait une 2ᵉ courbe quasi pleine taille (`.wrap` du
+// composant partagé impose min-width 440px dès 480px de viewport, cf. `CourbeGlycemie.module.css`),
+// ce qui alourdit l'écran et repousse la courbe/titration réelle sous la ligne de flottaison —
+// contraire à la décision « sobre ». Le texte seul porte l'idée (cf. 2ᵉ phrase ci-dessous).
+
+/** Intro rôle de la lente (item 3, doc §1 pt1/pt2/pt3 + §2 message clé). Combine « frein du
+ *  foie » + « sucre de fond ≠ repas » (message clé) et l'idée de dérive nocturne sans lente
+ *  (§1 pt3), reliée aux repères Coucher/Réveil déjà affichés sur la courbe (`MARQUEURS`).
+ *  // à revalider (Thibault) : libellé exact. */
+const INTRO_ROLE_TEXTE =
+  "La lente freine la fabrique de sucre du foie : elle tient le sucre de fond, jour et nuit — pas celui des repas, qui est le rôle de la rapide. Sans elle, ou à dose trop faible, le sucre grimpe pendant la nuit, jusqu'au réveil.";
+
+/** Régularité / horaire (item 1, doc §3③) — message générique unique, sans molécule ni
+ *  chiffre (gate G2 tranchée). Repris verbatim du doc validé. // à revalider (Thibault). */
+const REGULARITE_TEXTE =
+  'Fais ton injection à la même heure chaque jour. Selon ton insuline, une certaine souplesse est possible — cale les détails avec ton soignant.';
+
+/** Pont (item 8a) — relie les deux zooms : la basale couvre la journée entière (coucher →
+ *  coucher, cf. `MARQUEURS`/`AXE_LABELS`), la rapide zoome sur un repas (module 10). Paire
+ *  conceptuelle à recouper avec la phrase-pont symétrique de S5 côté module rapide (item 8b).
+ *  // à revalider (Thibault) : libellé exact. */
+const PONT_TEXTE =
+  'La lente couvre toute la journée, du coucher au coucher ; la rapide zoome sur un seul repas.';
+
 export default function InsulineModule({ onNavigate, shell }: ModuleProps) {
   const [situationId, setSituationId] = useState<SituationId | null>(null);
   const [segmentId, setSegmentId] = useState<'nuit' | 'repas' | null>(null);
@@ -99,6 +127,8 @@ export default function InsulineModule({ onNavigate, shell }: ModuleProps) {
   return (
     <ModuleShell titre={shell.titre} sources={shell.sources} onBack={shell.onBack} wide>
     <div className={styles.module}>
+      <p className={styles.introTexte}>{INTRO_ROLE_TEXTE}</p>
+
       <div className={`card ${styles.graphCard}`}>
         <div className={styles.graphHeader}>
           <span className={styles.graphLabel}>Courbe du capteur</span>
@@ -222,6 +252,10 @@ export default function InsulineModule({ onNavigate, shell }: ModuleProps) {
         </div>
       </div>
 
+      <div className={`card ${styles.regulariteCard}`}>
+        <p className={styles.regulariteTexte}>{REGULARITE_TEXTE}</p>
+      </div>
+
       <div className={styles.piedRefrain}>
         <p className="filrouge">Dans le doute, on ne monte pas — on traite l'hypo d'abord.</p>
         <p className={styles.accompagnement}>
@@ -229,6 +263,8 @@ export default function InsulineModule({ onNavigate, shell }: ModuleProps) {
           prendre seul.
         </p>
       </div>
+
+      <p className={styles.pontTexte}>{PONT_TEXTE}</p>
     </div>
     </ModuleShell>
   );
