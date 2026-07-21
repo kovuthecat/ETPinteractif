@@ -2,8 +2,6 @@ import { useState } from 'react';
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
 import type { ModuleProps } from '../../types';
 import PrintableLivret from '../../../components/PrintableLivret';
-import { SITUATIONS } from '../../../content/tabac/situations';
-import { MOTIVATION_SEED } from '../motivation/data';
 import { useSelection, type StrategieArret } from '../../../state/SelectionContext';
 import { buildLivretSections } from './livretSections';
 import styles from './PlanArretModule.module.css';
@@ -11,17 +9,12 @@ import styles from './PlanArretModule.module.css';
 // « Mon plan d'arrêt » lit et écrit l'état de sélection partagé (SelectionContext,
 // en mémoire) : chaque section est pré-remplie depuis ce qui a été choisi dans les
 // autres modules, et l'éditer ici met à jour le même état (cohérence bidirectionnelle).
-
-// Formes de substitut (id ↔ libellé). Les ids sont alignés sur `FormeId` de
-// SubstitutsModule ; les libellés sur `FORMES_DATA[forme].label`.
-const FORME_OPTIONS: { id: string; label: string }[] = [
-  { id: 'patch', label: 'Patch (24 h / 16 h)' },
-  { id: 'gomme', label: 'Gomme' },
-  { id: 'pastille', label: 'Pastille' },
-  { id: 'sublingual', label: 'Comprimé sublingual' },
-  { id: 'spray', label: 'Spray buccal' },
-  { id: 'vapoteuse', label: 'Vapoteuse' },
-];
+//
+// Réduit à l'écran (revue-prod-2026-07/S2, RP2a) aux seules sections « ma date » et
+// « si j'ai un écart » : les autres choix (substituts, situations, parades, raisons,
+// contacts) restent alimentés par les modules amont dans le même `SelectionState` et
+// ne sont plus redemandés ici — mais le livret imprimé (`livretSections.tsx`, inchangé)
+// les lit tous et reste complet.
 
 // Stratégie d'arrêt (section 1) — deux options également valables. Portée v1 :
 // libellés seuls, aucun protocole/palier calculé. Textes cliniques à revalider.
@@ -29,17 +22,6 @@ const STRATEGIE_OPTIONS: { id: StrategieArret; label: string }[] = [
   { id: 'complet', label: 'Arrêt complet' }, // à revalider (Thibault)
   { id: 'progressive', label: 'Réduction progressive' }, // à revalider (Thibault)
 ];
-
-// Situations à risque = automatismes comportementaux (source partagée `situations.ts`).
-const COMPORTEMENTALE = SITUATIONS.filter((s) => s.pilier === 'comportementale');
-const SITUATION_LABELS = COMPORTEMENTALE.map((s) => s.label);
-const SITUATION_LABEL_TO_ID = new Map(COMPORTEMENTALE.map((s) => [s.label, s.id]));
-
-// Les 4D — cf. features/tabac/boite-a-outils (outil « vague »).
-const PARADES: string[] = ['Différer', "Détourner l'attention", 'Se détendre — respirez', "D'eau"];
-
-// Seed Motivation — libellés partagés avec MotivationModule (motivation/data.ts).
-const RAISONS: string[] = MOTIVATION_SEED;
 
 // Plan de secours en cas d'écart — cf. plans/boite-a-outils/S2.md, outil `outil-faux-pas`.
 const GESTES_ECART: string[] = [
@@ -71,14 +53,23 @@ function ChipGroup({
 }: ChipGroupProps) {
   const [inputValue, setInputValue] = useState('');
 
-  function handleKeyDown(event: ReactKeyboardEvent<HTMLInputElement>) {
-    if (event.key !== 'Enter') return;
-    event.preventDefault();
+  // Commit partagé Entrée / blur (revue-prod-2026-07/S3, RP3b) : un texte tapé mais non
+  // validé ne doit pas se perdre si l'utilisateur clique ailleurs (ex. « Imprimer ») sans
+  // appuyer sur Entrée — le blur d'un champ se déclenche avant le clic d'un autre élément,
+  // donc valider aussi au blur couvre ce cas. `trimmed` vide après un Entrée qui a déjà vidé
+  // le champ ⇒ le blur suivant ne fait rien : pas de doublon possible.
+  function commit() {
     const trimmed = inputValue.trim();
     if (trimmed && onAddLibre) {
       onAddLibre(trimmed);
       setInputValue('');
     }
+  }
+
+  function handleKeyDown(event: ReactKeyboardEvent<HTMLInputElement>) {
+    if (event.key !== 'Enter') return;
+    event.preventDefault();
+    commit();
   }
 
   return (
@@ -116,6 +107,7 @@ function ChipGroup({
           value={inputValue}
           onChange={(event) => setInputValue(event.target.value)}
           onKeyDown={handleKeyDown}
+          onBlur={commit}
           placeholder={addPlaceholder ?? '+ autre'}
           aria-label={addPlaceholder ?? 'Ajouter un autre élément'}
         />
@@ -142,10 +134,6 @@ export default function PlanArretModule(_: ModuleProps) {
       ? 'votre date de début de réduction — à choisir ensemble, à votre rythme' // à revalider (Thibault)
       : 'à choisir ensemble, quand vous serez prêt·e';
 
-  const situationsFixesLabels = new Set(
-    COMPORTEMENTALE.filter((s) => state.situations.includes(s.id)).map((s) => s.label),
-  );
-
   const auMoinsUneSection =
     date !== '' ||
     state.substituts.length > 0 ||
@@ -165,8 +153,8 @@ export default function PlanArretModule(_: ModuleProps) {
   return (
     <div className={styles.module}>
       <p className={styles.intro}>
-        Rassemblez ce qui vous servira — à votre rythme, rien n'est obligatoire. Ce qui a été choisi dans les
-        autres modules est déjà repris ici.
+        Fixez votre date et préparez votre rebond. Tout ce que vous avez choisi dans les autres étapes
+        (substituts, situations, raisons…) est repris dans votre livret.
       </p>
 
       <section className={`card ${styles.section}`}>
@@ -206,78 +194,7 @@ export default function PlanArretModule(_: ModuleProps) {
       </section>
 
       <section className={`card ${styles.section}`}>
-        <p className={styles.sectionLabel}>2. Mes substituts</p>
-        <div className={styles.chipRow}>
-          {FORME_OPTIONS.map(({ id, label }) => {
-            const active = state.substituts.includes(id);
-            return (
-              <button
-                key={id}
-                type="button"
-                className={`chip ${styles.chipBtn}${active ? ' activeDoubled' : ''}`}
-                aria-pressed={active}
-                onClick={() => toggle('substituts', id)}
-              >
-                {label}
-              </button>
-            );
-          })}
-        </div>
-        <p className={styles.renvoi}>La dose se règle par quarts, selon le ressenti.</p>
-      </section>
-
-      <section className={`card ${styles.section}`}>
-        <p className={styles.sectionLabel}>3. Mes situations à risque</p>
-        <ChipGroup
-          fixedOptions={SITUATION_LABELS}
-          selected={situationsFixesLabels}
-          onToggleFixed={(label) => {
-            const id = SITUATION_LABEL_TO_ID.get(label);
-            if (id) toggle('situations', id);
-          }}
-          libres={state.situationsLibres}
-          onAddLibre={(v) => add('situationsLibres', v)}
-          onRemoveLibre={(v) => remove('situationsLibres', v)}
-        />
-      </section>
-
-      <section className={`card ${styles.section}`}>
-        <p className={styles.sectionLabel}>4. Mes parades</p>
-        <ChipGroup
-          fixedOptions={PARADES}
-          selected={new Set(state.parades)}
-          onToggleFixed={(v) => toggle('parades', v)}
-          libres={state.parades.filter((v) => !PARADES.includes(v))}
-          onAddLibre={(v) => add('parades', v)}
-          onRemoveLibre={(v) => remove('parades', v)}
-        />
-      </section>
-
-      <section className={`card ${styles.section}`}>
-        <p className={styles.sectionLabel}>5. Mes raisons</p>
-        <ChipGroup
-          fixedOptions={RAISONS}
-          selected={new Set(state.raisons)}
-          onToggleFixed={(v) => toggle('raisons', v)}
-          libres={state.raisons.filter((v) => !RAISONS.includes(v))}
-          onAddLibre={(v) => add('raisons', v)}
-          onRemoveLibre={(v) => remove('raisons', v)}
-        />
-      </section>
-
-      <section className={`card ${styles.section}`}>
-        <p className={styles.sectionLabel}>6. Autour de moi</p>
-        <ul className={styles.autourList}>
-          <li>
-            Tabac Info Service — <strong>39 89</strong>
-          </li>
-          <li>En parler à un proche</li>
-          <li>Être accompagné·e par un professionnel</li>
-        </ul>
-      </section>
-
-      <section className={`card ${styles.section}`}>
-        <p className={styles.sectionLabel}>7. Si j'ai un écart</p>
+        <p className={styles.sectionLabel}>2. Si j'ai un écart</p>
         <p className={styles.renvoi}>
           Un écart n'est pas une rechute. Je prépare maintenant mes 3 gestes pour repartir aussitôt.
         </p>
