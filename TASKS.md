@@ -8,6 +8,17 @@ Index des tâches : backlog + actives. Historique des tâches faites : `git log`
 
 ## Tâches
 
+### Outils interactifs (2026-07-21, revue produit Thibault) · plan: → plans/outils-interactifs-2026-07/ (index + S1-S8)
+- [x] S1 — Socle : registre `OUTILS_INTERACTIFS` + persistance injectée (`outilsData`/`useConsultationStore`/`usePatientStore`) + fiche perso + respiration recâblée en consultation (OI1-OI4) · modèle: Sonnet, effort: high · plan: → plans/outils-interactifs-2026-07/S1.md (auto OK : tsc --noEmit + vite build (2 entrées) + npm test 101/101 verts · commits 2a24fa7/269b2c0/ee875c7/0fe136e)
+- [x] S2 — Constructeur « SI… ALORS… » (OI5, flagship efficacité démontrée) · modèle: Sonnet, effort: high · plan: → plans/outils-interactifs-2026-07/S2.md (auto OK : tsc --noEmit + vite build verts · commit 14e87ad)
+- [x] S3 — Calculette « tirelire » (OI6, économies + récompense, prix paquet 12€/20 cigs G3) · modèle: Sonnet, effort: medium · plan: → plans/outils-interactifs-2026-07/S3.md (auto OK : tsc --noEmit + vite build verts · commit 11c40c5)
+- [x] S4 — `OutilChecklist` générique (OI7) → place-nette, mains-bouche, anti-ennui, routine, items pré-remplis (G4) · modèle: Sonnet, effort: high · plan: → plans/outils-interactifs-2026-07/S4.md (auto OK : tsc --noEmit + vite build verts · commit 15bb02e)
+- [x] S5 — `MinuteurGuide` générique (OI8) → bouger 10 min, surfer sur l'envie · modèle: Sonnet, effort: high · plan: → plans/outils-interactifs-2026-07/S5.md (auto OK : tsc --noEmit + vite build + npm test 101/101 verts · commit 52defdd)
+- [x] S6 — Plan de secours (OI9, en cas d'écart) + Ma phrase de refus (OI10) · modèle: Sonnet, effort: medium · plan: → plans/outils-interactifs-2026-07/S6.md (auto OK : tsc --noEmit + vite build verts · commits aa9e20b/57e8f23)
+- [x] S7 — Journal (OI11) : renvoi carnet existant côté patient + gabarit hebdo imprimable côté consultation (G5) · modèle: Sonnet, effort: medium · plan: → plans/outils-interactifs-2026-07/S7.md (auto OK : tsc --noEmit + vite build verts · commit a0928da)
+- [x] S8 — Consolidation : commits tâche par tâche (11, OI1-OI11) + statuts (index/TASKS) + STATUS/VALIDATION/DECISIONS/PROJECT_MAP · modèle: Haiku, effort: minimal · plan: → plans/outils-interactifs-2026-07/S8.md (auto OK : tsc --noEmit + vite build (2 entrées) + npm test 101/101 verts)
+  - Vagues : V1 = S1 (socle solo) → V2 = S2·S3·S4·S5·S6·S7 (parallèles, zones disjointes) → V3 = S8 (consolidation). **Chantier clos 2026-07-21** (14 outils sur 14 : interactifs ou renvoi assumé, dans les deux bundles). Gates G1-G5 tranchées le 2026-07-21 (cf. `DECISIONS.md`). ⚠️ Validation VISUELLE humaine (Thibault, `npm run dev`, deux bundles) reste entièrement à faire — push différé, à confirmer par Thibault.
+
 ### Revue Chrome — vague de corrections (revue navigateur Thibault, 2026-07-15) · plan: → plans/revue-chrome-2026-07/ (index + S1-S17)
 - [ ] S1 — Diabète : donut→camembert (C1) + ordonnance vide/état vide (C3) + bulle cardio fond+gras (C4) · modèle: Sonnet, effort: medium · plan: → plans/revue-chrome-2026-07/S1.md
 - [ ] S2 — « Ce que l'arrêt répare » : halo actif unique (A1) + illus agrandies (A2) + frise pleine largeur en tête (A3) + doublon Peau/Jambes + tri temporel (A4) · modèle: Sonnet, effort: medium · plan: → plans/revue-chrome-2026-07/S2.md

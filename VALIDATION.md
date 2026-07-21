@@ -1451,3 +1451,87 @@ point principal à valider ici : la bonne image doit apparaître au bon endroit.
   `DEPART_OPTIONS`, `REPAS_CUMUL`, `DOSE_BASE_CUMUL`, `DOSE_RECORRECTION`, `EXCES_SITUATION_B`,
   `RECORR_DELAIS`, `excesGate` — toutes `// à revalider (Thibault)` : rendu et dynamique validés
   visuellement, valeurs cliniques non encore confirmées.
+
+---
+
+## Chantier outils interactifs (S1-S8) — validation du 2026-07-21
+
+**Statut** : chantier consolidé (11 commits atomiques OI1-OI11, dans l'ordre S1→S7) · gates auto verts
+(`tsc --noEmit` + `npm run build`, 2 entrées + `npm test` 101/101) · **en attente de validation visuelle
+Thibault** (`npm run dev`, les deux bundles consultation + patient) — aucune vérification navigateur
+faite côté Claude, conformément à la règle projet. Checklists reprises verbatim des sections « Checklist
+Humain » de chaque `plans/outils-interactifs-2026-07/S<k>.md`.
+
+### Gates G1-G5 — toutes tranchées le 2026-07-21 (cf. `DECISIONS.md`)
+
+- [x] **G1 — extension du cadrage patient.** Tranché : tous les outils interactifs sont exposés côté app
+  patient (pas seulement en consultation), persistés en local. Rien à revalider.
+- [x] **G2 — SI… ALORS… (S2).** Tranché : déclencheurs « SI » = situations sélectionnées (consultation :
+  `SelectionState.situations` ; patient : situation active) + saisie libre ; parades « ALORS » = suggestions
+  reliées aux autres outils + saisie libre. Rien à revalider.
+- [x] **G3 — Tirelire (S3).** Tranché : prix du paquet par défaut 12 €, `cigsParPaquet` défaut 20. **Point
+  mineur non tranché par la gate** : la valeur de démarrage `cigsParJour` (choisie à 10 par l'exécutant,
+  ajustable immédiatement par ± ou saisie directe) — non bloquant, à signaler pour information seulement.
+- [x] **G4 — Checklists (S4).** Tranché : items suggérés pré-remplis + ajout libre, listes figées. **Point
+  ouvert à revalider (Thibault)** : la « Décision clé » de `S4.md` mentionnait des groupes « Maison /
+  Voiture / Travail » pour `place-nette`, mais la liste concrète tranchée (« Listes figées (G4) ») ne
+  détaille que Maison et Voiture — l'exécutant a suivi la liste concrète (cohérente avec `outil-place-nette`
+  dans `outils.ts`, qui ne parle pas du travail) plutôt que d'inventer un contenu « Travail » non sourcé. Si
+  un 3ᵉ groupe était réellement voulu, le trancher et l'ajouter à `data/checklists.ts`.
+- [x] **G5 — Journal (S7).** Tranché : app patient → renvoi vers le carnet existant (`PatientCarnet`, pas
+  de doublon) ; consultation → gabarit hebdo imprimable (Heure/Lieu/Activité/Ressenti, aucune persistance).
+  Rien à revalider.
+
+### S1 — Socle (OI1-OI4)
+
+- [ ] **OI3 — câblage générique.** Consultation : chaque carte outil ouvre son détail ; les outils marqués
+  (les 11 nouveaux + les 2 déjà existants) montrent « Lancer l'outil » → le composant s'affiche → retour OK
+  vers le détail ; `vague4d` et `respiration` fonctionnent à l'identique d'avant (passent maintenant par le
+  registre). Patient — chaque outil interactif (dont les transverses comme `vague4d`, désormais aussi
+  exposé côté patient, cf. G1) montre « Démarrer » → composant → fermeture OK, retour à la liste des outils
+  de la situation.
+- [ ] **OI4 — fiche perso + respiration consultation.** Ajouter un outil sans perso à la fiche → consigne
+  générique inchangée ; un outil avec perso (une fois S2-S6 exécutées) → ses lignes personnalisées
+  remplacent la consigne. « Respirer pour redescendre » lançable en consultation (bouton « Lancer l'outil »
+  visible dans son détail) — c'était l'anomalie de départ du chantier.
+
+### S2 — Constructeur « SI… ALORS… » (OI5)
+
+- [ ] Composer 3 plans → apparaissent en liste ; cocher l'outil « SI… ALORS… » dans la fiche → les 3 plans
+  s'affichent (et non la consigne générique) ; consultation (rechargement F5 = perte, normal) vs patient
+  (persistance après réouverture).
+
+### S3 — Calculette tirelire (OI6)
+
+- [ ] 15 cig/j × 12 € /20 → ~9 €/j, ~63 €/sem, ~270 €/mois, ~3285 €/an (ordre de grandeur) ; la fiche
+  affiche la ligne synthèse.
+
+### S4 — `OutilChecklist` générique (OI7)
+
+- [ ] Les 4 outils (place-nette, mains-bouche, anti-ennui, routine) ouvrent le même composant avec leur
+  contenu propre ; cocher/ajouter → persistance (patient) ; les items cochés remontent dans la fiche « Ma
+  boîte à outils ».
+
+### S5 — `MinuteurGuide` générique (OI8)
+
+- [ ] `bouger` → 10:00 décompte, exercices de repli visibles, arrêt propre ; `surfer` → invites qui
+  défilent, clôture à 0 ; aucun interval qui fuit (démonter en cours = pas d'erreur console).
+
+### S6 — Plan de secours (OI9) + Ma phrase de refus (OI10)
+
+- [ ] OI9 : les 3 gestes s'affichent en grand ; en consultation, si des raisons ont été cochées ailleurs,
+  elles apparaissent ; 39 89 visible.
+- [ ] OI10 : choisir une variante OU saisir la sienne → la fiche affiche la phrase retenue.
+
+### S7 — Journal (OI11)
+
+- [ ] Patient — l'outil « Une semaine d'observation » ouvre le carnet existant (pas de doublon) ;
+  consultation — bouton « Imprimer le gabarit » → grille hebdo vide imprimable.
+
+### Cadre transverse (rappel, vaut aussi pour ce chantier)
+
+- [ ] **Zéro persistance en consultation** : recharger la page (reload) ramène à l'accueil, aucune donnée
+  `outilsData` conservée (mémoire de session uniquement).
+- [ ] **Persistance patient** : rouvrir un outil interactif après avoir quitté puis rouvert l'app patient
+  restaure les données saisies (localStorage, clés `etp.tabac.<outil.id>`).
+- [ ] Cibles cliquables ≥ 44 px, lisibilité à ~1 m, aucune régression visuelle sur `vague4d`/`respiration`.

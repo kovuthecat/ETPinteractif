@@ -4,7 +4,72 @@
 
 > **Frontières** — STATUS : état actuel · `TASKS.md` : backlog + tâches · `plans/` : plan d'une tâche active · `VALIDATION.md` : checklist visuelle.
 >
-> **Dernière mise à jour :** 2026-07-15 (chantier revue-chrome-2026-07 — corrections vagues Tabac/Diabète/Patient, 27 tâches (A1-A4, B1, C1-C6, D1-D6, E1-E7), parallèles S1-S16+S18, **consolidation S17 commits/statuts complète**)
+> **Dernière mise à jour :** 2026-07-21 (chantier outils-interactifs-2026-07 — boîte à outils tabac
+> rendue interactive, 11 tâches OI1-OI11, socle solo (S1) + vague parallèle S2-S7, **consolidation S8
+> commits/statuts complète**)
+
+**Boîte à outils tabac rendue interactive (2026-07-21)** — chantier `plans/outils-interactifs-2026-07/`
+(index + S1-S8), issu d'une revue produit de Thibault (2026-07-21) : sur les 14 outils de « Stratégies &
+outils », un seul était réellement interactif (`outil-vague-4d`) et un second à moitié (`outil-respiration`,
+câblé côté patient seulement) — les 12 autres n'étaient que des fiches à lire. Objectif atteint : **14
+outils sur 14** sont désormais soit interactifs, soit un renvoi assumé (`outil-substituts`), dans **les
+deux bundles** (consultation + app patient) :
+
+- **Socle (S1, OI1-OI4, solo)** : registre `OUTILS_INTERACTIFS: Record<interactif, Component>`
+  (`src/features/tabac/boite-a-outils/outils-interactifs/registry.ts`) remplace le test en dur
+  `interactif === 'vague4d'` de `BoiteAOutilsModule.tsx`. Contrat `OutilInteractifProps` (`types.ts`) :
+  `store` (persistance injectée, `get`/`setList` sur `string[]`) + `contexte?` (lecture seule :
+  situations actives, raisons) + `onClose`. `SelectionState` gagne `outilsData: Record<string, string[]>`
+  (+ action `SET_OUTIL_DATA`, mémoire de session, invariant #1 consultation) ; deux adaptateurs
+  `useConsultationStore`/`usePatientStore` (ce dernier sur `localStorage`, clés `etp.tabac.<outil.id>`).
+  Les deux bundles affichent désormais un bouton « Lancer l'outil » / « Démarrer » dès qu'un outil a un
+  `interactif` mappé. La fiche « Ma boîte à outils » affiche les lignes personnalisées de l'outil
+  (`outilsData[outil.id]`) si non vides, sinon la `consigneFiche` générique (comportement d'origine).
+  `outil-respiration` (jusqu'ici câblé patient seulement) est désormais lançable en **consultation** aussi.
+- **OI5 — Constructeur « SI… ALORS… »** (S2, `PlansSiAlors.tsx`) : le patient compose 3 à 5 plans à
+  partir de ses situations sélectionnées (chips + saisie libre) et de parades reliées aux autres outils de
+  la boîte (bouger, respiration, eau, phrase de refus, surfer + saisie libre) ; persistance `store`, ligne
+  fiche `SI …, ALORS ….`
+- **OI6 — Tirelire** (S3, `Tirelire.tsx`) : calculette d'économies (jour/semaine/mois/an) à partir de
+  cigs/jour, prix du paquet (défaut 12 €, G3) et cigs/paquet (défaut 20, G3) + champ « Ma récompense »
+  libre ; ligne de synthèse persistée pour la fiche.
+- **OI7 — `OutilChecklist` générique** (S4, `OutilChecklist.tsx` + `data/checklists.ts`) : un seul
+  composant sert 4 outils — place-nette (groupes Maison/Voiture), mains-bouche, anti-ennui (cible ~10,
+  indicateur non bloquant), routine (paires rituel → substitution éditable) — items suggérés pré-remplis
+  (G4) + ajout libre, persistance `store`.
+- **OI8 — `MinuteurGuide` générique** (S5, `MinuteurGuide.tsx` + `data/minuteurs.ts`) : un seul composant
+  sert `bouger` (minuteur 10 min + rappel d'exercices de repli) et `surfer` (invites d'observation de
+  l'envie qui défilent, ~3 min) ; phases idle/active/done, pas de persistance (rien à mémoriser).
+- **OI9 — Plan de secours** (S6, `PlanSecours.tsx`) : carte d'action immédiate (pas une fiche) — les 3
+  gestes du `proposition` cochables (état éphémère, non persisté — geste d'urgence), contact 39 89, rappel
+  des raisons d'arrêter déjà saisies (`contexte.raisons`) ou invite à les noter.
+- **OI10 — Ma phrase de refus** (S6, `PhraseRefus.tsx`) : 4 variantes courtes sélectionnables (dont la
+  phrase verbatim du `proposition`) + saisie libre, persistée pour la fiche ; astuce comportementale +
+  rappel de vigilance alcool verbatim.
+- **OI11 — Journal** (S7, `GabaritJournal.tsx`) : ne duplique pas un journal — côté patient, renvoie vers
+  le carnet existant (`PatientCarnet`, bouton « Ouvrir mon carnet », navigation via un nouveau prop
+  `onNavigate` sur `PatientSituations`/`PatientApp`) ; côté consultation (zéro persistance), gabarit
+  hebdomadaire imprimable (heure/lieu/activité/ressenti, 15 lignes) via `FicheOverlay`.
+
+**Gates G1-G5 tranchées le 2026-07-21** (cf. `DECISIONS.md`) : G1 — tous les outils interactifs exposés
+côté patient (extension du cadrage « lecture seule » v1) ; G2 — déclencheurs SI = situations
+sélectionnées + saisie libre, parades ALORS reliées aux autres outils ; G3 — tirelire 12 €/paquet, 20
+cigs/paquet (défaut `cigsParJour` = 10, détail mineur non tranché par la gate, choisi par l'exécutant) ;
+G4 — items de checklist pré-remplis + ajout libre (place-nette : Maison/Voiture seulement, pas de 3ᵉ
+groupe Travail — point à revalider si un 3ᵉ groupe était réellement voulu) ; G5 — journal = renvoi carnet
+patient + gabarit imprimable consultation.
+
+**Tension d'architecture assumée** (cf. `DECISIONS.md`) : le registre partagé (`OUTILS_INTERACTIFS`) et
+son contrat de types sont désormais importés par le bundle patient (`PatientSituations.tsx`,
+`usePatientStore.ts`) depuis `src/features/tabac/boite-a-outils/outils-interactifs/`, alors qu'un
+principe antérieur (`plans/aide-patient/index.md`) interdisait au bundle patient d'importer
+`src/features/**`. Assumé comme évolution d'architecture (registre partagé entre bundles + gate G1),
+documenté explicitement, pas une anomalie.
+
+Gate finale (S1-S8) : `npx tsc --noEmit` ✓ · `npm run build` ✓ (2 entrées `consultation.html`/
+`patient.html`) · `npm test` ✓ **101/101**, aucune dépendance runtime ajoutée. 11 commits atomiques
+OI1-OI11 (un par tâche, dans l'ordre S1→S7) + consolidation contexte. **Validation visuelle humaine
+(Thibault, `npm run dev`, les deux bundles) reste entièrement à faire** — cf. `VALIDATION.md`.
 
 **Corrections revue guidée — Tabac A-D + Diabète E (2026-07-14)** — chantier
 `plans/corrections-revue-guidee/` (index + S1-S7), 13 points d'une revue guidée de l'app par Thibault
