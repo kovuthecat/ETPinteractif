@@ -228,18 +228,40 @@
   box-shadow: var(--shadow-1);
 }
 
+/* RP6b (revue-prod-2026-07/S5) : le tableau vide se percevait comme une simple zone
+   blanche inerte plutôt que comme une zone d'ajout. Bordure en pointillés + icône « + »
+   + texte plus visible, alignés sur l'affordance déjà utilisée par .reserveCard. */
+.boardEmptyState {
+  background: var(--color-bg);
+  border: 2px dashed var(--color-line);
+  box-shadow: none;
+}
+
 .boardEmpty {
   position: absolute;
   inset: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 10px;
   margin: 0;
   padding: 20px;
   text-align: center;
+}
+
+.boardEmptyIcon {
+  color: var(--color-nav);
+  opacity: 0.6;
+}
+
+.boardEmptyText {
+  margin: 0;
+  max-width: 42ch;
   font-size: 14px;
   font-weight: 600;
-  opacity: 0.4;
+  color: var(--color-text-soft);
+  opacity: 0.75;
 }
 
 .boardCardWrap {

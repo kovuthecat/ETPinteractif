@@ -21,17 +21,20 @@ export default function BeneficesArretModule(_props: ModuleProps) {
   const [selectedZone, setSelectedZone] = useState<ZoneId | null>(null);
 
   const jalonCourant = JALONS[jalonIndex];
+  const zonesDuJalon = new Set<ZoneId>(jalonCourant.zones);
 
-  // Un seul halo vert actif à la fois (A1) : uniquement la zone sélectionnée pour le détail.
-  // Toutes les autres zones restent en `actif` (halo discret non-vert) — c'est le parent qui
-  // pilote cet état, SilhouetteCorps ne connaît pas de notion de « zone active » unique.
+  // RP6a (revue-prod-2026-07/S5, G-RP6 option a) : cohérence avec le halo diabète
+  // (`diabete/traitements` / `diabete/complications`, qui réutilisent le même mécanisme
+  // `SilhouetteCorps` « allume »). Au repère temporel courant, la ou les zones concernées
+  // s'allument automatiquement — sans clic préalable. Un clic explicite sur une zone (pour
+  // son détail) reprend la main : seule cette zone reste allumée, comme avant (A1).
   const silhouetteZones: SilhouetteZone[] = ZONES.map((z) => ({
     id: z.id,
     label: z.label,
     x: z.x,
     y: z.y,
     r: z.r,
-    etat: z.id === selectedZone ? 'allume' : 'actif',
+    etat: selectedZone ? (z.id === selectedZone ? 'allume' : 'actif') : zonesDuJalon.has(z.id) ? 'allume' : 'actif',
   }));
 
   function selectionnerJalon(index: number) {

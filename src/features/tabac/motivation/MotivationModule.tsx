@@ -341,11 +341,18 @@ export default function MotivationModule(_props: ModuleProps) {
         hidden={onglet !== 'raisons'}
         className={styles.section}
       >
-        <div ref={boardRef} className={styles.board}>
+        <div
+          ref={boardRef}
+          className={`${styles.board}${raisonsBoard.length === 0 ? ` ${styles.boardEmptyState}` : ''}`}
+        >
           {raisonsBoard.length === 0 && (
-            <p className={styles.boardEmpty}>
-              Cliquez sur une raison dans la réserve pour l'ajouter au tableau, ou créez-en une nouvelle.
-            </p>
+            <div className={styles.boardEmpty}>
+              <Plus size={22} aria-hidden="true" className={styles.boardEmptyIcon} />
+              <p className={styles.boardEmptyText}>
+                Cliquez sur une raison dans la réserve ci-dessous pour l'ajouter au tableau, ou créez-en
+                une nouvelle.
+              </p>
+            </div>
           )}
           {raisonsBoard.map((carte) => (
             <div
