@@ -33,7 +33,24 @@ export interface Outil {
   preuve: Preuve;
   consigneFiche: string; // 1 ligne, fiche imprimée
   renvoi?: { id: ModuleId; label: string };
-  interactif?: 'vague4d' | 'respiration'; // ouvre l'outil interactif au lieu d'un simple détail
+  // Ouvre l'outil interactif (registre `OUTILS_INTERACTIFS`, S1/OI1) au lieu d'un simple
+  // détail. Valeurs posées progressivement : `vague4d`/`respiration` existent déjà ; les
+  // 11 autres sont posées en OI3 (S1) au fil des sessions Vague 2 (S2-S7) qui remplissent
+  // le composant correspondant — cf. plans/outils-interactifs-2026-07/index.md.
+  interactif?:
+    | 'vague4d'
+    | 'respiration'
+    | 'si-alors'
+    | 'tirelire'
+    | 'place-nette'
+    | 'mains-bouche'
+    | 'anti-ennui'
+    | 'routine'
+    | 'bouger'
+    | 'surfer'
+    | 'plan-secours'
+    | 'refus'
+    | 'journal';
 }
 
 export const OUTILS: Outil[] = [
