@@ -735,7 +735,8 @@ export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
   // paragraphe ambiant, l'eyebrow + l'interaction elle-même suffisent.
   function getCaption(): { eyebrow: string; text?: string } {
     if (defi === 1) {
-      const text = d1Foods.length === 0 ? 'Glissez un premier aliment.' : D1_CAPTIONS[Math.min(d1FreinCount, 3)];
+      const text =
+        d1Foods.length === 0 ? "Touchez un premier aliment pour l'ajouter." : D1_CAPTIONS[Math.min(d1FreinCount, 3)];
       return { eyebrow: '① Composition', text };
     }
     if (defi === 2) return { eyebrow: '② Qualité' };
@@ -847,7 +848,7 @@ export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
               <div className={styles.d1Layout}>
                 <div className={styles.d1Plate} onDragOver={allowDrop} onDrop={handleD1Drop}>
                   {d1Foods.length === 0 && (
-                    <p className={styles.d1Empty}>Glissez un premier aliment depuis le garde-manger.</p>
+                    <p className={styles.d1Empty}>Touchez un aliment dans le garde-manger pour l'ajouter.</p>
                   )}
                   {d1Plate.map((chip) => {
                     const food = foodById(chip.id);

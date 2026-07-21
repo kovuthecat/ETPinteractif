@@ -80,12 +80,17 @@ export default function TraitementsModule({ onNavigate, shell }: ModuleProps) {
 
   const presentes = lignes.filter((l) => l.molecule.trim() !== '');
   const selectedLigne = selectedUid ? (lignes.find((l) => l.uid === selectedUid) ?? null) : null;
-  const selectedPresente = !!selectedLigne && selectedLigne.molecule.trim() !== '';
 
+  // RP4d : la classe (menu déroulant, toujours renseignée — cf. `newLigne`/`data.ts` : « la zone
+  // d'action est attachée à la CLASSE, jamais à la molécule ») suffit à déclencher l'effet d'une
+  // ligne sélectionnée. Avant ce correctif, un garde `selectedPresente` exigeait en plus un nom de
+  // molécule non vide, alors que rien ne l'impose côté données — l'utilisateur qui choisissait
+  // uniquement la classe voyait « Voir l'effet » devenir « Effet affiché » sans que rien ne
+  // s'affiche réellement.
   const litZones: Record<ZoneTraitementId, boolean> = { sucre: false, coeur: false, reins: false };
   if (viewMode === 'all') {
     presentes.forEach((l) => classById(l.classId).zones.forEach((z) => (litZones[z] = true)));
-  } else if (selectedPresente && selectedLigne) {
+  } else if (selectedLigne) {
     classById(selectedLigne.classId).zones.forEach((z) => (litZones[z] = true));
   }
 
@@ -107,10 +112,13 @@ export default function TraitementsModule({ onNavigate, shell }: ModuleProps) {
       sideText = "Toutes les zones que défend l'ordonnance complète, allumées ensemble.";
       badgeMultiFronts = presentes.some((l) => classById(l.classId).zones.length >= 2);
     }
-  } else if (selectedPresente && selectedLigne) {
+  } else if (selectedLigne) {
     const cls = classById(selectedLigne.classId);
     const phrases = cls.zones.map((z) => ZONE_MSG[z]);
-    sideText = `${selectedLigne.molecule.trim()} ${phrases.join(' Elle ')}`;
+    // Nom de molécule optionnel (RP4d) : à défaut de saisie, le libellé de la classe sert de
+    // sujet à la phrase, pour rester grammaticalement correct sans molécule renseignée.
+    const sujet = selectedLigne.molecule.trim() || cls.label;
+    sideText = `${sujet} ${phrases.join(' Elle ')}`;
     badgeMultiFronts = cls.zones.length >= 2;
   } else {
     sideText = null;

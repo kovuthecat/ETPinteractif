@@ -6,7 +6,12 @@
 
 .header {
   display: flex;
-  align-items: center;
+  /* RP4e : `flex-start` (pas `center`) — quand `.titleRow` grandit (onglets nombreux qui
+     wrappent sur plusieurs lignes, cf. `.nav`/`.titleRow` ci-dessous), un centrage vertical
+     ferait flotter « Accueil » et Sources à mi-hauteur du bloc devenu haut, au lieu de rester
+     alignés avec la première ligne (le titre). Avec un en-tête sur une seule ligne (cas le
+     plus courant), l'écart visuel entre les deux réglages est minime. */
+  align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-md);
   width: 100%;
