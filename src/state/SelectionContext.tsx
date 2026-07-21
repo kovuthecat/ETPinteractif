@@ -41,11 +41,16 @@ export interface SelectionState {
   gestesEcart: string[];
   /** dose de titration du patch choisie (mémoire de session, cf. `TitrationPatch`). */
   titrationPatch: TitrationDose;
+  /** données personnalisées des outils interactifs (S1/OI2, plans/outils-interactifs-2026-07) —
+   *  clé = `outil.id` (ou `outil.id`.sous-clé), valeur = lignes libres pour la fiche imprimée.
+   *  Mémoire de session uniquement (invariant #1 consultation) ; hors `SelectionListField`
+   *  comme `titrationPatch` (ce n'est pas un simple `string[]`). */
+  outilsData: Record<string, string[]>;
 }
 
 export type SelectionListField = Exclude<
   keyof SelectionState,
-  'dateArret' | 'strategie' | 'titrationPatch'
+  'dateArret' | 'strategie' | 'titrationPatch' | 'outilsData'
 >;
 
 const EMPTY_STATE: SelectionState = Object.freeze({
@@ -59,6 +64,7 @@ const EMPTY_STATE: SelectionState = Object.freeze({
   raisons: [],
   gestesEcart: [],
   titrationPatch: DEFAULT_TITRATION_DOSE,
+  outilsData: {},
 });
 
 type StatesByTheme = Record<ThemeId, SelectionState>;
@@ -71,6 +77,7 @@ type Action =
   | { type: 'SET_DATE'; theme: ThemeId; value: string }
   | { type: 'SET_STRATEGIE'; theme: ThemeId; value: StrategieArret | null }
   | { type: 'SET_TITRATION_PATCH'; theme: ThemeId; value: TitrationDose }
+  | { type: 'SET_OUTIL_DATA'; theme: ThemeId; key: string; values: string[] }
   | { type: 'RESET'; theme: ThemeId };
 
 function sameOrder(a: string[], b: string[]): boolean {
@@ -124,6 +131,17 @@ function reducer(state: StatesByTheme, action: Action): StatesByTheme {
       if (current.titrationPatch === action.value) return state;
       return { ...state, [action.theme]: { ...current, titrationPatch: action.value } };
     }
+    case 'SET_OUTIL_DATA': {
+      const list = current.outilsData[action.key] ?? [];
+      if (sameOrder(list, action.values)) return state;
+      return {
+        ...state,
+        [action.theme]: {
+          ...current,
+          outilsData: { ...current.outilsData, [action.key]: action.values },
+        },
+      };
+    }
     case 'RESET': {
       if (!state[action.theme]) return state;
       const rest = { ...state };
@@ -166,6 +184,8 @@ export interface UseSelectionResult {
   setDate: (value: string) => void;
   setStrategie: (value: StrategieArret | null) => void;
   setTitrationPatch: (value: TitrationDose) => void;
+  /** écrit les lignes personnalisées d'un outil interactif (S1/OI2), clé = `outil.id`. */
+  setOutilData: (key: string, values: string[]) => void;
   reset: () => void;
 }
 
@@ -190,6 +210,8 @@ export function useSelection(): UseSelectionResult {
       setDate: (value: string) => dispatch({ type: 'SET_DATE', theme, value }),
       setStrategie: (value: StrategieArret | null) => dispatch({ type: 'SET_STRATEGIE', theme, value }),
       setTitrationPatch: (value: TitrationDose) => dispatch({ type: 'SET_TITRATION_PATCH', theme, value }),
+      setOutilData: (key: string, values: string[]) =>
+        dispatch({ type: 'SET_OUTIL_DATA', theme, key, values }),
       // `reset` supprime l'entrée du thème → `strategie` repart à `null` (défaut).
       reset: () => dispatch({ type: 'RESET', theme }),
     }),
