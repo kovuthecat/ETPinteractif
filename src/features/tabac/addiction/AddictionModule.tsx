@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { CSSProperties } from 'react';
+import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { ArrowRight, Check } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import { SITUATIONS } from '../../../content/tabac/situations';
@@ -71,6 +71,18 @@ function pillarVars(p: PilierData): CSSProperties {
   return { '--pillar-color': p.color, '--pillar-color-soft': p.colorSoft } as CSSProperties;
 }
 
+/** RP4a : marge (en % de la dimension du conteneur) gardée libre sur les bords, pour que le
+ *  centre d'une bulle ne pousse jamais son propre encombrement hors de `.vennWrap` — sans quoi
+ *  les piliers dont le cercle est proche d'un bord (« physique » à gauche, « psychologique » à
+ *  droite) débordent horizontalement (le pilier « comportementale », centré, n'y est pas exposé). */
+const ITEM_MARGIN_X_PCT = 9;
+const ITEM_MARGIN_Y_PCT = 6;
+
+function clampPercent(value: number, total: number, marginPct: number): number {
+  const pct = (value / total) * 100;
+  return Math.min(100 - marginPct, Math.max(marginPct, pct));
+}
+
 /** Position (en % de `.vennWrap`) du n-ième item (sur `count`) réparti sur l'arc du pilier. */
 function itemPosition(p: PilierData, index: number, count: number): CSSProperties {
   const t = count > 1 ? index / (count - 1) : 0.5;
@@ -78,13 +90,21 @@ function itemPosition(p: PilierData, index: number, count: number): CSSPropertie
   const angleRad = (angleDeg * Math.PI) / 180;
   const x = p.cx + ITEM_RADIUS * Math.cos(angleRad);
   const y = p.cy + ITEM_RADIUS * Math.sin(angleRad);
-  return { left: `${(x / VIEW_W) * 100}%`, top: `${(y / VIEW_H) * 100}%` };
+  return {
+    left: `${clampPercent(x, VIEW_W, ITEM_MARGIN_X_PCT)}%`,
+    top: `${clampPercent(y, VIEW_H, ITEM_MARGIN_Y_PCT)}%`,
+  };
 }
 
 export default function AddictionModule({ onNavigate }: ModuleProps) {
-  const { state, toggle } = useSelection();
+  const { state, toggle, add, remove } = useSelection();
   const selection = state.situations;
   const [selected, setSelected] = useState<Pilier | null>(null);
+  // « + autre » (RP2b, revue-prod-2026-07/S2) : seule saisie de situation personnalisée
+  // après retrait de la section 3 du plan d'arrêt — même canal `situationsLibres` que
+  // l'ancien champ libre du plan, déjà lu par le livret (`livretSections.tsx`, bucket
+  // « Autres »), donc aucune modification du reducer ni de `situations.ts`.
+  const [libreInput, setLibreInput] = useState('');
 
   function togglePilier(pilier: Pilier) {
     setSelected((cur) => (cur === pilier ? null : pilier));
@@ -92,6 +112,23 @@ export default function AddictionModule({ onNavigate }: ModuleProps) {
 
   function toggleSituation(id: string) {
     toggle('situations', id);
+  }
+
+  // Commit partagé Entrée / blur (revue-prod-2026-07/S3, RP3b) : évite qu'une saisie
+  // tapée mais non validée se perde si l'utilisateur navigue ailleurs sans Entrée. Un
+  // Entrée vide déjà `libreInput` avant tout blur suivant ⇒ pas de doublon possible.
+  function commitLibre() {
+    const trimmed = libreInput.trim();
+    if (trimmed) {
+      add('situationsLibres', trimmed);
+      setLibreInput('');
+    }
+  }
+
+  function handleLibreKeyDown(event: ReactKeyboardEvent<HTMLInputElement>) {
+    if (event.key !== 'Enter') return;
+    event.preventDefault();
+    commitLibre();
   }
 
   function handleGoToOutils() {
@@ -177,6 +214,33 @@ export default function AddictionModule({ onNavigate }: ModuleProps) {
 
         {!data && <p className={styles.emptyCaption}>Ces dimensions s'alimentent entre elles.</p>}
       </div>
+
+      <section className={`card ${styles.libreCard}`}>
+        <p className={styles.libreLabel}>Une situation qui n'est pas ici ?</p>
+        <div className={styles.chipRow}>
+          {state.situationsLibres.map((item) => (
+            <button
+              key={item}
+              type="button"
+              className={`chip ${styles.libreChip} activeDoubled`}
+              aria-label={`${item} — touchez pour retirer`}
+              onClick={() => remove('situationsLibres', item)}
+            >
+              {item}
+            </button>
+          ))}
+          <input
+            type="text"
+            className={styles.libreInput}
+            value={libreInput}
+            onChange={(event) => setLibreInput(event.target.value)}
+            onKeyDown={handleLibreKeyDown}
+            onBlur={commitLibre}
+            placeholder="+ autre"
+            aria-label="Ajouter une situation personnalisée"
+          />
+        </div>
+      </section>
 
       <div className={styles.ctaBar}>
         {selection.length > 0 ? (

@@ -119,6 +119,50 @@
   flex-shrink: 0;
 }
 
+/* --- « + autre » situation personnalisée (RP2b, revue-prod-2026-07/S2) --- */
+
+.libreCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg);
+}
+
+.libreLabel {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-soft);
+}
+
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.libreChip {
+  border: none;
+  cursor: pointer;
+  min-height: var(--target-min);
+}
+
+.libreInput {
+  min-height: var(--target-min);
+  padding: 8px 14px;
+  border: 1.5px dashed var(--color-line);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--color-text);
+  font: 600 13px 'Work Sans', sans-serif;
+  min-width: 130px;
+}
+
+.libreInput::placeholder {
+  color: var(--color-text-faint);
+}
+
 .ctaBar {
   display: flex;
   justify-content: center;
