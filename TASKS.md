@@ -8,6 +8,15 @@ Index des tâches : backlog + actives. Historique des tâches faites : `git log`
 
 ## Tâches
 
+### Insuline basale/rapide — affinements de revue prod (2026-07-21) · plan: → plans/insuline-affinements-2026-07/ (index + S1-S6)
+- [x] S1 — Contenu & sources : `docs/diabete/09-insuline-basale.md` (créé) + section « rapide sans repas » du `10` (IA1/IA2, gate G1) · modèle: Opus, effort: high · plan: → plans/insuline-affinements-2026-07/S1.md (pas de code, contenu sourcé OpenEvidence ; **G1 validée par Thibault 2026-07-21**)
+- [x] S2 — Item 6 : slider timing rapide, `timingPhase(delay)` source de vérité unique, libellé dynamique remplace les 4 étiquettes fixes (IA3) · modèle: Sonnet, effort: high · plan: → plans/insuline-affinements-2026-07/S2.md (auto OK : tsc --noEmit + vite build (2 entrées) + npm test 101/101 verts)
+- [x] S3 — Item 5 : garde-fou local dans `sampleRepasAvecBolus` (lib `glycemieCurve.ts`), plus de creux sous baseline au cas adéquat, 5 nouveaux invariants (IA4) · modèle: Sonnet, effort: high · plan: → plans/insuline-affinements-2026-07/S3.md (auto OK : tsc --noEmit + npm test 106/106 + vite build verts, aucun invariant existant assoupli)
+- [x] S4 — Basale : intro « à quoi sert la lente » + bloc régularité/horaire (générique, sans molécule G2) + phrase-pont (IA5) · modèle: Sonnet, effort: high · plan: → plans/insuline-affinements-2026-07/S4.md (auto OK : tsc --noEmit + vite build + npm test 106/106 verts)
+- [x] S5 — Rapide : 5ᵉ onglet « Et si je ne mange pas ? » (gate G5) + phrase-pont (IA6) · modèle: Sonnet, effort: high · plan: → plans/insuline-affinements-2026-07/S5.md (auto OK : tsc --noEmit + vite build + npm test 106/106 verts)
+- [x] S6 — Consolidation : commits (docs S1, S3, S4, S2+S5 combiné, contexte) + statuts + STATUS/VALIDATION/DECISIONS/PROJECT_MAP · modèle: Haiku, effort: minimal · plan: → plans/insuline-affinements-2026-07/S6.md (auto OK : tsc --noEmit + vite build (2 entrées) + npm test 106/106 verts sur l'arbre consolidé)
+  - Vagues : V0 = S1 (solo, gate G1) → V1 = S2·S3 (parallèles, zones disjointes) → V2 = S4·S5 (parallèles, après G1 ; S5 après S3) → V3 = S6 (consolidation). **Chantier clos 2026-07-21.** ⚠️ Validation VISUELLE humaine (Thibault, `npm run dev`) reste entièrement à faire — cf. `VALIDATION.md`. Phrases-pont S4/S5 conceptuellement cohérentes mais pas identiques mot pour mot — arbitrage Thibault en attente.
+
 ### Outils interactifs (2026-07-21, revue produit Thibault) · plan: → plans/outils-interactifs-2026-07/ (index + S1-S8)
 - [x] S1 — Socle : registre `OUTILS_INTERACTIFS` + persistance injectée (`outilsData`/`useConsultationStore`/`usePatientStore`) + fiche perso + respiration recâblée en consultation (OI1-OI4) · modèle: Sonnet, effort: high · plan: → plans/outils-interactifs-2026-07/S1.md (auto OK : tsc --noEmit + vite build (2 entrées) + npm test 101/101 verts · commits 2a24fa7/269b2c0/ee875c7/0fe136e)
 - [x] S2 — Constructeur « SI… ALORS… » (OI5, flagship efficacité démontrée) · modèle: Sonnet, effort: high · plan: → plans/outils-interactifs-2026-07/S2.md (auto OK : tsc --noEmit + vite build verts · commit 14e87ad)

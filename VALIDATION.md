@@ -16,6 +16,58 @@
 
 ---
 
+## Chantier insuline-affinements-2026-07 — validation du 2026-07-21
+
+**Statut** : chantier S1-S6 consolidé (commits + contexte) · **en attente de validation visuelle
+Thibault** (`npm run dev`) — aucune vérification navigateur faite côté Claude (règle projet).
+Checklists reprises des bilans de fin de session (`plans/insuline-affinements-2026-07/S<n>.md`).
+
+### S2 — Module rapide, onglet ② : slider timing, libellé dynamique
+
+- [ ] Balayer le slider de gauche à droite : à chaque position, le libellé sous le curseur = le
+      message affiché = la position du marqueur Injection sur la courbe (aucune incohérence).
+- [ ] Rendu lisible à ~1 m (libellé dynamique gros et centré).
+- [ ] Confirmer ou amender les bornes `// à revalider (Thibault)` : seuil `bien-avant` (≤ -30),
+      bascule `juste-avant`/`au-moment` (point le plus sensible).
+
+### S3 — Module rapide, temps ①③ : creux sous baseline (lib `glycemieCurve.ts`)
+
+- [ ] Temps ① (repas moyen / dose habituelle) : la courbe « avec rapide » ne plonge plus sous la
+      baseline juste après le repas.
+- [ ] Temps ③ (départ cible / dose habituelle) : idem, plus de creux sous la baseline.
+- [ ] Sur-dosage / cumul (petit repas + dose habituelle ; temps ④ recorrection précoce) : la courbe
+      plonge toujours nettement (comportement inchangé).
+- [ ] Modules 2/3/8/9 (alimentation, activité, hypoglycémie, insuline basale) : aucune déformation
+      visible de leurs courbes (non impactés en théorie, à revérifier par prudence).
+
+### S4 — Module basale : intro rôle de la lente + régularité/horaire + pont
+
+- [ ] L'intro (chapô) et le bloc régularité s'affichent, sobres, sans chiffre ni molécule.
+- [ ] La titration nocturne (courbe, chips situations, réglage baisser/pareil/monter) reste le cœur
+      de l'écran et fonctionne comme avant (aucune régression).
+- [ ] La courbe et le bloc de titration ne sont pas repoussés sous la ligne de flottaison par les
+      ajouts (intro + régularité + pont).
+- [ ] Contenu conforme au doc validé G1 (`docs/diabete/09-insuline-basale.md`).
+
+### S5 — Module rapide : 5ᵉ onglet « Et si je ne mange pas ? » + pont
+
+- [ ] Le nouveau temps ⑤ montre une courbe qui plonge nettement sous la bande-cible (« avec »), vs
+      une trace plate (« sans »).
+- [ ] Message + bouton de renvoi module 8 (hypoglycémie) OK, visibles et cliquables.
+- [ ] Les temps ①②③④ restent intacts (dont le slider ② retouché par S2).
+- [ ] Positionnement du 5ᵉ onglet (après le ④) et comportement de la barre à 5 onglets à ~1 m —
+      arbitrage visuel si la barre serre trop (repli 2 lignes automatique déjà en place).
+- [ ] Contenu conforme au doc validé G1 (`docs/diabete/10-insuline-rapide.md` §3 temps ⑤).
+
+### S4+S5 — Cohérence du pont inter-modules (item 8)
+
+- [ ] Comparer les deux phrases-pont : basale (`InsulineModule.tsx`, `PONT_TEXTE`) « La lente couvre
+      toute la journée, du coucher au coucher ; la rapide zoome sur un seul repas. » vs rapide
+      (`InsulineRapideModule.tsx`) « La rapide ne couvre que ce repas ; le reste de la journée
+      entière — et la nuit — c'est la lente qui s'en charge. » — conceptuellement cohérentes, pas
+      identiques mot pour mot. **Arbitrage Thibault** : garder chaque formulation (ton propre à
+      chaque module) ou les harmoniser.
+
 ## Cadre transverse (à vérifier une fois, vaut pour tous les modules)
 
 - [ ] Lisible à ~1 m : typographies larges, contrastes élevés, cibles cliquables ≥ 44 px.

@@ -4,9 +4,47 @@
 
 > **Frontières** — STATUS : état actuel · `TASKS.md` : backlog + tâches · `plans/` : plan d'une tâche active · `VALIDATION.md` : checklist visuelle.
 >
-> **Dernière mise à jour :** 2026-07-21 (chantier outils-interactifs-2026-07 — boîte à outils tabac
-> rendue interactive, 11 tâches OI1-OI11, socle solo (S1) + vague parallèle S2-S7, **consolidation S8
-> commits/statuts complète**)
+> **Dernière mise à jour :** 2026-07-21 (chantier `insuline-affinements-2026-07` — 6 items de revue
+> prod sur les modules Insuline basale/rapide, S1-S6 **clos**, validation visuelle humaine restant à
+> faire)
+
+**Insuline basale/rapide — affinements de revue prod (2026-07-21)** — chantier
+`plans/insuline-affinements-2026-07/` (index + S1-S6), issu d'une revue prod de Thibault sur les deux
+modules diabète Insuline basale (9) et rapide (10), jugés solides mais avec quelques trous et un peu
+de polish restant. 6 items traités :
+
+- **Contenu sourcé avant code (S1, gate G1)** : `docs/diabete/09-insuline-basale.md` créé (rôle de la
+  lente, régularité/horaire) + section « rapide sans repas » ajoutée à `docs/diabete/10-insuline-rapide.md`,
+  depuis les réponses OpenEvidence de Thibault. **G1 validée par Thibault le jour même.**
+- **Item 6 — slider timing rapide (S2)** : le slider de l'onglet ② « Le bon moment » avait 4 étiquettes
+  fixes équiréparties incohérentes avec les seuils réels du message/marqueur. Nouvelle fonction
+  `timingPhase(delay)` = source de vérité unique (mêmes seuils que `timingHint` et le marqueur
+  Injection) ; étiquettes fixes remplacées par un libellé dynamique centré sous le curseur. Slider
+  continu conservé (gate G3).
+- **Item 5 — creux sous baseline (S3, lib partagée `glycemieCurve.ts`)** : la courbe « avec rapide »
+  plongeait sous la baseline juste après le repas dans le cas adéquat (artefact d'alignement
+  bolus/repas, pas un problème de dose). Garde-fou local dans `sampleRepasAvecBolus` : l'effet du
+  bolus ne peut plus creuser sous la baseline avant `LATENCE_REPAS` quand aucun excès de glycémie
+  n'est disponible pour le justifier — préserve intacts le sur-dosage, le cumul (temps ④) et la
+  correction départ-haut (temps ③). 5 nouveaux invariants de test, aucun invariant existant assoupli.
+- **Item 3 + 1 — module basale (S4)** : intro courte « à quoi sert la lente » (frein hépatique, sucre
+  de fond ≠ repas) + bloc régularité/horaire générique (« même heure, souplesse → à voir avec le
+  soignant », **aucune molécule, aucun chiffre** — gate G2) ajoutés en amont du jeu de titration
+  existant, qui reste inchangé et toujours le cœur de l'écran.
+- **Item 2 — module rapide (S5)** : 5ᵉ onglet distinct `⑤ Et si je ne mange pas ?` (gate G5, pas une
+  variante du ④) — courbe plate (sans repas) vs courbe qui plonge (rapide injectée quand même),
+  message de sécurité + renvoi module 8 (hypoglycémie), option post-prandiale en exception.
+  Positionnement (après le ④) `// à revalider (Thibault)`.
+- **Item 8 — pont inter-modules (S4+S5)** : une phrase de chaque côté reliant la basale (journée
+  entière, coucher→coucher) et la rapide (un repas). Les deux formulations sont **conceptuellement
+  cohérentes mais pas identiques mot pour mot** — arbitrage Thibault en attente (garder ou harmoniser).
+
+Gate finale (S1-S6) : `npx tsc --noEmit` ✓ · `npm run build` ✓ (2 entrées) · `npm test` ✓ **106/106**,
+aucune dépendance runtime ajoutée. Points `// à revalider (Thibault)` : bornes du slider timing (S2),
+tolérance visuelle du garde-fou bolus (S3, garantie algébrique donc pas de seuil calibré), micro-copie
+intro/régularité/pont basale (S4), positionnement du 5ᵉ onglet + note post-prandiale + micro-copie
+pont rapide (S5). **Validation visuelle humaine (Thibault, `npm run dev`) reste entièrement à faire**
+— cf. `VALIDATION.md`.
 
 **Boîte à outils tabac rendue interactive (2026-07-21)** — chantier `plans/outils-interactifs-2026-07/`
 (index + S1-S8), issu d'une revue produit de Thibault (2026-07-21) : sur les 14 outils de « Stratégies &
