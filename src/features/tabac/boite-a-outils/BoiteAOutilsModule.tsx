@@ -3,7 +3,8 @@ import { ArrowRight, Check, ChevronLeft } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import IllustrationSlot from '../components/IllustrationSlot';
 import FicheOverlay from '../../../components/FicheOverlay';
-import VagueCraving from './VagueCraving';
+import { OUTILS_INTERACTIFS } from './outils-interactifs/registry';
+import { useConsultationStore } from './outils-interactifs/useConsultationStore';
 import { OUTILS, PREUVE_LABELS, selectionnerOutilsPertinents } from '../../../content/tabac/outils';
 import { SITUATIONS, parseSelectionSituations, type PilierId, type SituationDef } from '../../../content/tabac/situations';
 import { useSelection } from '../../../state/SelectionContext';
@@ -34,6 +35,7 @@ const SITUATIONS_PAR_ID = new Map<string, SituationDef>(SITUATIONS.map((s) => [s
  */
 export default function BoiteAOutilsModule({ onNavigate, context }: ModuleProps) {
   const { state, toggle } = useSelection();
+  const consultationStore = useConsultationStore();
   const ficheItems = state.outilsFiche;
   // Filtre local (éphémère) : pré-alimenté au montage depuis les situations
   // partagées (cochées dans « Composantes ») ∪ le contexte de navigation.
@@ -41,7 +43,9 @@ export default function BoiteAOutilsModule({ onNavigate, context }: ModuleProps)
     () => new Set([...parseSelectionSituations(context), ...state.situations]),
   );
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [vagueOpen, setVagueOpen] = useState(false);
+  // Vue « outil actif » (S1/OI3) : distincte de `selectedId` (vue détail) pour que
+  // fermer l'outil (`onClose`) revienne au détail plutôt qu'à la grille.
+  const [activeOutilId, setActiveOutilId] = useState<string | null>(null);
   const [ficheOpen, setFicheOpen] = useState(false);
 
   function toggleSituation(id: string) {
@@ -68,8 +72,21 @@ export default function BoiteAOutilsModule({ onNavigate, context }: ModuleProps)
   // cochés, on retire le titre des blocs à partir du 9e pour tenir sur l'A4.
   const ficheDebordement = ficheOutils.length > 10;
 
-  if (vagueOpen) {
-    return <VagueCraving onBack={() => setVagueOpen(false)} />;
+  const activeOutil = activeOutilId ? (OUTILS.find((o) => o.id === activeOutilId) ?? null) : null;
+  const ActiveOutilComponent = activeOutil?.interactif ? OUTILS_INTERACTIFS[activeOutil.interactif] : undefined;
+
+  if (activeOutil && ActiveOutilComponent) {
+    return (
+      <ActiveOutilComponent
+        outil={activeOutil}
+        store={consultationStore}
+        contexte={{
+          situationsActives: SITUATIONS.filter((s) => state.situations.includes(s.id)),
+          raisons: state.raisons,
+        }}
+        onClose={() => setActiveOutilId(null)}
+      />
+    );
   }
 
   const outilDetail = selectedId ? (OUTILS.find((o) => o.id === selectedId) ?? null) : null;
@@ -121,8 +138,12 @@ export default function BoiteAOutilsModule({ onNavigate, context }: ModuleProps)
           )}
 
           <div className={styles.detailActions}>
-            {outilDetail.interactif === 'vague4d' && (
-              <button type="button" className="btn btn--primary" onClick={() => setVagueOpen(true)}>
+            {outilDetail.interactif && OUTILS_INTERACTIFS[outilDetail.interactif] && (
+              <button
+                type="button"
+                className="btn btn--primary"
+                onClick={() => setActiveOutilId(outilDetail.id)}
+              >
                 Lancer l'outil
               </button>
             )}

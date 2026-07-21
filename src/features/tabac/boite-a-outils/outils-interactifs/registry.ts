@@ -3,6 +3,13 @@ import type { ComponentType } from 'react';
 import type { Outil } from '../../../../content/tabac/outils';
 import RespirationGuidee from '../../../../components/RespirationGuidee';
 import VagueCraving from '../VagueCraving';
+import PlansSiAlors from './PlansSiAlors';
+import Tirelire from './Tirelire';
+import OutilChecklist from './OutilChecklist';
+import MinuteurGuide from './MinuteurGuide';
+import PlanSecours from './PlanSecours';
+import PhraseRefus from './PhraseRefus';
+import GabaritJournal from './GabaritJournal';
 import type { OutilInteractifProps } from './types';
 
 /**
@@ -13,8 +20,8 @@ import type { OutilInteractifProps } from './types';
  * (« Lancer l'outil » / « Démarrer ») et monter le composant avec leur propre `store`.
  *
  * `Partial` : toutes les valeurs de `Outil['interactif']` n'ont pas forcément une entrée.
- * Les 7 stubs restants (OI3) seront ajoutés au fil de la Vague 2 (S2-S7) sans changer
- * cette forme de registre — seul le fichier du composant change.
+ * Les 7 stubs ci-dessous (OI3) seront remplacés par leur implémentation au fil de la
+ * Vague 2 (S2-S7) sans changer l'entrée de registre — seul le fichier du composant change.
  *
  * Fichier `.ts` (pas `.tsx`) : les wrappers utilisent `createElement` plutôt que la syntaxe
  * JSX pour rester compilables sans changer l'extension prévue au plan.
@@ -38,4 +45,15 @@ export const OUTILS_INTERACTIFS: Partial<
 > = {
   vague4d: VagueCravingOutil,
   respiration: RespirationGuideeOutil,
+  'si-alors': PlansSiAlors,
+  tirelire: Tirelire,
+  'place-nette': OutilChecklist,
+  'mains-bouche': OutilChecklist,
+  'anti-ennui': OutilChecklist,
+  routine: OutilChecklist,
+  bouger: MinuteurGuide,
+  surfer: MinuteurGuide,
+  'plan-secours': PlanSecours,
+  refus: PhraseRefus,
+  journal: GabaritJournal,
 };

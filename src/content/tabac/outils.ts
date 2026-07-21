@@ -82,6 +82,7 @@ export const OUTILS: Outil[] = [
       "Formulez 3 à 5 plans précis : “SI un collègue me propose une cigarette, ALORS je réponds : non merci, j'ai arrêté — et je prends un verre d'eau.” “SI l'envie monte après le repas, ALORS je sors marcher 5 minutes.” Écrivez-les, et relisez-les chaque matin les premières semaines.",
     preuve: 'demontree',
     consigneFiche: "J'écris 3 à 5 plans “SI… ALORS…” et je les relis chaque matin.",
+    interactif: 'si-alors',
   },
   {
     id: 'outil-bouger',
@@ -94,6 +95,7 @@ export const OUTILS: Outil[] = [
       "Quand l'envie est forte : sortez marcher d'un bon pas 10 minutes, ou montez et descendez un escalier 3-4 fois. Si vous ne pouvez pas bouger : serrez fort les poings et les bras 10 secondes, relâchez, recommencez 5 fois.",
     preuve: 'demontree',
     consigneFiche: "Envie forte → 10 min de marche rapide, un escalier, ou 5 contractions des poings.",
+    interactif: 'bouger',
   },
   {
     id: 'outil-respiration',
@@ -121,6 +123,7 @@ export const OUTILS: Outil[] = [
       "Quand l'envie arrive, dites-vous : “Je ressens une envie. Elle est là. Je la laisse passer.” Observez ce qui se passe dans le corps — gorge serrée, mains agitées — sans réagir. En 2 à 3 minutes, elle redescend seule. Chaque envie surfée sans fumer affaiblit la suivante.",
     preuve: 'experts',
     consigneFiche: "J'observe l'envie comme une vague : elle monte, elle redescend seule.",
+    interactif: 'surfer',
   },
   {
     id: 'outil-place-nette',
@@ -134,6 +137,7 @@ export const OUTILS: Outil[] = [
       "Avant le jour J : rangez cendriers et briquets hors de vue, ne gardez plus de cigarettes à la maison, videz la voiture (cendrier, boîte à gants) et mettez des pastilles à la menthe à la place. L'objectif est que la situation ne “propose” plus la cigarette.",
     preuve: 'experts',
     consigneFiche: 'Cendriers, briquets, paquets : hors de vue — maison et voiture.',
+    interactif: 'place-nette',
   },
   {
     id: 'outil-routine',
@@ -147,6 +151,7 @@ export const OUTILS: Outil[] = [
       "Prenez votre café dans une autre pièce, debout, ou remplacez-le par un thé les 2-3 premières semaines. Dès la dernière bouchée du repas, levez-vous de table : brossage de dents, vaisselle, 5 minutes dehors. Prenez vos pauses dans un lieu où on ne peut pas fumer. Au bout de quelques jours, le café ou le repas redeviennent des plaisirs indépendants de la cigarette.",
     preuve: 'experts',
     consigneFiche: 'Je change un détail de chaque rituel : lieu, ordre, boisson.',
+    interactif: 'routine',
   },
   {
     id: 'outil-mains-bouche',
@@ -159,6 +164,7 @@ export const OUTILS: Outil[] = [
       "Gardez à portée de main : chewing-gum sans sucre, balle anti-stress, grand verre d'eau à boire par petites gorgées, un stylo à manipuler. Occupez la main qui tenait la cigarette.",
     preuve: 'experts',
     consigneFiche: "Chewing-gum, balle anti-stress, grand verre d'eau.",
+    interactif: 'mains-bouche',
   },
   {
     id: 'outil-journal',
@@ -172,6 +178,7 @@ export const OUTILS: Outil[] = [
       "Pendant la semaine qui précède l'arrêt, notez chaque cigarette : l'heure, où vous êtes, ce que vous faites, ce que vous ressentez. Vous verrez vos situations à risque se dessiner — ce sont elles qu'on équipera d'une parade.",
     preuve: 'experts',
     consigneFiche: "Avant l'arrêt : je note chaque cigarette (quand, où, avec quoi, en ressentant quoi).",
+    interactif: 'journal',
   },
   {
     id: 'outil-refus',
@@ -185,6 +192,7 @@ export const OUTILS: Outil[] = [
       "Préparez votre réponse avant la soirée : “Non merci, j'ai arrêté.” Courte, ferme, sans justification. Gardez un verre non alcoolisé en main — ça occupe le geste. Si l'envie monte, éloignez-vous quelques minutes. Chaque soirée tenue affaiblit l'association.",
     preuve: 'experts',
     consigneFiche: "“Non merci, j'ai arrêté.” Court, ferme, préparé à l'avance.",
+    interactif: 'refus',
   },
   {
     id: 'outil-recompense',
@@ -198,6 +206,7 @@ export const OUTILS: Outil[] = [
       "Chaque jour, prévoyez au moins un petit plaisir : un bon repas, un bain, un épisode de votre série, un appel à un ami. Et chaque soir, mettez de côté l'argent des cigarettes du jour ; au bout d'une semaine, offrez-vous quelque chose avec. Voir la somme grandir est un moteur puissant.",
     preuve: 'experts',
     consigneFiche: "L'argent des cigarettes va dans une tirelire ; chaque semaine, un plaisir.",
+    interactif: 'tirelire',
   },
   {
     id: 'outil-anti-ennui',
@@ -210,6 +219,7 @@ export const OUTILS: Outil[] = [
       "Préparez une liste de 10 activités de 5 à 15 minutes : appeler quelqu'un, ranger un tiroir, arroser les plantes, s'étirer, écouter un podcast, marcher en mâchant un chewing-gum… Affichez-la sur le frigo et dans le téléphone, et piochez dedans dès que l'ennui s'installe.",
     preuve: 'experts',
     consigneFiche: 'Ma liste de 10 activités courtes, affichée sur le frigo et dans le téléphone.',
+    interactif: 'anti-ennui',
   },
   {
     id: 'outil-faux-pas',
@@ -223,6 +233,7 @@ export const OUTILS: Outil[] = [
       "Préparez, avant le jour J, un plan de secours en 3 gestes : 1. Je jette immédiatement le paquet et le briquet. 2. J'appelle quelqu'un — un proche, mon soignant, le 39 89. 3. Je relis mes raisons d'arrêter. Puis je continue mes substituts exactement comme avant : les 24 heures qui suivent sont décisives, et une cigarette ne fait pas de vous un fumeur — c'est acheter un paquet qui le ferait. Comprendre ce qui a déclenché l'écart, sans se blâmer, prépare la suite.",
     preuve: 'experts',
     consigneFiche: "Un écart n'est pas une rechute : je jette le paquet, j'appelle, je relis mes raisons.",
+    interactif: 'plan-secours',
   },
   {
     id: 'outil-substituts',

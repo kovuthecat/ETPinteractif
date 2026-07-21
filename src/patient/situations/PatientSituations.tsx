@@ -6,7 +6,8 @@ import {
   type SituationDef,
 } from '../../content/tabac/situations';
 import { OUTILS, PREUVE_LABELS, selectionnerOutilsPertinents, type Outil } from '../../content/tabac/outils';
-import RespirationGuidee from '../../components/RespirationGuidee';
+import { OUTILS_INTERACTIFS } from '../../features/tabac/boite-a-outils/outils-interactifs/registry';
+import { usePatientStore } from './usePatientStore';
 import styles from './PatientSituations.module.css';
 
 interface PatientSituationsProps {
@@ -17,9 +18,11 @@ interface PatientSituationsProps {
 const PILIER_ORDER: PilierId[] = ['physique', 'psychologique', 'comportementale'];
 
 // à revalider (Thibault) : libellés de pilier auto-portants (réutilisent le sens des
-// libellés soignant de BoiteAOutilsModule.tsx, redéfinis ici localement pour ne jamais
-// importer `src/features/**` depuis le bundle patient, cf. plans/aide-patient/index.md
-// §Architecture cible).
+// libellés soignant de BoiteAOutilsModule.tsx), redéfinis ici localement plutôt
+// qu'importés — l'ancienne contrainte dure « jamais `src/features/**` depuis le bundle
+// patient » (plans/aide-patient/index.md §Architecture cible) est assouplie côté outils
+// interactifs par le registre partagé (G1, plans/outils-interactifs-2026-07/index.md),
+// mais ce petit mapping de libellés reste local par simplicité, sans dépendance nouvelle.
 const PILIER_LABELS: Record<PilierId, string> = {
   physique: 'Signes physiques du manque',
   psychologique: 'Émotions propices au tabac', // à revalider (Thibault)
@@ -38,10 +41,11 @@ const PILIER_CHIP_CLASS: Record<PilierId, string> = {
 /**
  * Illustration locale, propre à l'app patient (même pattern que `FormeIllustration` dans
  * `PatientSubstituts.tsx`) : ne dépend jamais de `IllustrationSlot`
- * (src/features/tabac/components/) pour ne pas faire dépendre le bundle patient de
- * l'arbre `src/features/**`. Cible `public/illustrations/tabac/<outil.id>.png`
- * (l'id d'un `Outil` porte déjà le préfixe `outil-`) ; fallback neutre si absente
- * (cf. S4 « Si bloqué »).
+ * (src/features/tabac/components/) — ce composant précis reste évité même si, depuis
+ * S1/OI3, le fichier importe désormais `OUTILS_INTERACTIFS` (registre partagé sous
+ * `src/features/tabac/boite-a-outils/`) pour le câblage générique des outils interactifs
+ * (G1). Cible `public/illustrations/tabac/<outil.id>.png` (l'id d'un `Outil` porte déjà
+ * le préfixe `outil-`) ; fallback neutre si absente (cf. S4 « Si bloqué »).
  */
 function OutilIllustration({ id, label }: { id: string; label: string }) {
   const [errored, setErrored] = useState(false);
@@ -93,20 +97,33 @@ function commentFaire(outil: Outil): string {
  * Écran patient « Agir face à une situation » (plans/aide-patient/S4.md, T4) : choix
  * d'une situation à risque (parmi les 20 de `situations.ts`, groupées par pilier) puis
  * outils adaptés (mapping `Outil.situations` ∪ `Outil.transverse`, même règle que la
- * consultation — cf. `BoiteAOutilsModule.tsx`, non importé). v1 patient = lecture
- * seule : aucun bouton interactif, aucun renvoi inter-modules (cf. S4 « Hors périmètre »),
- * SAUF l'outil `outil-respiration` (`interactif === 'respiration'`) — évolution assumée
- * du cadrage v1, limitée à cet outil (E6, plans/revue-chrome-2026-07/S15.md).
+ * consultation — cf. `BoiteAOutilsModule.tsx`, non importé). v1 patient était « lecture
+ * seule » sauf l'outil `outil-respiration` (E6, plans/revue-chrome-2026-07/S15.md).
+ *
+ * Cadrage étendu (G1, plans/outils-interactifs-2026-07/index.md « Gates » — TRANCHÉ
+ * 2026-07-21) : **tous** les outils interactifs (registre `OUTILS_INTERACTIFS`) sont
+ * désormais exposés côté patient, persistés en local (`usePatientStore`) — plus de cas
+ * spécial pour la respiration, elle devient une entrée générique du registre comme les
+ * autres.
  */
 export default function PatientSituations({ onBack }: PatientSituationsProps) {
   const [selectedSituation, setSelectedSituation] = useState<string | null>(null);
-  const [respirationOpen, setRespirationOpen] = useState(false);
+  // Outil interactif actuellement lancé (S1/OI3) — distinct de `selectedSituation`, réinitialisé
+  // au changement de situation (cf. bouton « Autre situation » plus bas).
+  const [activeOutilId, setActiveOutilId] = useState<string | null>(null);
+  const patientStore = usePatientStore();
 
   if (selectedSituation) {
     const situation = SITUATIONS.find((s) => s.id === selectedSituation) ?? null;
     // Pertinence par pilier (E4) : même fonction de sélection/tri que la consultation
     // (BoiteAOutilsModule) — repli sur `OUTILS` en entier si la situation est introuvable.
     const outilsAdaptes = selectionnerOutilsPertinents(OUTILS, situation ? [situation] : []);
+    const activeOutil = activeOutilId
+      ? (outilsAdaptes.find((o) => o.id === activeOutilId) ?? null)
+      : null;
+    const ActiveOutilComponent = activeOutil?.interactif
+      ? OUTILS_INTERACTIFS[activeOutil.interactif]
+      : undefined;
 
     return (
       <div className={styles.screen}>
@@ -118,7 +135,10 @@ export default function PatientSituations({ onBack }: PatientSituationsProps) {
           <button
             type="button"
             className="btn btn--ghost"
-            onClick={() => setSelectedSituation(null)}
+            onClick={() => {
+              setSelectedSituation(null);
+              setActiveOutilId(null);
+            }}
           >
             <ArrowLeft size={16} aria-hidden="true" />
             Autre situation
@@ -145,21 +165,28 @@ export default function PatientSituations({ onBack }: PatientSituationsProps) {
                 <span className="eyebrow">Comment faire</span>
                 <p className={styles.commentFaire}>{commentFaire(outil)}</p>
               </div>
-              {outil.interactif === 'respiration' && (
+              {outil.interactif && OUTILS_INTERACTIFS[outil.interactif] && (
                 <button
                   type="button"
                   className="btn btn--primary"
-                  onClick={() => setRespirationOpen(true)}
+                  onClick={() => setActiveOutilId(outil.id)}
                 >
                   <Play size={16} aria-hidden="true" />
-                  Démarrer l'exercice
+                  Démarrer
                 </button>
               )}
             </article>
           ))}
         </div>
 
-        {respirationOpen && <RespirationGuidee onClose={() => setRespirationOpen(false)} />}
+        {activeOutil && ActiveOutilComponent && (
+          <ActiveOutilComponent
+            outil={activeOutil}
+            store={patientStore}
+            contexte={{ situationsActives: situation ? [situation] : [] }}
+            onClose={() => setActiveOutilId(null)}
+          />
+        )}
       </div>
     );
   }
