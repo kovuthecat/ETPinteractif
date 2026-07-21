@@ -266,14 +266,29 @@ export default function BoiteAOutilsModule({ onNavigate, context }: ModuleProps)
           <div className="fiche-bloc">
             <span className="fiche-bloc-eyebrow">Mes outils</span>
             <div className={styles.ficheGrid}>
-              {ficheOutils.map((outil, index) => (
-                <div key={outil.id} className={styles.ficheItem}>
-                  {(!ficheDebordement || index < 8) && (
-                    <p className={styles.ficheItemTitre}>{outil.titre}</p>
-                  )}
-                  <p className={styles.ficheItemConsigne}>{outil.consigneFiche}</p>
-                </div>
-              ))}
+              {ficheOutils.map((outil, index) => {
+                // Contenu personnalisé (S1/OI4) : si l'outil a des lignes enregistrées
+                // (`outilsData[outil.id]`, via `store.get`), on les affiche à la place de
+                // la consigne générique — le patient repart avec SES plans, pas un texte
+                // générique. Repli sur `outil.consigneFiche` sinon (comportement d'origine).
+                const perso = consultationStore.get(outil.id);
+                return (
+                  <div key={outil.id} className={styles.ficheItem}>
+                    {(!ficheDebordement || index < 8) && (
+                      <p className={styles.ficheItemTitre}>{outil.titre}</p>
+                    )}
+                    {perso.length > 0 ? (
+                      perso.map((ligne, ligneIndex) => (
+                        <p key={ligneIndex} className={styles.ficheItemConsigne}>
+                          {ligne}
+                        </p>
+                      ))
+                    ) : (
+                      <p className={styles.ficheItemConsigne}>{outil.consigneFiche}</p>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
 
