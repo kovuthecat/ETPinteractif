@@ -453,6 +453,57 @@ describe('invariant 10 — sampleRepasAvecBolus', () => {
     // Après le pic, l'excès relève nettement la courbe (la glycémie « reste haute »).
     expect(valueAt(avecExces, 160) - valueAt(sansExces, 160)).toBeGreaterThan(20);
   });
+
+  // -------------------------------------------------------------------------
+  // IA4 (plan insuline-affinements-2026-07, S3) — creux artificiel sous la baseline juste après
+  // le repas, cas adéquat : le bolus (latence 15 min) commence à agir à t=0 alors que le repas ne
+  // monte qu'à LATENCE_REPAS(=12) → entre les deux, la courbe valait BASELINE − bolusEffet, creusant
+  // sous la baseline sans qu'aucune glycémie de repas/départ ne le justifie. Fix : borner la
+  // soustraction de l'effet bolus par l'excès de glycémie réellement disponible (piste (a) du plan,
+  // la moins invasive — cf. `sampleRepasAvecBolus`).
+  // -------------------------------------------------------------------------
+
+  describe('IA4 — garde-fou pré-repas (pas de creux sous la baseline avant LATENCE_REPAS)', () => {
+    // LATENCE_REPAS(=12) n'est pas exportée (API gelée, cf. en-tête du fichier) : dupliquée ici
+    // volontairement, comme les autres invariants du fichier qui testent le contrat observable de
+    // la courbe plutôt que de coupler le test à une constante interne.
+    const LATENCE_REPAS = 12;
+
+    it('cas adéquat (repas moyen, dose habituelle, injectée à -15) : ne descend jamais sous la baseline sur [0, LATENCE_REPAS]', () => {
+      const curve = sampleRepasAvecBolus(params, { dose: 0.4, tInjection: -15 });
+      const fenetrePreRepas = curve.filter((p) => p.t >= 0 && p.t <= LATENCE_REPAS);
+      expect(fenetrePreRepas.length).toBeGreaterThan(0);
+      for (const p of fenetrePreRepas) expect(p.v).toBeGreaterThanOrEqual(BASELINE - 1e-6);
+    });
+
+    it('creux légitime du sur-dosage préservé : petit repas + dose habituelle plonge sous la bande cible (après LATENCE_REPAS, hors garde-fou)', () => {
+      const petitRepas: RepasParams = { charge: 0.2, frein: 0.35, retard: 0.3 };
+      const curve = sampleRepasAvecBolus(petitRepas, { dose: 0.4, tInjection: -15 });
+      const min = Math.min(...curve.map((p) => p.v));
+      expect(min).toBeLessThan(BANDE_CIBLE_DEFAUT.basse);
+    });
+
+    it('plongée du cumul préservée (temps ④) : une 2ᵉ dose rapprochée creuse toujours nettement sous la baseline', () => {
+      const doubleDose = sampleRepasAvecBolus(params, { dose: 0.5, tInjection: -15, tSecondeDose: 15 });
+      const min = Math.min(...doubleDose.map((p) => p.v));
+      expect(min).toBeLessThan(BASELINE - 15);
+    });
+
+    it('correction départ-haut préservée (temps ③) : dans la fenêtre pré-repas, le bolus réduit toujours un départ haut (excès disponible = garde-fou non bloquant)', () => {
+      const departHaut = BASELINE + 45; // cf. InsulineRapideModule DEPART_OPTIONS 'haute'
+      const avecBolus = sampleRepasAvecBolus(params, { dose: 0.6, tInjection: -15, depart: departHaut });
+      const sansBolus = sampleRepasAvecBolus(params, { dose: 0, tInjection: -15, depart: departHaut });
+      expect(valueAt(avecBolus, LATENCE_REPAS)).toBeLessThan(valueAt(sansBolus, LATENCE_REPAS) - 1);
+    });
+
+    it("départ-bas jamais remonté par le garde-fou : reste nettement sous la baseline sur [0, LATENCE_REPAS] (conditionné à « pas d'excès dispo », pas un clamp aveugle)", () => {
+      const departBas = BASELINE - 7; // cf. InsulineRapideModule DEPART_OPTIONS 'basse'
+      const curve = sampleRepasAvecBolus(params, { dose: 0.4, tInjection: -15, depart: departBas });
+      for (const t of [0, 4, 8, LATENCE_REPAS]) {
+        expect(valueAt(curve, t)).toBeLessThan(BASELINE - 1);
+      }
+    });
+  });
 });
 
 // ---------------------------------------------------------------------------

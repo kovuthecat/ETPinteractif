@@ -380,6 +380,10 @@ function excesGate(params: RepasParams, t: number): number {
  *   qualitatif via `fractionEffetDelivree`) — c'est cette somme, pas un simple écart temporel, qui
  *   distingue une recorrection trop précoce (IOB encore élevé → plonge) d'une recorrection après
  *   attente (IOB quasi nul → atterrit dans la cible).
+ * - Garde-fou pré-repas (`IA4`, plan insuline-affinements-2026-07/S3) : avant `LATENCE_REPAS`, la
+ *   soustraction de l'effet bolus est bornée par l'excès de glycémie réellement disponible
+ *   (`repas − BASELINE`) — évite qu'un bolus à action précoce ne creuse artificiellement sous la
+ *   baseline avant que le repas (ou un départ haut) n'ait quoi que ce soit à couvrir.
  */
 export function sampleRepasAvecBolus(params: RepasParams, bolus: BolusParams): Point[] {
   const decalageDepart = (bolus.depart ?? BASELINE) - BASELINE; // temps ③ : correction du point de départ
@@ -403,6 +407,24 @@ export function sampleRepasAvecBolus(params: RepasParams, bolus: BolusParams): P
     if (bolus.tSecondeDose !== undefined) {
       // 2ᵉ dose de correction (dose distincte possible via `doseCorrection`, défaut = `dose`) :
       effet += bolusEffet(t - bolus.tSecondeDose, doseCorrection);
+    }
+    // IA4 (2026-07-21, plan insuline-affinements-2026-07/S3) : tant que le repas n'a pas commencé
+    // à monter (t ≤ LATENCE_REPAS ; `repasLevelAt` vaut alors exactement BASELINE), borner la
+    // soustraction de l'effet bolus par l'excès de glycémie RÉELLEMENT DISPONIBLE (`repas −
+    // BASELINE`, jamais négatif). Sans ce garde-fou, un bolus à action précoce (BOLUS_LATENCE=15 <
+    // LATENCE_REPAS=12 après injection à -15) commence à soustraire dès t=0 alors que le repas n'a
+    // encore rien apporté à couvrir → creux artificiel sous la baseline au cas adéquat (repas
+    // moyen/dose habituelle/injection -15, cf. glycemieCurve.test.ts « IA4 »).
+    // Piste (a) du plan (retenue, la moins invasive) plutôt que (b) ré-aligner la latence : garde-fou
+    // LOCAL à cette fenêtre, conditionné à l'excès dispo — PAS un clamp aveugle à BASELINE — ce qui
+    // préserve intacts : la correction départ-haut (temps ③, l'écart de départ constitue un excès
+    // dispo, la soustraction reste possible) et le cumul (temps ④, l'effet de la 2ᵉ dose ne devient
+    // non nul qu'après t=30, hors de cette fenêtre). Un départ-bas (`deviation` < 0, donc `repas` <
+    // BASELINE) n'a lui aucun excès dispo → l'effet y est intégralement borné à 0 : la valeur reste
+    // celle du départ, jamais remontée artificiellement vers la baseline (cf. plan S3 « Si bloqué »).
+    if (t <= LATENCE_REPAS) {
+      const excesDisponible = Math.max(0, repas - BASELINE);
+      effet = Math.min(effet, excesDisponible);
     }
     return clampRange(repas - effet, 0, LEVEL_MAX);
   });
