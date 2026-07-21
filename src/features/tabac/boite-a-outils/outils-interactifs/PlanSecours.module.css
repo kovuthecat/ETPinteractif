@@ -1,0 +1,157 @@
+.module {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  min-height: var(--target-min);
+  padding: 8px 14px;
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  font: inherit;
+}
+
+.backBtn:hover,
+.backBtn:focus-visible {
+  border-color: var(--color-nav);
+  color: var(--color-nav);
+}
+
+.bandeau {
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.bandeauTitre {
+  margin: 0;
+  font-family: 'Source Serif 4', serif;
+  font-weight: 700;
+  font-size: 1.2em;
+  color: var(--color-text);
+}
+
+.bandeauCorps {
+  margin: 0;
+  font-size: 0.95em;
+  line-height: 1.5;
+  color: var(--color-text-soft);
+}
+
+.gestes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  max-width: 640px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.geste {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-1);
+  cursor: pointer;
+  font-size: 1.1em;
+}
+
+.geste:hover,
+.geste:focus-within {
+  border-color: var(--color-confort);
+}
+
+.gesteFait {
+  background: var(--color-confort-soft);
+  border-color: var(--color-confort);
+}
+
+/* Case native conservée pour l'accessibilité (annonce « case à cocher »), masquée
+   visuellement : le badge numéroté/coché tient lieu d'indicateur visuel. */
+.gesteInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.gesteBadge {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-pill);
+  background: var(--color-nav-soft);
+  color: var(--color-nav);
+  font: 700 16px 'Work Sans', sans-serif;
+}
+
+.gesteFait .gesteBadge {
+  background: var(--color-confort);
+  color: #fff;
+}
+
+.gesteTexte {
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+.gesteFait .gesteTexte {
+  color: var(--color-confort-strong);
+}
+
+.contact {
+  max-width: 640px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.contact p {
+  margin: 0;
+  font-weight: 600;
+}
+
+.raisonsBlock {
+  max-width: 640px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.raisonsList {
+  margin: 0;
+  padding-left: 1.2em;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  font-size: 1.05em;
+}
+
+.raisonsVide {
+  margin: 0;
+  color: var(--color-text-soft);
+  font-style: italic;
+}
