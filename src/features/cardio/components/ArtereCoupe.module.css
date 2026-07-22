@@ -1,0 +1,28 @@
+.wrap {
+  position: relative;
+  flex: none;
+  aspect-ratio: 1 / 1;
+}
+
+.img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Position/rotation reprises telles quelles du prototype (M1 §63-66, M2 §84-87) : overlay
+   `viewBox="0 0 100 100"` posé sur l'illustration `artere-saine.png`. Cadrage fin (pas la
+   géométrie) : ajuster uniquement ici en cas de décalage visuel (cf. « Si bloqué », S2.md). */
+.overlay {
+  position: absolute;
+  left: 49%;
+  top: 46.5%;
+  width: 62%;
+  height: 30%;
+  transform: translate(-50%, -50%) rotate(-25deg);
+  overflow: visible;
+  pointer-events: none;
+}

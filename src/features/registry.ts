@@ -1,6 +1,7 @@
 import type { ThemeDef } from './types';
 import { MODULES as TABAC_MODULES } from './tabac/registry';
 import { MODULES as DIABETE_MODULES } from './diabete/registry';
+import { MODULES as CARDIO_MODULES } from './cardio/registry';
 
 export const THEMES: ThemeDef[] = [
   {
@@ -31,5 +32,20 @@ export const THEMES: ThemeDef[] = [
       { id: 'soigner', label: 'Se soigner' },
     ],
     modules: DIABETE_MODULES,
+  },
+  {
+    id: 'cardio',
+    titre: 'Prévention cardiovasculaire',
+    eyebrow: 'PROGRAMME ETP · PRÉVENTION CARDIOVASCULAIRE',
+    description:
+      "Comprendre l'athérosclérose et le risque cardiovasculaire, agir au quotidien sur les facteurs modifiables, se soigner : traitements, alerte et suivi.",
+    exergue:
+      "L'athérosclérose avance en silence — mais elle est réversible. Agir sur plusieurs leviers protège le cœur, le cerveau, les jambes et les reins.",
+    familles: [
+      { id: 'comprendre', label: 'Comprendre' },
+      { id: 'agir', label: 'Agir au quotidien' },
+      { id: 'soigner', label: 'Se soigner' },
+    ],
+    modules: CARDIO_MODULES,
   },
 ];

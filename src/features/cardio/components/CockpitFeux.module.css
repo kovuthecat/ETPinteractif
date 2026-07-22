@@ -1,0 +1,86 @@
+.cockpit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.chipsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  justify-content: center;
+}
+
+/* Couleur d'état portée par bordure + fond, **jamais par l'icône seule** (invariant a11y
+   CVD2-S2) ; largeur de bordure croissante = repère non chromatique complémentaire
+   (vert 1.5px -> orange 3px -> rouge 4px, cf. FEU_TOKEN_STYLE de la lib). Le libellé texte
+   accompagne toujours l'icône (nom accessible visible, pas seulement porté par aria-label). */
+.chipFeu {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--target-min);
+  min-width: var(--target-min);
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  border-style: solid;
+  border-width: var(--feu-border-width, 1.5px);
+  border-color: var(--feu-fg, var(--color-line));
+  background: var(--feu-soft, var(--color-surface));
+  color: var(--feu-fg, var(--color-text));
+  font: 600 14px 'Work Sans', sans-serif;
+  cursor: pointer;
+  transition:
+    border-width 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.chipFeu:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chipFeu {
+    transition: none;
+  }
+}
+
+/* --- Barre de risque cumulée (multiplicative, D2) --- */
+
+.barreWrap {
+  width: 100%;
+  max-width: 440px;
+}
+
+.barreLabels {
+  display: flex;
+  justify-content: space-between;
+  font: 600 13px 'Work Sans', sans-serif;
+  color: var(--color-text-soft);
+  margin: 0 0 6px;
+}
+
+.barre {
+  position: relative;
+  height: 16px;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(90deg, var(--color-confort), var(--color-vigilance), var(--color-toxique));
+}
+
+.barreCurseur {
+  position: absolute;
+  top: -6px;
+  width: 4px;
+  height: 28px;
+  border-radius: 2px;
+  background: var(--color-text);
+  transition: left 0.3s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .barreCurseur {
+    transition: none;
+  }
+}

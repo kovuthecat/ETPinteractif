@@ -1,0 +1,45 @@
+.image {
+  display: block;
+  object-fit: cover;
+  background: var(--color-bg);
+  border: 1px solid var(--color-line);
+  flex-shrink: 0;
+}
+
+.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  background: var(--color-bg);
+  border: 1px solid var(--color-line);
+  padding: var(--space-xs);
+  text-align: center;
+  overflow: hidden;
+}
+
+.placeholderLabel {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 13px;
+  line-height: 1.3;
+  color: var(--color-text-faint);
+}
+
+/* Sous ~56px de côté, le libellé déborde systématiquement — on le masque (aria-label déjà
+   porté par le conteneur, rien n'est perdu pour l'accessibilité). Repris de la version diabète. */
+.placeholderLabelHidden {
+  display: none;
+}
+
+.shapeCircle {
+  border-radius: var(--radius-pill);
+}
+
+.shapeRounded {
+  border-radius: var(--radius-lg);
+}
