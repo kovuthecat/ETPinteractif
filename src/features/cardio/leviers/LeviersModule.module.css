@@ -1,0 +1,319 @@
+/*
+ * Module 9 — « Les autres leviers » (C15, plans/theme-cardio-2026-07/S11.md). Chrome repris du
+ * moule S4 (`ArtereModule.module.css`) pour les onglets `.tabs`/`.tab`/`.tabActive` (slot `nav`
+ * du ModuleShell) et pour `.slider` (repris de `diabete/activite/ActiviteModule.module.css`,
+ * seul précédent de curseur `type=range` du projet). Les trois volets partagent une même carte
+ * `.panel` centrée ; les couleurs sémantiques (`--color-confort/vigilance/toxique`) suivent la
+ * convention du projet (tokens.css) et sont toujours doublées d'un texte (jamais la couleur
+ * seule, cf. invariant a11y).
+ */
+
+.module {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+/* --- Onglets (rendus dans le slot `nav` du ModuleShell) --- */
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.tab {
+  padding: 10px 18px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--color-line);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: 600 15px 'Work Sans', sans-serif;
+  cursor: pointer;
+}
+
+.tabActive {
+  border-color: var(--color-text);
+  background: var(--color-text);
+  color: var(--color-bg);
+}
+
+.tab:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
+}
+
+/* --- Carte du volet actif --- */
+
+.panel {
+  width: 100%;
+  max-width: 440px;
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.panelIntro {
+  margin: 0 0 4px;
+  font: 600 17px/1.4 'Work Sans', sans-serif;
+  color: var(--color-text);
+}
+
+/* --- Curseur (alcool / stress) — repris de ActiviteModule.module.css --- */
+
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--color-line);
+  outline: none;
+  margin: var(--space-xs) 0;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--color-text);
+  cursor: pointer;
+  border: 3px solid var(--color-surface);
+  box-shadow: 0 0 0 1.5px var(--color-text);
+}
+
+.slider::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--color-text);
+  cursor: pointer;
+  border: 3px solid var(--color-surface);
+  box-shadow: 0 0 0 1.5px var(--color-text);
+}
+
+/* --- Verres (alcool) : décoratif, doublé par `.valeur`/`.caption` --- */
+
+.glasses {
+  display: flex;
+  gap: 6px;
+}
+
+.glass {
+  width: 26px;
+  height: 34px;
+  border-radius: 4px 4px 8px 8px;
+  border: 2px solid var(--color-line);
+  background: transparent;
+}
+
+.glassFilled--confort {
+  border-color: var(--color-confort);
+  background: var(--color-confort-soft);
+}
+
+.glassFilled--vigilance {
+  border-color: var(--color-vigilance);
+  background: var(--color-vigilance-soft);
+}
+
+.glassFilled--toxique {
+  border-color: var(--color-toxique);
+  background: var(--color-toxique-soft);
+}
+
+/* --- Valeur / légende chiffrée simple (pas de calibrage clinique) --- */
+
+.valeur {
+  margin: 0;
+  font: 600 15px 'Work Sans', sans-serif;
+  color: var(--color-text);
+}
+
+/* --- Message dynamique (ton sémantique + texte, jamais la couleur seule) --- */
+
+.caption {
+  margin: 0;
+  font: 500 14px/1.4 'Work Sans', sans-serif;
+}
+
+.caption--confort {
+  color: var(--color-confort-strong);
+}
+
+.caption--vigilance {
+  color: var(--color-vigilance);
+}
+
+.caption--toxique {
+  color: var(--color-toxique);
+}
+
+/* --- Repère sourcé, verbatim CONTENU_cardio.md §M9 (G1) --- */
+
+.repere {
+  margin: 4px 0 0;
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--color-line);
+  font: 500 13px/1.5 'Work Sans', sans-serif;
+  color: var(--color-text-faint);
+}
+
+/* --- Barres en U (sommeil) --- */
+
+.bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 72px;
+  margin-top: var(--space-xs);
+}
+
+.barBtn {
+  flex: 1 1 0;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.bar {
+  width: 100%;
+  border-radius: 3px 3px 0 0;
+  background: var(--color-confort-soft);
+}
+
+.barRisky {
+  background: var(--color-vigilance-soft);
+}
+
+.barSelected {
+  background: var(--color-nav);
+}
+
+.barBtn:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
+}
+
+.barsScale {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--color-text-faint);
+}
+
+/* --- SAOS (sommeil) --- */
+
+.saosHeading {
+  margin: var(--space-sm) 0 0;
+  font: 600 14px/1.4 'Work Sans', sans-serif;
+  color: var(--color-text);
+}
+
+.saosInstruction {
+  margin: 0;
+  font: 600 13px 'Work Sans', sans-serif;
+  color: var(--color-text-soft);
+}
+
+.saosList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.saosChip {
+  padding: 10px 14px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--color-line);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: 500 13px 'Work Sans', sans-serif;
+  cursor: pointer;
+}
+
+.saosChipOn {
+  border-color: var(--color-vigilance);
+  background: var(--color-vigilance-soft);
+  color: var(--color-text);
+}
+
+.saosChip:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
+}
+
+/* --- Stress : déculpabilisation + leviers --- */
+
+.deculpabilisation {
+  margin: 0;
+  font: 500 13px/1.5 'Work Sans', sans-serif;
+  font-style: italic;
+  color: var(--color-text-soft);
+}
+
+.leviersList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.leverChip {
+  padding: 10px 16px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--color-line);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: 600 14px 'Work Sans', sans-serif;
+  cursor: pointer;
+}
+
+.leverChipOn {
+  border-color: var(--color-confort);
+  background: var(--color-confort-soft);
+  color: var(--color-confort-strong);
+}
+
+.leverChip:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
+}
+
+/* --- Renvois inline (9→4 alcool→tension, 9→7 stress→bouger) --- */
+
+.renvoiBtn {
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--target-min);
+  margin-top: var(--space-sm);
+  padding: 8px 14px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--color-nav);
+  font: 600 15px 'Work Sans', sans-serif;
+  cursor: pointer;
+  text-align: center;
+}
+
+.renvoiBtn:hover,
+.renvoiBtn:focus-visible {
+  text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  .panel {
+    padding: var(--space-md);
+  }
+}
