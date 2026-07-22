@@ -16,6 +16,94 @@
 
 ---
 
+## Chantier theme-cardio-2026-07 — nouveau thème « Prévention cardiovasculaire » (2026-07-22)
+
+**Statut** : 12 modules câblés, gates auto vertes (`tsc` + `build` + `test` 127/127), **chantier non
+clos**. Pilote (modules 1-3) **validé par Thibault** le 2026-07-22, après une correction (silhouette du
+module 3 recalée de 380 à 560 px). **Modules 4-12 restent à valider à l'écran** (`npm run dev` →
+sélecteur de thème → Prévention cardiovasculaire).
+
+### Modules 1-3 — pilote
+
+- [x] Module 1 « L'artère qui s'encrasse » — validé Thibault 2026-07-22.
+- [x] Module 2 « Mon risque global » — validé Thibault 2026-07-22 (cumul multiplicatif visible, aucun
+      score chiffré, non-modifiables bien à part, fiche imprimable).
+- [x] Module 3 « Où l'accident frappe » — validé Thibault 2026-07-22 **après correction** : silhouette
+      trop petite / zones cliquables imprécises → portée à 560 px, alignée sur l'anatomie du module
+      Risque CV diabète (`src/features/cardio/territoires/TerritoiresModule.module.css`).
+
+### Module 4 — La tension
+
+- [ ] La pression sur l'artère baisse visiblement en activant des leviers (sel/activité/poids/alcool/
+      antiHTA), badge « paroi fragilisée/apaisée » cohérent.
+- [ ] AMT < 135/85 apparaît uniquement au 2ᵉ niveau (survol) ; aucun « < 140/90 » nulle part.
+- [ ] Fiche « Ma règle des 3 » + relevé d'automesure vierge s'impriment correctement.
+
+### Module 5 — Le cholestérol (LDL)
+
+- [ ] Le curseur LDL fait évoluer le dépôt de l'artère ; **aucune valeur en g/L** à l'écran ni au survol.
+- [ ] Message anti-culpabilisant présent (« pas seulement l'assiette »).
+
+### Module 6 — Le tabac
+
+- [ ] La bascule Fumeur/Arrêté fait bouger le risque et la frise de réversibilité de façon cohérente.
+- [ ] Le renvoi vers le thème Tabac est bien un simple repli visuel (ramène au sélecteur de thème), pas
+      une navigation cassée.
+
+### Module 7 — Bouger
+
+- [ ] La jauge de volume **n'a pas de plafond** (pas de « objectif atteint »), le repère 150 min reste
+      discret (2ᵉ niveau).
+- [ ] Onglet Régularité : calendrier semaine + barres de protection cohérents avec les jours cochés.
+
+### Module 8 — Manger pour ses artères
+
+- [ ] Onglet Familles : détail au clic d'un aliment lisible. Onglet Assiette : l'ajout d'aliments fait
+      évoluer le graphique conique et l'analyse d'équilibre.
+- [ ] **Aucun chiffre de sel (g/j)** à l'écran — message qualitatif seul.
+- [ ] Fiche photographie de l'assiette s'imprime correctement.
+- [ ] Accroche d'ouverture (« l'assiette méditerranéenne soigne les artères ») : message proposé sans
+      source explicite du rapport — à juger/reformuler si besoin (cf. `DECISIONS.md`).
+
+### Module 9 — Les autres leviers
+
+- [ ] Alcool : le message reprend bien les repères SPF verbatim (« moins de 2/jour, ≤ 10/semaine »),
+      sans affirmation plus forte.
+- [ ] Sommeil : cocher ≥ 2 signes de SAOS oriente vers un dépistage, sans jamais diagnostiquer.
+- [ ] Stress : ton déculpabilisant, leviers concrets.
+
+### Module 10 — Reconnaître l'alerte (carte VITE)
+
+- [ ] Lisible à ~1 m / sous stress : gros pictos, peu de mots, bandeau 15 contrasté et permanent quel
+      que soit l'onglet actif.
+- [ ] Formes atypiques d'infarctus (femmes, diabétiques, âgés) bien visibles, pas une option qu'on peut
+      manquer.
+- [ ] **Aucune mention d'aspirine, nulle part** (écran, survol, fiche) — point de sûreté impératif.
+- [ ] Fiche référence (carte VITE + signes + 15) imprimable.
+- [ ] Le repère « > 5 min » est en sous-texte toujours visible (choix de design, pas de survol) — à
+      juger si ça convient pour une carte de survie (cf. `DECISIONS.md`).
+
+### Module 11 — Mes traitements qui protègent
+
+- [ ] Transcrire une ligne d'ordonnance (classe) allume les bonnes zones sur la silhouette (halo positif).
+- [ ] **Aucune aspirine/antiagrégant** dans la liste des classes proposées.
+- [ ] Aucune comparaison ni choix de molécule suggéré par l'outil (verrou anti-auto-prescription).
+- [ ] Silhouette à la bonne échelle (560 px, alignée sur le module territoires/Risque CV diabète).
+
+### Module 12 — Mon suivi
+
+- [ ] Bandeau « Mes 3 chiffres à suivre » en tête, grille de voyants cyclable (fait/à programmer/espacé).
+- [ ] **Jamais de rouge** dans ce module.
+- [ ] Fiche check-list frigo imprimable.
+- [ ] Fréquences de suivi affichées : réserve non bloquante, à confirmer par Thibault auprès de l'HAS.
+
+### Assets à générer (non bloquant, placeholders actuellement)
+
+- [ ] Pictos VITE (4), signes infarctus (3), artère/poumon tabac (2 états), brassard automesure —
+      prompts prêts dans `design/illustrations/prompts-illustrations-diabete.html` (section cardio).
+
+---
+
 ## Chantier revue-prod-2026-07 — validation du 2026-07-21
 
 **Statut** : chantier S1-S6 consolidé (commits + contexte) · **en attente de validation visuelle

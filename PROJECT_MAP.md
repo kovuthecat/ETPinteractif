@@ -2,7 +2,7 @@
 
 Carte synthétique du projet. Permet à ChatGPT et Claude Code de localiser vite les zones pertinentes.
 
-> État : **lot `PLAN_modules-tabac.md` (T1-T11) terminé le 2026-06-28** — scaffolding + les 6 modules du thème tabac sont implémentés et naviguables. **`plans/PLAN_corrections-v2.md` (R1-R9) terminé le 2026-07-01** — dont R9 : ajout d'un 7ᵉ module transverse, `motivation/`. **Moteur multi-thèmes introduit le 2026-07-08** : le thème tabac a été déplacé sous `features/tabac/`, un écran de sélection de thème (`ThemeSelector`) a été ajouté, et un thème `diabete` est scaffoldé (sans contenu, en attente de cadrage). **Chantier `plans/extensions-tabac/` (X1-X7) clos le 2026-07-09** (brief `docs/BRIEF_TABAC.md`) : 8ᵉ module `plan-arret/`, 4 fiches imprimables via `FicheOverlay`, portes de fin de module via `ModuleFooterNav`, fil rouge du thème, composant `InfoHover` (créé, non câblé). **Chantier `plans/approfondissement-tabac/` (S1-S7) clos le 2026-07-10** : modèle `nicotineCurve.ts` réaliste, `SilhouetteCorps` générique, modules 9 (Ce que l'arrêt répare) et 10 (Vrai ou faux ?). **Chantier `plans/boite-a-outils/` (BO1-BO9) clos le 2026-07-10** : `craving/` remplacé par `boite-a-outils/` (14 outils filtrables, fiche « Ma boîte à outils »), refonte du module Composantes (sélection radiale de situations, `situations.ts` partagé), contexte de navigation générique (`unknown`) dans le moteur, vapoteuse réintégrée dans les Substituts, section « Si j'ai un écart » dans Plan d'arrêt, 6 nouvelles cartes Vrai/faux (21 au total), interrupteur « toniques uniquement » côté diabète/Activité. **Chantier `plans/corrections-audit-tabac/` (S1-S13) clos le 2026-07-13** : retouches UI/a11y sur 6 modules tabac + 1 composant diabète partagé (S1-S9), nouveau `src/state/SelectionContext.tsx` (état de sélection partagé **en mémoire**, S10), nouveau livret d'accompagnement imprimable `src/components/PrintableLivret.tsx` (S11, proposition livrée sans validation visuelle, à ajuster). Chantier séparé cadré `plans/aide-patient/` (T16, app patient autonome, 2ᵉ surface applicative) : cadrage produit complet, **non démarré**. **Chantier `plans/corrections-revue-guidee/` (S1-S6 + 3 correctifs de séance) validé visuellement par Thibault le 2026-07-14** (13 points d'une revue guidée, blocs A-E ; consolidation S7 en cours) : benefices-arret passe en nav par frise chronologique à hotspots + silhouette anatomique hotspot, plan-arret gagne un sélecteur de stratégie, insuline-rapide corrige son modèle « couvrir » (dose fixe) et gagne un encadré `.situationCard` + `excesGate` en lib, insuline basale perd ses onglets (écran unique), VagueCraving (Boîte à outils) passe les 4D en activation exclusive. **Chantier `plans/outils-interactifs-2026-07/` (S1-S8) clos le 2026-07-21** : 11 des 14 outils de « Stratégies & outils » rendus interactifs (registre `OUTILS_INTERACTIFS`, dossier `outils-interactifs/` ci-dessous) dans les deux bundles (consultation + patient), `outil-respiration` recâblé en consultation, persistance injectée (`outilsData` en mémoire côté consultation, `localStorage` côté patient via `usePatientStore`). **Chantier `plans/insuline-affinements-2026-07/` (S1-S6) clos le 2026-07-21** : nouveau doc d'autorité `docs/diabete/09-insuline-basale.md`, module basale enrichi (intro rôle de la lente + bloc régularité/horaire + pont vers la rapide), module rapide enrichi (slider timing ② à source de vérité unique + 5ᵉ onglet « Et si je ne mange pas ? » + pont vers la basale), garde-fou dans `glycemieCurve.ts` (`sampleRepasAvecBolus`, plus de creux sous baseline au cas adéquat). **Chantier `plans/revue-prod-2026-07/` (S1-S6) clos le 2026-07-21** (revue prod complète au navigateur in-app) : app patient — les outils interactifs se montent enfin (parité de schéma avec la consultation, `PatientSituations.tsx`) ; « Mon plan d'arrêt » réduit à l'écran aux sections date + écart (le livret reste complet, lit toujours l'état partagé) + « + autre » situation ajouté dans Composantes ; QR du livret reformulé (composant partagé `QRBlock.tsx`) ; 5 correctifs d'ergonomie consultation (Composantes, Motivation, Alimentation, Traitements, en-têtes à onglets multiples) ; silhouette de « Ce que l'arrêt répare » surligne désormais l'organe au repère sélectionné (aligné sur le mécanisme diabète). Cette carte décrit l'arborescence réelle.
+> État : **lot `PLAN_modules-tabac.md` (T1-T11) terminé le 2026-06-28** — scaffolding + les 6 modules du thème tabac sont implémentés et naviguables. **`plans/PLAN_corrections-v2.md` (R1-R9) terminé le 2026-07-01** — dont R9 : ajout d'un 7ᵉ module transverse, `motivation/`. **Moteur multi-thèmes introduit le 2026-07-08** : le thème tabac a été déplacé sous `features/tabac/`, un écran de sélection de thème (`ThemeSelector`) a été ajouté, et un thème `diabete` est scaffoldé (sans contenu, en attente de cadrage). **Chantier `plans/extensions-tabac/` (X1-X7) clos le 2026-07-09** (brief `docs/BRIEF_TABAC.md`) : 8ᵉ module `plan-arret/`, 4 fiches imprimables via `FicheOverlay`, portes de fin de module via `ModuleFooterNav`, fil rouge du thème, composant `InfoHover` (créé, non câblé). **Chantier `plans/approfondissement-tabac/` (S1-S7) clos le 2026-07-10** : modèle `nicotineCurve.ts` réaliste, `SilhouetteCorps` générique, modules 9 (Ce que l'arrêt répare) et 10 (Vrai ou faux ?). **Chantier `plans/boite-a-outils/` (BO1-BO9) clos le 2026-07-10** : `craving/` remplacé par `boite-a-outils/` (14 outils filtrables, fiche « Ma boîte à outils »), refonte du module Composantes (sélection radiale de situations, `situations.ts` partagé), contexte de navigation générique (`unknown`) dans le moteur, vapoteuse réintégrée dans les Substituts, section « Si j'ai un écart » dans Plan d'arrêt, 6 nouvelles cartes Vrai/faux (21 au total), interrupteur « toniques uniquement » côté diabète/Activité. **Chantier `plans/corrections-audit-tabac/` (S1-S13) clos le 2026-07-13** : retouches UI/a11y sur 6 modules tabac + 1 composant diabète partagé (S1-S9), nouveau `src/state/SelectionContext.tsx` (état de sélection partagé **en mémoire**, S10), nouveau livret d'accompagnement imprimable `src/components/PrintableLivret.tsx` (S11, proposition livrée sans validation visuelle, à ajuster). Chantier séparé cadré `plans/aide-patient/` (T16, app patient autonome, 2ᵉ surface applicative) : cadrage produit complet, **non démarré**. **Chantier `plans/corrections-revue-guidee/` (S1-S6 + 3 correctifs de séance) validé visuellement par Thibault le 2026-07-14** (13 points d'une revue guidée, blocs A-E ; consolidation S7 en cours) : benefices-arret passe en nav par frise chronologique à hotspots + silhouette anatomique hotspot, plan-arret gagne un sélecteur de stratégie, insuline-rapide corrige son modèle « couvrir » (dose fixe) et gagne un encadré `.situationCard` + `excesGate` en lib, insuline basale perd ses onglets (écran unique), VagueCraving (Boîte à outils) passe les 4D en activation exclusive. **Chantier `plans/outils-interactifs-2026-07/` (S1-S8) clos le 2026-07-21** : 11 des 14 outils de « Stratégies & outils » rendus interactifs (registre `OUTILS_INTERACTIFS`, dossier `outils-interactifs/` ci-dessous) dans les deux bundles (consultation + patient), `outil-respiration` recâblé en consultation, persistance injectée (`outilsData` en mémoire côté consultation, `localStorage` côté patient via `usePatientStore`). **Chantier `plans/insuline-affinements-2026-07/` (S1-S6) clos le 2026-07-21** : nouveau doc d'autorité `docs/diabete/09-insuline-basale.md`, module basale enrichi (intro rôle de la lente + bloc régularité/horaire + pont vers la rapide), module rapide enrichi (slider timing ② à source de vérité unique + 5ᵉ onglet « Et si je ne mange pas ? » + pont vers la basale), garde-fou dans `glycemieCurve.ts` (`sampleRepasAvecBolus`, plus de creux sous baseline au cas adéquat). **Chantier `plans/revue-prod-2026-07/` (S1-S6) clos le 2026-07-21** (revue prod complète au navigateur in-app) : app patient — les outils interactifs se montent enfin (parité de schéma avec la consultation, `PatientSituations.tsx`) ; « Mon plan d'arrêt » réduit à l'écran aux sections date + écart (le livret reste complet, lit toujours l'état partagé) + « + autre » situation ajouté dans Composantes ; QR du livret reformulé (composant partagé `QRBlock.tsx`) ; 5 correctifs d'ergonomie consultation (Composantes, Motivation, Alimentation, Traitements, en-têtes à onglets multiples) ; silhouette de « Ce que l'arrêt répare » surligne désormais l'organe au repère sélectionné (aligné sur le mécanisme diabète). **Chantier `plans/theme-cardio-2026-07/` (S1-S14, 2026-07-22, non clos)** : **3ᵉ thème `cardio`** (« Prévention cardiovasculaire », primaire uniquement) câblé depuis un handoff Claude Design (`design/Mosule cardio ETP interactif-handoff.zip`) et le brief/evidence cliniques (`docs/cardio/`) — 12 modules, gate contenu **G1 validée par Thibault** (jamais de LDL/tension chiffrés à l'écran, AMT < 135/85, sel/alcool qualitatifs sourcés SPF, **aucune mention d'aspirine**, « mes 3 chiffres » retenu pour le suivi), lib pure testée `risqueCardio.ts` (cumul **multiplicatif** des facteurs, cœur pédagogique du thème), 4 composants cardio-owned réutilisant le moteur générique. Pilote M1-M3 **validé visuellement** (silhouette M3 recalée 380→560 px, alignée sur l'anatomie du module Risque CV diabète) ; **M4-M12 restent à valider à l'écran** — porte inter-thèmes réelle et généralisation des composants jugées hors v1 (gates tranchées avec Thibault). Cette carte décrit l'arborescence réelle.
 
 ---
 
@@ -181,6 +181,33 @@ src/
                                                                     # dynamique remplace les 4 étiquettes fixes) ; S5 — **5ᵉ temps**
                                                                     # `⑤ Et si je ne mange pas ?` (repas charge 0 + bolus → plonge,
                                                                     # renvoi module 8), positionnement après le ④ à revalider
+    cardio/
+      registry.ts             # MODULES: ModuleDef[] — 12 modules cardio, 3 familles comprendre/agir/soigner
+                                # (theme-cardio-2026-07, 2026-07-22)
+      lib/
+        risqueCardio.ts / .test.ts  # logique pure cardio : plaqueGeom (dépôt/fissure/caillot/renforcée) +
+                                      # cumulMultiplicatif (le cumul des facteurs se MULTIPLIE, ≠ addition —
+                                      # cœur pédagogique du thème), 21 invariants testés
+      components/
+        ArtereCoupe.tsx / .module.css   # artère réversible riche (dépôt + rupture + espoir), consomme la lib
+        CockpitFeux.tsx / .module.css   # tableau de feux modifiables, a11y couleur+bordure (jamais couleur seule)
+        Silhouette.tsx                  # wrapper mince cardio sur `SilhouetteCorps` (zones cœur/cerveau/jambes/reins)
+        IllustrationSlot.tsx / .module.css  # copie du composant diabète, chemin `illustrations/cardio/`
+      artere/ArtereModule.tsx / .module.css        # Module 1 — L'artère qui s'encrasse (pilote, séquence 4 temps réversible)
+      risque/RisqueModule.tsx / .module.css        # Module 2 — Mon risque global (cockpit + cumul multiplicatif + fiche)
+      territoires/TerritoiresModule.tsx / .module.css  # Module 3 — Où l'accident frappe (silhouette 560px, 4 territoires)
+      tension/TensionModule.tsx / .module.css      # Module 4 — La tension (artère sous pression + règle des 3 + fiche)
+      cholesterol/CholesterolModule.tsx / .module.css  # Module 5 — Le cholestérol (curseur LDL qualitatif, jamais de g/L)
+      tabac/TabacModule.tsx / .module.css          # Module 6 — Le tabac (réversibilité CV, repli visuel vers le thème Tabac)
+      bouger/BougerModule.tsx / .module.css        # Module 7 — Bouger (volume sans plafond + régularité)
+      manger/MangerModule.tsx / .module.css / data.ts  # Module 8 — Manger pour ses artères (familles + assiette + fiche)
+      leviers/LeviersModule.tsx / .module.css      # Module 9 — Les autres leviers (alcool/sommeil-SAOS/stress)
+      alerte/AlerteModule.tsx / .module.css        # Module 10 — Reconnaître l'alerte (carte VITE, seul objet neuf du
+                                                     # thème, + infarctus + bandeau 15 ; aucune mention d'aspirine, gate G1)
+      traitements/TraitementsModule.tsx / .module.css / data.ts  # Module 11 — Mes traitements qui protègent
+                                                     # (ordonnance ↔ silhouette protégée ; aspirine retirée de la table)
+      suivi/SuiviModule.tsx / .module.css          # Module 12 — Mon suivi (« mes 3 chiffres » + grille de voyants,
+                                                     # jamais de rouge — alternative allégée au cadran annuel diabète)
 docs/
   architecture.md
   BRIEF_TABAC.md               # brief design & pédagogie tabac (Fable, 2026-07-09) — §2 fiches rétroactives des 7
@@ -197,11 +224,21 @@ docs/
     module-3-activite-physique.md
     module-4-risque-cardiovasculaire.md
     modules-5-8-cadrage.md    # modules 5-8, cadrés mais pas encore détaillés écran par écran
+  cardio/                     # autorité du contenu médical, thème cardio (prévention primaire)
+    CONTENU_cardio.md          # contenu clinique des 12 modules — message écran/2ᵉ niveau/calibrage/pièges/
+                                # sources par module, validé gate G1 (Thibault, 2026-07-22)
+    BRIEF_DESIGN_cardio.md      # brief design écran par écran (le *quoi*) transmis à Claude Design
+    evidence-cardio/            # rapports de synthèse OpenEvidence (le *pourquoi*, sources probantes brutes)
+      2026-07-21-rapport-openevidence-cardio-socle.md
+      2026-07-21-rapport-openevidence-cardio-complement.md
   evidence-diabete/           # rapports de synthèse OpenEvidence (sources probantes brutes, thème diabète)
   evidence-tabac/             # rapports de synthèse OpenEvidence (sources probantes brutes, thème tabac)
     2026-07-10-rapport-openevidence-sevrage.md  # stratégies comportementales du sevrage — autorité chiffrée
                                                  # du Module 6 (Stratégies & outils) ; chiffres jamais à l'écran
 plans/
+  theme-cardio-2026-07/       # EN COURS (non clos) : 3ᵉ thème cardio, 12 modules câblés + gates auto vertes,
+                                # validation visuelle Thibault des modules M4-M12 restant à faire (pilote
+                                # M1-M3 déjà validé) — cf. VALIDATION.md
   # un dossier par chantier EN COURS (index.md + S<n>.md) ; le détail de chaque chantier clos
   # est synthétisé dans STATUS.md/TASKS.md puis le dossier est purgé (historique → git log,
   # cf. commit "chore: purge des dossiers plans/ des chantiers déjà clos", 2026-07-11)
@@ -301,6 +338,30 @@ le bundle patient » est assouplie pour le seul registre partagé des outils int
 de la gate G1 (tous les outils interactifs exposés côté patient) et du registre unique consommé par les
 deux bundles ; `PatientSituations.tsx`/`usePatientStore.ts` importent désormais ce sous-arbre précis,
 mais jamais un module de consultation ni le moteur de navigation.
+
+---
+
+### Feature 5 — Thème cardio (« Prévention cardiovasculaire », theme-cardio-2026-07, non clos)
+Rôle : 3ᵉ thème du moteur (après tabac, diabète), prévention **primaire** uniquement (secondaire hors v1).
+12 modules en 3 familles (Comprendre : artère/risque/territoires · Agir : tension/cholestérol/tabac/bouger/
+manger/leviers · Se soigner : alerte/traitements/suivi). 4 des 5 objets-héros du brief réutilisent la
+grammaire diabète (artère/plaque, silhouette, feux, « mes 3 chiffres ») ; seul objet neuf : la carte-réflexe
+**VITE** (module 10). Contenu clinique sourcé et **validé (gate G1, Thibault, 2026-07-22)** avant tout
+câblage — 6 arbitrages structurants : jamais de cible LDL/tension chiffrée à l'écran (seuils modulés selon
+le risque CV), AMT < 135/85 conservé, sel/alcool = messages qualitatifs sourcés (SPF), **aucune mention
+d'aspirine** (modules 10/11, sûreté AVC hémorragique), « mes 3 chiffres » retenu pour le suivi (pas le
+cadran annuel du diabète).
+Fichiers clés : `src/features/cardio/registry.ts`, `src/features/cardio/lib/risqueCardio.ts` (cumul
+**multiplicatif** des facteurs testé, 21 invariants), `src/features/cardio/components/` (`ArtereCoupe`,
+`CockpitFeux`, `Silhouette`, `IllustrationSlot` — cardio-owned, découplés du diabète), `docs/cardio/`
+(brief, evidence, `CONTENU_cardio.md`), `plans/theme-cardio-2026-07/`.
+Points de vigilance : **chantier non clos** — pilote M1-M3 validé visuellement (silhouette M3 recalée à
+560 px, alignée sur l'anatomie du Risque CV diabète), **M4-M12 restent à valider à l'écran** (cf.
+`VALIDATION.md`) ; fréquences de suivi du module 12 à confirmer par Thibault auprès de l'HAS (non
+bloquant) ; porte inter-thèmes réelle (M2→diabète, M6→tabac) et généralisation des composants cardio dans
+`src/components/` jugées **hors v1** (repli visuel suffit, gates tranchées avec Thibault) ; assets neufs
+(pictos VITE, signes infarctus, artère tabac 2 états, brassard) pas encore générés — placeholders natifs,
+non bloquant.
 
 ---
 

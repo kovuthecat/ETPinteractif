@@ -4,8 +4,66 @@
 
 > **Frontières** — STATUS : état actuel · `TASKS.md` : backlog + tâches · `plans/` : plan d'une tâche active · `VALIDATION.md` : checklist visuelle.
 >
-> **Dernière mise à jour :** 2026-07-21 (chantier `revue-prod-2026-07` — correctifs issus d'une revue
-> prod complète au navigateur in-app, S1-S6 **clos**, validation visuelle humaine restant à faire)
+> **Dernière mise à jour :** 2026-07-22 (chantier `theme-cardio-2026-07` — 3ᵉ thème « Prévention
+> cardiovasculaire », 12 modules câblés, gates auto vertes, pilote M1-M3 validé visuellement par
+> Thibault ; M4-M12 restent à valider à l'écran)
+
+**Nouveau thème « Prévention cardiovasculaire » — 12 modules (2026-07-22)** — chantier
+`plans/theme-cardio-2026-07/` (index + S1-S14), 3ᵉ thème du moteur multi-thèmes (après tabac et
+diabète), câblé à partir d'un handoff Claude Design (`design/Mosule cardio ETP interactif-handoff.zip`,
+prototype `ETP Cardio - Prototype.dc.html`) et du brief/evidence cliniques (`docs/cardio/`).
+Prévention **primaire** uniquement (secondaire hors v1).
+
+- **Contenu clinique avant code (gate G1)** : `docs/cardio/CONTENU_cardio.md` distille le brief +
+  les 2 rapports OpenEvidence (socle/complément) en un doc par module (message écran/2ᵉ niveau/
+  calibrage/pièges/sources). **G1 validée par Thibault le 2026-07-22**, avec 6 arbitrages cliniques
+  structurants : **jamais de cible LDL/tension chiffrée à l'écran** (seuils modulés selon le risque
+  CV, hors écran) ; **AMT < 135/85 conservé** (le seuil « consultation < 140/90 » du brief retiré,
+  non sourcé — message « une seule mesure ne suffit pas ») ; **sel** = message qualitatif seul,
+  jamais de g/j ; **alcool** = repères SPF verbatim (« moins de 2/jour, ≤ 10/semaine », sans
+  affirmation plus forte que le rapport, courbe en J restée non tranchée) ; **aspirine jamais
+  mentionnée** (modules 10 et 11 — contre-indiquée si l'accident est un AVC hémorragique) ; **M12 =
+  « mes 3 chiffres »** (grille légère) plutôt que le cadran annuel du diabète (fréquences de suivi
+  restent `// à revalider (Thibault — HAS)`, non bloquant).
+- **Socle** : entrée `cardio` dans `THEMES` (`src/features/registry.ts`), `src/features/cardio/registry.ts`
+  (12 `ModuleDef`, 3 familles Comprendre/Agir/Se soigner), lib pure testée
+  `src/features/cardio/lib/risqueCardio.ts` (plaque réversible + **cumul multiplicatif** des
+  facteurs — le cœur pédagogique du thème, 21 invariants), 4 composants cardio-owned
+  (`ArtereCoupe`, `CockpitFeux`, `Silhouette`, `IllustrationSlot`) découplés du diabète mais
+  réutilisant le moteur générique (`SilhouetteCorps`, `ModuleShell`, `FicheOverlay`) — décision
+  actée avec Thibault (généralisation différable, pas de duplication du diabète cette fois).
+- **Assets** : 46 PNG réutilisés (artère, silhouette, activités, aliments) copiés dans
+  `public/illustrations/cardio/` depuis `illustrations/diabete/` ; prompts des assets neufs (pictos
+  VITE, signes infarctus, artère tabac 2 états, brassard automesure) ajoutés à
+  `design/illustrations/prompts-illustrations-diabete.html` — génération encore à faire (placeholders
+  natifs en attendant, aucune régression).
+- **Pilote (M1-M3) puis fan-out (M4-M12)** : M1 « L'artère qui s'encrasse » (séquence 4 temps
+  réversible), M2 « Mon risque global » (cockpit de feux + cumul multiplicatif + fiche), M3 « Où
+  l'accident frappe » (silhouette 4 territoires) ont servi de moule visuel, **validés par Thibault**
+  après une correction (silhouette M3 portée de 380 → 560 px, alignée sur l'anatomie du module
+  Risque CV diabète — zones trop petites/imprécises à l'écran). Les 9 modules restants ont suivi le
+  moule en parallèle : M4 tension, M5 cholestérol (LDL), M6 tabac (pont vers le thème Tabac, repli
+  visuel — porte inter-thèmes réelle jugée hors v1), M7 bouger (jauge sans plafond), M8 manger
+  (familles + assiette), M9 autres leviers (alcool/sommeil-SAOS/stress), M10 reconnaître l'alerte
+  (**carte VITE, seul objet neuf du thème** + signes d'infarctus + bandeau 15, aucune aspirine), M11
+  mes traitements (ordonnance ↔ silhouette protégée, aspirine retirée de la table des classes), M12
+  mon suivi (« mes 3 chiffres » + grille de voyants, jamais de rouge).
+- **Incident d'infra en cours de fan-out** : 5 agents sur 8 ont calé simultanément (timeout de flux,
+  incident transitoire, pas un bug applicatif). Récupéré sans perte de contenu — 3 modules
+  (cholestérol, tabac, traitements) avaient en fait fini d'écrire avant le stall ; le CSS manquant du
+  module suivi a été complété directement ; bouger et manger ont été relancés avec succès en plus
+  faible concurrence.
+
+Gate finale (S1-S14, 18 commits atomiques) : `npx tsc --noEmit` ✓ · `npm run build` ✓ (2 entrées,
+bundle consultation 348 Ko gzippé 101 Ko) · `npm test` ✓ **127/127** (dont les 21 invariants de
+`risqueCardio.test.ts`), aucune dépendance runtime ajoutée. Vérifications G1 post-fan-out (grep) :
+aucune occurrence affichée d'« aspirine » (seulement en commentaires de maintenance), aucun g/L/mmHg
+affiché, aucun token `toxique` (rouge) dans le module Suivi. **Points `// à revalider (Thibault)`**
+restants : formulation des signes atypiques d'infarctus (M10), position du repère « > 5 min » (M10,
+mis en sous-texte toujours visible faute de survol adapté à une carte de survie), accroche d'ouverture
+de M8 (message patient non fourni par le rapport, proposition à juger), fréquences de suivi de M12
+(confirmation HAS). **Validation visuelle humaine des modules M4-M12 (Thibault, `npm run dev`) reste
+à faire** — le pilote M1-M3 est déjà validé — cf. `VALIDATION.md`.
 
 **Revue prod — navigateur in-app (2026-07-21)** — chantier `plans/revue-prod-2026-07/` (index + S1-S6),
 issu d'une revue prod complète de Thibault + Opus sur `etp-interactif.vercel.app` (consultation tabac +
