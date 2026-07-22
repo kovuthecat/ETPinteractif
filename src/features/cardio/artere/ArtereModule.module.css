@@ -1,0 +1,204 @@
+/*
+ * Module 1 — « L'artère qui s'encrasse » (C7, plans/theme-cardio-2026-07/S4.md — MOULE de
+ * référence pour S5-S14). Chrome repris de `Module 1 - Artere.dc.html` : onglets pilule dans le
+ * slot `nav` du ModuleShell, carte centrée, frise du temps au 2ᵉ temps, lien « Suivant »/
+ * « Recommencer » discret (texte, pas un bouton plein — proto `ETP Cardio - Prototype.dc.html`
+ * ligne 69). Position/rotation de l'overlay SVG déjà portées par `ArtereCoupe.module.css` — ne
+ * pas dupliquer ici (cf. « Si bloqué » S2.md : ajuster là-bas en cas de décalage visuel).
+ */
+
+.module {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+/* --- Onglets (rendus dans le slot `nav` du ModuleShell) --- */
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.tab {
+  padding: 10px 18px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--color-line);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: 600 15px 'Work Sans', sans-serif;
+  cursor: pointer;
+}
+
+.tabActive {
+  border-color: var(--color-text);
+  background: var(--color-text);
+  color: var(--color-bg);
+}
+
+.tab:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
+}
+
+/* --- Carte centrale (illustration + légende) --- */
+
+.card {
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--space-xl);
+  padding: 44px 56px;
+  animation: fadeIn 0.35s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.captionCol {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-md);
+  flex: 1 1 260px;
+  max-width: 360px;
+}
+
+.caption {
+  margin: 0;
+  font: 600 24px/1.4 'Work Sans', sans-serif;
+  color: var(--color-text);
+}
+
+/* --- Lien « Suivant / Recommencer » (discret, proto ligne 69) --- */
+
+.suivantBtn {
+  background: none;
+  border: none;
+  padding: 8px 12px;
+  color: var(--color-nav);
+  font: 600 15px 'Work Sans', sans-serif;
+  cursor: pointer;
+}
+
+.suivantBtn:hover {
+  text-decoration: underline;
+}
+
+.suivantBtn:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
+}
+
+/* --- Renvoi inline vers M2 (« Mon risque global »), toujours visible en pied --- */
+
+.renvoi {
+  margin-top: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  max-width: 480px;
+  border: none;
+  border-top: 1px solid var(--color-line);
+  border-radius: 0;
+  background: none;
+  color: var(--color-text-soft);
+  font: 500 15px/1.5 'Work Sans', sans-serif;
+  text-align: center;
+  cursor: pointer;
+}
+
+.renvoi:hover {
+  color: var(--color-nav);
+}
+
+.renvoi:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
+}
+
+/* --- Frise du temps (2ᵉ temps uniquement) : repères qualitatifs, aucun chiffre médical --- */
+
+.frise {
+  position: relative;
+  width: 100%;
+  min-width: 220px;
+  height: 40px;
+  margin-top: 4px;
+}
+
+.friseLigne {
+  position: absolute;
+  top: 14px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--color-line);
+}
+
+.friseRepere {
+  position: absolute;
+  top: 8px;
+  width: 2px;
+  height: 14px;
+  background: var(--color-text-faint);
+}
+
+.friseRepereDebut {
+  left: 0;
+}
+
+.friseRepereMilieu {
+  left: 66%;
+}
+
+.friseRepereFin {
+  left: 100%;
+}
+
+.frisePoint {
+  position: absolute;
+  top: 2px;
+  left: 66%;
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-pill);
+  background: var(--color-nav);
+  transform: translateX(-50%);
+}
+
+.friseLabel {
+  position: absolute;
+  top: 26px;
+  font: 600 14px 'Work Sans', sans-serif;
+  color: var(--color-text-soft);
+  white-space: nowrap;
+}
+
+.friseLabelDebut {
+  left: 0;
+}
+
+.friseLabelFin {
+  right: 0;
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: 28px 24px;
+    gap: var(--space-lg);
+  }
+
+  .caption {
+    font-size: 20px;
+  }
+}
