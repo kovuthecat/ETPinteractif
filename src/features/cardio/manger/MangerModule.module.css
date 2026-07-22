@@ -1,0 +1,439 @@
+/* Module 8 « Manger pour ses artères » (C14, plans/theme-cardio-2026-07/S10.md). Couleurs :
+   tokens sémantiques uniquement (src/styles/tokens.css) — jamais de valeur oklch/hex en dur ici.
+   Onglets `.tabs`/`.tab`/`.tabActive` repris à l'identique de `leviers/LeviersModule.module.css`
+   (même moule, slot `nav` du ModuleShell). */
+
+.module {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+/* --- Onglets (rendus dans le slot `nav` du ModuleShell) --- */
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.tab {
+  padding: 10px 18px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--color-line);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: 600 15px 'Work Sans', sans-serif;
+  cursor: pointer;
+}
+
+.tabActive {
+  border-color: var(--color-text);
+  background: var(--color-text);
+  color: var(--color-bg);
+}
+
+.tab:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Onglet Familles
+   ========================================================================== */
+
+.famillesPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  width: 100%;
+  max-width: 980px;
+}
+
+.headline {
+  margin: 0;
+  text-align: center;
+  font: 700 20px/1.4 'Work Sans', sans-serif;
+  color: var(--color-text);
+}
+
+.instruction {
+  margin: 0 0 var(--space-sm);
+  text-align: center;
+  font: 700 13px 'Work Sans', sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-soft);
+}
+
+.colonnes {
+  display: flex;
+  gap: var(--space-xl);
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+}
+
+.colonne {
+  min-width: 260px;
+}
+
+.colonneTitre {
+  margin: 0 0 var(--space-sm);
+  text-align: center;
+  font: 700 13px 'Work Sans', sans-serif;
+}
+
+.colonneTitreAmi {
+  color: var(--color-confort-strong);
+}
+
+.colonneTitreLimiter {
+  color: var(--color-toxique);
+}
+
+.grille {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(110px, 1fr));
+  gap: var(--space-sm);
+}
+
+.repereCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: var(--space-sm) 10px;
+  border-radius: var(--radius);
+  border: 2px solid var(--color-line);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: 600 13px/1.3 'Work Sans', sans-serif;
+  text-align: center;
+  cursor: pointer;
+}
+
+.repereCard:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
+}
+
+.repereCardSelectedAmi {
+  border-color: var(--color-confort-strong);
+  background: var(--color-confort-soft);
+  color: var(--color-confort-strong);
+}
+
+.repereCardSelectedLimiter {
+  border-color: var(--color-toxique);
+  background: var(--color-toxique-soft);
+  color: var(--color-toxique);
+}
+
+.flameAmi {
+  color: var(--color-confort-strong);
+}
+
+.flameLimiter {
+  color: var(--color-toxique);
+}
+
+.detailCard {
+  max-width: 600px;
+  width: 100%;
+  padding: var(--space-lg) var(--space-xl);
+  text-align: center;
+}
+
+.detailTitre {
+  margin: 0 0 6px;
+  font: 700 16px 'Work Sans', sans-serif;
+  color: var(--color-text);
+}
+
+.detailTexte {
+  margin: 0;
+  font: 400 14.5px/1.55 'Work Sans', sans-serif;
+  color: var(--color-text-soft);
+}
+
+/* ==========================================================================
+   Onglet Assiette
+   ========================================================================== */
+
+.assietteLayout {
+  display: flex;
+  gap: var(--space-xl);
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+/* --- Garde-manger --- */
+
+.gardeManger {
+  width: 400px;
+  max-width: 100%;
+  padding: var(--space-lg);
+}
+
+.gardeMangerTitre {
+  margin: 0 0 var(--space-md);
+  font: 700 13px 'Work Sans', sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-text-soft);
+}
+
+.categorieBloc {
+  margin-bottom: var(--space-md);
+}
+
+.categorieBloc:last-child {
+  margin-bottom: 0;
+}
+
+.categorieLabel {
+  margin: 0 0 6px;
+  font: 600 12.5px 'Work Sans', sans-serif;
+}
+
+.categorieGrille {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+  gap: 6px;
+}
+
+.alimentBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 2px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-line);
+  background: var(--color-surface);
+  cursor: pointer;
+}
+
+.alimentBtn:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
+}
+
+.alimentNom {
+  font: 500 10.5px/1.2 'Work Sans', sans-serif;
+  color: var(--color-text-soft);
+  text-align: center;
+}
+
+/* --- Assiette conique --- */
+
+.plateauCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.plateau {
+  width: 240px;
+  height: 240px;
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.plateauCentre {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  opacity: 0.85;
+}
+
+.legende {
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 280px;
+  font: 600 12.5px 'Work Sans', sans-serif;
+}
+
+.legendeLegumes {
+  color: var(--color-confort-strong);
+}
+
+.legendeFeculents {
+  color: var(--color-nav);
+}
+
+.legendeProteines {
+  color: var(--color-toxique);
+}
+
+.extras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-width: 280px;
+  justify-content: center;
+}
+
+.extraChip {
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--color-line);
+  font: 500 12px 'Work Sans', sans-serif;
+  color: var(--color-text-soft);
+}
+
+.resetBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  font: 600 13px 'Work Sans', sans-serif;
+  color: var(--color-nav);
+  cursor: pointer;
+}
+
+.resetBtn:hover,
+.resetBtn:focus-visible {
+  text-decoration: underline;
+}
+
+.ficheBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* --- Analyse de l'équilibre --- */
+
+.analyseCard {
+  width: 300px;
+  max-width: 100%;
+  padding: var(--space-lg);
+}
+
+.analyseEyebrow {
+  margin: 0 0 var(--space-sm);
+  font: 700 13px 'Work Sans', sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-text-soft);
+}
+
+.analyseTexte {
+  margin: 0;
+  font: 400 14.5px/1.55 'Work Sans', sans-serif;
+  color: var(--color-text-soft);
+}
+
+.avertissement {
+  margin: var(--space-sm) 0 0;
+  font: 500 13px/1.4 'Work Sans', sans-serif;
+  color: var(--color-toxique);
+}
+
+.repere {
+  margin: var(--space-md) 0 0;
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--color-line);
+  font: 500 12.5px/1.5 'Work Sans', sans-serif;
+  color: var(--color-text-faint);
+}
+
+/* --- Renvois inline (8→4 sel→tension, 8→5 gras→cholestérol) --- */
+
+.renvoisRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  justify-content: center;
+}
+
+.renvoiBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--target-min);
+  padding: 8px 14px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--color-nav);
+  font: 600 15px 'Work Sans', sans-serif;
+  cursor: pointer;
+  text-align: center;
+}
+
+.renvoiBtn:hover,
+.renvoiBtn:focus-visible {
+  text-decoration: underline;
+}
+
+/* --- Fiche « Mon assiette » (rendue dans FicheOverlay) --- */
+
+.fichePlateauRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.fichePlateau {
+  width: 96px;
+  height: 96px;
+  border-radius: var(--radius-pill);
+  flex-shrink: 0;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.ficheLegende {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--font-size-small);
+  color: var(--color-text);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ficheExtras {
+  margin: 0;
+  font-size: var(--font-size-small);
+  color: var(--color-text);
+}
+
+.ficheRepereTexte {
+  margin: 0 0 var(--space-sm);
+  font-size: var(--font-size-small);
+  line-height: 1.5;
+  color: var(--color-text);
+}
+
+.ficheRepereTexte:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 480px) {
+  .grille {
+    grid-template-columns: repeat(2, minmax(90px, 1fr));
+  }
+
+  .gardeManger,
+  .analyseCard {
+    width: 100%;
+  }
+}
