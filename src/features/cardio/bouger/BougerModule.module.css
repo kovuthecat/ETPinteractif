@@ -1,0 +1,468 @@
+/*
+ * Module 7 — « Bouger » (C13, plans/theme-cardio-2026-07/S9.md). Chrome des onglets `.tabs`/
+ * `.tab`/`.tabActive` repris du moule S4 (`ArtereModule.module.css`) ; grille d'activités,
+ * compteurs +/- et jauge ouverte repris de `diabete/activite/ActiviteModule.module.css` (S6,
+ * « patron de code » désigné par S9), sans l'interrupteur « toniques uniquement » (hors
+ * périmètre). Calendrier semaine + barres de protection : mise en forme neuve (proto §MODULE 7
+ * lignes 256-280), tokens du projet uniquement (`tokens.css`).
+ */
+
+.module {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* --- Onglets (rendus dans le slot `nav` du ModuleShell) --- */
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.tab {
+  padding: 10px 18px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--color-line);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: 600 15px 'Work Sans', sans-serif;
+  cursor: pointer;
+}
+
+.tabActive {
+  border-color: var(--color-text);
+  background: var(--color-text);
+  color: var(--color-bg);
+}
+
+.tab:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
+}
+
+/* --- Intro (messages à l'écran §M7) --- */
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  text-align: center;
+}
+
+.lead {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.45;
+  color: var(--color-text-soft);
+  text-align: center;
+  max-width: 720px;
+  align-self: center;
+}
+
+/* --- Grille d'activités + jauge ouverte (onglet Volume) --- */
+
+.volumeLayout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.volumeMain {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.volumeSide {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.activitiesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  align-items: start;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+}
+
+.activityCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: 8px 6px;
+  border-radius: var(--radius-lg);
+  background: var(--color-bg);
+  border: 2px solid var(--color-line);
+}
+
+.activityCardOn {
+  background: var(--color-confort-soft);
+  border-color: var(--color-confort);
+}
+
+.activityMain {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  min-height: unset;
+  min-width: unset;
+  color: inherit;
+}
+
+.activityIllu {
+  position: relative;
+}
+
+.muscleDot {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--color-vigilance);
+  border: 2px solid var(--color-surface);
+}
+
+.activityName {
+  font-size: 12.5px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.2;
+  min-height: 30px;
+}
+
+.checkMark {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--color-confort);
+  background: var(--color-confort);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.activityCard:not(.activityCardOn) .checkMark {
+  background: var(--color-surface);
+  border-color: var(--color-line);
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Glyphe visuel 24px, zone cliquable réelle ≥44px via `::before` invisible (cf. patron
+   ActiviteModule.module.css) — évite d'agrandir visuellement le petit rond +/-. */
+.stepper button {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  min-width: unset;
+  min-height: unset;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-line);
+  background: var(--color-surface);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.stepper button::before {
+  content: '';
+  position: absolute;
+  inset: -10px;
+}
+
+.stepperValue {
+  font-size: 12.5px;
+  font-weight: 600;
+  min-width: 34px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.muscleLegend {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 13px;
+  color: var(--color-text-soft);
+}
+
+.muscleLegend .muscleDot {
+  position: static;
+  border: none;
+}
+
+/* --- Total du jour + jauge ouverte (asymptotique, sans plafond) --- */
+
+.totalCard {
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.totalNumber {
+  margin: 0;
+  flex: none;
+  font: 700 42px 'Work Sans', sans-serif;
+}
+
+.totalUnit {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--color-text-soft);
+}
+
+.jaugeCol {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.jaugeTrack {
+  position: relative;
+  height: 22px;
+  border-radius: var(--radius-pill);
+  background: var(--color-bg);
+  overflow: hidden;
+}
+
+.jaugeFill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--color-confort);
+  border-radius: var(--radius-pill);
+  transition: width 0.25s;
+}
+
+.jaugeScale {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--color-text-soft);
+}
+
+@media (max-width: 600px) {
+  .totalCard {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+/* --- Rayonnement des bénéfices --- */
+
+.benefices {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  text-align: center;
+}
+
+.beneficesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-sm);
+  max-width: 860px;
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .beneficesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.beneficeCard {
+  padding: 14px 16px;
+  text-align: left;
+}
+
+.beneficeLabel {
+  margin: 0;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.beneficeDetail {
+  margin: 3px 0 0;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--color-text-soft);
+}
+
+/* --- Repère discret (150 min / 2 jours) : petit texte visible + détail chiffré au survol --- */
+
+.repere {
+  margin: 0;
+  max-width: 640px;
+  font-size: 13px;
+  color: var(--color-text-faint);
+  text-align: center;
+}
+
+.infoGlyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-line);
+  color: var(--color-text-soft);
+  font-size: 10px;
+  font-weight: 700;
+  font-style: italic;
+  cursor: help;
+  vertical-align: middle;
+}
+
+/* --- Renvois inline (7↔2 bouger→risque) --- */
+
+.renvoiBtn {
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--target-min);
+  padding: 8px 14px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--color-nav);
+  font: 600 15px 'Work Sans', sans-serif;
+  cursor: pointer;
+  text-align: center;
+}
+
+.renvoiBtn:hover,
+.renvoiBtn:focus-visible {
+  text-decoration: underline;
+}
+
+/* --- Onglet Régularité : calendrier semaine + barres de protection --- */
+
+.regulariteLayout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.calendrierCard {
+  width: 100%;
+  padding: var(--space-lg);
+}
+
+.calendrierIntro {
+  margin: 0 0 var(--space-md);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.weekGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.dayBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: inherit;
+}
+
+.dayLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-soft);
+}
+
+.dayBox {
+  width: 100%;
+  aspect-ratio: 1;
+  min-height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-faint);
+}
+
+.dayBtnOn .dayBox {
+  background: var(--color-confort);
+  color: #fff;
+}
+
+.dayBtn:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
+}
+
+.protectionLabel {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-soft);
+}
+
+.barsRow {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  align-items: end;
+  gap: var(--space-sm);
+  height: 90px;
+}
+
+.barCol {
+  height: 100%;
+  display: flex;
+  align-items: end;
+}
+
+.bar {
+  width: 100%;
+  border-radius: 5px 5px 0 0;
+  transition: height 0.3s;
+}
