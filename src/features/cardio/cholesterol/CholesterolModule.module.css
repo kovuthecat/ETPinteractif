@@ -1,0 +1,152 @@
+.module {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.instruction {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-soft);
+  text-align: center;
+}
+
+/* --- Carte : artère | curseur (même parti pris que RisqueModule/S5 : carte-illustration |
+   colonne d'interaction) --- */
+
+.carte {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xl);
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: var(--space-lg);
+}
+
+.arterePanel {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.curseurCol {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  flex: 1 1 320px;
+  max-width: 420px;
+}
+
+.curseurLabels {
+  display: flex;
+  justify-content: space-between;
+  font: 600 14px 'Work Sans', sans-serif;
+  color: var(--color-text-soft);
+}
+
+/* Curseur qualitatif (aucun chiffre affiché, G1) : dégradé confort→vigilance→toxique = même
+   sémantique que la barre cumulée de CockpitFeux (D6, jamais d'oklch brut hors tokens.css) ;
+   thumb repris du patron `diabete/activite/ActiviteModule.module.css#slider`. */
+.curseur {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(90deg, var(--color-confort), var(--color-vigilance), var(--color-toxique));
+  outline: none;
+}
+
+.curseur::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--color-text);
+  cursor: pointer;
+  border: 3px solid var(--color-surface);
+  box-shadow: 0 0 0 1.5px var(--color-text);
+}
+
+.curseur::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--color-text);
+  cursor: pointer;
+  border: 3px solid var(--color-surface);
+  box-shadow: 0 0 0 1.5px var(--color-text);
+}
+
+.curseur:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 3px;
+}
+
+.caption {
+  margin: 0;
+  font: 600 17px/1.4 'Work Sans', sans-serif;
+  color: var(--color-text);
+}
+
+/* --- Encadré déculpabilisant + distinction LDL/HDL (séparé, non cliquable) --- */
+
+.encadre {
+  max-width: 620px;
+  padding: var(--space-md) var(--space-lg);
+}
+
+.encadre p {
+  margin: 0;
+  text-align: center;
+  line-height: 1.5;
+  color: var(--color-text-soft);
+}
+
+.encadre p + p {
+  margin-top: var(--space-sm);
+}
+
+.deculpabilisant {
+  font-style: italic;
+}
+
+/* --- Renvois inline vers M8 (manger) / M11 (traitements) --- */
+
+.renvoisRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  justify-content: center;
+}
+
+.renvoiBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--target-min);
+  padding: 8px 14px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--color-nav);
+  font: 600 15px 'Work Sans', sans-serif;
+  cursor: pointer;
+}
+
+.renvoiBtn:hover,
+.renvoiBtn:focus-visible {
+  text-decoration: underline;
+}
+
+.renvoiBtn:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
+}
