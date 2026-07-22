@@ -1,0 +1,253 @@
+/* Module 4 « La tension » (C10, plans/theme-cardio-2026-07/S7.md). Couleurs : tokens sémantiques
+   uniquement (src/styles/tokens.css) — jamais de valeur oklch/hex en dur ici. */
+
+.scene {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--space-xl);
+  margin-bottom: var(--space-lg);
+}
+
+.artereCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+}
+
+.badge {
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  font: 700 15px 'Work Sans', sans-serif;
+}
+
+.badgeFragile {
+  background: var(--color-toxique-soft);
+  color: var(--color-toxique);
+}
+
+.badgeApaisee {
+  background: var(--color-confort-soft);
+  color: var(--color-confort-strong);
+}
+
+.leviersCol {
+  width: 320px;
+  max-width: 100%;
+}
+
+.pressureLabel {
+  margin: 0 0 var(--space-sm);
+  font: 600 15px 'Work Sans', sans-serif;
+  color: var(--color-text);
+}
+
+.pressureTrack {
+  height: 22px;
+  border-radius: var(--radius-pill);
+  background: var(--color-line);
+  overflow: hidden;
+  margin-bottom: var(--space-lg);
+}
+
+.pressureFill {
+  height: 100%;
+  transition:
+    width 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.pressureBasse {
+  background: var(--color-confort);
+}
+
+.pressureMoyenne {
+  background: var(--color-vigilance);
+}
+
+.pressureHaute {
+  background: var(--color-toxique);
+}
+
+.leviersLabel {
+  margin: 0 0 var(--space-sm);
+  font: 600 14px 'Work Sans', sans-serif;
+  color: var(--color-text-soft);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+/* Boutons : la taille de cible (>=44px) vient de la règle globale `button` (tokens/global.css) —
+   pas besoin de la répéter ici. A11y « couleur + bordure » (jamais la couleur seule). */
+.chip {
+  border-radius: var(--radius-pill);
+  padding: 10px 16px;
+  font: 600 14px 'Work Sans', sans-serif;
+  background: var(--color-surface);
+  border: 2px solid var(--color-line);
+  color: var(--color-text);
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.chipActive {
+  background: var(--color-confort-soft);
+  border-color: var(--color-confort-strong);
+  color: var(--color-confort-strong);
+}
+
+.intro {
+  max-width: 720px;
+  margin: 0 auto var(--space-lg);
+  text-align: center;
+  color: var(--color-text-soft);
+  font-size: var(--font-size-lead);
+  line-height: 1.5;
+}
+
+.regleCard {
+  max-width: 720px;
+  margin: 0 auto var(--space-lg);
+  padding: var(--space-lg) var(--space-xl);
+}
+
+.regleEyebrow {
+  display: block;
+  margin: 0 0 var(--space-sm);
+  font: 700 13px 'Work Sans', sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-soft);
+}
+
+.regleIntro {
+  margin: 0 0 var(--space-md);
+  font-size: var(--font-size-lead);
+  line-height: 1.5;
+  color: var(--color-text);
+}
+
+.regleGrid {
+  display: flex;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.regleTuile {
+  flex: 1;
+  border: 2px solid var(--color-line);
+  border-radius: var(--radius);
+  padding: var(--space-md);
+  text-align: center;
+}
+
+.regleBig {
+  display: block;
+  font: 800 30px 'Work Sans', sans-serif;
+  color: var(--color-nav);
+}
+
+.regleLabel {
+  display: block;
+  margin-top: 4px;
+  font: 600 14px 'Work Sans', sans-serif;
+  color: var(--color-text);
+}
+
+.renvois {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.renvoi {
+  background: none;
+  border: none;
+  padding: 4px 0;
+  font: 600 15px 'Work Sans', sans-serif;
+  color: var(--color-nav);
+  cursor: pointer;
+  text-align: left;
+}
+
+.renvoi:hover,
+.renvoi:focus-visible {
+  text-decoration: underline;
+}
+
+/* --- Fiche « Ma règle des 3 » (rendue dans FicheOverlay) --- */
+
+.ficheIntro {
+  margin: 0 0 var(--space-md);
+  font-size: var(--font-size-small);
+  line-height: 1.5;
+  color: var(--color-text);
+}
+
+.releveTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.releveTable th,
+.releveTable td {
+  border: 1px solid var(--color-line);
+  padding: var(--space-sm);
+  text-align: center;
+  font-size: 13px;
+}
+
+.releveTable thead th {
+  font: 700 12px 'Work Sans', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-soft);
+}
+
+.releveTable tbody th[scope='row'] {
+  text-align: left;
+  padding-left: var(--space-sm);
+  font: 700 14px 'Work Sans', sans-serif;
+  color: var(--color-text);
+}
+
+.mesureLignes {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.mesureLigne {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--color-text-soft);
+}
+
+.blank {
+  display: inline-block;
+  width: 34px;
+  height: 1em;
+  border-bottom: 1px solid var(--color-text-faint);
+}
+
+.ficheRappel {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-text-soft);
+}
