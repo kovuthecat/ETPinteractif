@@ -1,0 +1,196 @@
+.module {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.instruction {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-soft);
+  text-align: center;
+}
+
+/* --- Cockpit (chips + barre) à côté de l'artère (proto M4 §126-146 : même parti pris
+   « carte-illustration | colonne d'interaction », repris ici pour M2) --- */
+
+.cockpitRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xl);
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.arterePanel {
+  flex: none;
+  padding: var(--space-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cockpitCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  flex: 1 1 360px;
+  max-width: 480px;
+}
+
+/* --- Robinet sucre : repli visuel vers le thème Diabète (informatif, non navigant en v1) --- */
+
+.robinetSucre {
+  margin: 0;
+  text-align: center;
+  font-size: 0.95em;
+  color: var(--color-text-soft);
+  line-height: 1.5;
+}
+
+.robinetLien {
+  display: inline-block;
+  margin-top: 2px;
+  font-weight: 600;
+  color: var(--color-nav);
+}
+
+/* --- Phrase « multiplie » (cœur pédagogique, CONTENU_cardio.md §M2) --- */
+
+.multiplicationTexte {
+  max-width: 680px;
+  margin: 0;
+  text-align: center;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--color-text-soft);
+}
+
+/* --- Encart non-modifiables : séparé, non cliquable, déculpabilisant --- */
+
+.encadre {
+  max-width: 680px;
+  padding: var(--space-md) var(--space-lg);
+}
+
+.encadre p {
+  margin: 0;
+  text-align: center;
+  line-height: 1.5;
+  color: var(--color-text-soft);
+}
+
+.encadre p + p {
+  margin-top: var(--space-sm);
+}
+
+.ageVasculaire {
+  font-style: italic;
+}
+
+.ficheButtonRow {
+  display: flex;
+  justify-content: center;
+}
+
+/* --- Renvois inline vers M1 / M3 --- */
+
+.renvoisRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  justify-content: center;
+}
+
+.renvoiBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--target-min);
+  padding: 8px 14px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--color-nav);
+  font: 600 15px 'Work Sans', sans-serif;
+  cursor: pointer;
+}
+
+.renvoiBtn:hover,
+.renvoiBtn:focus-visible {
+  text-decoration: underline;
+}
+
+/* --- Contenu de la fiche imprimable (FicheOverlay) --- */
+
+.ficheFeuxList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.ficheFeuxItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 6px 0;
+}
+
+.ficheFeuxPastille {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--feu-fg);
+}
+
+.ficheFeuxNom {
+  flex: 1;
+  font-weight: 600;
+}
+
+.ficheFeuxEtat {
+  font-weight: 700;
+  color: var(--feu-fg);
+}
+
+.ficheDList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.ficheDItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.ficheDItem input[type='checkbox'] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--color-confort-strong);
+}
+
+.ficheDItemActive {
+  opacity: 1;
+  background: var(--color-confort-soft);
+  border-color: var(--color-confort);
+}
+
+.ficheEncadreTexte {
+  margin: 0;
+  line-height: 1.5;
+  color: var(--color-text-soft);
+}
