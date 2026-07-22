@@ -4,7 +4,7 @@
   :root{
     --bg:#f6f4ef; --card:#ffffff; --ink:#22262b; --muted:#6b7280;
     --line:#e3ddd2; --teal:#1f7a8c; --teal-d:#155e6d; --terra:#c76b4a;
-    --food:#7a8b3f; --sys:#1f7a8c; --tabac:#9a6b43; --tabacsq:#b08d5b; --ok:#3f8f4e; --shadow:0 1px 2px rgba(0,0,0,.04),0 6px 20px rgba(0,0,0,.05);
+    --food:#7a8b3f; --sys:#1f7a8c; --tabac:#9a6b43; --tabacsq:#b08d5b; --cardio:#c74a4a; --ok:#3f8f4e; --shadow:0 1px 2px rgba(0,0,0,.04),0 6px 20px rgba(0,0,0,.05);
     --radius:14px;
   }
   *{box-sizing:border-box}
@@ -46,7 +46,7 @@
   section.mod>h2{font-size:20px;margin:0 0 2px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
   section.mod>h2 .badge{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
     padding:3px 8px;border-radius:20px;color:#fff}
-  .badge.sys{background:var(--sys)} .badge.food{background:var(--food)} .badge.tabac{background:var(--tabac)} .badge.tabacsq{background:var(--tabacsq)}
+  .badge.sys{background:var(--sys)} .badge.food{background:var(--food)} .badge.tabac{background:var(--tabac)} .badge.tabacsq{background:var(--tabacsq)} .badge.cardio{background:var(--cardio)}
   section.mod>.desc{color:var(--muted);margin:2px 0 14px;font-size:14px}
   .secount{font-size:13px;color:var(--muted);font-weight:400}
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
@@ -55,7 +55,7 @@
   .card.done{opacity:.5}
   .card h3{margin:0;font-size:15.5px;display:flex;align-items:center;gap:8px}
   .card h3 .dot{width:9px;height:9px;border-radius:50%;flex:none}
-  .dot.sys{background:var(--sys)} .dot.food{background:var(--food)} .dot.tabac{background:var(--tabac)} .dot.tabacsq{background:var(--tabacsq)}
+  .dot.sys{background:var(--sys)} .dot.food{background:var(--food)} .dot.tabac{background:var(--tabac)} .dot.tabacsq{background:var(--tabacsq)} .dot.cardio{background:var(--cardio)}
   .prompt{font-size:13.5px;color:#3a4048;background:#fbfaf7;border:1px solid var(--line);border-radius:9px;
     padding:9px 11px;margin:0}
   .note{font-size:12.5px;color:var(--terra);font-style:italic;margin:0}
@@ -131,6 +131,14 @@
     </div>
   </details>
 
+  <details class="style" id="styleCardioBox">
+    <summary>🎨 Style « CARDIO » — illustrations système cardiaque (palette crème/kraft, format 1:1)</summary>
+    <div class="body">
+      <textarea id="styleCardio" spellcheck="false"></textarea>
+      <p class="tip">Préfixé automatiquement aux prompts marqués <span style="color:var(--cardio)">●</span>. Palette crème/kraft sobre et adulte, registre digne sans smiley ni infographie souriante. Format carré 1:1 pour les pictos ; adapté au sujet pour les autres illustrations.</p>
+    </div>
+  </details>
+
   <div class="infobox" style="margin-top:16px">
     <h3>Revue tabac — pourquoi si peu de prompts&nbsp;?</h3>
     <p class="tip" style="margin:0">Le thème tabac est fait de « bacs à sable » (courbes, cadrans, animations) et de petits pictos <b>déjà couverts par les icônes lucide-react</b> (Cigarette, Pill, Brain, Wind, Waves…), cohérentes avec le style éditorial. Le <b>seul vrai manque</b> d'illustration est l'encart « Technique de prise&nbsp;» du module Substituts (bandeau 16:7, placeholder documenté) : un <b>geste</b> qu'une icône en ligne ne sait pas montrer. D'où <b>5 prompts</b> seulement. Le reste est listé en bas comme « à garder en code / lucide ».</p>
@@ -167,10 +175,12 @@ const DEFAULT_TABAC = `Illustration éditoriale chaleureuse pour un support d'é
 
 const DEFAULT_TABAC_SQ = `Illustration éditoriale sobre pour un support d'éducation thérapeutique au sevrage tabagique, format CARRÉ 1:1, destinée à une vignette posée sur une carte crème. Style à trait fin et régulier rehaussé d'aplats doux, cohérent avec une iconographie en lignes (icônes « line »). Palette papier crème / kraft : fond crème très clair (~#f7f4ee), traits et formes en brun chaud sombre (~#3a2c1e), un vert doux pour ce qui va mieux ou le geste juste, un bleu neutre discret ; l'ambre et le rouge chaud UNIQUEMENT si le sujet l'impose. AUCUN dégradé criard, aucune 3D, aucune ombre lourde, jamais de rendu photo ni de style « stock santé ». Registre adulte et digne, jamais enfantin ni moralisateur : pas de smiley, pas de mascotte, pas de doigt pointé. Corps, mains ou visages stylisés et neutres (non genrés, non racialisés). AUCUN texte, chiffre ou étiquette dans l'image. Sujet centré, marges généreuses, fond uni. Bords nets, aplats francs — pensé pour être vectorisé proprement en SVG. Produire une seule image.`;
 
+const DEFAULT_CARDIO = `Illustration éditoriale sobre et moderne pour un support d'éducation thérapeutique cardiologique, format CARRÉ 1:1 pour les pictos ou adapté au sujet. Style épuré, palette crème/kraft chaleureux : fond très clair (~#f7f4f1), traits fins réguliers en brun doux (~#5a4a3a), aplats de couleurs naturelles et harmonisées (un accent rouge cardio discret pour les alertes ou l'urgence, vert pour ce qui va bien, bleu-gris neutre). AUCUN dégradé, AUCUNE ombre portée, AUCUN effet 3D, jamais de texture bruitée ni de rendu photo. Registre adulte et digne, jamais enfantin : pas de smiley, pas de mascotte, pas de style « stock santé ». Formes simples et géométriques, trait régulier, composition centrée avec marges généreuses. AUCUN texte, chiffre ou étiquette dans l'image. Pensé pour être vectorisé proprement en SVG. Produire une seule image.`;
+
 /* ------------------------------------------------------------------ *
  * Données : sections -> items [label, prompt, tag('sys'|'food'), note?]*
  * ------------------------------------------------------------------ */
-const S = 'sys', F = 'food', T = 'tabac', TQ = 'tabacsq';
+const S = 'sys', F = 'food', T = 'tabac', TQ = 'tabacsq', C = 'cardio';
 const SECTIONS = [
 {
   key:'m2-fec', title:'Module 2 — Garde-manger : féculents & pains', badge:F,
@@ -310,6 +320,40 @@ const SECTIONS = [
     ["Vapoteuse — mode d'emploi","Une vapoteuse stylisée tenue calmement, dégageant une vapeur légère et discrète, avec une petite horloge suggérant des bouffées lentes et espacées. Factuel et neutre, sans esthétisation ni promotion. Note : outil de réduction des risques — à revalider (Thibault).",TQ,"Fichier cible : public/illustrations/tabac/substitut-vapoteuse.png"],
   ]
 },
+{
+  key:'cardio-vite', title:'CARDIO — Pictos VITE (signes d\'alerte d\'AVC)', badge:C,
+  desc:"Quatre pictogrammes de signalétique carrés 1:1, un par lettre VITE. Style sobre et adulte, palette crème/kraft. Pictos clairs et inratable, pensés pour la consultation.",
+  items:[
+    ["VITE — Visage asymétrique","Un visage stylisé frontal montrant clairement une asymétrie (un côté affaissé vs l'autre normal). Trait fin, aplats doux, registre neutre — pas de cartoon, pas de grimace exagérée.",C,"Id d'asset : vite-visage. Fichier cible : public/illustrations/cardio/vite-visage.png"],
+    ["VITE — Incapacité à lever les bras","Deux bras stylisés, l'un levé normalement et l'autre qui retombe, ou l'une des mains qui chute. Posture claire et simple.",C,"Id d'asset : vite-bras. Fichier cible : public/illustrations/cardio/vite-bras.png"],
+    ["VITE — Trouble de la parole","Un profil de tête stylisé avec la bouche, suggérant un trouble du langage (traits qui se dispersent, ou une bouche mal alignée). Idée d'une parole entravée, sans exagération.",C,"Id d'asset : vite-parole. Fichier cible : public/illustrations/cardio/vite-parole.png"],
+    ["VITE — Appeler le 15","Un téléphone stylisé ou un symbole d'urgence (croix de secourisme discrète, ou le chiffre « 15 »), dans un contexte d'appel : main qui atteint le téléphone ou symbole pulsant. Idée claire : réagir vite.",C,"Id d'asset : vite-urgence. Fichier cible : public/illustrations/cardio/vite-urgence.png"],
+  ]
+},
+{
+  key:'cardio-inf', title:'CARDIO — Signes d\'infarctus', badge:C,
+  desc:"Trois pictogrammes carrés 1:1 pour les signes précoces d'un infarctus du myocarde. Style crème/kraft, registre médical adulte.",
+  items:[
+    ["Signe — Douleur thoracique","Une silhouette de buste ou un cœur au centre du thorax, avec des traits fins de douleur/pression (mains qui se croisent sur la poitrine, ou symbole de pression interne). Sobre, non dramatique.",C,"Id d'asset : infarctus-douleur. Fichier cible : public/illustrations/cardio/infarctus-douleur.png"],
+    ["Signe — Douleur irradiante (bras / mâchoire)","Une silhouette avec des traits ou des zones surlignées reliant la poitrine au bras ou à la mâchoire (ligne de douleur qui rayonne). Clair et anatomiquement juste.",C,"Id d'asset : infarctus-irradiation. Fichier cible : public/illustrations/cardio/infarctus-irradiation.png"],
+    ["Signe — Sueurs froides","Un visage ou une silhouette stylisée avec des gouttes de sueur qui tombent, ou un front qui brille légèrement (sueurs visibles). Registre adulte, pas de cartoon.",C,"Id d'asset : infarctus-sueurs. Fichier cible : public/illustrations/cardio/infarctus-sueurs.png"],
+  ]
+},
+{
+  key:'cardio-tabac', title:'CARDIO — Impact du tabac (état de l\'artère)', badge:C,
+  desc:"Deux états de l'artère : fumeur (obstruction) vs arrêt (régénération). Illustrations pédagogiques sobre, crème/kraft.",
+  items:[
+    ["Artère du fumeur — plaque & caillot","Une coupe longitudinale d'une artère stylisée, montrant une accumulation de plaque/cholestérol et un caillot, une cigarette allumée à proximité. Lumière restreinte du vaisseau. Idée clairement : obstruction progressive.",C,"Id d'asset : tabac-artere-fumeur. Fichier cible : public/illustrations/cardio/tabac-artere-fumeur.png"],
+    ["Artère après l'arrêt du tabac","Même artère stylisée mais RÉGÉNÉRÉE : lumière ouverte, parois lisses, peut-être un petit symbole de guérison/croissance à proximité (feuille, cœur qui pulse). Ton positif mais sobre.",C,"Id d'asset : tabac-artere-arret. Fichier cible : public/illustrations/cardio/tabac-artere-arret.png"],
+  ]
+},
+{
+  key:'cardio-auto', title:'CARDIO — Automesure de la tension', badge:C,
+  desc:"Un pictogramme carrée 1:1 montrant l'appareillage et le geste correct de l'automesure.",
+  items:[
+    ["Brassard d'automesure — geste correct","Une main ou un bras stylisé avec un brassard de tensiomètre au bon emplacement (haut du bras, au niveau du cœur), l'appareil de mesure stylisé à proximité (afficheur discret). Geste calme et posé, idée de routine quotidienne.",C,"Id d'asset : automesure-brassard. Fichier cible : public/illustrations/cardio/automesure-brassard.png"],
+  ]
+},
 ];
 
 /* Éléments à produire en SVG natif (pas via un modèle image) */
@@ -334,6 +378,7 @@ const styleSysEl = $('#styleSys');
 const styleFoodEl = $('#styleFood');
 const styleTabacEl = $('#styleTabac');
 const styleTabacSqEl = $('#styleTabacSq');
+const styleCardioEl = $('#styleCardio');
 
 // Migration 2026-07-11 (v3) : le catalogue a été réduit aux seules illustrations RESTANT à générer
 // (côté diabète). On efface une fois tout le suivi « générée » et les styles édités.
@@ -348,14 +393,16 @@ styleSysEl.value = localStorage.getItem('etp_style_sys') || DEFAULT_SYS;
 styleFoodEl.value = localStorage.getItem('etp_style_food') || DEFAULT_FOOD;
 styleTabacEl.value = localStorage.getItem('etp_style_tabac') || DEFAULT_TABAC;
 styleTabacSqEl.value = localStorage.getItem('etp_style_tabacsq') || DEFAULT_TABAC_SQ;
+styleCardioEl.value = localStorage.getItem('etp_style_cardio') || DEFAULT_CARDIO;
 styleSysEl.addEventListener('input',()=>localStorage.setItem('etp_style_sys',styleSysEl.value));
 styleFoodEl.addEventListener('input',()=>localStorage.setItem('etp_style_food',styleFoodEl.value));
 styleTabacEl.addEventListener('input',()=>localStorage.setItem('etp_style_tabac',styleTabacEl.value));
 styleTabacSqEl.addEventListener('input',()=>localStorage.setItem('etp_style_tabacsq',styleTabacSqEl.value));
+styleCardioEl.addEventListener('input',()=>localStorage.setItem('etp_style_cardio',styleCardioEl.value));
 
 // tag -> style / libellé de badge / classe
-const STYLE_EL = { sys:styleSysEl, food:styleFoodEl, tabac:styleTabacEl, tabacsq:styleTabacSqEl };
-const BADGE = { sys:['sys','Système'], food:['food','Aliments'], tabac:['tabac','Tabac'], tabacsq:['tabacsq','Tabac · carré'] };
+const STYLE_EL = { sys:styleSysEl, food:styleFoodEl, tabac:styleTabacEl, tabacsq:styleTabacSqEl, cardio:styleCardioEl };
+const BADGE = { sys:['sys','Système'], food:['food','Aliments'], tabac:['tabac','Tabac'], tabacsq:['tabacsq','Tabac · carré'], cardio:['cardio','Cardio'] };
 
 function idFor(sk,i){ return 'etp_done_'+sk+'_'+i; }
 function isDone(sk,i){ return localStorage.getItem(idFor(sk,i))==='1'; }
