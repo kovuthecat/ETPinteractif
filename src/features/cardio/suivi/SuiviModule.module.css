@@ -1,0 +1,217 @@
+.module {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  align-items: center;
+}
+
+/* --- Bandeau « Mes 3 chiffres à suivre » (statique, non cyclable) --- */
+
+.chiffresBandeau {
+  width: 100%;
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg);
+  text-align: center;
+}
+
+.chiffresRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-lg);
+  justify-content: center;
+}
+
+.chiffreItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font: 600 18px 'Source Serif 4', serif;
+  color: var(--color-text);
+}
+
+.chiffreItem svg {
+  color: var(--color-nav);
+}
+
+.instruction {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-soft);
+  text-align: center;
+}
+
+/* --- Grille de voyants (5 stations, jamais de rouge) --- */
+
+.grille {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+  width: 100%;
+  max-width: 900px;
+}
+
+@media (max-width: 860px) {
+  .grille {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .grille {
+    grid-template-columns: 1fr;
+  }
+}
+
+.station {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  border: 2px solid var(--color-line);
+}
+
+.stationHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.stationLabel {
+  font: 600 16px 'Work Sans', sans-serif;
+  color: var(--color-text);
+}
+
+.infoGlyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-vigilance-soft, var(--color-bg));
+  color: var(--color-vigilance);
+  font: 700 12px 'Work Sans', sans-serif;
+}
+
+.stationCadence {
+  font-size: 13px;
+  color: var(--color-text-soft);
+}
+
+/* Bouton d'état cyclable — couleur portée par l'état (data-etat sur .station),
+   jamais de rouge (le rouge-santé reste aux modules 2/4/5, cf. grammaire §0.2). */
+.statusBtn {
+  margin-top: var(--space-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--color-line);
+  background: var(--color-bg);
+  color: var(--color-text-soft);
+  font: 700 14px 'Work Sans', sans-serif;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.statusBtn:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 3px;
+}
+
+.station[data-etat='fait'] {
+  border-color: var(--color-confort);
+}
+
+.station[data-etat='fait'] .statusBtn {
+  background: var(--color-confort-soft);
+  border-color: var(--color-confort);
+  color: var(--color-confort-strong);
+}
+
+.station[data-etat='attente'] {
+  border-color: var(--color-vigilance);
+}
+
+.station[data-etat='attente'] .statusBtn {
+  background: var(--color-vigilance-soft, var(--color-bg));
+  border-color: var(--color-vigilance);
+  color: var(--color-vigilance);
+}
+
+/* « espacé » = grisé présent (jamais évaporé), pas d'alerte. */
+.station[data-etat='espace'] {
+  border-color: var(--color-line);
+  opacity: 0.72;
+}
+
+.station[data-etat='espace'] .statusBtn {
+  background: var(--color-bg);
+  border-color: var(--color-line);
+  color: var(--color-text-faint, var(--color-text-soft));
+}
+
+.couverture {
+  margin: 0;
+  max-width: 620px;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-text-soft);
+}
+
+.ficheButtonRow {
+  display: flex;
+  justify-content: center;
+}
+
+/* --- Contenu de la fiche « frigo » (FicheOverlay) --- */
+
+.ficheList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.ficheItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 6px 0;
+}
+
+.ficheItem input[type='checkbox'] {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  accent-color: var(--color-confort-strong);
+}
+
+.ficheItemLabel {
+  flex: 1;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.ficheItemDate {
+  font-size: 13px;
+  color: var(--color-text-soft);
+  white-space: nowrap;
+}
+
+.ficheMention {
+  margin: 0;
+  line-height: 1.5;
+  color: var(--color-text-soft);
+}
