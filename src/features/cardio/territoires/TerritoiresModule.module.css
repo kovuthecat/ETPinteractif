@@ -1,0 +1,132 @@
+.module {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xl);
+  align-items: center;
+  justify-content: center;
+}
+
+/* Aligné sur l'anatomie du Risque CV diabète (`.silhouetteWrap` 560px, `.anatomieRow` nowrap
+   ≥ 1020px) : silhouette dominante → hotspots à la bonne échelle (mêmes ancres que le diabète,
+   emprise `r*2` px absolue). */
+@media (min-width: 1020px) {
+  .layout {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+}
+
+.silhouetteCol {
+  flex: none;
+  width: 560px;
+  max-width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.panneau {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 340px;
+}
+
+.fade {
+  animation: territoires-fade-in 0.35s ease;
+}
+
+@keyframes territoires-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- État vide (aucune zone ouverte) --- */
+
+.videEtat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  text-align: center;
+  padding: 0 var(--space-lg);
+}
+
+.videIcone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 84px;
+  height: 84px;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  border: 2px solid var(--color-line);
+  color: var(--color-nav);
+}
+
+.videTexte {
+  margin: 0;
+  max-width: 520px;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+/* --- Zone ouverte --- */
+
+.zoneOuverte {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  max-width: 520px;
+  padding: 0 var(--space-lg);
+}
+
+.zoneTexte {
+  margin: 0;
+  font-family: 'Source Serif 4', serif;
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+.lienAlerte {
+  margin-top: var(--space-sm);
+  padding: 0;
+  border: none;
+  background: none;
+  font: 600 15px 'Work Sans', sans-serif;
+  color: var(--color-nav);
+  cursor: pointer;
+  min-height: var(--target-min);
+}
+
+.lienAlerte:hover,
+.lienAlerte:focus-visible {
+  text-decoration: underline;
+}
+
+@media (max-width: 1019px) {
+  .zoneOuverte,
+  .videEtat {
+    align-items: center;
+    text-align: center;
+  }
+}
