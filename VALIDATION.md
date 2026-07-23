@@ -87,12 +87,19 @@ sélecteur de thème → Prévention cardiovasculaire).
 
 - [ ] Lisible à ~1 m / sous stress : gros pictos, peu de mots, bandeau 15 contrasté et permanent quel
       que soit l'onglet actif.
-- [ ] Formes atypiques d'infarctus (femmes, diabétiques, âgés) bien visibles, pas une option qu'on peut
-      manquer.
+- [ ] Onglet Infarctus (**restructuré 2026-07-23**) : 3 cartes de signes classiques (douleur,
+      irradiation bras/mâchoire/dos, sueurs/essoufflement/nausées — avant, 1 seule carte) chacune avec
+      sa propre illustration placeholder.
+- [ ] Formes atypiques d'infarctus (femmes, diabétiques, âgés) : **4 cartes individuelles** (dos,
+      ventre, fatigue, nausées), chacune avec sa propre illustration placeholder — avant un seul bloc
+      générique. Bien visibles, pas une option qu'on peut manquer.
 - [ ] **Aucune mention d'aspirine, nulle part** (écran, survol, fiche) — point de sûreté impératif.
-- [ ] Fiche référence (carte VITE + signes + 15) imprimable.
+- [ ] Fiche référence (carte VITE + 3 signes classiques + formes atypiques + 15) imprimable.
 - [ ] Le repère « > 5 min » est en sous-texte toujours visible (choix de design, pas de survol) — à
       juger si ça convient pour une carte de survie (cf. `DECISIONS.md`).
+- [ ] Formulation des 3 signes classiques + 4 formes atypiques à revalider cliniquement — contenu
+      restauré depuis `BRIEF_DESIGN_cardio.md` (perdu dans une simplification antérieure), jamais
+      sourcé par un rapport OpenEvidence dédié (Complément K non obtenu, cf. `DECISIONS.md`).
 
 ### Module 11 — Mes traitements qui protègent
 

@@ -439,11 +439,26 @@ minute compte » (time is brain / time is muscle).
 **Message(s) à l'écran** (panneau de sortie de secours ; se lit sous stress) :
 - **AVC — carte VITE** : « **V**isage qui tombe » · « **I**ncapacité à lever un bras » ·
   « **T**rouble de la parole » · « **E**n urgence → **15** ».
-- **Infarctus** : « Une douleur qui **serre la poitrine et ne passe pas**. » / « Parfois
-  autrement : dos, ventre, grande fatigue, nausées — **surtout femmes, diabétiques, personnes
-  âgées**. »
-  **// à revalider (Thibault)** : formulation exacte des **signes atypiques** (équilibre
-  sensibilité / fausses alertes) = jugement clinique (point signalé par S1.md).
+- **Infarctus — signes classiques** (3 cartes, restaurées 2026-07-23 depuis le brief d'origine
+  §Module 10, perdues dans une simplification antérieure — cf. « // à revalider » ci-dessous) :
+  1. « Une douleur qui **serre ou pèse sur la poitrine**, et qui ne passe pas. » (+ repère de durée
+     « > 5 min », voir 2ᵉ niveau).
+  2. « La douleur peut **s'étendre** : au bras (surtout gauche), à la mâchoire, au dos. »
+     (irradiation).
+  3. « Autour de la douleur : **sueurs froides, essoufflement**, parfois des nausées. » (signes
+     associés).
+- **Infarctus — formes atypiques** (4 cartes, une par signe, chacune avec sa propre illustration —
+  avant 2026-07-23 un seul bloc/pictogramme portait les 4 signes) : « Douleur dans le **dos**, sans
+  douleur de poitrine. » / « Douleur dans le **ventre**, sans douleur de poitrine. » / « Une
+  **fatigue intense**, inhabituelle. » / « Des **nausées isolées**, sans autre signe. » — chapeauté
+  par « Parfois autrement — **surtout femmes, diabétiques, personnes âgées**. »
+  **// à revalider (Thibault)** : formulation exacte des **signes classiques et atypiques**
+  (équilibre sensibilité / fausses alertes) = jugement clinique (point signalé par S1.md). Le
+  **Complément K** (« reconnaissance de l'accident aigu ») listé dans
+  `evidence-cardio/2026-07-21-rapport-openevidence-cardio-socle.md` comme **section manquante**
+  (2ᵉ prompt OpenEvidence jamais relancé) — ce contenu vient du brief `BRIEF_DESIGN_cardio.md`
+  §Module 10 (déjà présent, jamais sourcé par un rapport clinique dédié), pas d'une nouvelle
+  invention. Un vrai Complément K resterait utile pour sourcer précisément chaque signe.
 - **Le geste unique** : « **Appelez le 15** (ou 112). Ne conduisez pas. N'attendez pas que ça
   passe. »
 - « **Chaque minute compte.** »

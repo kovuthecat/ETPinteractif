@@ -4,9 +4,37 @@
 
 > **Frontières** — STATUS : état actuel · `TASKS.md` : backlog + tâches · `plans/` : plan d'une tâche active · `VALIDATION.md` : checklist visuelle.
 >
-> **Dernière mise à jour :** 2026-07-23 (revue prod cardio — 5 modules retouchés après la 1ʳᵉ passe
-> de validation visuelle de Thibault + généralisation du camembert à 3 frontières au module diabète
-> Alimentation)
+> **Dernière mise à jour :** 2026-07-23 (module cardio M10 « Reconnaître l'alerte » — signes
+> classiques + formes atypiques détaillés et illustrés individuellement, prompts ChatGPT ajoutés)
+
+**M10 « Reconnaître l'alerte » — signes classiques et atypiques détaillés (2026-07-23)** — retour de
+Thibault sur le déployé : l'onglet Infarctus n'avait qu'**1 seul signe classique** (douleur qui serre,
+sans irradiation ni sueurs) et les **formes atypiques** tenaient dans un unique bloc générique avec une
+seule illustration placeholder pour 4 signes distincts (dos/ventre/fatigue/nausées).
+
+- **Signes classiques** : passés de 1 à **3 cartes**, chacune avec sa propre illustration — la
+  douleur thoracique (inchangée, avec le repère « > 5 min »), l'**irradiation** (bras surtout gauche,
+  mâchoire, dos) et les **signes associés** (sueurs froides, essoufflement, nausées). Contenu restauré
+  depuis `docs/cardio/BRIEF_DESIGN_cardio.md` §Module 10, qui les mentionnait déjà — perdus dans la
+  simplification vers `CONTENU_cardio.md` lors du chantier initial. Le **Complément K** OpenEvidence
+  (« reconnaissance de l'accident aigu ») n'a jamais été obtenu (flaggé « manquant » dans
+  `evidence-cardio/2026-07-21-rapport-openevidence-cardio-socle.md`) — ce contenu vient du brief, pas
+  d'une invention, mais reste `// à revalider (Thibault)`.
+- **Formes atypiques** : passées d'1 bloc générique à **4 cartes individuelles** (dos, ventre, fatigue,
+  nausées isolées), chacune avec sa propre illustration placeholder, sous un même encadré « Parfois
+  autrement — surtout femmes, diabétiques, personnes âgées » (inchangé).
+- **Prompts ChatGPT ajoutés** dans `design/illustrations/prompts-illustrations-diabete.html` : les 3
+  signes classiques réutilisent des prompts déjà écrits mais jamais câblés (`infarctus-douleur/
+  -irradiation/-sueurs`) ; les 4 formes atypiques sont de **nouveaux** prompts (`cardio-inf-atypique`,
+  pictos circulaires — le module n'en avait aucun avant, l'ancien id générique `infarctus-atypique`
+  n'était jamais apparu dans ce fichier).
+- Fiche imprimable mise à jour en conséquence (3 signes classiques listés + résumé atypique inchangé).
+
+Gate : `npx tsc --noEmit` ✓ · `npm run build` ✓ · `npm test` ✓ **127/127**, aucune dépendance runtime
+ajoutée. **Vérifié visuellement par Claude via le navigateur intégré** (`npm run dev`, les 2 onglets +
+la fiche) — cas exceptionnel où la vérification a pu être faite côté outil, contrairement à la règle
+habituelle de validation déléguée à Thibault ; **validation humaine finale sur le déployé reste à
+faire**, notamment le jugement clinique sur la formulation exacte des signes (cf. `VALIDATION.md`).
 
 **Revue prod cardio — 1ʳᵉ passe de retouches post-chantier (2026-07-23)** — 8 commits hors plan
 initial `theme-cardio-2026-07`, issus d'une revue de Thibault sur le déployé après le pilote M1-M3

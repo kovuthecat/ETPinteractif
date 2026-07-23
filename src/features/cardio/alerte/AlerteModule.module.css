@@ -119,30 +119,54 @@
 
 /* ── Infarctus — les signes ─────────────────────────────────────────────── */
 
-.infarctusCard {
-  max-width: 640px;
-  margin: 0 auto;
-  padding: var(--space-xl);
+.infarctusPanel {
   display: flex;
   flex-direction: column;
+  gap: var(--space-xl);
+}
+
+/* Signes classiques — même patron que .viteGrid/.viteCard (3 cartes au lieu de 4, pas de lettre). */
+.signeGrid {
+  display: grid;
+  grid-template-columns: 1fr;
   gap: var(--space-lg);
 }
 
-.infarctusSigne {
+@media (min-width: 640px) {
+  .signeGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.signeCard {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: var(--space-lg);
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  background: var(--color-surface);
+  border: 2px solid var(--color-toxique-soft);
+  border-radius: var(--radius-lg);
+  text-align: center;
 }
 
-.infarctusTexte {
-  margin: 0;
-  font-size: 22px;
+.signeTitre {
+  font-size: 15px;
   font-weight: 700;
+  color: var(--color-text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.signeTexte {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 600;
   line-height: 1.35;
   color: var(--color-text);
 }
 
-.infarctusDuree {
+.signeDuree {
   margin: var(--space-sm) 0 0;
   font-size: 15px;
   font-weight: 500;
@@ -150,12 +174,13 @@
 }
 
 /* Encadré formes atypiques — capital, jamais une option secondaire (cf. G1). Étend `.callout`
-   global (fond + filet ambre = token vigilance) avec un agencement propre au module. */
+   global (fond + filet ambre = token vigilance) avec un agencement propre au module. Chaque signe
+   a sa propre carte + illustration (avant 2026-07-23 : un seul bloc générique). */
 .atypiqueEncadre {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
-  padding: var(--space-md) var(--space-lg);
+  gap: var(--space-md);
+  padding: var(--space-lg) var(--space-xl);
 }
 
 .atypiqueHeader {
@@ -172,10 +197,45 @@
   color: var(--color-text);
 }
 
-.atypiqueTexte {
+.atypiqueIntro {
   margin: 0;
   font-size: 17px;
   line-height: 1.5;
+  color: var(--color-text);
+}
+
+.atypiqueGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-md);
+}
+
+@media (min-width: 640px) {
+  .atypiqueGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.atypiqueCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  text-align: center;
+}
+
+.atypiqueCardTitre {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-text-faint);
+}
+
+.atypiqueCardTexte {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.35;
   color: var(--color-text);
 }
 

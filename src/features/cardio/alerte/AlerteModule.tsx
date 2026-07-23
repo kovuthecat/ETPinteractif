@@ -14,20 +14,22 @@ import styles from './AlerteModule.module.css';
  * est **permanent**, hors des deux panneaux d'onglet (visible quel que soit l'onglet actif).
  * Fiche imprimable (`FicheOverlay`) = carte VITE + signes infarctus + 15 (aimant frigo).
  *
- * Textes verbatim `docs/cardio/CONTENU_cardio.md` §M10 (✅ validé G1, 2026-07-22— voir tableau
- * récapitulatif en fin de fichier CONTENU). Rappels G1 impératifs, non négociables :
+ * Textes verbatim `docs/cardio/CONTENU_cardio.md` §M10 (✅ validé G1, 2026-07-22 ; signes classiques
+ * et atypiques restaurés/détaillés le 2026-07-23 depuis `BRIEF_DESIGN_cardio.md`, cf. CONTENU). Rappels
+ * G1 impératifs, non négociables :
  * ⚠️ **AUCUNE MENTION D'ASPIRINE** (ni écran, ni survol, ni fiche) — contre-indiquée si l'accident
  *   est un AVC hémorragique, indiscernable sans imagerie. Le seul geste enseigné = appeler le 15.
- * ⚠️ **Formes atypiques** (femmes, diabétiques, personnes âgées) capitales — encadré dédié, jamais
- *   une option qu'on pourrait manquer.
+ * ⚠️ **Formes atypiques** (femmes, diabétiques, personnes âgées) capitales — chacune sa propre
+ *   carte + illustration, jamais un bloc générique qu'on pourrait manquer.
  * ⚠️ **15 / 112** = seuls chiffres autorisés à l'écran (exception à l'invariant « pas de chiffre »).
  *
  * Assets `vite-*` / `infarctus-*` non générés (S12) : `IllustrationSlot` affiche son placeholder
  * natif (tuile crème + libellé) — état normal, pas une erreur.
  *
  * // à revalider (Thibault, points déjà signalés par §M10 lui-même) :
- * - formulation exacte des **signes atypiques** (équilibre sensibilité / fausses alertes) =
- *   jugement clinique ;
+ * - formulation exacte des **signes classiques et atypiques** (équilibre sensibilité / fausses
+ *   alertes) = jugement clinique ; contenu élargi le 2026-07-23 depuis le brief d'origine, jamais
+ *   sourcé par un rapport clinique dédié (Complément K non obtenu, cf. CONTENU_cardio.md) ;
  * - le repère de durée « **> 5 min** » est ici affiché en sous-texte secondaire sous le signe
  *   principal (pas caché derrière un survol — une carte de survie ne se « survole » pas bien
  *   sous stress) ; §M10 le classe en 2ᵉ niveau et pose la question de le remonter au 1ᵉʳ niveau.
@@ -54,6 +56,42 @@ const LETTRES: Lettre[] = [
   { id: 'vite-bras', lettre: 'I', titre: 'Bras', texte: 'Incapacité à lever un bras' },
   { id: 'vite-parole', lettre: 'T', titre: 'Parole', texte: 'Trouble de la parole' },
   { id: 'vite-urgence', lettre: 'E', titre: 'Urgence', texte: 'En urgence → 15' },
+];
+
+interface Signe {
+  id: string;
+  titre: string;
+  texte: string;
+}
+
+// Signes classiques de l'infarctus — verbatim CONTENU_cardio.md §M10, restauré/détaillé 2026-07-23
+// depuis BRIEF_DESIGN_cardio.md §Module 10 (irradiation + signes associés, absents depuis S12).
+const SIGNES_CLASSIQUES: Signe[] = [
+  {
+    id: 'infarctus-douleur',
+    titre: 'La douleur',
+    texte: 'Une douleur qui serre ou pèse sur la poitrine, et qui ne passe pas.',
+  },
+  {
+    id: 'infarctus-irradiation',
+    titre: "Ça s'étend",
+    texte: "La douleur peut s'étendre : au bras (surtout gauche), à la mâchoire, au dos.",
+  },
+  {
+    id: 'infarctus-sueurs',
+    titre: 'Autour de la douleur',
+    texte: 'Sueurs froides, essoufflement, parfois des nausées.',
+  },
+];
+
+// Formes atypiques — une carte + une illustration par signe (avant 2026-07-23, un seul bloc
+// générique portait les 4 signes en un seul texte). Encadré chapeauté par la mention
+// femmes/diabétiques/âgés, cf. rendu JSX.
+const SIGNES_ATYPIQUES: Signe[] = [
+  { id: 'infarctus-atypique-dos', titre: 'Dos', texte: 'Douleur dans le dos, sans douleur de poitrine.' },
+  { id: 'infarctus-atypique-ventre', titre: 'Ventre', texte: 'Douleur dans le ventre, sans douleur de poitrine.' },
+  { id: 'infarctus-atypique-fatigue', titre: 'Fatigue', texte: 'Une fatigue intense, inhabituelle.' },
+  { id: 'infarctus-atypique-nausees', titre: 'Nausées', texte: 'Des nausées isolées, sans autre signe.' },
 ];
 
 function handleTabsKeyDown(
@@ -131,31 +169,38 @@ export default function AlerteModule({ shell }: ModuleProps) {
           className={styles.panel}
         >
           <p className={styles.sectionLabel}>Infarctus — les signes</p>
-          <div className={`card ${styles.infarctusCard}`}>
-            <div className={styles.infarctusSigne}>
-              <IllustrationSlot id="infarctus-douleur" label="Douleur qui serre la poitrine" size={100} />
-              <div>
-                <p className={styles.infarctusTexte}>Une douleur qui serre la poitrine et ne passe pas.</p>
-                {/* // à revalider (Thibault) : §M10 classe « > 5 min » en 2e niveau (survol) —
-                    ici en sous-texte secondaire visible, jamais caché. */}
-                <p className={styles.infarctusDuree}>Ça dure — plus de 5 minutes, sans s'arrêter.</p>
-              </div>
+          <div className={styles.infarctusPanel}>
+            <div className={styles.signeGrid}>
+              {SIGNES_CLASSIQUES.map((s) => (
+                <div key={s.id} className={styles.signeCard}>
+                  <IllustrationSlot id={s.id} label={s.titre} size={96} />
+                  <span className={styles.signeTitre}>{s.titre}</span>
+                  <p className={styles.signeTexte}>{s.texte}</p>
+                  {s.id === 'infarctus-douleur' && (
+                    /* // à revalider (Thibault) : §M10 classe « > 5 min » en 2e niveau (survol) —
+                       ici en sous-texte secondaire visible, jamais caché. */
+                    <p className={styles.signeDuree}>Ça dure — plus de 5 minutes, sans s'arrêter.</p>
+                  )}
+                </div>
+              ))}
             </div>
 
             <div className={`callout ${styles.atypiqueEncadre}`}>
               <div className={styles.atypiqueHeader}>
-                <IllustrationSlot
-                  id="infarctus-atypique"
-                  label="Formes atypiques"
-                  shape="circle"
-                  size={64}
-                />
                 <span className={styles.atypiqueLabel}>Parfois autrement</span>
               </div>
-              <p className={styles.atypiqueTexte}>
-                Dos, ventre, grande fatigue, nausées —{' '}
-                <strong>surtout femmes, diabétiques, personnes âgées</strong>.
+              <p className={styles.atypiqueIntro}>
+                <strong>Surtout femmes, diabétiques, personnes âgées.</strong>
               </p>
+              <div className={styles.atypiqueGrid}>
+                {SIGNES_ATYPIQUES.map((s) => (
+                  <div key={s.id} className={styles.atypiqueCard}>
+                    <IllustrationSlot id={s.id} label={s.titre} shape="circle" size={64} />
+                    <span className={styles.atypiqueCardTitre}>{s.titre}</span>
+                    <p className={styles.atypiqueCardTexte}>{s.texte}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -200,9 +245,13 @@ export default function AlerteModule({ shell }: ModuleProps) {
 
             <div className="fiche-bloc">
               <span className="fiche-bloc-eyebrow">Infarctus — les signes</span>
-              <p className={styles.ficheInfarctusTexte}>Une douleur qui serre la poitrine et ne passe pas.</p>
+              {SIGNES_CLASSIQUES.map((s) => (
+                <p key={s.id} className={styles.ficheInfarctusTexte}>
+                  {s.texte}
+                </p>
+              ))}
               <p className={styles.ficheAtypiqueTexte}>
-                Parfois autrement : dos, ventre, grande fatigue, nausées —{' '}
+                Parfois autrement : dos, ventre, fatigue intense, nausées isolées —{' '}
                 <strong>surtout femmes, diabétiques, personnes âgées</strong>.
               </p>
             </div>

@@ -8,6 +8,14 @@ Index des tâches : backlog + actives. Historique des tâches faites : `git log`
 
 ## Tâches
 
+### M10 « Reconnaître l'alerte » — signes classiques + atypiques détaillés (2026-07-23) · plan: — (hors plan, demande directe de Thibault)
+- [x] Signes classiques : 1 → 3 cartes illustrées (douleur, irradiation bras/mâchoire/dos, sueurs/essoufflement/nausées), contenu restauré depuis `BRIEF_DESIGN_cardio.md` · `AlerteModule.tsx`/`.module.css`
+- [x] Formes atypiques : 1 bloc générique → 4 cartes illustrées individuellement (dos/ventre/fatigue/nausées)
+- [x] `docs/cardio/CONTENU_cardio.md` §M10 mis à jour (autorité de contenu)
+- [x] Prompts ChatGPT ajoutés/reliés dans `design/illustrations/prompts-illustrations-diabete.html` (3 signes classiques réutilisent des prompts déjà écrits mais jamais câblés ; 4 formes atypiques = nouveaux prompts, section `cardio-inf-atypique`)
+- [x] Vérification visuelle par Claude (navigateur intégré, exceptionnelle) : `npm run dev`, 2 onglets + fiche imprimable
+  - Gate : `tsc --noEmit` + `vite build` + `npm test` 127/127 verts. ⚠️ Validation humaine finale (Thibault) et jugement clinique sur la formulation restent à faire — cf. `VALIDATION.md`.
+
 ### Revue prod cardio — 1ʳᵉ passe de retouches (2026-07-23) · plan: — (hors plan, revue directe de Thibault sur le déployé)
 - [x] M2 « Mon risque global » : sédentarité remplace poids/tour de taille, tabac binaire, retrait message « robinet sucre » + fiche · commit `11ceafa`
 - [x] Retrait des renvois inter-modules en pied d'écran (M1/M3/M4/M5/M7/M11) · commit `10da742`
