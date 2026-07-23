@@ -11,11 +11,21 @@
  *   afficher de chiffre/quantité (G1 : « jamais de chiffres imposés » — brief M8, pas seulement
  *   le sel).
  *
- * - `ALIMENTS_PLATEAU` (onglet Assiette, garde-manger) : 26 aliments concrets, un par
- *   illustration présente dans `public/illustrations/cardio/aliment-*.png` (aucun de plus, aucun
- *   de moins — vérifié contre le dossier d'assets). Champs `sel`/`graisses` = paliers qualitatifs
- *   (jamais un gramme), utilisés uniquement pour compter les ajouts à surveiller (avertissement
- *   qualitatif « limiter le sel », jamais un seuil chiffré, cf. G1).
+ * - `ALIMENTS_PLATEAU` (onglet Assiette, garde-manger) : 49 aliments concrets. Champs
+ *   `sel`/`graisses` = paliers qualitatifs (jamais un gramme), utilisés uniquement pour compter
+ *   les ajouts à surveiller (avertissement qualitatif « limiter le sel », jamais un seuil
+ *   chiffré, cf. G1).
+ *
+ *   Illustrations (`public/illustrations/cardio/aliment-*.png`) : la correspondance stricte
+ *   « un PNG par aliment, aucun de plus/moins » (26 aliments d'origine) ne tient plus depuis
+ *   l'enrichissement 2026-07-23. Le rayon Légumes n'avait que 2 items (brocoli, carotte) alors
+ *   que la pédagogie répète « moitié de l'assiette en légumes » (+10 légumes) ; +7
+ *   aliments-situations reflétant des repas réels de la population suivie (MSP) ; +6 aliments
+ *   apportant la diversité culturelle déjà présente côté diabète (manioc, igname, banane
+ *   plantain, couscous complet, galette de riz, dattes — PNG copiés depuis
+ *   `public/illustrations/diabete/`, partagés entre les deux thèmes). Les 17 aliments
+ *   « légumes + situations » n'ont pas encore d'illustration : `IllustrationSlot` affiche son
+ *   placeholder en attendant qu'elles soient générées (pas bloquant).
  */
 
 export type CategoriePlateau = 'legumes' | 'feculents' | 'proteines' | 'lipides' | 'fruits' | 'laitiers';
@@ -78,6 +88,39 @@ export const ALIMENTS_PLATEAU: AlimentPlateau[] = [
   { id: 'avocat', name: 'Avocat', categorie: 'lipides', sel: 'faible', graisses: 'insaturees' },
   { id: 'huile-olive', name: "Huile d'olive", categorie: 'lipides', graisses: 'insaturees' },
   { id: 'noix', name: 'Noix', categorie: 'lipides', graisses: 'insaturees' },
+
+  // Légumes — enrichissement 2026-07-23 (audit consultation : rayon limité à 2 items alors que
+  // la pédagogie répète « moitié de l'assiette en légumes »). Mêmes 10 aliments que côté
+  // diabète (`diabete/alimentation/data.ts`), sans les grammes (cardio n'en a pas besoin).
+  { id: 'tomate', name: 'Tomate', categorie: 'legumes', sel: 'faible' },
+  { id: 'courgette', name: 'Courgette', categorie: 'legumes', sel: 'faible' },
+  { id: 'aubergine', name: 'Aubergine', categorie: 'legumes', sel: 'faible' },
+  { id: 'poivron', name: 'Poivron', categorie: 'legumes', sel: 'faible' },
+  { id: 'epinards', name: 'Épinards', categorie: 'legumes', sel: 'faible' },
+  { id: 'haricots-verts', name: 'Haricots verts', categorie: 'legumes', sel: 'faible' },
+  { id: 'oignon', name: 'Oignon', categorie: 'legumes', sel: 'faible' },
+  { id: 'gombo', name: 'Gombo (okra)', categorie: 'legumes', sel: 'faible' },
+  { id: 'potiron', name: 'Potiron / courge', categorie: 'legumes', sel: 'faible' },
+  { id: 'chou', name: 'Chou', categorie: 'legumes', sel: 'faible' },
+
+  // Aliments-situations — enrichissement 2026-07-23, repas réels de la population suivie (MSP).
+  { id: 'thon', name: 'Thon (conserve au naturel)', categorie: 'proteines', sel: 'eleve', graisses: 'insaturees' },
+  { id: 'merguez', name: 'Merguez', categorie: 'proteines', sel: 'eleve', graisses: 'saturees' },
+  { id: 'fromage', name: 'Fromage (pâte pressée)', categorie: 'laitiers', sel: 'eleve', graisses: 'saturees' },
+  { id: 'feta', name: 'Féta', categorie: 'laitiers', sel: 'eleve', graisses: 'saturees' },
+  { id: 'olives', name: 'Olives', categorie: 'lipides', sel: 'eleve', graisses: 'insaturees' },
+  { id: 'houmous', name: 'Houmous', categorie: 'lipides', sel: 'modere', graisses: 'insaturees' },
+  { id: 'pois-casses', name: 'Pois cassés / niébé', categorie: 'feculents', sel: 'faible' },
+
+  // Diversité culturelle 2026-07-23 (rattrape le thème diabète, cf. `diabete/alimentation/data.ts`
+  // — mêmes id/name/sel). Assets copiés depuis `public/illustrations/diabete/` vers
+  // `public/illustrations/cardio/` (mêmes PNG, partagés entre les deux thèmes).
+  { id: 'manioc', name: 'Manioc / attiéké', categorie: 'feculents', sel: 'faible' },
+  { id: 'igname', name: 'Igname', categorie: 'feculents', sel: 'faible' },
+  { id: 'banane-plantain', name: 'Banane plantain', categorie: 'feculents', sel: 'faible' },
+  { id: 'couscous-complet', name: 'Couscous complet', categorie: 'feculents', sel: 'faible' },
+  { id: 'galette-riz', name: 'Galette de riz soufflé', categorie: 'feculents', sel: 'faible' },
+  { id: 'dattes', name: 'Dattes', categorie: 'fruits', sel: 'faible' },
 ];
 
 // ---------------------------------------------------------------------------
@@ -178,6 +221,8 @@ export const REPERE_PAR_ALIMENT: Record<string, string> = {
   lentilles: 'legumineuses',
   'pois-chiches': 'legumineuses',
   'haricots-rouges': 'legumineuses',
+  'pois-casses': 'legumineuses',
+  houmous: 'legumineuses',
   'pain-complet': 'cerealescompletes',
   'riz-complet': 'cerealescompletes',
   'pates-completes': 'cerealescompletes',

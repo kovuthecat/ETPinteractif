@@ -23,6 +23,14 @@
  * (tables Ciqual/GI-GL, repères SFD) à revalider par Thibault — voir le rapport de session
  * S1 / `VALIDATION.md`. Ajout de 3 aliments porteurs d'oméga-3 (sardine, saumon, noix, C4) :
  * CG ~nulle, aucun impact sur les seuils du défi ② (paliers de pic non recalibrés).
+ *
+ * Évolution 2026-07-23 (audit consultation, demande Thibault) : le rayon Légumes n'avait que
+ * 2 items (brocoli, carotte) alors que la pédagogie répète « la moitié de l'assiette en
+ * légumes » — ajout de 10 légumes. + 7 aliments-situations (thon, merguez, fromage, féta,
+ * olives, houmous, pois cassés/niébé) reflétant des repas réels de la population suivie
+ * (MSP). 56 aliments au total. Valeurs = ordres de grandeur Ciqual/GI-GL — à revalider
+ * (Thibault). Illustrations pas encore générées pour ces 17 nouveaux aliments (placeholder
+ * `IllustrationSlot` en attendant).
  */
 
 import type { AlimentRepas } from '../lib/glycemieCurve';
@@ -165,6 +173,20 @@ export const FOODS: Food[] = [
   { id: 'brocoli', name: 'Brocoli', famille: 'legumes', cg: 1, fibres: 4, proteines: 3, lipides: 0, portion: '100 g', sel: 'faible' },
   { id: 'carotte', name: 'Carotte', famille: 'legumes', cg: 2, fibres: 3, proteines: 1, lipides: 0, portion: '80 g', sel: 'faible' },
 
+  // Légumes — enrichissement 2026-07-23 (audit consultation : rayon limité à 2 items alors que
+  // la pédagogie répète « moitié de l'assiette en légumes »). Valeurs = ordres de grandeur
+  // Ciqual/GI-GL — à revalider (Thibault).
+  { id: 'tomate', name: 'Tomate', famille: 'legumes', cg: 2, fibres: 1.5, proteines: 1, lipides: 0, portion: '120 g', sel: 'faible' }, // à revalider (Thibault)
+  { id: 'courgette', name: 'Courgette', famille: 'legumes', cg: 2, fibres: 1.5, proteines: 1, lipides: 0, portion: '120 g cuite', sel: 'faible' }, // à revalider (Thibault)
+  { id: 'aubergine', name: 'Aubergine', famille: 'legumes', cg: 3, fibres: 2.5, proteines: 1, lipides: 0, portion: '120 g cuite', sel: 'faible' }, // à revalider (Thibault)
+  { id: 'poivron', name: 'Poivron', famille: 'legumes', cg: 2, fibres: 2, proteines: 1, lipides: 0, portion: '100 g', sel: 'faible' }, // à revalider (Thibault)
+  { id: 'epinards', name: 'Épinards', famille: 'legumes', cg: 1, fibres: 2.5, proteines: 2.5, lipides: 0, portion: '100 g cuits', sel: 'faible' }, // à revalider (Thibault)
+  { id: 'haricots-verts', name: 'Haricots verts', famille: 'legumes', cg: 3, fibres: 3, proteines: 1.5, lipides: 0, portion: '100 g', sel: 'faible' }, // à revalider (Thibault)
+  { id: 'oignon', name: 'Oignon', famille: 'legumes', cg: 2, fibres: 1, proteines: 0.5, lipides: 0, portion: '50 g', sel: 'faible' }, // à revalider (Thibault)
+  { id: 'gombo', name: 'Gombo (okra)', famille: 'legumes', cg: 2, fibres: 3, proteines: 1.5, lipides: 0, portion: '100 g', sel: 'faible' }, // à revalider (Thibault)
+  { id: 'potiron', name: 'Potiron / courge', famille: 'legumes', cg: 4, fibres: 1.5, proteines: 1, lipides: 0, portion: '150 g cuit', sel: 'faible' }, // à revalider (Thibault)
+  { id: 'chou', name: 'Chou', famille: 'legumes', cg: 2, fibres: 2.5, proteines: 1.5, lipides: 0, portion: '100 g cuit', sel: 'faible' }, // à revalider (Thibault)
+
   // Laitages
   { id: 'yaourt', name: 'Yaourt nature', famille: 'laitiers', cg: 3, fibres: 0, proteines: 5, lipides: 3, portion: '125 g', sel: 'faible' }, // graisses : quasi sans graisses au sens du palier d'affichage malgré 3 g de lipides — à revalider
 
@@ -193,6 +215,17 @@ export const FOODS: Food[] = [
   { id: 'couscous-complet', name: 'Couscous complet', famille: 'feculents', cg: 14, fibres: 4, proteines: 5.5, lipides: 1, portion: '150 g cuit', sel: 'faible' }, // à revalider (Thibault)
   { id: 'banane-plantain', name: 'Banane plantain', famille: 'feculents', cg: 20, fibres: 3, proteines: 1.5, lipides: 0.3, portion: '150 g cuite', sel: 'faible' }, // à revalider (Thibault)
   { id: 'haricots-rouges', name: 'Haricots rouges', famille: 'feculents', cg: 7, fibres: 7, proteines: 9, lipides: 0.5, portion: '150 g cuits', sel: 'faible', atout: 'Légumineuse : un féculent qui monte doucement (riche en fibres et protéines).' }, // à revalider (Thibault)
+
+  // Aliments-situations — enrichissement 2026-07-23 (audit consultation : des repas réels de la
+  // population suivie n'avaient pas d'équivalent dans le garde-manger). Valeurs = ordres de
+  // grandeur Ciqual/GI-GL — à revalider (Thibault).
+  { id: 'thon', name: 'Thon (conserve au naturel)', famille: 'proteines', cg: 0, fibres: 0, proteines: 24, lipides: 1, portion: '100 g', sel: 'eleve', graisses: 'insaturees' }, // à revalider (Thibault)
+  { id: 'merguez', name: 'Merguez', famille: 'proteines', cg: 1, fibres: 0, proteines: 18, lipides: 24, portion: '2 merguez (~100 g)', sel: 'eleve', graisses: 'saturees' }, // à revalider (Thibault)
+  { id: 'fromage', name: 'Fromage (pâte pressée)', famille: 'laitiers', cg: 0, fibres: 0, proteines: 7, lipides: 9, portion: '30 g', sel: 'eleve', graisses: 'saturees' }, // à revalider (Thibault)
+  { id: 'feta', name: 'Féta', famille: 'laitiers', cg: 0.5, fibres: 0, proteines: 4, lipides: 6, portion: '30 g', sel: 'eleve', graisses: 'saturees' }, // à revalider (Thibault)
+  { id: 'olives', name: 'Olives', famille: 'lipides', cg: 0, fibres: 1, proteines: 0.5, lipides: 4, portion: '30 g (~10 olives)', sel: 'eleve', graisses: 'insaturees' }, // à revalider (Thibault)
+  { id: 'houmous', name: 'Houmous', famille: 'lipides', cg: 3, fibres: 1.5, proteines: 2, lipides: 4, portion: '2 c. à s. (30 g)', sel: 'modere', graisses: 'insaturees' }, // à revalider (Thibault)
+  { id: 'pois-casses', name: 'Pois cassés / niébé', famille: 'feculents', cg: 7, fibres: 7, proteines: 9, lipides: 0.5, portion: '150 g cuits', sel: 'faible', atout: 'Légumineuse : un féculent qui monte doucement (riche en fibres et protéines).' }, // à revalider (Thibault)
 ];
 
 export function foodById(id: string): Food | undefined {
