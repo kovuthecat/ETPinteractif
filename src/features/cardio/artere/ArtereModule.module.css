@@ -101,31 +101,6 @@
   outline-offset: 2px;
 }
 
-/* --- Renvoi inline vers M2 (« Mon risque global »), toujours visible en pied --- */
-
-.renvoi {
-  margin-top: var(--space-md);
-  padding: var(--space-sm) var(--space-md);
-  max-width: 480px;
-  border: none;
-  border-top: 1px solid var(--color-line);
-  border-radius: 0;
-  background: none;
-  color: var(--color-text-soft);
-  font: 500 15px/1.5 'Work Sans', sans-serif;
-  text-align: center;
-  cursor: pointer;
-}
-
-.renvoi:hover {
-  color: var(--color-nav);
-}
-
-.renvoi:focus-visible {
-  outline: 3px solid var(--color-nav);
-  outline-offset: 2px;
-}
-
 /* --- Frise du temps (2ᵉ temps uniquement) : repères qualitatifs, aucun chiffre médical --- */
 
 .frise {

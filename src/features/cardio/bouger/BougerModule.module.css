@@ -344,29 +344,6 @@
   vertical-align: middle;
 }
 
-/* --- Renvois inline (7↔2 bouger→risque) --- */
-
-.renvoiBtn {
-  align-self: center;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: var(--target-min);
-  padding: 8px 14px;
-  border: none;
-  border-radius: var(--radius-pill);
-  background: transparent;
-  color: var(--color-nav);
-  font: 600 15px 'Work Sans', sans-serif;
-  cursor: pointer;
-  text-align: center;
-}
-
-.renvoiBtn:hover,
-.renvoiBtn:focus-visible {
-  text-decoration: underline;
-}
-
 /* --- Onglet Régularité : calendrier semaine + barres de protection --- */
 
 .regulariteLayout {

@@ -12,9 +12,8 @@ import styles from './TerritoiresModule.module.css';
  *
  * Textes repris (quasi verbatim, aucune invention) de `docs/cardio/CONTENU_cardio.md` §M3 :
  * la reformulation « territoire → conséquence » de la doc devient le texte du panneau, le
- * message d'unité (« un seul ennemi, plusieurs adresses ») reste en pied d'écran. Renvoi
- * inline vers le module 10 (« Reconnaître l'alerte ») réservé au cœur et au cerveau (prototype
- * `ETP Cardio - Prototype.dc.html`, `zone3Alerte`, ligne 981).
+ * message d'unité (« un seul ennemi, plusieurs adresses ») reste en pied d'écran. Pas de renvoi
+ * inline inter-modules (correction Thibault 2026-07-23) : le soignant navigue lui-même.
  */
 
 const ZONES_ORDRE: ZoneId[] = ['coeur', 'cerveau', 'jambes', 'reins'];
@@ -35,9 +34,6 @@ const ZONE_TEXTE: Record<ZoneId, string> = {
   reins: "Ils s'abîment en silence.",
 };
 
-// Renvoi vers le module 10 réservé au cœur et au cerveau (prototype, `zone3Alerte`).
-const ZONES_ALERTE = new Set<ZoneId>(['coeur', 'cerveau']);
-
 // Invitation neutre par défaut (aucune zone ouverte) — pas de contenu clinique, choix libre.
 const INVITATION_NEUTRE = "Choisissez une zone pour voir ce qu'on y protège.";
 
@@ -45,7 +41,7 @@ const INVITATION_NEUTRE = "Choisissez une zone pour voir ce qu'on y protège.";
 const MESSAGE_UNITE =
   "Un seul ennemi, la plaque. Plusieurs adresses. Mêmes leviers, ils protègent partout.";
 
-export default function TerritoiresModule({ shell, onNavigate }: ModuleProps) {
+export default function TerritoiresModule({ shell }: ModuleProps) {
   const [zoneOuverte, setZoneOuverte] = useState<ZoneId | null>(null);
 
   const toggleZone = (id: ZoneId) => {
@@ -58,8 +54,6 @@ export default function TerritoiresModule({ shell, onNavigate }: ModuleProps) {
     id,
     etat: zoneOuverte === id ? 'ouvert' : 'actif',
   }));
-
-  const alerte = zoneOuverte !== null && ZONES_ALERTE.has(zoneOuverte);
 
   return (
     <ModuleShell titre={shell.titre} sources={shell.sources} onBack={shell.onBack} wide>
@@ -74,15 +68,6 @@ export default function TerritoiresModule({ shell, onNavigate }: ModuleProps) {
               <div key={zoneOuverte} className={`${styles.zoneOuverte} ${styles.fade}`}>
                 <span className="eyebrow">{ZONE_LABEL[zoneOuverte]}</span>
                 <p className={styles.zoneTexte}>{ZONE_TEXTE[zoneOuverte]}</p>
-                {alerte && (
-                  <button
-                    type="button"
-                    className={styles.lienAlerte}
-                    onClick={() => onNavigate('alerte')}
-                  >
-                    → Reconnaître l'alerte
-                  </button>
-                )}
               </div>
             ) : (
               <div className={`${styles.videEtat} ${styles.fade}`}>

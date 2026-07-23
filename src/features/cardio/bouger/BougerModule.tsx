@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import { ArrowRight } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import ModuleShell from '../../../components/ModuleShell';
 import InfoHover from '../../../components/InfoHover';
@@ -92,7 +91,7 @@ function protectionColor(v: number): string {
   return 'var(--color-toxique)';
 }
 
-export default function BougerModule({ shell, onNavigate }: ModuleProps) {
+export default function BougerModule({ shell }: ModuleProps) {
   const [onglet, setOnglet] = useState<Onglet>('volume');
 
   // --- Onglet Volume ---
@@ -281,11 +280,6 @@ export default function BougerModule({ shell, onNavigate }: ModuleProps) {
                 </InfoHover>{' '}
                 — un repère, jamais un objectif à atteindre ou à rater.
               </p>
-
-              <button type="button" className={styles.renvoiBtn} onClick={() => onNavigate('risque')}>
-                Ces bénéfices, c&rsquo;est aussi ça qui fait baisser mon risque global{' '}
-                <ArrowRight size={16} aria-hidden="true" />
-              </button>
             </div>
           </>
         )}

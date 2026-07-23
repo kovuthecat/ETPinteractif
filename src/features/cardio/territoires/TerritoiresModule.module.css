@@ -107,22 +107,6 @@
   color: var(--color-text);
 }
 
-.lienAlerte {
-  margin-top: var(--space-sm);
-  padding: 0;
-  border: none;
-  background: none;
-  font: 600 15px 'Work Sans', sans-serif;
-  color: var(--color-nav);
-  cursor: pointer;
-  min-height: var(--target-min);
-}
-
-.lienAlerte:hover,
-.lienAlerte:focus-visible {
-  text-decoration: underline;
-}
-
 @media (max-width: 1019px) {
   .zoneOuverte,
   .videEtat {

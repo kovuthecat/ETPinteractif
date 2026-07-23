@@ -44,7 +44,7 @@ function MesureBlanks() {
   );
 }
 
-export default function TensionModule({ shell, onNavigate }: ModuleProps) {
+export default function TensionModule({ shell }: ModuleProps) {
   const [leviers, setLeviers] = useState<Record<LevierId, boolean>>({
     sel: false,
     activite: false,
@@ -142,15 +142,6 @@ export default function TensionModule({ shell, onNavigate }: ModuleProps) {
           onClick={() => setFicheOuverte(true)}
         >
           Ma fiche « règle des 3 »
-        </button>
-      </div>
-
-      <div className={styles.renvois}>
-        <button type="button" className={styles.renvoi} onClick={() => onNavigate('manger')}>
-          → Le sel fait monter la tension
-        </button>
-        <button type="button" className={styles.renvoi} onClick={() => onNavigate('traitements')}>
-          → Baisser la pression protège le cœur, le cerveau et les reins
         </button>
       </div>
 

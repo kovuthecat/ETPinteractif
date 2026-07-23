@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { ArrowRight } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import ModuleShell from '../../../components/ModuleShell';
 import ArtereCoupe from '../components/ArtereCoupe';
@@ -20,10 +19,10 @@ import styles from './CholesterolModule.module.css';
  * l'encadré « non-modifiables » de RisqueModule/S5 (contenu sensible isolé, non cliquable).
  *
  * Hors périmètre (S8.md) : ne pas moraliser l'assiette (hépatique/génétique) ; aucune fiche
- * (« Fiche : aucune », décision clé C11) — seulement deux renvois inline vers M8 (manger) et M11
- * (traitements/statines).
+ * (« Fiche : aucune », décision clé C11). Pas de renvoi inline inter-modules (correction
+ * Thibault 2026-07-23) : le soignant navigue lui-même.
  */
-export default function CholesterolModule({ shell, onNavigate }: ModuleProps) {
+export default function CholesterolModule({ shell }: ModuleProps) {
   // Qualitatif seul (0 = LDL bas, 100 = LDL élevé) : jamais converti/affiché en g/L (G1).
   const [ldl, setLdl] = useState(50);
 
@@ -63,15 +62,6 @@ export default function CholesterolModule({ shell, onNavigate }: ModuleProps) {
         <div className={`card ${styles.encadre}`}>
           <p className={styles.deculpabilisant}>Ce n&apos;est pas que votre assiette.</p>
           <p>Le LDL dépose, le HDL nettoie.</p>
-        </div>
-
-        <div className={styles.renvoisRow}>
-          <button type="button" className={styles.renvoiBtn} onClick={() => onNavigate('manger')}>
-            Qu&apos;est-ce qui protège aussi l&apos;assiette ? <ArrowRight aria-hidden="true" />
-          </button>
-          <button type="button" className={styles.renvoiBtn} onClick={() => onNavigate('traitements')}>
-            Comment les statines aident-elles ? <ArrowRight aria-hidden="true" />
-          </button>
         </div>
       </div>
     </ModuleShell>

@@ -164,30 +164,6 @@
   color: var(--color-text);
 }
 
-.renvois {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-sm);
-  max-width: 720px;
-  margin: 0 auto;
-}
-
-.renvoi {
-  background: none;
-  border: none;
-  padding: 4px 0;
-  font: 600 15px 'Work Sans', sans-serif;
-  color: var(--color-nav);
-  cursor: pointer;
-  text-align: left;
-}
-
-.renvoi:hover,
-.renvoi:focus-visible {
-  text-decoration: underline;
-}
-
 /* --- Fiche « Ma règle des 3 » (rendue dans FicheOverlay) --- */
 
 .ficheIntro {

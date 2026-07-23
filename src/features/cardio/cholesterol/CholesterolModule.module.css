@@ -117,36 +117,3 @@
 .deculpabilisant {
   font-style: italic;
 }
-
-/* --- Renvois inline vers M8 (manger) / M11 (traitements) --- */
-
-.renvoisRow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-md);
-  justify-content: center;
-}
-
-.renvoiBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: var(--target-min);
-  padding: 8px 14px;
-  border: none;
-  border-radius: var(--radius-pill);
-  background: transparent;
-  color: var(--color-nav);
-  font: 600 15px 'Work Sans', sans-serif;
-  cursor: pointer;
-}
-
-.renvoiBtn:hover,
-.renvoiBtn:focus-visible {
-  text-decoration: underline;
-}
-
-.renvoiBtn:focus-visible {
-  outline: 3px solid var(--color-nav);
-  outline-offset: 2px;
-}

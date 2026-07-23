@@ -309,46 +309,6 @@
   color: var(--color-text);
 }
 
-.renvoisRow {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--space-sm);
-}
-
-.renvoi {
-  padding: 0;
-  border: none;
-  background: none;
-  font: 600 14px 'Work Sans', sans-serif;
-  color: var(--color-nav);
-  cursor: pointer;
-  min-height: var(--target-min);
-}
-
-.renvoi:hover,
-.renvoi:focus-visible {
-  text-decoration: underline;
-}
-
-/* --- Renvoi permanent vers le module « Où l'accident frappe » (11↔3) --- */
-
-.renvoiFooter {
-  align-self: center;
-  padding: 0;
-  border: none;
-  background: none;
-  font: 600 14px 'Work Sans', sans-serif;
-  color: var(--color-nav);
-  cursor: pointer;
-  min-height: var(--target-min);
-}
-
-.renvoiFooter:hover,
-.renvoiFooter:focus-visible {
-  text-decoration: underline;
-}
-
 @media (max-width: 600px) {
   .ordonnance {
     padding: var(--space-md);

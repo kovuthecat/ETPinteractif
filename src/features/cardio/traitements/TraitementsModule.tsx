@@ -23,11 +23,9 @@ import styles from './TraitementsModule.module.css';
  * `'allume'` (protégé, halo positif) — jamais un état d'alerte. **Aucune aspirine/antiagrégant**
  * dans la table de classes (décision G1, cohérence M10) : voir `data.ts`.
  *
- * Renvois (§M11 + plan S13) : une classe antihypertensive sélectionnée renvoie vers le module 4
- * (« La tension ») ; une classe statine/ézétimibe vers le module 5 (« Le cholestérol (LDL) ») ;
- * un renvoi permanent vers le module 3 (« Où l'accident frappe ») rappelle que ces mêmes zones
- * y sont explorées. Pas de fiche (pas d'écran de clôture séparé) : la silhouette pleinement
- * allumée, en mode « toute l'ordonnance », est la sortie naturelle du module.
+ * Pas de renvoi inline inter-modules (correction Thibault 2026-07-23) : le soignant navigue
+ * lui-même. Pas de fiche (pas d'écran de clôture séparé) : la silhouette pleinement allumée, en
+ * mode « toute l'ordonnance », est la sortie naturelle du module.
  */
 
 type ViewMode = 'line' | 'all';
@@ -66,7 +64,7 @@ function WatchBadge({ tooltip }: WatchBadgeProps) {
   );
 }
 
-export default function TraitementsModule({ onNavigate, shell }: ModuleProps) {
+export default function TraitementsModule({ shell }: ModuleProps) {
   const [lignes, setLignes] = useState<Ligne[]>(lignesInitiales);
   const [selectedUid, setSelectedUid] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('line');
@@ -89,21 +87,17 @@ export default function TraitementsModule({ onNavigate, shell }: ModuleProps) {
   const presentes = lignes.filter((l) => l.molecule.trim() !== '');
   const selectedLigne = selectedUid ? (lignes.find((l) => l.uid === selectedUid) ?? null) : null;
 
-  // Zones allumées + familles actives (pilotent les renvois 11→4 / 11→5) selon le mode de vue.
-  // Verrou anti-auto-prescription : jamais plus d'une ligne « lue » à la fois hors du mode
-  // « toute l'ordonnance » — pas de mise en regard de deux classes.
+  // Zones allumées selon le mode de vue. Verrou anti-auto-prescription : jamais plus d'une ligne
+  // « lue » à la fois hors du mode « toute l'ordonnance » — pas de mise en regard de deux classes.
   const litZones: Record<ZoneId, boolean> = { coeur: false, cerveau: false, reins: false, jambes: false };
-  const famillesActives = new Set<'antihypertenseur' | 'statine'>();
   if (viewMode === 'all') {
     presentes.forEach((l) => {
       const cls = classById(l.classId);
       cls.zones.forEach((z) => (litZones[z] = true));
-      famillesActives.add(cls.famille);
     });
   } else if (selectedLigne) {
     const cls = classById(selectedLigne.classId);
     cls.zones.forEach((z) => (litZones[z] = true));
-    famillesActives.add(cls.famille);
   }
 
   const silhouetteZones: SilhouetteZoneState[] = ZONES_ORDRE.map((id) => ({
@@ -228,31 +222,12 @@ export default function TraitementsModule({ onNavigate, shell }: ModuleProps) {
                 <div className={`card ${styles.panelCard}`}>
                   <p className={styles.panelText}>{panelText}</p>
                 </div>
-
-                {(famillesActives.has('antihypertenseur') || famillesActives.has('statine')) && (
-                  <div className={styles.renvoisRow}>
-                    {famillesActives.has('antihypertenseur') && (
-                      <button type="button" className={styles.renvoi} onClick={() => onNavigate('tension')}>
-                        → La tension
-                      </button>
-                    )}
-                    {famillesActives.has('statine') && (
-                      <button type="button" className={styles.renvoi} onClick={() => onNavigate('cholesterol')}>
-                        → Le cholestérol (LDL)
-                      </button>
-                    )}
-                  </div>
-                )}
               </div>
             )}
           </div>
         </div>
 
         <p className="filrouge">Vos traitements ne baissent pas un chiffre : ils gardent vos artères.</p>
-
-        <button type="button" className={styles.renvoiFooter} onClick={() => onNavigate('territoires')}>
-          → Revoir où l'accident frappe (ces mêmes territoires)
-        </button>
       </div>
     </ModuleShell>
   );

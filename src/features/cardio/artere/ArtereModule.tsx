@@ -57,7 +57,7 @@ const TEMPS: Temps[] = [
 
 const DERNIER = TEMPS.length - 1;
 
-export default function ArtereModule({ shell, onNavigate }: ModuleProps) {
+export default function ArtereModule({ shell }: ModuleProps) {
   const [step, setStep] = useState(0);
 
   if (!shell) return null;
@@ -108,10 +108,6 @@ export default function ArtereModule({ shell, onNavigate }: ModuleProps) {
 
         <button type="button" className={styles.suivantBtn} onClick={suivant}>
           {step < DERNIER ? 'Suivant →' : 'Recommencer'}
-        </button>
-
-        <button type="button" className={styles.renvoi} onClick={() => onNavigate('risque')}>
-          Et qu'est-ce qui accélère ce bouchage ? <span aria-hidden="true">→</span>
         </button>
       </div>
     </ModuleShell>
