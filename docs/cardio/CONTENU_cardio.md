@@ -48,7 +48,7 @@ Motif visuel central : **la personne / les artères protégées**. Installé au 
 |---|---|---|---|
 | 1 | **L'ARTÈRE + LA PLAQUE** *(héros du thème)* | 1 · 2 · 3 · 5 · (6) | mécanisme réversible / cumul des facteurs / territoires / nourrie par le LDL. Modèle pédagogique, **jamais un % de sténose**. |
 | 2 | **LA SILHOUETTE-CORPS** | 3 · 10 · 11 | territoires menacés → alerte → défendus. Zones : cœur · cerveau · jambes · reins. Sobre, digne, jamais anxiogène. |
-| 3 | **LE COCKPIT DE FEUX** | 2 · 4 · 5 · (9) | état d'un facteur modifiable (tabac · tension · cholestérol · sucre · poids/tour de taille), vert/ambre/rouge. **Jamais un score, jamais une note.** Non-modifiables (âge, sexe, hérédité) montrés à part, non réglables. |
+| 3 | **LE COCKPIT DE FEUX** | 2 · 4 · 5 · (9) | état d'un facteur modifiable (tabac · tension · cholestérol · sucre · sédentarité/inactivité), vert/ambre/rouge — sauf tabac, **binaire** vert/rouge. **Jamais un score, jamais une note.** Non-modifiables (âge, sexe, hérédité) montrés à part, non réglables. |
 | 4 | **LA CARTE-RÉFLEXE VITE** *(seul objet neuf)* | 10 | signalétique d'urgence, se lit en état de panique. Acronyme **VITE** + tableau infarctus. Dessiné comme un panneau de sortie de secours. |
 | 5 | **« MES 3 CHIFFRES »** *(alternative au cadran de l'année — à valider, cf. M12)* | 12 | suivi léger de la prévention primaire : tension / LDL / tour de taille, façon carnet simple. // à revalider (Thibault) : « mes 3 chiffres » **ou** cadran de l'année du diabète (décision de conception, brief §2 M12). |
 | 6 | **LE FIL ROUGE** (personne / artères protégées) | 1 · 2 · 3 · 12 | « silencieux mais réversible » ; message d'unité (un seul ennemi, plusieurs adresses). |
@@ -108,18 +108,26 @@ c'est réversible. Poser la grammaire des feux.
 **Message(s) à l'écran** (qualitatif, non diagnostique) :
 - « Ce n'est jamais un seul facteur : ils se **multiplient**. »
 - « Agir sur plusieurs à la fois protège **beaucoup plus**. »
-- Feux réglables « pour voir » : **tabac · tension · cholestérol · sucre · poids/tour de taille**.
-- Robinet sucre : « Diabète ? Un parcours complet vous est dédié. » *(porte vers thème diabète.)*
+- Feux réglables « pour voir » : **tabac · tension · cholestérol · sucre · sédentarité/inactivité**.
+  *(correction Thibault 2026-07-23 : remplace poids/tour de taille — doublon avec « mes 3
+  chiffres » du M12 et moins actionnable au quotidien que la sédentarité.)*
+- **Le tabac est binaire** (vert/rouge, pas de palier orange) : cliniquement, il n'y a pas de
+  « niveau » intermédiaire de tabagisme pour ce facteur — on fume ou on ne fume pas *(correction
+  Thibault 2026-07-23)*. Les 4 autres feux gardent le cycle vert→orange→rouge.
 - Non-modifiables, montrés à part : « L'âge, le sexe, l'hérédité comptent aussi — on ne les
   change pas, alors on agit sur le reste. » *(déculpabilisant.)*
 - Âge vasculaire (illustratif) : « Vos artères peuvent prendre de l'avance sur votre âge. »
   *(jamais « votre chiffre ».)*
+- **Pas de renvoi textuel vers le thème Diabète** *(correction Thibault 2026-07-23 : c'est le
+  soignant qui connaît l'outil et navigue lui-même — le message « robinet sucre » est retiré)*.
+- **Pas de fiche imprimable pour ce module** *(correction Thibault 2026-07-23)* — cockpit « pour
+  voir » seulement, rien à emporter.
 
 **2ᵉ niveau (survol).**
 - Tension — cible sous traitement : **PAS 120-130 mmHg** (< 65 ans), **130-139 mmHg** (≥ 65 ans),
   PAD 70-79 (Socle C.3 — ESC 2021 / ESH 2023).
-- Tour de taille — seuils ESC 2021 : **H ≥ 94 cm** / **F ≥ 80 cm** (risque accru) ; **H ≥ 102 cm** /
-  **F ≥ 88 cm** (risque élevé) (Socle H.3).
+- Sédentarité — pas de seuil chiffré ici (cf. Module 7 Bouger pour le 2ᵉ niveau complet,
+  OMS 2020 / ESC 2021) : le feu reste qualitatif, « bouger un peu vaut mieux que rien ».
 - LDL selon le risque. **✅ G1 (2026-07-22) : ne JAMAIS afficher de cible en g/L** — les seuils se
   modulent selon le **niveau de risque CV** (à ajuster, hors écran). À l'écran, le feu « cholestérol »
   reste qualitatif. Principe sourcé conservé (argument, pas chiffre) : **« réduction ≥ 50 % vs
@@ -271,7 +279,7 @@ aiguë) et sa **réversibilité rapide** — puis **orienter** vers le thème Ta
 
 **Message(s) à l'écran** (bref, motivant ; qualitatif — pas de fraction chiffrée) :
 - « Le tabac **accélère le bouchage** et favorise le caillot. »
-- « Dès l'arrêt, le cœur **commence à se réparer**. » *(frise : pente qui redescend, non chiffrée.)*
+- « Dès l'arrêt, le cœur **commence à se réparer**. »
 - « Pour arrêter, un accompagnement complet existe → **thème Tabac**. » *(pont.)*
 
 **2ᵉ niveau (survol).**
@@ -279,12 +287,14 @@ aiguë) et sa **réversibilité rapide** — puis **orienter** vers le thème Ta
   (Socle E.1-E.2 — Cross-Cohort Collaboration, PLoS Med 2025).
 
 **Calibrage (jamais à l'écran).**
-- Frise de réversibilité (endpoints sourcés, Socle E.2) : surrisque coronaire **−½ dès la 1ʳᵉ
-  année** ; rejoint le non-fumeur en **~15 ans** (coronaire), 5-15 ans (AVC) ; > 80 % du surrisque
-  éliminé à 20 ans ; arrêt avant 40 ans → −90 % du risque de décès lié au tabac.
-- // à revalider (Thibault) : la **forme intermédiaire de la pente** (jalons entre « 1ʳᵉ année » et
-  « ~15 ans ») est un choix de design ; le rapport donne les extrémités, pas la courbe complète
-  (point signalé par S1.md — « M6 cinétique »).
+- Endpoints sourcés (Socle E.2, pour mémoire — non représentés à l'écran) : surrisque coronaire
+  **−½ dès la 1ʳᵉ année** ; rejoint le non-fumeur en **~15 ans** (coronaire), 5-15 ans (AVC) ;
+  > 80 % du surrisque éliminé à 20 ans ; arrêt avant 40 ans → −90 % du risque de décès lié au
+  tabac.
+- **Pas de frise de réversibilité** *(correction Thibault 2026-07-23, retire la décision
+  précédente)* : elle ne faisait que dupliquer la barre de risque (2 états Fumeur/Arrêté, aucun
+  jalon temporel réel affiché) sans intérêt pédagogique propre — la barre de risque seule porte
+  le message.
 
 **Pièges (brief M6).** Rester **court** : le « comment arrêter » vit dans le thème Tabac. Ici = le
 « pourquoi CV » + l'aiguillage. Message = **arrêt** (pas de seuil « sûr »).
@@ -518,7 +528,10 @@ sources: [
 réévaluation du risque. Patient aux commandes, jamais « révision des 15 000 km ».
 
 **Message(s) à l'écran** (pilotage, calme mais actif ; qualitatif) :
-- « **Mes 3 chiffres à suivre** : tension · LDL · tour de taille. »
+- « **Mes 3 chiffres à suivre** : tension · LDL · **glycémie** » *(correction Thibault 2026-07-23 :
+  remplace « tour de taille », devenu orphelin le même jour — le facteur M2 correspondant a été
+  remplacé par « sédentarité » — par un chiffre qui correspond à l'une des 5 stations ci-dessous,
+  au lieu d'un 3ᵉ chiffre sans station associée).*
   **✅ G-M12 tranché (2026-07-22) : « mes 3 chiffres »** (grille légère), **pas** le cadran annuel.
 - Stations : automesure tension · bilan lipidique · réévaluation du risque · glycémie · fonction
   rénale.
