@@ -174,12 +174,6 @@ const D4_ACHIEVED_TOLERANCE = 0.14;
 // ── C2a/C2b (S18) : modèle en % continu, réglage au drag ──────────────────────────────
 /** Icône Lucide par secteur (C2b), décorative — le label texte porte le sens. */
 const D4_ICONS: Record<D4Category, LucideIcon> = { legumes: Carrot, proteines: Beef, feculents: Wheat };
-/** Assiette de départ — équivalente à l'ancien défaut par compteurs (1 légume / 0 protéine /
- *  3 féculents, soit 25 % / 0 % / 75 %), volontairement loin de l'assiette-modèle. */
-const D4_PCT_DEFAULT: Record<D4Category, number> = { legumes: 0.25, proteines: 0, feculents: 0.75 };
-/** Angle de départ (12h) du camembert — fixe, sert de référence aux 2 frontières draggables
- *  (génération d'arcs S1, sweep clockwise). */
-const D4_ANGLE_START = -90;
 /** Nombre d'aliments représentatifs utilisés pour reconstruire la courbe glycémie à partir des
  *  proportions continues (arrondi au plus fort reste sur ce total — préserve la forme de courbe).
  *  // à revalider (Thibault) : ni trop « steppy » (T petit), ni une courbe qui saute en drag. */
@@ -187,6 +181,37 @@ const D4_CURVE_TOTAL = 8;
 /** Sous ce seuil de part, l'icône du secteur est masquée (elle ne rentrerait plus proprement).
  *  // à revalider (Thibault). */
 const D4_ICON_MIN_FRAC = 0.06;
+
+/** Les 3 frontières du camembert, une entre chaque paire de catégories voisines (cyclique
+ *  légumes → protéines → féculents → légumes) : `fl` (féculents → légumes, le point de
+ *  « fermeture » du cercle, seul draggable jusqu'ici), `lp` (légumes → protéines, ex-b1), `pf`
+ *  (protéines → féculents, ex-b2). Les 3 sont désormais draggables indépendamment (correction
+ *  Thibault 2026-07-23, « 3ᵉ poignée ») : déplacer l'une ne redistribue qu'entre ses 2 catégories
+ *  voisines, jamais la 3ᵉ — cf. `d4BoundaryNeighbors`.
+ */
+type D4Boundary = 'fl' | 'lp' | 'pf';
+const D4_BOUNDARY_ORDER: D4Boundary[] = ['fl', 'lp', 'pf'];
+/** Assiette de départ — équivalente à l'ancien défaut par compteurs (1 légume / 0 protéine /
+ *  3 féculents, soit 25 % / 0 % / 75 %), volontairement loin de l'assiette-modèle. `fl` à -90°
+ *  (12h) reprend l'ancien `D4_ANGLE_START`, fixe jusqu'ici. */
+const D4_ANGLES_DEFAULT: Record<D4Boundary, number> = { fl: -90, lp: -90 + 0.25 * 360, pf: -90 + 0.25 * 360 };
+
+/** Les 2 frontières voisines d'une frontière donnée, dans l'ordre cyclique (prev → b → next). */
+function d4BoundaryNeighbors(b: D4Boundary): { prev: D4Boundary; next: D4Boundary } {
+  const i = D4_BOUNDARY_ORDER.indexOf(b);
+  return { prev: D4_BOUNDARY_ORDER[(i + 2) % 3], next: D4_BOUNDARY_ORDER[(i + 1) % 3] };
+}
+
+/** Catégorie NON touchée par le drag d'une frontière — sert à borner le drag par soustraction
+ *  (`1 - fracCatégorieIntacte`) plutôt que par différence d'angles : si la catégorie intacte est
+ *  déjà à 0 % (ses 2 frontières coïncident, cas par défaut ici avec protéines à 0 %), la
+ *  différence d'angles brute est ambiguë (0° ou 360° ?), alors que sa fraction déjà connue
+ *  (calculée dans l'autre sens, non ambiguë) ne l'est pas. */
+const D4_UNTOUCHED_BY_BOUNDARY: Record<D4Boundary, D4Category> = {
+  fl: 'proteines',
+  lp: 'feculents',
+  pf: 'legumes',
+};
 
 /** Position sur le cercle de rayon `r` à l'angle absolu `a` (degrés, convention du camembert :
  *  0 = est, 90 = sud, -90 = nord, sweep clockwise — cf. génération d'arcs `d4PieSlices`). */
@@ -200,6 +225,12 @@ function d4PointOnCircle(a: number, r: number): [number, number] {
 function d4UnwrapAngle(angle: number, from: number): number {
   const delta = ((angle - from) % 360 + 360) % 360;
   return from + delta;
+}
+
+/** Arc (fraction 0-1) balayé en sens horaire de `from` à `to` — convention utilisée pour dériver
+ *  les 3 proportions à partir des 3 angles de frontière. */
+function d4FracBetween(from: number, to: number): number {
+  return (d4UnwrapAngle(to, from) - from) / 360;
 }
 
 /** Angle absolu (même convention que `d4PointOnCircle`) du pointeur, dans le repère local du
@@ -568,15 +599,14 @@ export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
   // C2a (S18) : source de vérité = proportions continues (somme 100 %, 0 % permis), pilotées
   // par le drag des frontières du camembert (C2b). Les compteurs entiers pour la courbe glycémie
   // sont dérivés (arrondi au plus fort reste), cf. `d4CountsFromPct`.
-  const [d4Pct, setD4Pct] = useState<Record<D4Category, number>>(D4_PCT_DEFAULT);
+  const [d4Angles, setD4Angles] = useState<Record<D4Boundary, number>>(D4_ANGLES_DEFAULT);
   const [d4Touched, setD4Touched] = useState(false);
-  const [d4Dragging, setD4Dragging] = useState<'b1' | 'b2' | null>(null);
+  const [d4Dragging, setD4Dragging] = useState<D4Boundary | null>(null);
   const d4SvgRef = useRef<SVGSVGElement>(null);
 
-  /** Frontière b1 = entre légumes et protéines ; b2 = entre protéines et féculents (angles
-   *  absolus, mêmes conventions que `d4PointOnCircle`). Déplacer une frontière ne redistribue
-   *  qu'entre les 2 parts voisines, l'autre reste inchangée (ordre des secteurs stable). */
-  function handleD4BoundaryPointerDown(boundary: 'b1' | 'b2') {
+  /** 3 frontières (fl/lp/pf, correction 2026-07-23) : déplacer l'une ne redistribue qu'entre ses
+   *  2 catégories voisines, jamais la 3ᵉ — cf. `d4BoundaryNeighbors`. */
+  function handleD4BoundaryPointerDown(boundary: D4Boundary) {
     return (e: ReactPointerEvent<SVGCircleElement>) => {
       e.currentTarget.setPointerCapture(e.pointerId);
       setD4Dragging(boundary);
@@ -584,30 +614,21 @@ export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
     };
   }
 
-  function handleD4BoundaryPointerMove(boundary: 'b1' | 'b2') {
+  function handleD4BoundaryPointerMove(boundary: D4Boundary) {
     return (e: ReactPointerEvent<SVGCircleElement>) => {
       if (d4Dragging !== boundary) return;
       const svg = d4SvgRef.current;
       if (!svg) return;
-      const angle = d4UnwrapAngle(d4AngleFromPointer(svg, e), D4_ANGLE_START);
-      setD4Pct((prev) => {
-        const angleB1 = D4_ANGLE_START + prev.legumes * 360;
-        const angleB2 = angleB1 + prev.proteines * 360;
-        const angleEnd = D4_ANGLE_START + 360;
-        if (boundary === 'b1') {
-          const next = Math.min(Math.max(angle, D4_ANGLE_START), angleB2);
-          return {
-            legumes: (next - D4_ANGLE_START) / 360,
-            proteines: (angleB2 - next) / 360,
-            feculents: prev.feculents,
-          };
-        }
-        const next = Math.min(Math.max(angle, angleB1), angleEnd);
-        return {
-          legumes: prev.legumes,
-          proteines: (next - angleB1) / 360,
-          feculents: (angleEnd - next) / 360,
-        };
+      const { prev } = d4BoundaryNeighbors(boundary);
+      // cf. `D4_UNTOUCHED_BY_BOUNDARY` : évite l'ambiguïté d'angles quand la catégorie intacte
+      // est déjà à 0 % (cas par défaut : protéines à 0 %, lp/pf confondus).
+      const untouchedFrac = d4Pct[D4_UNTOUCHED_BY_BOUNDARY[boundary]];
+      setD4Angles((a) => {
+        const prevAngle = a[prev];
+        const nextAngleUnwrapped = prevAngle + (1 - untouchedFrac) * 360;
+        const pointerAngle = d4UnwrapAngle(d4AngleFromPointer(svg, e), prevAngle);
+        const clamped = Math.min(Math.max(pointerAngle, prevAngle), nextAngleUnwrapped);
+        return { ...a, [boundary]: clamped };
       });
     };
   }
@@ -616,6 +637,12 @@ export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
     e.currentTarget.releasePointerCapture(e.pointerId);
     setD4Dragging(null);
   }
+
+  const d4Pct: Record<D4Category, number> = {
+    legumes: d4FracBetween(d4Angles.fl, d4Angles.lp),
+    proteines: d4FracBetween(d4Angles.lp, d4Angles.pf),
+    feculents: d4FracBetween(d4Angles.pf, d4Angles.fl),
+  };
 
   const d4Diff = Math.abs(d4Pct.legumes - 0.5) + Math.abs(d4Pct.proteines - 0.25) + Math.abs(d4Pct.feculents - 0.25);
   const d4Achieved = d4Touched && d4Diff < D4_ACHIEVED_TOLERANCE;
@@ -649,7 +676,7 @@ export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
         })
       : null;
 
-  let d4Angle = D4_ANGLE_START;
+  let d4Angle = d4Angles.fl;
   const d4PieSlices = D4_CATEGORIES.map((cat) => {
     const frac = d4Pct[cat.id];
     const start = d4Angle;
@@ -679,10 +706,15 @@ export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
       labelY,
     };
   });
-  const d4AngleB1 = D4_ANGLE_START + d4Pct.legumes * 360;
-  const d4AngleB2 = d4AngleB1 + d4Pct.proteines * 360;
-  const [d4HandleB1X, d4HandleB1Y] = d4PointOnCircle(d4AngleB1, 92);
-  const [d4HandleB2X, d4HandleB2Y] = d4PointOnCircle(d4AngleB2, 92);
+  const D4_HANDLES: { id: D4Boundary; label: string }[] = [
+    { id: 'fl', label: 'féculents ↔ légumes' },
+    { id: 'lp', label: 'légumes ↔ protéines' },
+    { id: 'pf', label: 'protéines ↔ féculents' },
+  ];
+  const d4Handles = D4_HANDLES.map((h) => {
+    const [x, y] = d4PointOnCircle(d4Angles[h.id], 92);
+    return { ...h, x, y };
+  });
 
   // ── Synthèse ★ (= fiche) ───────────────────────────────────────────────
   const [synthPlate, setSynthPlate] = useState<{ uid: string; id: string }[]>([]);
@@ -1108,28 +1140,22 @@ export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
                       </g>
                     );
                   })}
-                  {/* Frontières draggables (C2b) : redistribuent le % entre les 2 parts voisines
-                      uniquement ; 0 % permis, poignée conservée (superposée) pour rouvrir la part. */}
-                  <circle
-                    className={d4Dragging === 'b1' ? `${styles.d4Handle} ${styles.d4HandleDragging}` : styles.d4Handle}
-                    cx={d4HandleB1X}
-                    cy={d4HandleB1Y}
-                    r={9}
-                    aria-hidden="true"
-                    onPointerDown={handleD4BoundaryPointerDown('b1')}
-                    onPointerMove={handleD4BoundaryPointerMove('b1')}
-                    onPointerUp={handleD4BoundaryPointerUp}
-                  />
-                  <circle
-                    className={d4Dragging === 'b2' ? `${styles.d4Handle} ${styles.d4HandleDragging}` : styles.d4Handle}
-                    cx={d4HandleB2X}
-                    cy={d4HandleB2Y}
-                    r={9}
-                    aria-hidden="true"
-                    onPointerDown={handleD4BoundaryPointerDown('b2')}
-                    onPointerMove={handleD4BoundaryPointerMove('b2')}
-                    onPointerUp={handleD4BoundaryPointerUp}
-                  />
+                  {/* 3 frontières draggables (une par paire de catégories voisines, correction
+                      2026-07-23) : chacune redistribue le % entre ses 2 parts voisines uniquement ;
+                      0 % permis, poignée conservée (superposée) pour rouvrir la part. */}
+                  {d4Handles.map((h) => (
+                    <circle
+                      key={h.id}
+                      className={d4Dragging === h.id ? `${styles.d4Handle} ${styles.d4HandleDragging}` : styles.d4Handle}
+                      cx={h.x}
+                      cy={h.y}
+                      r={9}
+                      aria-hidden="true"
+                      onPointerDown={handleD4BoundaryPointerDown(h.id)}
+                      onPointerMove={handleD4BoundaryPointerMove(h.id)}
+                      onPointerUp={handleD4BoundaryPointerUp}
+                    />
+                  ))}
                 </svg>
                 {d4Achieved && (
                   <p className={styles.achieved}>
