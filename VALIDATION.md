@@ -26,11 +26,16 @@ sélecteur de thème → Prévention cardiovasculaire).
 ### Modules 1-3 — pilote
 
 - [x] Module 1 « L'artère qui s'encrasse » — validé Thibault 2026-07-22.
-- [x] Module 2 « Mon risque global » — validé Thibault 2026-07-22 (cumul multiplicatif visible, aucun
-      score chiffré, non-modifiables bien à part, fiche imprimable).
+- [ ] Module 2 « Mon risque global » — validé Thibault 2026-07-22, **rouvert** après la revue du
+      2026-07-23 (cumul multiplicatif toujours visible, aucun score chiffré, non-modifiables bien à
+      part ; mais **sédentarité remplace poids/tour de taille**, tabac devenu **binaire** vert/rouge,
+      **fiche imprimable retirée**) — à revalider sur l'état actuel.
 - [x] Module 3 « Où l'accident frappe » — validé Thibault 2026-07-22 **après correction** : silhouette
       trop petite / zones cliquables imprécises → portée à 560 px, alignée sur l'anatomie du module
       Risque CV diabète (`src/features/cardio/territoires/TerritoiresModule.module.css`).
+- [ ] Modules 1/3 (+ 4/5/7/11) — renvoi en pied d'écran vers un autre module **retiré** le 2026-07-23
+      (redondant avec la navigation par l'accueil du thème) : vérifier qu'aucun pied d'écran orphelin
+      ne subsiste visuellement.
 
 ### Module 4 — La tension
 
@@ -46,7 +51,8 @@ sélecteur de thème → Prévention cardiovasculaire).
 
 ### Module 6 — Le tabac
 
-- [ ] La bascule Fumeur/Arrêté fait bouger le risque et la frise de réversibilité de façon cohérente.
+- [ ] La bascule Fumeur/Arrêté fait bouger la barre de risque de façon cohérente (frise de
+      réversibilité retirée le 2026-07-23, doublon — la barre seule porte le message).
 - [ ] Le renvoi vers le thème Tabac est bien un simple repli visuel (ramène au sélecteur de thème), pas
       une navigation cassée.
 
@@ -58,8 +64,11 @@ sélecteur de thème → Prévention cardiovasculaire).
 
 ### Module 8 — Manger pour ses artères
 
-- [ ] Onglet Familles : détail au clic d'un aliment lisible. Onglet Assiette : l'ajout d'aliments fait
-      évoluer le graphique conique et l'analyse d'équilibre.
+- [ ] Onglet Familles : détail au clic d'un aliment lisible (« Graisses saturées » et « Huiles végétales »
+      renommées le 2026-07-23, huile d'olive distinguée des oméga-3 colza/lin/noix).
+- [ ] Onglet Assiette : le glisser-déposé d'un aliment concret (légumes/féculents/protéines) affiche son
+      image dans sa part ; les 3 frontières du camembert se règlent indépendamment (une par paire de
+      catégories voisines) et l'analyse d'équilibre reste cohérente à 0 % comme aux bornes.
 - [ ] **Aucun chiffre de sel (g/j)** à l'écran — message qualitatif seul.
 - [ ] Fiche photographie de l'assiette s'imprime correctement.
 - [ ] Accroche d'ouverture (« l'assiette méditerranéenne soigne les artères ») : message proposé sans
@@ -67,10 +76,12 @@ sélecteur de thème → Prévention cardiovasculaire).
 
 ### Module 9 — Les autres leviers
 
-- [ ] Alcool : le message reprend bien les repères SPF verbatim (« moins de 2/jour, ≤ 10/semaine »),
-      sans affirmation plus forte.
+- [ ] Alcool : icônes de verre cliquables + sélecteur de fréquence (remplace le slider nu le
+      2026-07-23) ; le message nomme explicitement le volet SPF concerné (dose/jours sans alcool/cumul
+      hebdo), sans affirmation plus forte que « moins de 2/jour, ≤ 10/semaine ».
 - [ ] Sommeil : cocher ≥ 2 signes de SAOS oriente vers un dépistage, sans jamais diagnostiquer.
-- [ ] Stress : ton déculpabilisant, leviers concrets.
+- [ ] Stress : échelle visuelle analogique confort→vigilance→toxique (remplace le curseur + chiffre brut
+      le 2026-07-23), ton déculpabilisant, aucun RR chiffré à l'écran.
 
 ### Module 10 — Reconnaître l'alerte (carte VITE)
 
@@ -92,7 +103,9 @@ sélecteur de thème → Prévention cardiovasculaire).
 
 ### Module 12 — Mon suivi
 
-- [ ] Bandeau « Mes 3 chiffres à suivre » en tête, grille de voyants cyclable (fait/à programmer/espacé).
+- [ ] Bandeau « Mes 3 chiffres à suivre » en tête (glycémie remplace tension/LDL/tour de taille depuis
+      le 2026-07-23, plus aucun chiffre orphelin), icônes dérivées des stations et reprises en en-tête
+      de chaque station, grille de voyants cyclable (fait/à programmer/espacé).
 - [ ] **Jamais de rouge** dans ce module.
 - [ ] Fiche check-list frigo imprimable.
 - [ ] Fréquences de suivi affichées : réserve non bloquante, à confirmer par Thibault auprès de l'HAS.

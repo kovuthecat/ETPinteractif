@@ -8,6 +8,17 @@ Index des tâches : backlog + actives. Historique des tâches faites : `git log`
 
 ## Tâches
 
+### Revue prod cardio — 1ʳᵉ passe de retouches (2026-07-23) · plan: — (hors plan, revue directe de Thibault sur le déployé)
+- [x] M2 « Mon risque global » : sédentarité remplace poids/tour de taille, tabac binaire, retrait message « robinet sucre » + fiche · commit `11ceafa`
+- [x] Retrait des renvois inter-modules en pied d'écran (M1/M3/M4/M5/M7/M11) · commit `10da742`
+- [x] M6 « Le tabac » : retrait de la frise de réversibilité (doublon de la barre de risque) · commit `d3d4168`
+- [x] M8 « Manger pour ses artères » : assiette repensée (aliment concret par glisser-déposé, camembert 3 frontières), Fritures→Graisses saturées, Huile d'olive→Huiles végétales · commit `71c2f57`
+- [x] Diabète — défi Proportion (Alimentation) : camembert généralisé à 3 frontières + fix bug de bornage à 0 % · commit `764caa6`
+- [x] M9 « Les autres leviers » : alcool en icônes+fréquence, stress en échelle analogique, retrait renvois inline · commit `b9f2378`
+- [x] M12 « Mon suivi » : glycémie remplace tension/LDL/tour de taille (orphelin depuis M2), icônes dérivées des stations, phrase d'ouverture · commit `2fdabb5`
+- [x] Docs : `CONTENU_cardio.md` resynchronisé sur M2/M6/M8/M12 · commit `ed06af0`
+  - **8 commits faits en session précédente, non consolidés côté contexte à l'époque** ; resynchronisation STATUS/TASKS/DECISIONS/VALIDATION faite le 2026-07-23, aucun changement de code dans cette passe. ⚠️ Validation VISUELLE humaine (Thibault, `npm run dev`) des modules retouchés reste à faire — cf. `VALIDATION.md`.
+
 ### Nouveau thème cardio — « Prévention cardiovasculaire », 12 modules (2026-07-22) · plan: → plans/theme-cardio-2026-07/ (index + S1-S14)
 - [x] S1 — C1 : contenu clinique des 12 modules (`docs/cardio/CONTENU_cardio.md`, gate G1) · modèle: Opus, effort: high · plan: → plans/theme-cardio-2026-07/S1.md (**G1 validée par Thibault 2026-07-22** — 6 arbitrages cliniques, cf. STATUS.md)
 - [x] S2 — C2-C4 : socle (entrée `cardio` dans `THEMES`, registre 12 modules, lib `risqueCardio` 21 tests, 4 composants cardio-owned) · modèle: Sonnet, effort: high · plan: → plans/theme-cardio-2026-07/S2.md (auto OK : tsc --noEmit + vite build + npm test 127/127 verts)

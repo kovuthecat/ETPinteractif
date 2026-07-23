@@ -65,6 +65,13 @@
 - [ ] **T7** — Ordre et Repas complet montrent la courbe agrandie, remontée, sans espace mort
       au-dessus ; pas de scroll ajouté.
 
+## Alimentation — défi Proportion, camembert à 3 frontières (2026-07-23)
+
+- [ ] Le camembert du défi ④ Proportion se règle désormais via **3 frontières indépendantes**
+      draggables (une par paire de catégories voisines), en miroir du même patron introduit côté
+      cardio (module Manger). Vérifier notamment le cas limite : une catégorie amenée à 0 % ne bloque
+      plus le réglage de la frontière voisine (bug de bornage corrigé, commit `764caa6`).
+
 ## Insuline « Décider » — S4 (T8 : réglage expérimentable de la lente)
 
 - [ ] Temps ② « Décider » → choisir « Plusieurs nuits qui montent », puis « Monter la lente » :

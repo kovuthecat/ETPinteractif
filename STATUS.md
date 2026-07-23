@@ -4,9 +4,50 @@
 
 > **Frontières** — STATUS : état actuel · `TASKS.md` : backlog + tâches · `plans/` : plan d'une tâche active · `VALIDATION.md` : checklist visuelle.
 >
-> **Dernière mise à jour :** 2026-07-22 (chantier `theme-cardio-2026-07` — 3ᵉ thème « Prévention
-> cardiovasculaire », 12 modules câblés, gates auto vertes, pilote M1-M3 validé visuellement par
-> Thibault ; M4-M12 restent à valider à l'écran)
+> **Dernière mise à jour :** 2026-07-23 (revue prod cardio — 5 modules retouchés après la 1ʳᵉ passe
+> de validation visuelle de Thibault + généralisation du camembert à 3 frontières au module diabète
+> Alimentation)
+
+**Revue prod cardio — 1ʳᵉ passe de retouches post-chantier (2026-07-23)** — 8 commits hors plan
+initial `theme-cardio-2026-07`, issus d'une revue de Thibault sur le déployé après le pilote M1-M3
+(gates auto restées vertes à chaque commit, non reconsolidés en session dédiée) :
+
+- **M2 « Mon risque global »** : le facteur poids/tour de taille (doublon avec « mes 3 chiffres » du
+  suivi) remplacé par sédentarité/inactivité ; tabac devenu **binaire** (vert/rouge, pas de palier
+  orange — cliniquement pas de niveau intermédiaire) ; retrait du message « robinet sucre » (renvoi
+  Diabète) et de la fiche imprimable (cockpit « pour voir », rien à emporter).
+- **Renvois inter-modules retirés** (M1 artère, M3 territoires, M4 tension, M5 cholestérol, M7
+  bouger, M11 traitements) : les boutons de renvoi en pied d'écran vers un autre module supprimés —
+  redondants, le soignant navigue lui-même depuis l'accueil du thème.
+- **M6 « Le tabac »** : frise de réversibilité retirée (dupliquait la barre de risque, mêmes 2 états
+  Fumeur/Arrêté, aucun jalon temporel réel) — la barre de risque seule porte le message désormais.
+- **M8 « Manger pour ses artères »** : « Fritures » → « Graisses saturées » (catégorie plus large) ;
+  « Huile d'olive » → « Huiles végétales » (distingue huile d'olive quotidienne / huiles oméga-3
+  colza-lin-noix à froid) ; assiette repensée — chaque catégorie-cœur (légumes/féculents/protéines)
+  représentée par un aliment concret choisi par glisser-déposé (image affichée dans sa part) ; camembert
+  généralisé à **3 frontières indépendantes** réglables (une par paire de catégories voisines, au lieu
+  de 2 + un point fixe) ; analyse d'équilibre réutilise désormais les messages de l'onglet Familles.
+- **M9 « Les autres leviers »** : alcool — slider nu (supposait une consommation quotidienne implicite)
+  remplacé par icônes de verre cliquables + sélecteur de fréquence, message nommant explicitement le
+  volet du repère SPF concerné (dose/jours sans alcool/cumul hebdo) ; stress — curseur + chiffre brut
+  remplacés par une échelle visuelle analogique (confort→vigilance→toxique, ancres textuelles) + message
+  fixe sur l'impact CV du stress chronique, sans RR chiffré ; retrait des renvois inline vers
+  tension/bouger.
+- **M12 « Mon suivi »** : « Mes 3 chiffres à suivre » listait encore tension/LDL/tour de taille, devenu
+  orphelin depuis le remplacement du facteur M2 correspondant — remplacé par glycémie (correspond à l'une
+  des 5 stations de la grille) ; icônes des 3 chiffres dérivées des stations (source unique), reprises en
+  en-tête de chaque station ; phrase d'ouverture ajoutée (absente jusqu'ici).
+- **`docs/cardio/CONTENU_cardio.md` resynchronisé** sur toutes ces corrections (M2/M6/M8/M12) — reste
+  l'autorité de contenu clinique du thème.
+- **Diabète — module Alimentation, défi Proportion** : camembert généralisé à 3 frontières indépendantes
+  (même patron que M8 cardio), en miroir à la demande de Thibault ; bug de bornage corrigé au passage
+  (une catégorie à 0 % bloquait le calcul d'empan de la frontière voisine — dérivé désormais de la
+  fraction de la catégorie intacte plutôt que d'une différence d'angles ambiguë).
+
+Ces 8 commits n'avaient pas été resynchronisés dans `STATUS.md`/`TASKS.md`/`DECISIONS.md` au moment où
+ils ont été faits (session précédente) — resynchronisation faite le 2026-07-23, aucun changement de code
+dans cette passe de resync. **Validation visuelle humaine des modules retouchés (Thibault, `npm run dev`)
+reste à faire** — cf. `VALIDATION.md`.
 
 **Nouveau thème « Prévention cardiovasculaire » — 12 modules (2026-07-22)** — chantier
 `plans/theme-cardio-2026-07/` (index + S1-S14), 3ᵉ thème du moteur multi-thèmes (après tabac et
