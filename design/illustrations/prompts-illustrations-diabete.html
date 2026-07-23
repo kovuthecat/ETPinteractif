@@ -141,7 +141,7 @@
 
   <div class="infobox" style="margin-top:16px">
     <h3>Revue tabac — pourquoi si peu de prompts&nbsp;?</h3>
-    <p class="tip" style="margin:0">Le thème tabac est fait de « bacs à sable » (courbes, cadrans, animations) et de petits pictos <b>déjà couverts par les icônes lucide-react</b> (Cigarette, Pill, Brain, Wind, Waves…), cohérentes avec le style éditorial. Le <b>seul vrai manque</b> d'illustration est l'encart « Technique de prise&nbsp;» du module Substituts (bandeau 16:7, placeholder documenté) : un <b>geste</b> qu'une icône en ligne ne sait pas montrer. D'où <b>5 prompts</b> seulement. Le reste est listé en bas comme « à garder en code / lucide ».</p>
+    <p class="tip" style="margin:0">Le thème tabac est fait de « bacs à sable » (courbes, cadrans, animations) et de petits pictos <b>déjà couverts par les icônes lucide-react</b> (Cigarette, Pill, Brain, Wind, Waves…), cohérentes avec le style éditorial. Les vignettes « Technique de prise » (Substituts), « Ce que l'arrêt répare » et « Stratégies &amp; outils » sont désormais <b>toutes générées</b> (retirées de cette page le 2026-07-23). Le <b>seul manque restant</b> côté tabac : 6 vignettes « Vrai ou faux&nbsp;» ajoutées le même jour (poids/cœur, vapoteuse) — cf. section ci-dessous.</p>
   </div>
 
 </div>
@@ -183,141 +183,44 @@ const DEFAULT_CARDIO = `Illustration éditoriale sobre et moderne pour un suppor
 const S = 'sys', F = 'food', T = 'tabac', TQ = 'tabacsq', C = 'cardio';
 const SECTIONS = [
 {
-  key:'m2-fec', title:'Module 2 — Garde-manger : féculents & pains', badge:F,
-  desc:"Vignettes restant à générer (les autres féculents/légumineuses sont faits). Contour fin + aplats, réf. pois chiches ; pas de texture granuleuse.",
+  key:'gm-legumes-enrichi', title:'Garde-manger — Légumes (enrichissement 2026-07, diabète + cardio)', badge:F,
+  desc:"Enrichissement du rayon légumes, jusqu'ici réduit à brocoli + carotte alors que la pédagogie répète « la moitié de l'assiette en légumes ». Même famille graphique que les aliments déjà générés (contour fin brun, 2-3 aplats, réf. pois chiches). Chaque PNG est déposé DANS LES DEUX dossiers (diabete/ ET cardio/) — un seul visuel partagé.",
   items:[
-    ["Pain pita","Un pain pita rond et plat, légèrement gonflé, une moitié coupée laissant voir la poche intérieure.",F,"Fichier cible : aliment-pain-pita."],
-    ["Galette de riz soufflé","Deux ou trois galettes de riz soufflé rondes empilées en léger décalé, surface de grains soufflés suggérée par une douzaine de formes simples (pas de texture granuleuse).",F,"Fichier cible : aliment-galette-riz."],
+    ["Tomate","Une tomate rouge entière avec un petit pédoncule vert étoilé, et une demi-tranche à côté montrant les loges.",F,"Fichier cible : aliment-tomate.png · déposer dans diabete/ ET cardio/."],
+    ["Courgette","Une courgette verte entière allongée avec un bout de pédoncule, et une rondelle coupée.",F,"Fichier cible : aliment-courgette.png · déposer dans diabete/ ET cardio/."],
+    ["Aubergine","Une aubergine entière violet foncé, brillante, avec son calice vert.",F,"Fichier cible : aliment-aubergine.png · déposer dans diabete/ ET cardio/."],
+    ["Poivron","Un poivron rouge entier, charnu et lisse, avec son pédoncule vert.",F,"Fichier cible : aliment-poivron.png · déposer dans diabete/ ET cardio/."],
+    ["Épinards","Une petite botte de feuilles d'épinard vert foncé, nervures suggérées par quelques traits simples.",F,"Fichier cible : aliment-epinards.png · déposer dans diabete/ ET cardio/."],
+    ["Haricots verts","Une petite poignée de haricots verts frais, allongés et légèrement incurvés, alignés.",F,"Fichier cible : aliment-haricots-verts.png · déposer dans diabete/ ET cardio/."],
+    ["Oignon","Un oignon jaune entier à la pelure fine, et un demi-oignon coupé montrant quelques anneaux concentriques.",F,"Fichier cible : aliment-oignon.png · déposer dans diabete/ ET cardio/."],
+    ["Gombo (okra)","Deux ou trois gombos verts allongés et côtelés, légèrement incurvés, une pointe effilée.",F,"Fichier cible : aliment-gombo.png · déposer dans diabete/ ET cardio/."],
+    ["Potiron / courge","Une part de potiron orange (ou un petit potimarron entier côtelé), chair orangée en aplat uni.",F,"Fichier cible : aliment-potiron.png · déposer dans diabete/ ET cardio/."],
+    ["Chou","Un demi-chou vert clair montrant les nervures des feuilles serrées en coupe.",F,"Fichier cible : aliment-chou.png · déposer dans diabete/ ET cardio/."],
   ]
 },
 {
-  key:'m2-fru', title:'Module 2 — Garde-manger : fruits', badge:F, desc:"",
+  key:'gm-situations', title:'Garde-manger — Aliments-situations (population MSP, diabète + cardio)', badge:F,
+  desc:"Aliments concrets ajoutés pour composer des repas-types réels de la population suivie (Maghreb, Afrique, Antilles) et illustrer les repères sel / graisses. Même famille graphique (contour fin brun, 2-3 aplats). Chaque PNG déposé DANS LES DEUX dossiers (diabete/ ET cardio/). Les féculents culturels déjà générés côté diabète (manioc/attiéké, igname, banane plantain, couscous complet, dattes) sont juste COPIÉS vers cardio/ — pas de nouveau prompt.",
   items:[
-    ["Pomme","Une pomme entière avec une petite feuille.",F,"Fichier cible : aliment-pomme."],
-    ["Banane mûre","Une banane mûre, jaune.",F,"Fichier cible : aliment-banane."],
-    ["Dattes","Deux ou trois dattes.",F,"Fichier cible : aliment-dattes."],
-    ["Pastèque","Une tranche triangulaire de pastèque avec quelques pépins.",F,"Fichier cible : aliment-pasteque."],
-  ]
-},
-{
-  key:'m2-leg', title:'Module 2 — Garde-manger : légumes', badge:F, desc:"",
-  items:[
-    ["Carotte","Une carotte entière avec un bout de fane, et une rondelle.",F,"Fichier cible : aliment-carotte."],
-    ["Brocoli","Un bouquet de brocoli.",F,"Fichier cible : aliment-brocoli."],
-  ]
-},
-{
-  key:'m2-lait', title:'Module 2 — Garde-manger : laitages', badge:F, desc:"",
-  items:[
-    ["Yaourt nature","Un pot de yaourt nature ouvert, surface lisse.",F,"Fichier cible : aliment-yaourt."],
-  ]
-},
-{
-  key:'m2-prot', title:'Module 2 — Garde-manger : protéines', badge:F, desc:"",
-  items:[
-    ["Poulet","Un filet / blanc de poulet cuit, ou un pilon.",F,"Fichier cible : aliment-poulet."],
-    ["Œuf","Un œuf dur coupé en deux (jaune visible), à côté d'un œuf entier.",F,"Fichier cible : aliment-oeuf."],
-    ["Sardine","Une ou deux sardines entières stylisées, corps argenté-bleuté en aplats.",F,"Fichier cible : aliment-sardine."],
-    ["Saumon","Un pavé de saumon à chair rose-orangé, fines lignes blanches rendues en aplats.",F,"Fichier cible : aliment-saumon."],
-  ]
-},
-{
-  key:'m2-mg', title:'Module 2 — Garde-manger : matières grasses', badge:F, desc:"",
-  items:[
-    ["Avocat","Un demi-avocat avec son noyau, à côté d'une moitié coupée, chair vert clair.",F,"Fichier cible : aliment-avocat."],
-    ["Huile d'olive","Une petite burette versant un mince filet d'huile d'olive dorée.",F,"Fichier cible : aliment-huile-olive."],
-    ["Noix","Deux cerneaux de noix et une noix entière en coquille.",F,"Fichier cible : aliment-noix."],
-  ]
-},
-{
-  key:'m3', title:'Module 3 — Activité physique', badge:S,
-  desc:"Vignettes d'activités restant à générer. MÊME personnage que les vignettes déjà faites : silhouette en aplat plein bleu-canard, tête ronde détachée sans visage ; accessoires en aplats/traits épais (jamais de filaire fin ni de gris), un seul accent terracotta.",
-  items:[
-    ["Activité — danser","Une personne très simplifiée qui danse (posture dynamique, bras en mouvement).",S,"Fichier cible : activite-danse."],
-    ["Activité — laver la voiture","Le lavage de la voiture : une personne avec une éponge devant une voiture stylisée.",S,"Fichier cible : activite-voiture."],
-  ]
-},
-{
-  key:'m8', title:'Module 8 — Hypoglycémie', badge:S,
-  desc:"Signes précoces (vignettes ~100 px) + resucrages (~44 px). Gros, simple, inratable. À générer.",
-  items:[
-    ["Signe — tremblements","Une main qui tremble, stylisée (petites lignes de tremblement). Signe d'hypoglycémie.",S,"Fichier cible : signe-tremblements."],
-    ["Signe — sueurs","Un front / visage minimal avec des gouttes de sueur. Sans expression cartoon.",S,"Fichier cible : signe-sueurs."],
-    ["Signe — palpitations","Un cœur avec un petit éclair / une pulsation rapide, symbolisant les palpitations.",S,"Fichier cible : signe-palpitations."],
-    ["Signe — faim soudaine","Un estomac / ventre stylisé signalant la faim.",S,"Fichier cible : signe-faim-soudaine."],
-    ["Signe — irritabilité","Un visage neutre très minimal avec de fines lignes de tension (irritabilité), sans smiley ni grimace cartoon.",S,"Fichier cible : signe-irritabilite."],
-    ["Signe — vision trouble","Un œil stylisé avec une zone de flou / de fines lignes douces devant, évoquant une vision trouble passagère. Sobre, non clinique.",S,"Fichier cible : signe-vision-trouble."],
-    ["Signe — difficulté à se concentrer","Une tête stylisée de profil avec, au-dessus, quelques fins traits en pointillés qui se dispersent (pensées qui s'éparpillent). Sobre, sans spirale ni expression.",S,"Fichier cible : signe-difficulte-a-se-concentrer."],
-    ["Resucrage — jus de fruit","Un petit verre ou une briquette de jus de fruit (resucrage rapide).",S,"Fichier cible : resucrage-jus."],
-    ["Resucrage — morceaux de sucre","Deux ou trois morceaux de sucre (≈15 g).",S,"Fichier cible : resucrage-sucre."],
-    ["Resucrage — comprimés de glucose","Un tube / des comprimés de glucose.",S,"Fichier cible : resucrage-comprimes."],
-    ["Resucrage — soda classique","Un verre de soda classique (sucré) avec quelques bulles, ou une canette générique sans marque ni texte.",S,"Fichier cible : resucrage-soda. « Classique » — jamais light/zéro."],
-  ]
-},
-{
-  key:'tabac-tech', title:'TABAC — Substituts : techniques de prise', badge:T,
-  desc:"Seul vrai manque d'illustration du thème tabac : l'encart « Technique de prise — <forme> » du module Substituts (bandeau 16:7, placeholder documenté dans DESIGN_REFONTE). Une illustration par forme, montrant le BON geste. Contenu tiré des bonnes pratiques validées (2026-07-01).",
-  items:[
-    ["Patch — technique","Le bon geste d'application d'un patch de nicotine : une main pose un patch bien à plat sur le haut du bras ou l'épaule. Évoquer le matin au réveil (petit soleil discret) et l'idée de changer d'emplacement chaque jour (deux sites suggérés, ou une flèche douce vers un autre endroit). Geste calme, patch qui adhère bien à la peau.",T,"Erreurs à ne PAS illustrer comme correctes : reposer au même endroit, attendre un effet immédiat."],
-    ["Gomme — technique","La bonne technique de la gomme de nicotine, en deux étapes lisibles de gauche à droite : (1) mâcher lentement quelques fois ; (2) « garer » la gomme contre l'intérieur de la joue et la laisser au repos (bouche/joue stylisée montrant la gomme placée contre la paroi interne). Suggérer la lenteur et les pauses — surtout pas un mâchage continu et rapide.",T,"Contraste possible : mâchage rapide = à éviter (nicotine avalée)."],
-    ["Pastille — technique","La bonne technique de la pastille de nicotine : laisser une pastille se dissoudre lentement sous la langue ou contre la joue (bouche stylisée, pastille en train de fondre). Idée de patience et de lente dissolution — ne pas croquer.",T],
-    ["Comprimé sublingual — technique","La bonne technique du comprimé sublingual : placer le comprimé SOUS la langue et le laisser fondre (bouche stylisée montrant clairement l'emplacement sous la langue). Idée de dissolution lente, sans croquer ni avaler.",T],
-    ["Spray buccal — technique","La bonne technique du spray buccal : un petit flacon spray dirigé vers l'INTÉRIEUR de la joue pour y pulvériser (viser la face interne de la joue, jamais le fond de la gorge). Bouche stylisée, fine pulvérisation orientée vers la paroi interne de la joue.",T,"Geste à éviter : viser le fond de la gorge / inhaler."],
-  ]
-},
-{
-  key:'tabac-benef', title:'TABAC — Ce que l\'arrêt répare (vignettes d\'organes)', badge:TQ,
-  desc:"Vignettes du panneau de détail par zone du module Bénéfices (S5). Une vignette = un organe qui va mieux — toujours l'état positif, jamais l'organe malade.",
-  items:[
-    ["Poumons qui respirent","Une paire de poumons stylisés, clairs et aérés, avec de fines ramifications bronchiques apaisées et quelques discrets signes d'air frais qui circule (petites volutes claires entrantes). État sain et léger, sensation de souffle retrouvé.",TQ,"Fichier cible : public/illustrations/tabac/benef-poumons.png"],
-    ["Cœur apaisé","Un cœur humain stylisé, sobre et digne, au rythme calme (une fine ligne de pouls régulière et douce passant derrière), vaisseaux qui en partent dégagés. Aucune alerte, aucun éclair.",TQ,"Fichier cible : public/illustrations/tabac/benef-coeur.png"],
-    ["Sang mieux oxygéné","Un segment de vaisseau sanguin stylisé vu en coupe longitudinale, lumière bien ouverte, dans lequel circulent des globules ronds accompagnés de petites bulles d'oxygène claires. Circulation fluide, propre.",TQ,"Fichier cible : public/illustrations/tabac/benef-sang.png"],
-    ["Goût & odorat retrouvés","Un nez et une bouche stylisés de profil, neutres et dignes, avec de fines lignes d'arômes montant d'un fruit ou d'un plat suggéré à côté. Idée de saveurs et d'odeurs qui reviennent.",TQ,"Fichier cible : public/illustrations/tabac/benef-bouche.png"],
-    ["Cerveau protégé","Un cerveau stylisé calme, entouré d'un fin halo doux de protection, avec un réseau de vaisseaux apaisés qui l'irrigue. Aucune spirale d'angoisse, aucun éclair.",TQ,"Fichier cible : public/illustrations/tabac/benef-cerveau.png"],
-    ["Jambes qui marchent","Deux jambes stylisées en pleine marche d'un pas ample et facile, avec un fin trait de trajectoire régulier au sol. Énergie tranquille, aisance.",TQ,"Fichier cible : public/illustrations/tabac/benef-jambes.png"],
-    ["Peau plus lumineuse","Un visage stylisé neutre et digne de trois quarts (sans expression marquée), au teint uni et clair, avec quelques fins rayons doux suggérant l'éclat retrouvé. Pas de comparatif avant/après.",TQ,"Fichier cible : public/illustrations/tabac/benef-peau.png"],
+    ["Thon en boîte","Une boîte de conserve ronde ouverte laissant voir des miettes de thon clair, ou un petit tas de thon émietté à côté de la boîte. Idée d'une conserve (souvent salée).",F,"Fichier cible : aliment-thon.png · déposer dans diabete/ ET cardio/."],
+    ["Merguez / viande hachée","Deux merguez grillées rouge-brun, allongées et légèrement fripées, côte à côte. Registre neutre, appétissant mais sobre.",F,"Fichier cible : aliment-merguez.png · déposer dans diabete/ ET cardio/."],
+    ["Fromage","Une part triangulaire de fromage à pâte pressée (type comté/edam) avec sa croûte, ou deux tranches. Aplat jaune-crème uni.",F,"Fichier cible : aliment-fromage.png · déposer dans diabete/ ET cardio/."],
+    ["Féta","Un cube et deux ou trois morceaux de féta blanche, mate, arêtes nettes.",F,"Fichier cible : aliment-feta.png · déposer dans diabete/ ET cardio/."],
+    ["Olives","Une petite coupelle avec des olives vertes et noires mêlées, formes ovales simples.",F,"Fichier cible : aliment-olives.png · déposer dans diabete/ ET cardio/."],
+    ["Houmous","Un petit bol de houmous crème beige lissé, un mince filet d'huile d'olive et un pois chiche entier posé au centre.",F,"Fichier cible : aliment-houmous.png · déposer dans diabete/ ET cardio/."],
+    ["Pois cassés / niébé","Un petit tas de pois cassés jaune-orangé (ou de niébé, haricots à œil noir) : masse en aplat uni, seulement une dizaine de grains suggérés en surface — pas de texture granuleuse.",F,"Fichier cible : aliment-pois-casses.png · déposer dans diabete/ ET cardio/."],
   ]
 },
 {
   key:'tabac-vf', title:'TABAC — Vrai ou faux ? (une vignette par idée reçue)', badge:TQ,
   desc:"Vignettes des cartes du module Vrai ou faux (S6). La vignette illustre l'affirmation sans la juger — jamais de symbole moqueur, jamais de croix rouge sur une personne.",
   items:[
-    ["« Fumer me détend »","Une tasse fumante posée près d'une fenêtre, avec des volutes calmes qui montent, et à côté une cigarette éteinte dans un cendrier. Ambiance pause, ambiguë et paisible, sans jugement.",TQ,"Fichier cible : public/illustrations/tabac/vf-detente.png"],
-    ["Substituts et cœur","Un patch de nicotine stylisé et un cœur humain stylisé côte à côte, reliés par une fine ligne neutre, le cœur serein. Aucun symbole d'alerte.",TQ,"Fichier cible : public/illustrations/tabac/vf-substituts-coeur.png"],
-    ["« Trop tard pour moi »","Une personne d'âge mûr stylisée (canne discrète ou posture posée) qui ouvre grand une fenêtre vers un ciel clair. Idée : ça vaut la peine à tout âge.",TQ,"Fichier cible : public/illustrations/tabac/vf-trop-tard.png"],
-    ["« Quelques cigarettes seulement »","Trois cigarettes stylisées alignées, dont émane malgré tout un long fil de fumée qui serpente loin. Sobre, factuel, sans dramatisation.",TQ,"Fichier cible : public/illustrations/tabac/vf-petit-fumeur.png"],
-    ["Light & tabac à rouler","Une cigarette manufacturée fine dite « light » et une cigarette roulée côte à côte, strictement au même niveau, avec la même fumée. Idée d'équivalence.",TQ,"Fichier cible : public/illustrations/tabac/vf-light-roule.png"],
-    ["Poids et arrêt","Une balance stylisée à l'équilibre, avec d'un côté une pomme et de l'autre une paire de chaussures de marche. Ton neutre et rassurant, aucun corps représenté.",TQ,"Fichier cible : public/illustrations/tabac/vf-poids.png"],
-    ["« Une question de volonté »","Un cerveau stylisé dont une zone est entourée de petits récepteurs en forme de serrures, avec une main tendue qui apporte une clé. Idée : mécanisme biologique + aide, pas un bras de fer.",TQ,"Fichier cible : public/illustrations/tabac/vf-volonte.png"],
-    ["« Les patchs ne marchent pas »","Un patch stylisé en quarts dont un quart supplémentaire vient s'ajouter (geste d'ajustement), avec une petite jauge qui se remplit doucement. Idée de réglage, pas d'échec.",TQ,"Fichier cible : public/illustrations/tabac/vf-patch-marche-pas.png"],
-    ["Un écart n'efface rien","Un long chemin stylisé déjà parcouru avec un petit pas de côté, puis le chemin qui continue vers l'avant. Le tracé parcouru reste bien visible.",TQ,"Fichier cible : public/illustrations/tabac/vf-faux-pas.png"],
-    ["Ça commence en 20 minutes","Une montre ou horloge stylisée douce à côté d'un cœur au rythme calme, reliés par une fine ligne. Idée d'un bénéfice immédiat.",TQ,"Fichier cible : public/illustrations/tabac/vf-20min.png"],
-    ["Patch + gomme","Un patch stylisé sur un bras et une gomme/pastille stylisée près d'une bouche neutre, réunis dans une même composition harmonieuse. Idée d'association possible.",TQ,"Fichier cible : public/illustrations/tabac/vf-combinaison.png"],
-    ["Plusieurs tentatives","Un escalier stylisé montant, dont certaines marches portent une petite trace de pas ; une silhouette continue de monter. Chaque marche compte, aucune n'est barrée.",TQ,"Fichier cible : public/illustrations/tabac/vf-tentatives.png"],
-    ["L'envie est une vague","Une vague stylisée douce qui monte puis retombe, avec une petite silhouette stable qui la regarde passer depuis le rivage. Calme, non menaçant.",TQ,"Fichier cible : public/illustrations/tabac/vf-vague.png"],
-    ["Vapoteuse vs cigarette","Une vapoteuse stylisée et une cigarette allumée côte à côte : la cigarette dégage une fumée dense et chargée, la vapoteuse une vapeur nettement plus légère. Factuel, sans promotion.",TQ,"Fichier cible : public/illustrations/tabac/vf-vapoteuse.png · Carte active, contenu à revalider (Thibault)."],
-    ["Réduire ou arrêter","Un cendrier qui se vide progressivement en trois temps suggérés de gauche à droite, avec un patch qui apparaît au deuxième temps. Idée d'étape accompagnée.",TQ,"Fichier cible : public/illustrations/tabac/vf-reduire.png · Carte active, contenu à revalider (Thibault)."],
-  ]
-},
-{
-  key:'tabac-outils', title:'TABAC — Stratégies & outils (14 outils du sevrage + vapoteuse)', badge:TQ,
-  desc:"Vignettes de la boîte à outils anti-craving du sevrage tabagique, plus la fiche substitut vapoteuse. Une vignette par outil, ton pratique et neutre, jamais un personnage en échec.",
-  items:[
-    ["La vague et les 4D","Une vague stylisée douce qui monte et retombe, surplombée de quatre petits pictogrammes alignés et sereins : un sablier, une flèche qui bifurque, un cercle de respiration, un verre d'eau. Composition calme, aucun personnage en difficulté.",TQ,"Fichier cible : public/illustrations/tabac/outil-vague-4d.png"],
-    ["Plans SI… ALORS…","Deux cases stylisées reliées par une grande flèche simple : dans la première une cigarette proposée, dans la seconde un verre d'eau et une main qui décline poliment. Idée d'itinéraire décidé à l'avance, ton neutre.",TQ,"Fichier cible : public/illustrations/tabac/outil-si-alors.png"],
-    ["Bouger 10 minutes","Une silhouette stylisée qui marche d'un bon pas dans un escalier ou une rue, trait de trajectoire dynamique mais doux, petite horloge discrète indiquant une courte durée. Énergie positive, pas de performance sportive.",TQ,"Fichier cible : public/illustrations/tabac/outil-bouger.png"],
-    ["Respirer pour redescendre","Un torse ou visage stylisé de profil, serein, avec un cercle concentrique qui s'agrandit doucement devant lui et de fines volutes d'air. Évoquer une respiration lente et guidée, aucune fumée.",TQ,"Fichier cible : public/illustrations/tabac/outil-respiration.png"],
-    ["Surfer sur l'envie","Une petite silhouette stable et détendue debout sur une planche, glissant sur une vague douce qui redescend. La vague est ronde, non menaçante ; sensation d'équilibre tranquille.",TQ,"Fichier cible : public/illustrations/tabac/outil-surfer.png"],
-    ["Faire place nette","Une boîte ou un tiroir ouvert dans lequel on range cendrier, briquet et paquet, avec une surface de table nette et claire au premier plan. Idée d'espace dégagé et apaisé, sans geste de colère.",TQ,"Fichier cible : public/illustrations/tabac/outil-place-nette.png"],
-    ["Casser la routine","Une tasse de café déplacée d'un plateau vers un rebord de fenêtre lumineux, avec un trajet en pointillés entre les deux. Idée de rituel déplacé, ambiance douce du matin, aucune cigarette.",TQ,"Fichier cible : public/illustrations/tabac/outil-routine.png"],
-    ["Occuper mains et bouche","Nature morte sobre : un chewing-gum, une petite balle souple et un grand verre d'eau posés côte à côte, une main détendue s'approchant de la balle. Objets simples du quotidien.",TQ,"Fichier cible : public/illustrations/tabac/outil-mains-bouche.png"],
-    ["Une semaine d'observation","Un petit carnet ouvert avec des lignes d'écriture suggérées et quelques coches d'horaires, un crayon posé dessus. Idée d'observation bienveillante, pas de comptes ni de reproches.",TQ,"Fichier cible : public/illustrations/tabac/outil-journal.png"],
-    ["Ma phrase de refus","Deux silhouettes stylisées en contexte convivial ; l'une tend un paquet, l'autre décline d'un geste ouvert et calme de la main, un verre sans alcool dans l'autre main. Aucune tension entre les personnages.",TQ,"Fichier cible : public/illustrations/tabac/outil-refus.png"],
-    ["La tirelire du non-fumeur","Une tirelire ou un bocal transparent où s'accumulent des pièces, avec à côté un petit plaisir suggéré (livre, tasse, place de cinéma). Idée de récompense méritée, ton chaleureux.",TQ,"Fichier cible : public/illustrations/tabac/outil-recompense.png"],
-    ["La liste anti-ennui","Une liste stylisée aimantée sur un réfrigérateur, avec des pictogrammes en regard des lignes : téléphone, plante arrosée, casque audio, étirement. Idée de choix disponibles, joyeux et accessibles.",TQ,"Fichier cible : public/illustrations/tabac/outil-anti-ennui.png"],
-    ["Le plan de secours","Un chemin déjà long parcouru avec un petit pas de côté, et juste après trois petits pictogrammes de reprise : une poubelle, un téléphone, une liste de raisons. Le chemin repart clairement vers l'avant.",TQ,"Fichier cible : public/illustrations/tabac/outil-faux-pas.png"],
-    ["Traiter le manque","Un patch stylisé et une gomme/pastille réunis dans une composition simple, avec une fine courbe régulière en arrière-plan évoquant un niveau stable. Idée de fond stable + réponse ponctuelle, aucun dosage visible.",TQ,"Fichier cible : public/illustrations/tabac/outil-substituts.png"],
-    ["Vapoteuse — mode d'emploi","Une vapoteuse stylisée tenue calmement, dégageant une vapeur légère et discrète, avec une petite horloge suggérant des bouffées lentes et espacées. Factuel et neutre, sans esthétisation ni promotion. Note : outil de réduction des risques — à revalider (Thibault).",TQ,"Fichier cible : public/illustrations/tabac/substitut-vapoteuse.png"],
+    ["Poids & bénéfice pour le cœur","Une balance stylisée : d'un côté quelques poids ronds (les kilos), de l'autre un cœur serein au rythme calme qui reste apaisé quel que soit le plateau. Idée : le cœur gagne au change même si le poids monte. Aucun corps représenté, aucun jugement.",TQ,"Fichier cible : public/illustrations/tabac/vf-poids-coeur.png · « Prendre du poids à l'arrêt annule le bénéfice pour le cœur » (faux)."],
+    ["Cigarette vs quelques kilos","Une balance stylisée comparant, d'un côté, une cigarette chargée d'un épais panache de fumée qui pèse lourd et fait plonger le plateau, et de l'autre quelques petits kilos légers qui remontent. Idée : aucun kilo ne pèse aussi lourd que le tabac. Factuel, sans dramatiser.",TQ,"Fichier cible : public/illustrations/tabac/vf-fumer-mince.png · « Mieux vaut fumer que prendre quelques kilos » (faux)."],
+    ["Bouger d'abord, pas le régime","Une paire de chaussures de marche et un grand verre d'eau au premier plan, une assiette équilibrée simple et discrète en arrière-plan ; aucun pèse-personne, aucune restriction. Idée : bouger et s'hydrater d'abord, le poids plus tard. Ton rassurant.",TQ,"Fichier cible : public/illustrations/tabac/vf-poids-regime.png · « Il faut se mettre au régime en arrêtant » (faux : maintenir, pas maigrir)."],
+    ["La vapoteuse, une option d'aide","Une vapoteuse stylisée alignée à côté d'un patch et d'une gomme, comme les branches d'un même éventail d'aides ; le patch et la gomme légèrement au premier plan (premier choix), la vapoteuse un peu en retrait mais présente. Idée : une option parmi les aides, à discuter. Factuel, sans promotion.",TQ,"Fichier cible : public/illustrations/tabac/vf-vape-aide.png · « La vapoteuse peut aider à arrêter » (vrai, avec nuance)."],
+    ["Le piège du double usage","Une vapoteuse et une cigarette allumée utilisées ensemble : la fumée dense et sombre de la cigarette domine nettement la vapeur légère de la vapoteuse et l'engloutit. Idée : tant que la cigarette reste, le bénéfice n'existe pas. Sobre, factuel.",TQ,"Fichier cible : public/illustrations/tabac/vf-double-usage.png · « Vapoter en continuant à fumer, c'est déjà bon » (faux)."],
+    ["La vapeur n'est pas que de l'eau","Un nuage de vapeur de vapoteuse stylisé d'où émergent quelques fines particules et gouttelettes distinctes en suspension (pas seulement de l'eau pure), posé à côté d'une simple goutte d'eau claire pour le contraste. Factuel, sans dramatisation ni symbole d'alerte.",TQ,"Fichier cible : public/illustrations/tabac/vf-vapeur-eau.png · « La vapeur, c'est juste de la vapeur d'eau » (faux)."],
   ]
 },
 {
