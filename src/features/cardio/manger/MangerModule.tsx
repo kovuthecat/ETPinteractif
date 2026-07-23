@@ -12,6 +12,7 @@ import {
   REPERES_ALIMENTS,
   REPERE_PAR_ALIMENT,
   type AlimentPlateau,
+  type CategoriePlateau,
   type RepereAliment,
 } from './data';
 import styles from './MangerModule.module.css';
@@ -166,6 +167,12 @@ function RepereCard({ repere, selected, onSelect }: RepereCardProps) {
 export default function MangerModule({ shell }: ModuleProps) {
   const [onglet, setOnglet] = useState<Onglet>('familles');
   const [repereSelectionne, setRepereSelectionne] = useState<string | null>(null);
+  // Garde-manger à chips de catégorie (même patron que le module diabète, `AlimentationModule`
+  // `familyTabs`) — 49 aliments ne tiennent plus en une colonne empilée lisible (correction
+  // Thibault 2026-07-23, après l'enrichissement légumes/situations/diversité de `data.ts`).
+  // Défaut « légumes » : c'est le rayon qui vient d'être enrichi (2 → 12 items) et que la
+  // pédagogie de l'onglet Familles met en avant (« moitié de l'assiette en légumes »).
+  const [categorieGardeManger, setCategorieGardeManger] = useState<CategoriePlateau>('legumes');
 
   // ── Assiette : un aliment concret par catégorie-cœur (repFood) + proportions continues (pct,
   // réglées au drag des frontières) — les deux mécaniques restent indépendantes, comme demandé. ──
@@ -388,33 +395,39 @@ export default function MangerModule({ shell }: ModuleProps) {
           <div className={styles.assietteLayout}>
             <aside className={`card ${styles.gardeManger}`} aria-label="Le garde-manger">
               <p className={styles.gardeMangerTitre}>Le garde-manger — glissez ou touchez pour ajouter à l'assiette</p>
-              {CATEGORIES_PLATEAU.map((cat) => {
-                const foods = ALIMENTS_PLATEAU.filter((a) => a.categorie === cat.id);
-                if (foods.length === 0) return null;
-                return (
-                  <div key={cat.id} className={styles.categorieBloc}>
-                    <p className={styles.categorieLabel} style={{ color: `var(${cat.colorVar})` }}>
+              <div className={styles.categorieChips} aria-label="Catégories du garde-manger">
+                {CATEGORIES_PLATEAU.map((cat) => {
+                  const active = categorieGardeManger === cat.id;
+                  return (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      className={active ? `${styles.categorieChip} ${styles.categorieChipActive}` : styles.categorieChip}
+                      style={active ? undefined : { borderColor: `var(${cat.colorVar})`, color: `var(${cat.colorVar})` }}
+                      aria-pressed={active}
+                      onClick={() => setCategorieGardeManger(cat.id)}
+                    >
                       {cat.label}
-                    </p>
-                    <div className={styles.categorieGrille}>
-                      {foods.map((food) => (
-                        <button
-                          key={food.id}
-                          type="button"
-                          className={styles.alimentBtn}
-                          draggable
-                          onDragStart={dragStartAliment(food.id)}
-                          onClick={() => assignerAliment(food)}
-                          aria-label={`Ajouter ${food.name} à l'assiette`}
-                        >
-                          <IllustrationSlot id={`aliment-${food.id}`} label={food.name} shape="rounded" size={56} />
-                          <span className={styles.alimentNom}>{food.name}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
+                    </button>
+                  );
+                })}
+              </div>
+              <div className={styles.categorieGrille}>
+                {ALIMENTS_PLATEAU.filter((a) => a.categorie === categorieGardeManger).map((food) => (
+                  <button
+                    key={food.id}
+                    type="button"
+                    className={styles.alimentBtn}
+                    draggable
+                    onDragStart={dragStartAliment(food.id)}
+                    onClick={() => assignerAliment(food)}
+                    aria-label={`Ajouter ${food.name} à l'assiette`}
+                  >
+                    <IllustrationSlot id={`aliment-${food.id}`} label={food.name} shape="rounded" size={56} />
+                    <span className={styles.alimentNom}>{food.name}</span>
+                  </button>
+                ))}
+              </div>
             </aside>
 
             <div className={styles.plateauCol}>

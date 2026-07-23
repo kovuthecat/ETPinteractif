@@ -188,23 +188,45 @@
   color: var(--color-text-soft);
 }
 
-.categorieBloc {
-  margin-bottom: var(--space-md);
+/* --- Chips de catégorie (correction 2026-07-23, même patron que le module diabète
+   `AlimentationModule.familyTabs`) : filtrent la grille à une seule catégorie à la fois — les
+   49 aliments ne tiennent plus en une colonne empilée lisible. Inactif = pastille creuse teintée
+   de la `colorVar` de la catégorie (identification rapide) ; actif = pastille pleine neutre foncée,
+   même langage que `.tabActive` plus haut dans ce fichier. */
+
+.categorieChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 var(--space-md);
 }
 
-.categorieBloc:last-child {
-  margin-bottom: 0;
-}
-
-.categorieLabel {
-  margin: 0 0 6px;
+.categorieChip {
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--color-line);
+  background: var(--color-surface);
   font: 600 12.5px 'Work Sans', sans-serif;
+  cursor: pointer;
+}
+
+.categorieChip:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
+}
+
+.categorieChipActive {
+  background: var(--color-text);
+  color: var(--color-bg);
+  border-color: var(--color-text);
 }
 
 .categorieGrille {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
   gap: 6px;
+  max-height: 420px;
+  overflow-y: auto;
 }
 
 .alimentBtn {
