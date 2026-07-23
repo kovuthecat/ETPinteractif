@@ -1,10 +1,19 @@
-import { useState } from 'react';
-import { ArrowRight, Flame, RotateCcw } from 'lucide-react';
+import { useRef, useState } from 'react';
+import type { DragEvent, PointerEvent as ReactPointerEvent } from 'react';
+import { Beef, Carrot, Flame, RotateCcw, Wheat } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import ModuleShell from '../../../components/ModuleShell';
 import FicheOverlay from '../../../components/FicheOverlay';
 import IllustrationSlot from '../components/IllustrationSlot';
-import { ALIMENTS_PLATEAU, CATEGORIES_PLATEAU, REPERES_ALIMENTS, type AlimentPlateau, type RepereAliment } from './data';
+import {
+  ALIMENTS_PLATEAU,
+  CATEGORIES_PLATEAU,
+  REPERES_ALIMENTS,
+  REPERE_PAR_ALIMENT,
+  type AlimentPlateau,
+  type RepereAliment,
+} from './data';
 import styles from './MangerModule.module.css';
 
 /**
@@ -22,11 +31,26 @@ import styles from './MangerModule.module.css';
  * - Onglet **Familles** : deux colonnes (amis des artères / à limiter), détail au clic d'un
  *   repère (pastille de feu + texte court).
  * - Onglet **Assiette** : garde-manger (`IllustrationSlot aliment-<id>`, un item par asset réel
- *   dans `public/illustrations/cardio/`) → assiette conique ½ légumes / ¼ féculents / ¼ protéines
+ *   dans `public/illustrations/cardio/`) → camembert ½ légumes / ¼ féculents / ¼ protéines
  *   + analyse d'équilibre + repères sel/gras qualitatifs.
  * - Fiche « Mon assiette » (`FicheOverlay`) : photographie de l'assiette composée par le patient.
- * - Renvois inline 8→4 (sel → tension) et 8→5 (gras → cholestérol/LDL), toujours visibles (les
- *   deux onglets partagent le même pied de page — pas de logique conditionnelle superflue).
+ * - Pas de renvoi inline inter-modules (correction Thibault 2026-07-23) : le soignant navigue
+ *   lui-même.
+ *
+ * **Assiette repensée (correction Thibault 2026-07-23)** — combine les deux mécaniques du
+ * camembert « Proportion » et du plateau « Repas complet » du module diabète (`AlimentationModule`,
+ * défis ④ et ★) plutôt que de choisir l'une ou l'autre : chaque catégorie-cœur (légumes/féculents/
+ * protéines) est représentée par **un aliment concret choisi** (glissé-déposé depuis le
+ * garde-manger, ou clic en repli — son image s'affiche dans sa part, ce que l'ancien système de
+ * simples compteurs ne montrait jamais), et les **proportions elles-mêmes se règlent en glissant
+ * les 3 frontières du camembert** (correction Thibault 2026-07-23 : une poignée par paire de
+ * catégories voisines — pl/lf/fp, `boundaryNeighbors` — généralise la géométrie à 2 frontières
+ * du défi « Proportion » du diabète, qui fixait le point de fermeture du cercle à un angle de
+ * départ constant). Les « extras » (matières grasses/fruits/laitiers) restent une simple liste
+ * de chips, glissés ou cliqués, hors du modèle ½ · ¼ · ¼.
+ * L'analyse d'équilibre pioche désormais ses messages positifs/de vigilance directement dans
+ * `REPERES_ALIMENTS` (onglet Familles, via `REPERE_PAR_ALIMENT`) plutôt que d'écrire un second
+ * texte qui dirait la même chose autrement.
  */
 
 type Onglet = 'familles' | 'assiette';
@@ -36,8 +60,6 @@ const ONGLETS: { id: Onglet; label: string }[] = [
   { id: 'assiette', label: 'Composer mon assiette' },
 ];
 
-/** Plafond par catégorie-cœur (proto `Math.min(8, …)`) — évite un camembert qui ne bouge plus. */
-const PLATE_MAX_PAR_CATEGORIE = 8;
 /** Nombre d'« extras » (matières grasses/fruits/laitiers) conservés dans la liste, proto `.slice(-6)`. */
 const EXTRAS_MAX = 6;
 /** Tolérance (points de %) autour du modèle ½ · ¼ · ¼ pour considérer l'assiette équilibrée (proto ligne 883). */
@@ -49,9 +71,78 @@ const SEUIL_PROTEINES_HAUT = 40;
 const SEUIL_FECULENTS_HAUT = 40;
 
 type CategorieCoeur = 'legumes' | 'feculents' | 'proteines';
-type PlateCounts = Record<CategorieCoeur, number>;
 
-const PLATE_COUNTS_VIDE: PlateCounts = { legumes: 0, feculents: 0, proteines: 0 };
+/** Ordre du camembert = ordre de balayage des angles (légumes → féculents → protéines), même
+ *  ordre que la légende/les couleurs sémantiques déjà en place. */
+const CORE_CATEGORIES: { id: CategorieCoeur; label: string; colorVar: string; Icon: LucideIcon }[] = [
+  { id: 'legumes', label: 'Légumes', colorVar: '--color-confort-strong', Icon: Carrot },
+  { id: 'feculents', label: 'Féculents', colorVar: '--color-nav', Icon: Wheat },
+  { id: 'proteines', label: 'Protéines', colorVar: '--color-toxique', Icon: Beef },
+];
+
+/** Les 3 frontières du camembert, une entre chaque paire de catégories voisines (cyclique) :
+ *  `pl` (protéines → légumes, le point de « fermeture » du cercle), `lf` (légumes → féculents),
+ *  `fp` (féculents → protéines). Les 3 sont draggables indépendamment (correction Thibault
+ *  2026-07-23, « 3ᵉ poignée » — généralise le patron à 2 frontières du diabète, qui fixait le
+ *  point de fermeture à `ANGLE_START`) : déplacer l'une ne redistribue qu'entre ses 2 catégories
+ *  voisines, jamais la 3ᵉ. */
+type Boundary = 'pl' | 'lf' | 'fp';
+const BOUNDARY_ORDER: Boundary[] = ['pl', 'lf', 'fp'];
+/** Départ « midi », parts égales (120° chacune) — même repère que l'ancien camembert 2-frontières. */
+const ANGLES_DEFAUT: Record<Boundary, number> = { pl: -90, lf: -90 + 120, fp: -90 + 240 };
+
+/** Les 2 frontières voisines d'une frontière donnée, dans l'ordre cyclique (prev → b → next). */
+function boundaryNeighbors(b: Boundary): { prev: Boundary; next: Boundary } {
+  const i = BOUNDARY_ORDER.indexOf(b);
+  return { prev: BOUNDARY_ORDER[(i + 2) % 3], next: BOUNDARY_ORDER[(i + 1) % 3] };
+}
+
+/** Catégorie NON touchée par le drag d'une frontière (les 2 autres sont ses voisines directes).
+ *  Sert à borner le drag par soustraction (`1 - fracCatégorieIntacte`) plutôt que par différence
+ *  d'angles : si la catégorie intacte est déjà à 0 % (ses 2 frontières coïncident), la différence
+ *  d'angles brute est ambiguë (0° ou 360° ? indiscernable), alors que sa fraction déjà connue
+ *  (calculée dans l'autre sens, non ambiguë) ne l'est pas. */
+const UNTOUCHED_BY_BOUNDARY: Record<Boundary, CategorieCoeur> = {
+  pl: 'feculents',
+  lf: 'proteines',
+  fp: 'legumes',
+};
+
+function pointOnCircle(a: number, r: number): [number, number] {
+  const rad = (a * Math.PI) / 180;
+  return [100 + r * Math.cos(rad), 100 + r * Math.sin(rad)];
+}
+
+function unwrapAngle(angle: number, from: number): number {
+  const delta = (((angle - from) % 360) + 360) % 360;
+  return from + delta;
+}
+
+/** Arc (fraction 0-1) balayé en sens horaire de `from` à `to` — toujours positif, c'est la
+ *  convention utilisée pour dériver les 3 proportions à partir des 3 angles de frontière. */
+function fracBetween(from: number, to: number): number {
+  return (unwrapAngle(to, from) - from) / 360;
+}
+
+function angleFromPointer(svg: SVGSVGElement, e: { clientX: number; clientY: number }): number {
+  const pt = svg.createSVGPoint();
+  pt.x = e.clientX;
+  pt.y = e.clientY;
+  const ctm = svg.getScreenCTM();
+  const loc = ctm ? pt.matrixTransform(ctm.inverse()) : pt;
+  return Math.atan2(loc.y - 100, loc.x - 100) * (180 / Math.PI);
+}
+
+function allowDrop(e: DragEvent<HTMLElement>): void {
+  e.preventDefault();
+}
+
+function dragStartAliment(id: string) {
+  return (e: DragEvent<HTMLElement>) => {
+    e.dataTransfer.setData('text/plain', id);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+}
 
 interface RepereCardProps {
   repere: RepereAliment;
@@ -72,52 +163,121 @@ function RepereCard({ repere, selected, onSelect }: RepereCardProps) {
   );
 }
 
-export default function MangerModule({ shell, onNavigate }: ModuleProps) {
+export default function MangerModule({ shell }: ModuleProps) {
   const [onglet, setOnglet] = useState<Onglet>('familles');
   const [repereSelectionne, setRepereSelectionne] = useState<string | null>(null);
 
-  const [plateCounts, setPlateCounts] = useState<PlateCounts>(PLATE_COUNTS_VIDE);
-  const [plateExtras, setPlateExtras] = useState<string[]>([]);
-  const [selCount, setSelCount] = useState(0);
-  const [grasSatCount, setGrasSatCount] = useState(0);
+  // ── Assiette : un aliment concret par catégorie-cœur (repFood) + proportions continues (pct,
+  // réglées au drag des frontières) — les deux mécaniques restent indépendantes, comme demandé. ──
+  const [repFood, setRepFood] = useState<Partial<Record<CategorieCoeur, AlimentPlateau>>>({});
+  const [angles, setAngles] = useState<Record<Boundary, number>>(ANGLES_DEFAUT);
+  const [dragging, setDragging] = useState<Boundary | null>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
+  const [extras, setExtras] = useState<{ uid: string; id: string }[]>([]);
   const [ficheOuverte, setFicheOuverte] = useState(false);
 
   if (!shell) return null;
 
-  function ajouterAuPlateau(aliment: AlimentPlateau) {
+  function assignerAliment(aliment: AlimentPlateau) {
     const cat = aliment.categorie;
     if (cat === 'legumes' || cat === 'feculents' || cat === 'proteines') {
-      setPlateCounts((prev) => ({ ...prev, [cat]: Math.min(PLATE_MAX_PAR_CATEGORIE, prev[cat] + 1) }));
+      setRepFood((prev) => ({ ...prev, [cat]: aliment }));
     } else {
-      setPlateExtras((prev) => [...prev, aliment.name].slice(-EXTRAS_MAX));
+      setExtras((prev) => [...prev, { uid: `${aliment.id}-${Date.now()}-${Math.random()}`, id: aliment.id }].slice(-EXTRAS_MAX));
     }
-    if (aliment.sel === 'eleve') setSelCount((n) => n + 1);
-    if (aliment.graisses === 'saturees') setGrasSatCount((n) => n + 1);
+  }
+
+  function handlePlateDrop(e: DragEvent<HTMLElement>) {
+    e.preventDefault();
+    const aliment = ALIMENTS_PLATEAU.find((a) => a.id === e.dataTransfer.getData('text/plain'));
+    if (aliment) assignerAliment(aliment);
   }
 
   function reinitialiserPlateau() {
-    setPlateCounts(PLATE_COUNTS_VIDE);
-    setPlateExtras([]);
-    setSelCount(0);
-    setGrasSatCount(0);
+    setRepFood({});
+    setAngles(ANGLES_DEFAUT);
+    setExtras([]);
   }
 
-  const totalCoeur = plateCounts.legumes + plateCounts.feculents + plateCounts.proteines;
-  const pctLegumes = totalCoeur ? Math.round((plateCounts.legumes / totalCoeur) * 100) : 0;
-  const pctFeculents = totalCoeur ? Math.round((plateCounts.feculents / totalCoeur) * 100) : 0;
-  const pctProteines = totalCoeur ? 100 - pctLegumes - pctFeculents : 0;
+  // ── Camembert : géométrie des 3 parts + poignées des 3 frontières (généralise le patron à
+  // 2 frontières du défi « Proportion » du module diabète, `AlimentationModule` défi ④ — voir
+  // `boundaryNeighbors`). ──
+  function handleBoundaryPointerDown(boundary: Boundary) {
+    return (e: ReactPointerEvent<SVGCircleElement>) => {
+      e.currentTarget.setPointerCapture(e.pointerId);
+      setDragging(boundary);
+    };
+  }
 
-  const legDeg = pctLegumes * 3.6;
-  const cerDeg = pctFeculents * 3.6;
-  const plateGradient = totalCoeur
-    ? `conic-gradient(var(--color-confort-strong) 0deg ${legDeg}deg, var(--color-nav) ${legDeg}deg ${
-        legDeg + cerDeg
-      }deg, var(--color-toxique) ${legDeg + cerDeg}deg 360deg)`
-    : 'repeating-linear-gradient(45deg, var(--color-bg), var(--color-bg) 10px, var(--color-line) 10px, var(--color-line) 20px)';
+  function handleBoundaryPointerMove(boundary: Boundary) {
+    return (e: ReactPointerEvent<SVGCircleElement>) => {
+      if (dragging !== boundary) return;
+      const svg = svgRef.current;
+      if (!svg) return;
+      const { prev } = boundaryNeighbors(boundary);
+      // Fraction de la catégorie intacte (calculée dans son propre sens, non ambiguë même si
+      // elle vaut déjà 0) — donne le vrai empan disponible pour cette frontière, y compris
+      // quand `prev`/`next` coïncident (voir `UNTOUCHED_BY_BOUNDARY`).
+      const untouchedFrac = pct[UNTOUCHED_BY_BOUNDARY[boundary]];
+      setAngles((a) => {
+        const prevAngle = a[prev];
+        const nextAngleUnwrapped = prevAngle + (1 - untouchedFrac) * 360;
+        const pointerAngle = unwrapAngle(angleFromPointer(svg, e), prevAngle);
+        const clamped = Math.min(Math.max(pointerAngle, prevAngle), nextAngleUnwrapped);
+        return { ...a, [boundary]: clamped };
+      });
+    };
+  }
+
+  function handleBoundaryPointerUp(e: ReactPointerEvent<SVGCircleElement>) {
+    e.currentTarget.releasePointerCapture(e.pointerId);
+    setDragging(null);
+  }
+
+  const pct: Record<CategorieCoeur, number> = {
+    legumes: fracBetween(angles.pl, angles.lf),
+    feculents: fracBetween(angles.lf, angles.fp),
+    proteines: fracBetween(angles.fp, angles.pl),
+  };
+
+  let angleCursor = angles.pl;
+  const slices = CORE_CATEGORIES.map((cat) => {
+    const frac = pct[cat.id];
+    const start = angleCursor;
+    const sweep = frac * 360;
+    angleCursor += sweep;
+    const end = start + sweep;
+    const [x1, y1] = pointOnCircle(start, 92);
+    const [x2, y2] = pointOnCircle(end, 92);
+    const largeArc = sweep > 180 ? 1 : 0;
+    const mid = (start + end) / 2;
+    const [imgX, imgY] = pointOnCircle(mid, 54);
+    const [labelX, labelY] = pointOnCircle(mid, 78);
+    const d =
+      frac > 0.001
+        ? `M 100 100 L ${x1.toFixed(1)} ${y1.toFixed(1)} A 92 92 0 ${largeArc} 1 ${x2.toFixed(1)} ${y2.toFixed(1)} Z`
+        : '';
+    return { ...cat, d, frac, imgX, imgY, labelX, labelY, food: repFood[cat.id] };
+  });
+  const HANDLES: { id: Boundary; label: string }[] = [
+    { id: 'pl', label: 'protéines ↔ légumes' },
+    { id: 'lf', label: 'légumes ↔ féculents' },
+    { id: 'fp', label: 'féculents ↔ protéines' },
+  ];
+  const handles = HANDLES.map((h) => {
+    const [x, y] = pointOnCircle(angles[h.id], 92);
+    return { ...h, x, y };
+  });
+
+  const pctLegumes = Math.round(pct.legumes * 100);
+  const pctFeculents = Math.round(pct.feculents * 100);
+  const pctProteines = 100 - pctLegumes - pctFeculents;
+
+  const hasAnyRepFood = Object.keys(repFood).length > 0;
 
   let analyse: string;
-  if (!totalCoeur) {
-    analyse = 'Touchez un aliment du garde-manger pour composer votre assiette.';
+  if (!hasAnyRepFood) {
+    analyse = 'Glissez ou touchez un aliment du garde-manger pour composer votre assiette.';
   } else if (
     Math.abs(pctLegumes - 50) <= EQUILIBRE_TOLERANCE &&
     Math.abs(pctFeculents - 25) <= EQUILIBRE_TOLERANCE &&
@@ -134,19 +294,30 @@ export default function MangerModule({ shell, onNavigate }: ModuleProps) {
     analyse = 'Assiette correcte — encore un peu de rééquilibrage possible vers le modèle ½ · ¼ · ¼.';
   }
 
-  const avertissement =
-    selCount > 0
-      ? `${selCount} aliment${selCount > 1 ? 's' : ''} riche${selCount > 1 ? 's' : ''} en sel ajouté${
-          selCount > 1 ? 's' : ''
-        } — pensez à limiter le sel.`
-      : grasSatCount > 0
-        ? `${grasSatCount} source${grasSatCount > 1 ? 's' : ''} de graisses saturées — à limiter au profit des insaturées.`
-        : null;
+  // Aliments réellement présents (les 3 représentants du camembert + les extras) — sert à la fois
+  // aux avertissements sel/gras et à l'enrichissement positif depuis l'onglet Familles.
+  const extrasFoods = extras.map((e) => ALIMENTS_PLATEAU.find((a) => a.id === e.id)).filter((f): f is AlimentPlateau => !!f);
+  const foodsSurAssiette = [...Object.values(repFood).filter((f): f is AlimentPlateau => !!f), ...extrasFoods];
+
+  const repereSel = REPERES_ALIMENTS.find((r) => r.id === 'sel');
+  const repereGras = REPERES_ALIMENTS.find((r) => r.id === 'graisses-saturees');
+  const avertissements = [
+    foodsSurAssiette.some((f) => f.sel === 'eleve') && repereSel ? repereSel.texte : null,
+    foodsSurAssiette.some((f) => f.graisses === 'saturees') && repereGras ? repereGras.texte : null,
+  ].filter((t): t is string => !!t);
+
+  // Enrichissement positif (correction Thibault 2026-07-23) : réutilise les messages de l'onglet
+  // Familles plutôt que d'en inventer un second qui dirait la même chose autrement.
+  const reperesPositifs = Array.from(
+    new Set(foodsSurAssiette.map((f) => REPERE_PAR_ALIMENT[f.id]).filter((id): id is string => !!id)),
+  )
+    .map((id) => REPERES_ALIMENTS.find((r) => r.id === id))
+    .filter((r): r is RepereAliment => !!r);
 
   const repereActif = repereSelectionne ? REPERES_ALIMENTS.find((r) => r.id === repereSelectionne) : undefined;
   const amis = REPERES_ALIMENTS.filter((r) => r.ami);
   const aLimiter = REPERES_ALIMENTS.filter((r) => !r.ami);
-  const plateauVide = totalCoeur === 0 && plateExtras.length === 0;
+  const plateauVide = !hasAnyRepFood && extras.length === 0;
 
   const nav = (
     <div className={styles.tabs} role="tablist" aria-label="Familles d'aliments et assiette">
@@ -216,7 +387,7 @@ export default function MangerModule({ shell, onNavigate }: ModuleProps) {
         {onglet === 'assiette' && (
           <div className={styles.assietteLayout}>
             <aside className={`card ${styles.gardeManger}`} aria-label="Le garde-manger">
-              <p className={styles.gardeMangerTitre}>Le garde-manger — touchez pour ajouter à l'assiette</p>
+              <p className={styles.gardeMangerTitre}>Le garde-manger — glissez ou touchez pour ajouter à l'assiette</p>
               {CATEGORIES_PLATEAU.map((cat) => {
                 const foods = ALIMENTS_PLATEAU.filter((a) => a.categorie === cat.id);
                 if (foods.length === 0) return null;
@@ -231,7 +402,9 @@ export default function MangerModule({ shell, onNavigate }: ModuleProps) {
                           key={food.id}
                           type="button"
                           className={styles.alimentBtn}
-                          onClick={() => ajouterAuPlateau(food)}
+                          draggable
+                          onDragStart={dragStartAliment(food.id)}
+                          onClick={() => assignerAliment(food)}
                           aria-label={`Ajouter ${food.name} à l'assiette`}
                         >
                           <IllustrationSlot id={`aliment-${food.id}`} label={food.name} shape="rounded" size={56} />
@@ -245,19 +418,87 @@ export default function MangerModule({ shell, onNavigate }: ModuleProps) {
             </aside>
 
             <div className={styles.plateauCol}>
-              <div className={styles.plateau} style={{ background: plateGradient }} aria-hidden="true">
-                <div className={styles.plateauCentre} />
+              <div
+                className={styles.plateauStage}
+                onDragOver={allowDrop}
+                onDrop={handlePlateDrop}
+              >
+                <svg
+                  ref={svgRef}
+                  className={styles.plateauSvg}
+                  viewBox="0 0 200 200"
+                  role="img"
+                  aria-label={`Répartition de l'assiette : ${CORE_CATEGORIES.map(
+                    (cat) => `${cat.label} ${Math.round(pct[cat.id] * 100)}%${repFood[cat.id] ? ` (${repFood[cat.id]!.name})` : ''}`,
+                  ).join(', ')}. Glissez les frontières entre les parts pour régler les proportions, ou glissez/touchez un aliment du garde-manger pour le placer.`}
+                >
+                  <circle cx="100" cy="100" r="92" fill="none" stroke="var(--color-line)" strokeWidth={2} strokeDasharray="3 5" />
+                  {slices.map((slice) => slice.d && (
+                    <path key={slice.id} d={slice.d} fill={`var(${slice.colorVar})`} opacity={0.9} />
+                  ))}
+                  {slices.map((slice) => (
+                    <text
+                      key={`label-${slice.id}`}
+                      x={slice.labelX}
+                      y={slice.labelY}
+                      textAnchor="middle"
+                      dominantBaseline="central"
+                      className={styles.sliceLabel}
+                      aria-hidden="true"
+                    >
+                      {Math.round(slice.frac * 100)}%
+                    </text>
+                  ))}
+                  {/* 3 frontières draggables (une par paire de catégories voisines, correction
+                      2026-07-23) : chacune redistribue le % entre ses 2 parts voisines uniquement,
+                      jamais la 3ᵉ — généralise le patron à 2 frontières du diabète. */}
+                  {handles.map((h) => (
+                    <circle
+                      key={h.id}
+                      className={dragging === h.id ? `${styles.handle} ${styles.handleDragging}` : styles.handle}
+                      cx={h.x}
+                      cy={h.y}
+                      r={9}
+                      aria-hidden="true"
+                      onPointerDown={handleBoundaryPointerDown(h.id)}
+                      onPointerMove={handleBoundaryPointerMove(h.id)}
+                      onPointerUp={handleBoundaryPointerUp}
+                    />
+                  ))}
+                </svg>
+                <div className={styles.plateauOverlay} aria-hidden="true">
+                  {slices.map((slice) => (
+                    <div
+                      key={slice.id}
+                      className={styles.plateauSlotImg}
+                      style={{ left: `${(slice.imgX / 200) * 100}%`, top: `${(slice.imgY / 200) * 100}%` }}
+                    >
+                      {slice.food ? (
+                        <IllustrationSlot id={`aliment-${slice.food.id}`} label={slice.food.name} shape="circle" size={44} />
+                      ) : (
+                        <slice.Icon size={22} color="var(--color-surface)" aria-hidden="true" />
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
               <div className={styles.legende}>
-                <span className={styles.legendeLegumes}>● Légumes {pctLegumes}%</span>
-                <span className={styles.legendeFeculents}>● Féculents {pctFeculents}%</span>
-                <span className={styles.legendeProteines}>● Protéines {pctProteines}%</span>
+                <span className={styles.legendeLegumes}>
+                  ● Légumes {pctLegumes}%{repFood.legumes ? ` — ${repFood.legumes.name}` : ''}
+                </span>
+                <span className={styles.legendeFeculents}>
+                  ● Féculents {pctFeculents}%{repFood.feculents ? ` — ${repFood.feculents.name}` : ''}
+                </span>
+                <span className={styles.legendeProteines}>
+                  ● Protéines {pctProteines}%{repFood.proteines ? ` — ${repFood.proteines.name}` : ''}
+                </span>
               </div>
-              {plateExtras.length > 0 && (
+              {extras.length > 0 && (
                 <div className={styles.extras}>
-                  {plateExtras.map((nom, i) => (
-                    <span key={`${nom}-${i}`} className={styles.extraChip}>
-                      {nom}
+                  {extrasFoods.map((food, i) => (
+                    <span key={`${extras[i].uid}`} className={styles.extraChip}>
+                      <IllustrationSlot id={`aliment-${food.id}`} label={food.name} shape="circle" size={28} />
+                      {food.name}
                     </span>
                   ))}
                 </div>
@@ -280,10 +521,19 @@ export default function MangerModule({ shell, onNavigate }: ModuleProps) {
               <p className={styles.analyseTexte} aria-live="polite">
                 {analyse}
               </p>
-              {avertissement && (
-                <p className={styles.avertissement} aria-live="polite">
-                  {avertissement}
+              {avertissements.map((texte) => (
+                <p key={texte} className={styles.avertissement} aria-live="polite">
+                  {texte}
                 </p>
+              ))}
+              {reperesPositifs.length > 0 && (
+                <ul className={styles.analysePositifList} aria-live="polite">
+                  {reperesPositifs.map((r) => (
+                    <li key={r.id} className={styles.analysePositifItem}>
+                      <strong>{r.label}.</strong> {r.texte}
+                    </li>
+                  ))}
+                </ul>
               )}
               <p className={styles.repere}>
                 Repère : « assiette santé » — la moitié de légumes, un quart de féculents (complets),
@@ -292,15 +542,6 @@ export default function MangerModule({ shell, onNavigate }: ModuleProps) {
             </div>
           </div>
         )}
-
-        <div className={styles.renvoisRow}>
-          <button type="button" className={styles.renvoiBtn} onClick={() => onNavigate('tension')}>
-            Le sel fait monter la tension <ArrowRight size={16} aria-hidden="true" />
-          </button>
-          <button type="button" className={styles.renvoiBtn} onClick={() => onNavigate('cholesterol')}>
-            Bons gras, gras à limiter : l'effet sur le LDL <ArrowRight size={16} aria-hidden="true" />
-          </button>
-        </div>
       </div>
 
       {ficheOuverte && (
@@ -312,25 +553,43 @@ export default function MangerModule({ shell, onNavigate }: ModuleProps) {
         >
           <div className="fiche-bloc">
             <span className="fiche-bloc-eyebrow">Ma répartition</span>
-            <div className={styles.fichePlateauRow}>
-              <div className={styles.fichePlateau} style={{ background: plateGradient }} aria-hidden="true" />
-              <ul className={styles.ficheLegende}>
-                <li>Légumes — {pctLegumes}%</li>
-                <li>Féculents — {pctFeculents}%</li>
-                <li>Protéines — {pctProteines}%</li>
-              </ul>
+            <div className={styles.ficheImgRow}>
+              {CORE_CATEGORIES.map((cat) => {
+                const food = repFood[cat.id];
+                return (
+                  <div key={cat.id} className={styles.ficheImgItem}>
+                    {food ? (
+                      <IllustrationSlot id={`aliment-${food.id}`} label={food.name} shape="rounded" size={64} />
+                    ) : (
+                      <span className={styles.ficheImgPlaceholder} aria-hidden="true" />
+                    )}
+                    <span className={styles.ficheImgLabel}>
+                      {cat.label} {Math.round(pct[cat.id] * 100)}%{food ? ` — ${food.name}` : ''}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
-          {plateExtras.length > 0 && (
+          {extrasFoods.length > 0 && (
             <div className="fiche-bloc">
               <span className="fiche-bloc-eyebrow">Autres aliments ajoutés</span>
-              <p className={styles.ficheExtras}>{plateExtras.join(', ')}</p>
+              <p className={styles.ficheExtras}>{extrasFoods.map((f) => f.name).join(', ')}</p>
             </div>
           )}
           <div className="fiche-bloc">
             <span className="fiche-bloc-eyebrow">Repères</span>
             <p className={styles.ficheRepereTexte}>{analyse}</p>
-            {avertissement && <p className={styles.ficheRepereTexte}>{avertissement}</p>}
+            {avertissements.map((texte) => (
+              <p key={texte} className={styles.ficheRepereTexte}>
+                {texte}
+              </p>
+            ))}
+            {reperesPositifs.map((r) => (
+              <p key={r.id} className={styles.ficheRepereTexte}>
+                <strong>{r.label}.</strong> {r.texte}
+              </p>
+            ))}
             <p className={styles.ficheRepereTexte}>
               « Assiette santé » : la moitié de légumes, un quart de féculents (complets), un quart de
               protéines, un filet d'huile d'olive — et pensez à limiter le sel.

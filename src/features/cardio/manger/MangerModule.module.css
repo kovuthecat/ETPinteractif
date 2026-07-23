@@ -230,7 +230,7 @@
   text-align: center;
 }
 
-/* --- Assiette conique --- */
+/* --- Assiette : camembert SVG à frontières glissables + aliments visualisés --- */
 
 .plateauCol {
   display: flex;
@@ -239,24 +239,51 @@
   gap: var(--space-md);
 }
 
-.plateau {
+.plateauStage {
+  position: relative;
   width: 240px;
   height: 240px;
+}
+
+.plateauSvg {
+  width: 100%;
+  height: 100%;
   border-radius: var(--radius-pill);
   box-shadow: var(--shadow-2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
 
-.plateauCentre {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-pill);
-  background: var(--color-surface);
-  opacity: 0.85;
+.sliceLabel {
+  font: 700 12px 'Work Sans', sans-serif;
+  fill: var(--color-surface);
+}
+
+.handle {
+  fill: var(--color-surface);
+  stroke: var(--color-text);
+  stroke-width: 2;
+  cursor: grab;
+  touch-action: none;
+}
+
+.handleDragging {
+  cursor: grabbing;
+  stroke-width: 3;
+}
+
+.plateauOverlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.plateauSlotImg {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .legende {
@@ -345,6 +372,22 @@
   color: var(--color-toxique);
 }
 
+/* --- Enrichissement positif (correction 2026-07-23) : messages repris de l'onglet Familles --- */
+
+.analysePositifList {
+  margin: var(--space-sm) 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.analysePositifItem {
+  font: 400 13px/1.4 'Work Sans', sans-serif;
+  color: var(--color-confort-strong);
+}
+
 .repere {
   margin: var(--space-md) 0 0;
   padding-top: var(--space-sm);
@@ -353,61 +396,34 @@
   color: var(--color-text-faint);
 }
 
-/* --- Renvois inline (8→4 sel→tension, 8→5 gras→cholestérol) --- */
-
-.renvoisRow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-md);
-  justify-content: center;
-}
-
-.renvoiBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: var(--target-min);
-  padding: 8px 14px;
-  border: none;
-  border-radius: var(--radius-pill);
-  background: transparent;
-  color: var(--color-nav);
-  font: 600 15px 'Work Sans', sans-serif;
-  cursor: pointer;
-  text-align: center;
-}
-
-.renvoiBtn:hover,
-.renvoiBtn:focus-visible {
-  text-decoration: underline;
-}
 
 /* --- Fiche « Mon assiette » (rendue dans FicheOverlay) --- */
 
-.fichePlateauRow {
+.ficheImgRow {
   display: flex;
-  align-items: center;
   gap: var(--space-lg);
+  flex-wrap: wrap;
 }
 
-.fichePlateau {
-  width: 96px;
-  height: 96px;
-  border-radius: var(--radius-pill);
-  flex-shrink: 0;
-  -webkit-print-color-adjust: exact;
-  print-color-adjust: exact;
-}
-
-.ficheLegende {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  font-size: var(--font-size-small);
-  color: var(--color-text);
+.ficheImgItem {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 4px;
+  text-align: center;
+  max-width: 96px;
+}
+
+.ficheImgPlaceholder {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-pill);
+  background: var(--color-line);
+}
+
+.ficheImgLabel {
+  font-size: var(--font-size-small);
+  color: var(--color-text);
 }
 
 .ficheExtras {

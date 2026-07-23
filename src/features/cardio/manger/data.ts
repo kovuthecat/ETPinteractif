@@ -95,11 +95,11 @@ export interface RepereAliment {
 
 export const REPERES_ALIMENTS: RepereAliment[] = [
   {
-    id: 'huile',
-    label: "Huile d'olive",
+    id: 'huiles',
+    label: 'Huiles végétales',
     ami: true,
     texte:
-      "Riche en graisses insaturées : fait baisser le LDL et protège la paroi des artères. Base de l'alimentation méditerranéenne.",
+      "L'huile d'olive, riche en graisses insaturées, fait baisser le LDL et protège la paroi des artères : à utiliser au quotidien, y compris pour cuisiner. Les huiles de colza, lin ou noix apportent en plus des oméga-3, mais supportent mal la cuisson : à réserver pour l'assaisonnement à froid (vinaigrette, filet en fin de préparation).",
   },
   {
     id: 'omega3',
@@ -140,10 +140,11 @@ export const REPERES_ALIMENTS: RepereAliment[] = [
     texte: 'Riche en graisses saturées et en sel : fait monter le LDL et la tension en même temps.',
   },
   {
-    id: 'fritures',
-    label: 'Fritures',
+    id: 'graisses-saturees',
+    label: 'Graisses saturées',
     ami: false,
-    texte: 'Graisses souvent réutilisées et caloriques : dégradent le profil lipidique.',
+    texte:
+      'Beurre, crème, viandes grasses, charcuterie, fritures : font monter le LDL et nourrissent la plaque, à limiter au profit des huiles végétales.',
   },
   {
     id: 'sucreries',
@@ -159,3 +160,25 @@ export const REPERES_ALIMENTS: RepereAliment[] = [
       'En excès, fait monter la tension artérielle — donc la pression sur la paroi des artères. Limiter la charcuterie, les plats industriels et le sel ajouté.',
   },
 ];
+
+/**
+ * Pont onglet Assiette → onglet Familles (correction Thibault 2026-07-23, « enrichir l'analyse
+ * avec les messages du module Familles ») : associe un aliment concret du garde-manger
+ * (`ALIMENTS_PLATEAU`) au repère générique qu'il illustre, quand la correspondance est
+ * univoque. Absent = aliment sans repère dédié (ex. yaourt, œuf) — pas de correspondance forcée.
+ * Utilisé par `MangerModule` pour piocher le texte du repère correspondant plutôt que d'écrire
+ * un second message qui dirait la même chose autrement.
+ */
+export const REPERE_PAR_ALIMENT: Record<string, string> = {
+  'huile-olive': 'huiles',
+  avocat: 'huiles',
+  noix: 'oleagineux',
+  saumon: 'omega3',
+  sardine: 'omega3',
+  lentilles: 'legumineuses',
+  'pois-chiches': 'legumineuses',
+  'haricots-rouges': 'legumineuses',
+  'pain-complet': 'cerealescompletes',
+  'riz-complet': 'cerealescompletes',
+  'pates-completes': 'cerealescompletes',
+};
