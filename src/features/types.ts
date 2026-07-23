@@ -42,6 +42,8 @@ export interface ThemeDef {
   titre: string;
   eyebrow: string;
   description: string;
+  /** Icône du thème, affichée sur l'écran « Choisir un thème » (même convention que `ModuleDef.Icon`). */
+  Icon: LucideIcon;
   /** Refrain du thème, affiché en exergue de l'accueil (générique — aucun contenu de thème en dur ici). */
   exergue?: string;
   familles: FamilleDef[];

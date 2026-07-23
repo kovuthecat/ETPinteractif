@@ -1,3 +1,4 @@
+import { CigaretteOff, Droplet, Heart } from 'lucide-react';
 import type { ThemeDef } from './types';
 import { MODULES as TABAC_MODULES } from './tabac/registry';
 import { MODULES as DIABETE_MODULES } from './diabete/registry';
@@ -9,6 +10,7 @@ export const THEMES: ThemeDef[] = [
     titre: 'Sevrage tabagique',
     eyebrow: 'Programme ETP · Sevrage tabagique',
     description: "Comprendre l'addiction, utiliser les substituts, gérer le craving et la motivation.",
+    Icon: CigaretteOff,
     exergue:
       "C'est la fumée qui rend malade. C'est le manque qui fait fumer. Et le manque, ça se traite.",
     familles: [
@@ -24,6 +26,7 @@ export const THEMES: ThemeDef[] = [
     eyebrow: 'Programme ETP · Diabète',
     description:
       "Comprendre le mécanisme, agir au quotidien sur l'alimentation et l'activité, se soigner : suivi, traitements et gestes de sécurité.",
+    Icon: Droplet,
     exergue:
       "Le diabète est une maladie des vaisseaux, pas seulement du sucre — agir sur tout ensemble protège.",
     familles: [
@@ -39,6 +42,7 @@ export const THEMES: ThemeDef[] = [
     eyebrow: 'PROGRAMME ETP · PRÉVENTION CARDIOVASCULAIRE',
     description:
       "Comprendre l'athérosclérose et le risque cardiovasculaire, agir au quotidien sur les facteurs modifiables, se soigner : traitements, alerte et suivi.",
+    Icon: Heart,
     exergue:
       "L'athérosclérose avance en silence — mais elle est réversible. Agir sur plusieurs leviers protège le cœur, le cerveau, les jambes et les reins.",
     familles: [

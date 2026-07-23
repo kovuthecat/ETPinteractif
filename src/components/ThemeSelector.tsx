@@ -24,6 +24,9 @@ export default function ThemeSelector({ themes, onNavigate }: ThemeSelectorProps
               disabled={indisponible}
               onClick={() => onNavigate(theme.id)}
             >
+              <span className={styles.pastille} aria-hidden="true">
+                <theme.Icon size={22} strokeWidth={2} />
+              </span>
               <span className={styles.body}>
                 <span className={styles.titre}>
                   {theme.titre}
