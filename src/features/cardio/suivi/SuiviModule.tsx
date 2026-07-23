@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Gauge, Droplets, Ruler, Check, Clock, Refrigerator } from 'lucide-react';
+import { Gauge, Droplets, Candy, CalendarClock, Filter, Check, Clock, Refrigerator } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import ModuleShell from '../../../components/ModuleShell';
 import FicheOverlay from '../../../components/FicheOverlay';
@@ -23,6 +24,15 @@ import styles from './SuiviModule.module.css';
  * cadences toujours visibles sur les cartes sont qualitatives ; les fréquences sourcées (chiffrées)
  * ne vivent que dans le 2ᵉ niveau (survol, `InfoHover`), et restent **à revalider par Thibault
  * auprès de l'HAS** (réserve G1 non bloquante, §M12/§13 du doc).
+ *
+ * **Cohérence bandeau ↔ grille (correction Thibault 2026-07-23)** — le bandeau « Mes 3 chiffres »
+ * listait tension/LDL/**tour de taille** (CONTENU_cardio.md §M12, verbatim d'origine), un chiffre
+ * devenu orphelin : le facteur M2 « poids/tour de taille » a été remplacé par « sédentarité »
+ * plus tôt le même jour (RisqueModule, correction 2026-07-23), et rien d'autre dans le thème ne
+ * mesure plus le tour de taille. Remplacé par **glycémie**, qui correspond exactement à l'une des
+ * 5 stations de la grille ci-dessous (au lieu d'un 3ᵉ chiffre sans station associée) — les icônes
+ * des 3 chiffres sont désormais dérivées directement des stations (`CHIFFRES`, source unique),
+ * jamais choisies en double, pour que le lien bandeau→grille soit immédiat.
  */
 
 // Fil rouge du thème (docs/cardio/CONTENU_cardio.md §0.1, verbatim) — refrain partagé M1/M2/M3/M12.
@@ -49,6 +59,10 @@ type StationId = 'tension' | 'lipidique' | 'risque' | 'glycemie' | 'renale';
 interface StationDef {
   id: StationId;
   label: string;
+  /** Décoratif + repère visuel partagé avec le bandeau « Mes 3 chiffres » (correction 2026-07-23) :
+   *  les 3 stations mesurables (tension/lipidique/glycémie) reprennent la même icône que leur
+   *  facteur correspondant ailleurs dans le thème (ex. `Candy` = « Sucre » du cockpit M2). */
+  Icon: LucideIcon;
   /** Cadence qualitative toujours visible (jamais de chiffre à l'écran). */
   cadence: string;
   /** 2ᵉ niveau (survol, `InfoHover`) — fréquence sourcée, CONTENU_cardio.md §M12. */
@@ -64,12 +78,14 @@ const STATIONS: StationDef[] = [
   {
     id: 'tension',
     label: 'Automesure tension',
+    Icon: Gauge,
     cadence: 'Automesure régulière',
     detail: 'À chaque consultation ; automesure (AMT, « règle des 3 ») au long cours.',
   },
   {
     id: 'lipidique',
     label: 'Bilan lipidique',
+    Icon: Droplets,
     cadence: 'Selon le traitement',
     detail:
       'Contrôle 4 à 12 semaines après une initiation ou une modification, puis tous les 3 à 12 mois ; stable à la cible → une fois par an.',
@@ -77,18 +93,21 @@ const STATIONS: StationDef[] = [
   {
     id: 'risque',
     label: 'Réévaluation du risque',
+    Icon: CalendarClock,
     cadence: 'Réévaluation périodique',
     detail: 'Tous les 3 à 5 ans ; plus souvent si le risque est modéré à élevé.',
   },
   {
     id: 'glycemie',
     label: 'Glycémie',
+    Icon: Candy,
     cadence: 'Selon le risque',
     detail: 'Tous les 1 à 3 ans, selon le niveau de risque.',
   },
   {
     id: 'renale',
     label: 'Fonction rénale',
+    Icon: Filter,
     cadence: 'Si à risque',
     detail: 'Une fois par an en cas de haut risque, de traitement IEC/ARA2, ou de diabète associé.',
   },
@@ -103,12 +122,15 @@ const INITIAL_SUIVI: Record<StationId, EtatSuivi> = {
 };
 
 // « Mes 3 chiffres à suivre » (CONTENU_cardio.md §M12, message d'ouverture, G-M12) : bandeau
-// statique, non cyclable — distinct des 5 stations de la grille de voyants ci-dessous.
-const CHIFFRES = [
-  { id: 'tension', label: 'Tension', Icon: Gauge },
-  { id: 'ldl', label: 'LDL', Icon: Droplets },
-  { id: 'taille', label: 'Tour de taille', Icon: Ruler },
-] as const;
+// statique, non cyclable — mais désormais un sous-ensemble explicite des 5 stations de la grille
+// (tension/lipidique/glycémie), pas une 2ᵉ liste inventée à côté (correction 2026-07-23). Le
+// libellé court reste bandeau-only (« LDL » vs « Bilan lipidique »), l'icône vient de la station.
+const CHIFFRES_IDS = ['tension', 'lipidique', 'glycemie'] as const satisfies readonly StationId[];
+const CHIFFRES_LABELS: Record<(typeof CHIFFRES_IDS)[number], string> = {
+  tension: 'Tension',
+  lipidique: 'LDL',
+  glycemie: 'Glycémie',
+};
 
 export default function SuiviModule({ shell }: ModuleProps) {
   const [suivi, setSuivi] = useState<Record<StationId, EtatSuivi>>(INITIAL_SUIVI);
@@ -123,16 +145,23 @@ export default function SuiviModule({ shell }: ModuleProps) {
   return (
     <ModuleShell titre={shell.titre} sources={shell.sources} onBack={shell.onBack} wide>
       <div className={styles.module}>
+        <p className={styles.headline}>Le suivi, comme un tableau de bord : vous restez aux commandes.</p>
+
         <div className={`card ${styles.chiffresBandeau}`}>
           <span className="eyebrow">Mes 3 chiffres à suivre</span>
           <div className={styles.chiffresRow}>
-            {CHIFFRES.map(({ id, label, Icon }) => (
-              <div key={id} className={styles.chiffreItem}>
-                <Icon size={22} aria-hidden="true" />
-                <span>{label}</span>
-              </div>
-            ))}
+            {CHIFFRES_IDS.map((id) => {
+              const station = STATIONS.find((s) => s.id === id)!;
+              const Icon = station.Icon;
+              return (
+                <div key={id} className={styles.chiffreItem}>
+                  <Icon size={22} aria-hidden="true" />
+                  <span>{CHIFFRES_LABELS[id]}</span>
+                </div>
+              );
+            })}
           </div>
+          <p className={styles.chiffresLien}>Ces 3 chiffres se mesurent lors des examens ci-dessous.</p>
         </div>
 
         <p className={styles.instruction}>Cliquez une station pour changer son état</p>
@@ -143,7 +172,10 @@ export default function SuiviModule({ shell }: ModuleProps) {
             return (
               <div key={station.id} className={styles.station} data-etat={etat}>
                 <div className={styles.stationHead}>
-                  <span className={styles.stationLabel}>{station.label}</span>
+                  <span className={styles.stationLabelRow}>
+                    <station.Icon size={18} aria-hidden="true" className={styles.stationIcon} />
+                    <span className={styles.stationLabel}>{station.label}</span>
+                  </span>
                   <InfoHover
                     label={`Fréquence usuelle — ${station.label}, à revalider`}
                     content={

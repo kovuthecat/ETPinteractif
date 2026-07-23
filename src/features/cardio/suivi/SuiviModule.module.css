@@ -5,6 +5,14 @@
   align-items: center;
 }
 
+.headline {
+  margin: 0;
+  max-width: 640px;
+  text-align: center;
+  font: 700 19px/1.4 'Source Serif 4', serif;
+  color: var(--color-text);
+}
+
 /* --- Bandeau « Mes 3 chiffres à suivre » (statique, non cyclable) --- */
 
 .chiffresBandeau {
@@ -16,6 +24,12 @@
   gap: var(--space-sm);
   padding: var(--space-md) var(--space-lg);
   text-align: center;
+}
+
+.chiffresLien {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-text-faint);
 }
 
 .chiffresRow {
@@ -82,6 +96,17 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-sm);
+}
+
+.stationLabelRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stationIcon {
+  color: var(--color-nav);
+  flex: none;
 }
 
 .stationLabel {
