@@ -101,7 +101,7 @@ export const MODULES: ModuleDef[] = [
     id: 'tabac',
     famille: 'agir',
     titre: 'Le tabac',
-    resume: "Voir la frise de réversibilité après l'arrêt du tabac, et ce que chaque étape répare.",
+    resume: "Voir le risque cardiovasculaire redescendre après l'arrêt du tabac.",
     Icon: Cigarette,
     Component: TabacModule,
     hue: 'toxique',
