@@ -16,6 +16,64 @@
 
 ---
 
+## Chantier enrichissement-visuel-2026-07 — Finition visuelle & garde-manger (2026-07-23)
+
+**Statut** : 5 commits consolidés (S1-S4 + V0-bis), **chantier non clos**. S1-S4 **exécutés et gates
+auto vertes**. S5/S6 **pendantes** (bloquées gates + génération PNG Thibault). **Validation visuelle
+humaine entièrement à faire** (Thibault, `npm run dev`).
+
+### Écran « Choisir un thème »
+
+- [ ] Grille de 3 cartes (tabac, diabète, cardio) équilibrée sur desktop + tablette + mobile.
+- [ ] Chaque carte affiche son icône-signature (tabac = `CigaretteOff`, diabète = `Droplet`, cardio = `Heart`), lisible et cohérente.
+- [ ] Icônes align-top sur les cartes (pas centrées verticalement, pas bottom).
+- [ ] Aucune régression : texte, couleurs, interactivité inchangés.
+
+### Garde-manger diabète — Alimentation, Module 2
+
+- [ ] Data enrichie visible : 10 légumes (tomate, courgette, aubergine, poivron, épinards, haricots-verts, oignon, gombo, potiron, chou) + 7 aliments-situations (thon, merguez, fromage, féta, olives, houmous, pois cassés) côté garde-manger.
+- [ ] Tous les nouveaux aliments affichent un placeholder `IllustrationSlot` (tuile crème, label gris) ; aucune image n'est attendue à ce stade.
+- [ ] Onglets inchangés (Féculents/Légumes/Protéines/Lipides/Fruits/Laitiers), `AlimentationModule` toujours fonctionnel.
+- [ ] Courbe glycémie réagit quand on ajoute un légume ou aliment-situation nouveau (preuve que les valeurs CG sont câblées) — pas d'erreur console.
+- [ ] Aucune régression : navigation défis, 2ᵉ niveau (InfoHover), fiche imprimable (contenu partiellement filtré si nouveaux aliments non illustrés) inchangés.
+
+### Garde-manger cardio — Manger, Module 8
+
+- [ ] **Nouveau patron onglets par catégorie** (Légumes/Féculents/Protéines/Matières grasses/Fruits/Laitiers) visible au chargement du module.
+- [ ] Une seule catégorie visible à la fois ; chips en haut du module ; cliquer un chip bascule les aliments.
+- [ ] Défaut initial (Légumes) s'affiche ; contient les 12 items enrichis (brocoli, carotte + 10 nouveaux).
+- [ ] Cardio enrichi aussi des 6 féculents diabète (manioc, igname, banane-plantain, couscous-complet, dattes, galette-riz) — visibles dans l'onglet **Féculents** ; leurs PNG sont copiés depuis diabète (aucun doublon visuel en relisant les assets).
+- [ ] Total : ~49 aliments répartis dans 6 onglets (7-9 par catégorie max).
+- [ ] Tous les aliments affichent un placeholder `IllustrationSlot` (s'ils n'ont pas d'image générée) ; aucune cassure.
+- [ ] Assiette (camembert + glisser-déposé) : toujours fonctionnelle, les aliments des 6 catégories se glissent tous ; aucune régression.
+- [ ] Aucun débordement horizontal / vertical sur mobile (~375px).
+
+### Presets « repas-types »
+
+- [ ] Bouton « Charger un repas-type » présent dans les deux modules (diabète Alimentation + cardio Manger).
+- [ ] Modale/dropdown affichant 5 presets nommés : couscous-merguez · riz-poisson thiéboudienne · poulet-plantain · lentilles-œuf · petit-déj méditerranéen.
+- [ ] Sélectionner un preset dans **diabète** : remplit l'assiette de ses aliments + **déclenche la courbe glycémie** live (preuve que les proportions sont mappées vers `paramsFromAssiette`).
+- [ ] Sélectionner un preset dans **cardio** : remplit `repFood` (aliments concrets) + les 3 frontières du camembert (pré-calibrées).
+- [ ] **Après chargement** : l'assiette reste **modifiable** (pas verrouillée, un simple preset pédagogique, pas un état final).
+- [ ] Aucune données persistées (recharger page = reset).
+- [ ] Composition/proportions marquées `// à revalider (Thibault)` dans le code — à juger après visualisation réelle (cohérence culturelle, recettes réalistes, équilibre cible).
+
+### Illustrations + placeholders
+
+- [ ] **Garde-manger enrichi** : 17 aliments neufs (10 légumes + 7 situations) affichent tous un placeholder `IllustrationSlot` sans erreur ; aucune image generée n'est attendue pour validation (S6 dépend PNG Thibault).
+- [ ] **Cardio Alerte** : 11 placeholders visibles (4 VITE + 7 signes infarctus classiques+atypiques) ; aucun cassé ; structure du module intacte.
+- [ ] **Tabac Vrai/faux** : 6 cartes vrai/faux (`vf-poids-coeur`, `vf-fumer-mince`, `vf-poids-regime`, `vf-vape-aide`, `vf-double-usage`, `vf-vapeur-eau`) affichent toutes un placeholder ; grille restant homogène (pas de trou visuel flagrant).
+- [ ] Fichier `design/illustrations/prompts-illustrations-diabete.html` : structure valide (aucun break JavaScript) ; section `tabac-vf` lisible avec 6 prompts ; sections `gm-legumes-enrichi` et `gm-situations` présentes avec leurs prompts.
+
+### Points ouverts (à valider Thibault)
+
+- [ ] **G-nutrition** : valeurs nutritionnelles des 17 aliments neufs + 6 situations (CG/fibres/protéines/lipides diabète, sel/graisses cardio) — ordres de grandeur Ciqual à revalider cliniquement / culturellement (ex. couscous, merguez, attiéké).
+- [ ] **G-repas** : composition + proportions des 5 presets repas-types + calibrage des courbes. A-t-on les bonnes portions ? Sont-elles ancrées sur la population réelle MSP (maghrébine/africaine/antillaise) ?
+- [ ] **G-familles** (S5, non exécutée) : approche « picto par repère » (remplace la flamme unique cardio) — approche à trancher avant code.
+- [ ] **G-visuel** (S6, non exécutée) : validation en direct des illustrations générées (17 aliments + 11 cardio Alerte + 6 tabac vf) — câblage automatique attendu via `IllustrationSlot`.
+
+---
+
 ## Chantier theme-cardio-2026-07 — nouveau thème « Prévention cardiovasculaire » (2026-07-22)
 
 **Statut** : 12 modules câblés, gates auto vertes (`tsc` + `build` + `test` 127/127), **chantier non

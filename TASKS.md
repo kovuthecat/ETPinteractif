@@ -8,6 +8,17 @@ Index des tâches : backlog + actives. Historique des tâches faites : `git log`
 
 ## Tâches
 
+### Enrichissement visuel 2026-07 — Finition visuelle & garde-manger (2026-07-23) · plan: → plans/enrichissement-visuel-2026-07/ (index + S1-S7)
+- [x] V0 — Prompts d'illustration ajoutés au HTML (6 vf tabac + 10 légumes + 7 aliments-situations) · modèle: Opus, effort: — · plan: → index.md (fait le 2026-07-23, écriture du fichier HTML)
+- [x] S1 — Data enrichie (légumes×10 + situations×7, cardio avec féculents diabète) · modèle: Sonnet, effort: high · plan: → S1.md (auto OK : tsc + build + test 127/127 verts) · commit `31d92a9`
+- [x] S2 — Cardio Manger : garde-manger passé en onglets par catégorie (Légumes/Féculents/Protéines/Matières grasses/Fruits/Laitiers) · modèle: Sonnet, effort: medium · plan: → S2.md (auto OK) · commit `78931ce`
+- [x] S3 — Presets repas-types (5 presets partagés cardio+diabète, bouton « Charger »)  · modèle: Sonnet, effort: high · plan: → S3.md (auto OK : tsc + build + test 127/127 verts) · commit `bc3577c` · **G-repas** (composition/proportions à revalider Thibault)
+- [x] S4 — Écran thèmes : icônes par thème + grille équilibrée (ThemeDef.Icon + ThemeSelector) · modèle: Sonnet, effort: low · plan: → S4.md (auto OK) · commit `09a6cd1`
+- [x] V0-bis — Nettoyage prompts : 71 retirés, 23+11 cardio+6 tabac conservés/ajoutés, fichier de structure valide · modèle: Opus, effort: low · plan: → index.md (vérification statique OK, aucun PNG généré) · commit `164886b`
+- [ ] S5 — Familles cardio : picto par repère remplace la flamme (→ `IllustrationSlot repere-<id>`) · modèle: Sonnet, effort: medium · plan: → S5.md · **[ ] pending** — bloqué **G-familles** (approche à valider Thibault) + assets `repere-*.png` à générer
+- [ ] S6 — Câblage/vérif assets générés (Alerte cardio, 6 vf tabac, aliments) · modèle: Haiku, effort: low · plan: → S6.md · **[ ] pending** — dépend Thibault (génération PNG Alerte/vf/aliments)
+  - Vagues : V0 → S1 (bloquant) → S2/S4 parallèles (après S1) → S3 (après S1 + **G-repas**) → S5 (après **G-familles**) → S6 (après génération PNG) → S7 (consolidation). Chantier **non clos** : S5/S6 restent pendantes, validation visuelle Thibault entièrement à faire — cf. `VALIDATION.md`. **Points ouverts** : G-nutrition (valeurs nutritionnelles 17 aliments + 6 situations), G-repas (composition 5 presets), G-familles (approche picto).
+
 ### M10 « Reconnaître l'alerte » — signes classiques + atypiques détaillés (2026-07-23) · plan: — (hors plan, demande directe de Thibault)
 - [x] Signes classiques : 1 → 3 cartes illustrées (douleur, irradiation bras/mâchoire/dos, sueurs/essoufflement/nausées), contenu restauré depuis `BRIEF_DESIGN_cardio.md` · `AlerteModule.tsx`/`.module.css`
 - [x] Formes atypiques : 1 bloc générique → 4 cartes illustrées individuellement (dos/ventre/fatigue/nausées)

@@ -4,8 +4,29 @@
 
 > **Frontières** — STATUS : état actuel · `TASKS.md` : backlog + tâches · `plans/` : plan d'une tâche active · `VALIDATION.md` : checklist visuelle.
 >
-> **Dernière mise à jour :** 2026-07-23 (module cardio M10 « Reconnaître l'alerte » — signes
-> classiques + formes atypiques détaillés et illustrés individuellement, prompts ChatGPT ajoutés)
+> **Dernière mise à jour :** 2026-07-23 (enrichissement-visuel-2026-07 — garde-manger enrichi + icônes thème + repas-types + garde-manger cardio en onglets, S1-S4+V0-bis consolidés)
+
+**Enrichissement visuel 2026-07 — Finition visuelle & garde-manger (2026-07-23)** — issu de l'audit
+`rapport-audit-consultation-2026-07.md`. Trois axes consolidés : (1) illustrations déjà prévues
+(prompts prêts dans `design/illustrations/prompts-illustrations-diabete.html`, S6 câblage en attente
+de la génération Thibault) ; (2) enrichissement du garde-manger des deux thèmes (légumes×12 →
+brocoli+carotte, aliments-situations culturels × 7, diversité cardio par copie d'assets diabète)
++ mécanisme générique « repas-types » (5 presets : couscous-merguez, riz-poisson thiéboudienne,
+poulet-plantain, lentilles-œuf végétarien, petit-déj méditerranéen) partagé à cardio ET diabète ;
+(3) finitions (icônes par thème dans le sélecteur, garde-manger cardio passé en onglets par catégorie
+pour absorber l'enrichissement). **Sessions s'étant exécutées** : S1 (data, commit `31d92a9`) · S2
+(cardio onglets, commit `78931ce`) · S3 (repas-types, commit `bc3577c`) · S4 (écran thèmes, commit
+`09a6cd1`) · V0-bis (nettoyage prompts, commit `164886b`). **Sessions ouvertes** : S5 (pictos familles,
+bloqué **G-familles** non tranchée) · S6 (câblage assets, bloqué attente PNG Thibault).
+
+- **Data enrichie** : tomate, courgette, aubergine, poivron, épinards, haricots-verts, oignon, gombo,
+  potiron, chou (légumes ×10), thon, merguez, fromage, féta, olives, houmous, pois cassés (aliments-situations ×7) ; cardio enrichi aussi de manioc, igname, banane-plantain, couscous-complet, galette-riz, dattes (réutilisation PNG diabète). Toutes les valeurs nutritionnelles (CG/fibres/protéines/lipides diabète, sel/graisses cardio) marquées `// à revalider (Thibault)` — ordres de grandeur, pas validés cliniquement.
+- **Repas-types** : `src/content/repas-types.ts` (source partagée, 5 presets), bouton « Charger un repas-type » dans les deux modules. Cardio : préremplit assiette + 3 frontières camembert. Diabète : préremplit assiette + alimente la courbe glycémie. Composition/proportions = ordres de grandeur pédagogiques `// à revalider (Thibault)`.
+- **Garde-manger cardio** : passé de colonne empilée à **onglets par catégorie** (Légumes/Féculents/Protéines/Matières grasses/Fruits/Laitiers, une visible à la fois) — même patron que le diabète, préremplit sur « Légumes ». Affichage du défaut initial.
+- **Écran de sélection de thème** : ajout de champ `Icon: LucideIcon` générique à `ThemeDef`, icônes par thème (tabac `CigaretteOff`, diabète `Droplet`, cardio `Heart`), grille équilibrée à 3 colonnes. Moteur agnostique du nom du thème.
+- **Nettoyage prompts** : 71 prompts retirés de `design/illustrations/prompts-illustrations-diabete.html` (illustrations déjà générées), 23 prompts conservés + 11 nouveaux VITE/infarctus cardio + 6 nouveaux vrai/faux tabac. Fichier redevenu opérationnel (structure JS validée, aucun PNG généré à ce stade).
+
+Gate : `npx tsc --noEmit` ✓ · `npm run build` ✓ · `npm test` ✓ **127/127**, aucune dépendance runtime ajoutée. **Points ouverts** (tous `// à revalider (Thibault)`) : valeurs nutritionnelles des 17 aliments neufs + 6 aliments-situations (G-nutrition) ; composition/proportions des 5 repas-types + calibrage courbe glycémie (G-repas) ; approche « picto par repère » cardio famille Manger (G-familles — non tranchée, S5 bloquée) ; génération des illustrations (17 aliments garde-manger + 11 VITE/infarctus cardio + 6 vrai/faux tabac, prompts prêts, S6 dépend de Thibault). **Validation visuelle humaine** (Thibault, `npm run dev`) à faire sur l'écran de thème, garde-manger cardio, presets repas-types, cohérence illustrations placeholders — cf. `VALIDATION.md`.
 
 **M10 « Reconnaître l'alerte » — signes classiques et atypiques détaillés (2026-07-23)** — retour de
 Thibault sur le déployé : l'onglet Infarctus n'avait qu'**1 seul signe classique** (douleur qui serre,
