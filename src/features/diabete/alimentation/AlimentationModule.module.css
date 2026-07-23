@@ -506,6 +506,49 @@
 
 /* --- Synthèse ★ --- */
 
+/* Repas-types (presets, `src/content/repas-types.ts`) : même patron de chip que
+   `.familyTab` plus haut — point de départ modifiable, jamais un état verrouillé. */
+
+.repasTypesRow {
+  width: 100%;
+}
+
+.repasTypesTitre {
+  margin: 0 0 var(--space-sm);
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-soft);
+  font-weight: 600;
+}
+
+.repasTypesChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.repasTypeChip {
+  min-height: 36px;
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--color-nav);
+  background: var(--color-surface);
+  color: var(--color-nav);
+  font: 600 13px 'Work Sans', sans-serif;
+  cursor: pointer;
+}
+
+.repasTypeChip:hover {
+  background: var(--color-nav);
+  color: var(--color-bg);
+}
+
+.repasTypeChip:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
+}
+
 .synthPlate {
   min-height: 220px;
   border-radius: var(--radius-lg);

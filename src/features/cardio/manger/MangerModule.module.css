@@ -163,6 +163,56 @@
    Onglet Assiette
    ========================================================================== */
 
+.assietteWrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  width: 100%;
+  align-items: center;
+}
+
+/* --- Repas-types (presets, `src/content/repas-types.ts`) : même patron de chip que
+   `.categorieChip` plus bas — point de départ modifiable, jamais un état verrouillé. --- */
+
+.repasTypesRow {
+  width: 100%;
+  max-width: 980px;
+}
+
+.repasTypesTitre {
+  margin: 0 0 var(--space-sm);
+  font: 700 13px 'Work Sans', sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-text-soft);
+}
+
+.repasTypesChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.repasTypeChip {
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--color-nav);
+  background: var(--color-surface);
+  color: var(--color-nav);
+  font: 600 13px 'Work Sans', sans-serif;
+  cursor: pointer;
+}
+
+.repasTypeChip:hover {
+  background: var(--color-nav);
+  color: var(--color-bg);
+}
+
+.repasTypeChip:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
+}
+
 .assietteLayout {
   display: flex;
   gap: var(--space-xl);

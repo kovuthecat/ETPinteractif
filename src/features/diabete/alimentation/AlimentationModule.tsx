@@ -7,6 +7,7 @@ import ModuleShell from '../../../components/ModuleShell';
 import FicheOverlay from '../../../components/FicheOverlay';
 import InfoHover from '../../../components/InfoHover';
 import IllustrationSlot from '../components/IllustrationSlot';
+import { REPAS_TYPES, type RepasType } from '../../../content/repas-types';
 import CourbeGlycemie, {
   COURBE_GRAPH_WIDTH,
   COURBE_GRAPH_HEIGHT,
@@ -737,6 +738,18 @@ export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
     setSynthPlate([]);
   }
 
+  /** Charge un repas-type (`src/content/repas-types.ts`, source partagée cardio/diabète) : même
+   *  mécanisme que `addToPlate`/`synthPlate` (pas de 2ᵉ mécanisme parallèle) — remplace l'assiette
+   *  courante par les aliments du preset, résolus via `foodById`. Point de départ modifiable :
+   *  le patient ajoute/retire ensuite des aliments normalement, comme s'il avait composé ce repas
+   *  lui-même — jamais un état verrouillé. */
+  function chargerRepasType(repas: RepasType) {
+    const items = repas.aliments
+      .filter((id) => foodById(id))
+      .map((id) => ({ uid: `${id}-${Date.now()}-${Math.random()}`, id }));
+    setSynthPlate(items.slice(0, 10));
+  }
+
   const synthFoods = synthPlate.map((c) => foodById(c.id)).filter((f): f is Food => !!f);
   const synthFamilies = new Set(synthFoods.map((f) => f.famille));
   const synthFeculents = synthFoods.filter((f) => f.famille === 'feculents');
@@ -1199,6 +1212,23 @@ export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
 
           {defi === 5 && (
             <>
+              <div className={styles.repasTypesRow}>
+                <p className={styles.repasTypesTitre}>Charger un repas-type</p>
+                <div className={styles.repasTypesChips}>
+                  {REPAS_TYPES.map((repas) => (
+                    <button
+                      key={repas.id}
+                      type="button"
+                      className={styles.repasTypeChip}
+                      onClick={() => chargerRepasType(repas)}
+                      aria-label={`Charger le repas ${repas.label}`}
+                      title={repas.description}
+                    >
+                      {repas.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
               <div className={styles.synthPlate} onDragOver={allowDrop} onDrop={handleSynthDrop}>
                 {synthPlate.length === 0 && (
                   <p className={styles.synthEmpty}>

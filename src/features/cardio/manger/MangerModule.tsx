@@ -6,6 +6,7 @@ import type { ModuleProps } from '../../types';
 import ModuleShell from '../../../components/ModuleShell';
 import FicheOverlay from '../../../components/FicheOverlay';
 import IllustrationSlot from '../components/IllustrationSlot';
+import { REPAS_TYPES, type RepasType } from '../../../content/repas-types';
 import {
   ALIMENTS_PLATEAU,
   CATEGORIES_PLATEAU,
@@ -206,6 +207,31 @@ export default function MangerModule({ shell }: ModuleProps) {
     setExtras([]);
   }
 
+  /** Charge un repas-type (`src/content/repas-types.ts`, source partagée cardio/diabète) : pour
+   *  chaque catégorie-cœur, le PREMIER aliment du preset dont la catégorie correspond devient
+   *  son représentant (`repFood`) ; les autres aliments du preset (catégorie-cœur déjà pourvue,
+   *  ou catégorie « extra » lipides/fruits/laitiers) rejoignent `extras`, même mécanique que
+   *  `assignerAliment`. Point de départ modifiable — jamais un état verrouillé, le patient
+   *  continue d'utiliser le garde-manger et les frontières normalement après. Proportions
+   *  remises au défaut équilibré : le calibrage précis par repas reste // à revalider (Thibault). */
+  function chargerRepasType(repas: RepasType) {
+    const nextRepFood: Partial<Record<CategorieCoeur, AlimentPlateau>> = {};
+    const nextExtras: { uid: string; id: string }[] = [];
+    for (const id of repas.aliments) {
+      const aliment = ALIMENTS_PLATEAU.find((a) => a.id === id);
+      if (!aliment) continue;
+      const cat = aliment.categorie;
+      if ((cat === 'legumes' || cat === 'feculents' || cat === 'proteines') && !nextRepFood[cat]) {
+        nextRepFood[cat] = aliment;
+      } else {
+        nextExtras.push({ uid: `${aliment.id}-${Date.now()}-${Math.random()}`, id: aliment.id });
+      }
+    }
+    setRepFood(nextRepFood);
+    setExtras(nextExtras.slice(-EXTRAS_MAX));
+    setAngles(ANGLES_DEFAUT);
+  }
+
   // ── Camembert : géométrie des 3 parts + poignées des 3 frontières (généralise le patron à
   // 2 frontières du défi « Proportion » du module diabète, `AlimentationModule` défi ④ — voir
   // `boundaryNeighbors`). ──
@@ -392,7 +418,25 @@ export default function MangerModule({ shell }: ModuleProps) {
         )}
 
         {onglet === 'assiette' && (
-          <div className={styles.assietteLayout}>
+          <div className={styles.assietteWrap}>
+            <div className={styles.repasTypesRow}>
+              <p className={styles.repasTypesTitre}>Charger un repas-type</p>
+              <div className={styles.repasTypesChips}>
+                {REPAS_TYPES.map((repas) => (
+                  <button
+                    key={repas.id}
+                    type="button"
+                    className={styles.repasTypeChip}
+                    onClick={() => chargerRepasType(repas)}
+                    aria-label={`Charger le repas ${repas.label}`}
+                    title={repas.description}
+                  >
+                    {repas.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className={styles.assietteLayout}>
             <aside className={`card ${styles.gardeManger}`} aria-label="Le garde-manger">
               <p className={styles.gardeMangerTitre}>Le garde-manger — glissez ou touchez pour ajouter à l'assiette</p>
               <div className={styles.categorieChips} aria-label="Catégories du garde-manger">
@@ -552,6 +596,7 @@ export default function MangerModule({ shell }: ModuleProps) {
                 Repère : « assiette santé » — la moitié de légumes, un quart de féculents (complets),
                 un quart de protéines, et un filet d'huile d'olive.
               </p>
+            </div>
             </div>
           </div>
         )}
