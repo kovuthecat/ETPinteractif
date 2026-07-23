@@ -61,69 +61,157 @@
   color: var(--color-text);
 }
 
-/* --- Curseur (alcool / stress) — repris de ActiviteModule.module.css --- */
-
-.slider {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 100%;
-  height: 6px;
-  border-radius: var(--radius-pill);
-  background: var(--color-line);
-  outline: none;
-  margin: var(--space-xs) 0;
-}
-
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: var(--color-text);
-  cursor: pointer;
-  border: 3px solid var(--color-surface);
-  box-shadow: 0 0 0 1.5px var(--color-text);
-}
-
-.slider::-moz-range-thumb {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: var(--color-text);
-  cursor: pointer;
-  border: 3px solid var(--color-surface);
-  box-shadow: 0 0 0 1.5px var(--color-text);
-}
-
-/* --- Verres (alcool) : décoratif, doublé par `.valeur`/`.caption` --- */
+/* --- Verres (alcool) : boutons cliquables (notation façon étoiles), doublés par `.valeur`/
+   `.caption` (jamais la couleur seule) --- */
 
 .glasses {
   display: flex;
   gap: 6px;
 }
 
-.glass {
-  width: 26px;
-  height: 34px;
-  border-radius: 4px 4px 8px 8px;
+.glassBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  min-height: var(--target-min);
+  border-radius: var(--radius-sm);
   border: 2px solid var(--color-line);
   background: transparent;
+  color: var(--color-text-faint);
+  cursor: pointer;
 }
 
-.glassFilled--confort {
+.glassBtn:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
+}
+
+.glassBtnFilled--confort {
   border-color: var(--color-confort);
   background: var(--color-confort-soft);
+  color: var(--color-confort-strong);
 }
 
-.glassFilled--vigilance {
+.glassBtnFilled--vigilance {
   border-color: var(--color-vigilance);
   background: var(--color-vigilance-soft);
+  color: var(--color-vigilance);
 }
 
-.glassFilled--toxique {
+.glassBtnFilled--toxique {
   border-color: var(--color-toxique);
   background: var(--color-toxique-soft);
+  color: var(--color-toxique);
+}
+
+/* --- Fréquence (alcool) --- */
+
+.freqLabel {
+  margin: var(--space-sm) 0 0;
+  font: 600 13px 'Work Sans', sans-serif;
+  color: var(--color-text-soft);
+}
+
+.freqList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.freqChip {
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--color-line);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: 500 13px 'Work Sans', sans-serif;
+  cursor: pointer;
+}
+
+.freqChipOn {
+  border-color: var(--color-text);
+  background: var(--color-text);
+  color: var(--color-bg);
+}
+
+.freqChip:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
+}
+
+/* --- Échelle visuelle analogique (stress) --- */
+
+.evaWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: var(--space-xs) 0;
+}
+
+.evaLabels {
+  display: flex;
+  justify-content: space-between;
+  font: 600 12px 'Work Sans', sans-serif;
+  color: var(--color-text-soft);
+}
+
+.evaTrack {
+  position: relative;
+  height: 16px;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(to right, var(--color-confort), var(--color-vigilance), var(--color-toxique));
+}
+
+.evaInput {
+  -webkit-appearance: none;
+  appearance: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.evaInput::-webkit-slider-runnable-track {
+  background: transparent;
+  height: 16px;
+}
+
+.evaInput::-moz-range-track {
+  background: transparent;
+  height: 16px;
+}
+
+.evaInput::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  margin-top: -6px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 3px solid var(--color-text);
+  cursor: pointer;
+  box-shadow: var(--shadow-1);
+}
+
+.evaInput::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 3px solid var(--color-text);
+  cursor: pointer;
+  box-shadow: var(--shadow-1);
+}
+
+.evaInput:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 4px;
 }
 
 /* --- Valeur / légende chiffrée simple (pas de calibrage clinique) --- */
@@ -252,6 +340,14 @@
   outline-offset: 2px;
 }
 
+/* --- Stress : message fixe d'impact CV (correction 2026-07-23) --- */
+
+.stressImpact {
+  margin: 0;
+  font: 400 13.5px/1.5 'Work Sans', sans-serif;
+  color: var(--color-text-soft);
+}
+
 /* --- Stress : déculpabilisation + leviers --- */
 
 .deculpabilisation {
@@ -286,30 +382,6 @@
 .leverChip:focus-visible {
   outline: 3px solid var(--color-nav);
   outline-offset: 2px;
-}
-
-/* --- Renvois inline (9→4 alcool→tension, 9→7 stress→bouger) --- */
-
-.renvoiBtn {
-  align-self: center;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: var(--target-min);
-  margin-top: var(--space-sm);
-  padding: 8px 14px;
-  border: none;
-  border-radius: var(--radius-pill);
-  background: transparent;
-  color: var(--color-nav);
-  font: 600 15px 'Work Sans', sans-serif;
-  cursor: pointer;
-  text-align: center;
-}
-
-.renvoiBtn:hover,
-.renvoiBtn:focus-visible {
-  text-decoration: underline;
 }
 
 @media (max-width: 480px) {

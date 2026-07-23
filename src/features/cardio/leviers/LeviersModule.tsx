@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowRight } from 'lucide-react';
+import { Wine } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import ModuleShell from '../../../components/ModuleShell';
 import styles from './LeviersModule.module.css';
@@ -20,6 +20,15 @@ import styles from './LeviersModule.module.css';
  *
  * Les chiffres de calibrage (RR, %, Complément J) restent dans CONTENU_cardio.md — jamais à
  * l'écran (rubrique « Calibrage (jamais à l'écran) »).
+ *
+ * **Corrections Thibault 2026-07-23** :
+ * - **Alcool** : le slider nu remplacé par des icônes de verre cliquables (plus simple à régler
+ *   qu'un curseur) + un sélecteur de **fréquence** (tous les jours / 5 j·semaine / 2-3 fois·
+ *   semaine / occasionnellement) — l'ancien calcul supposait implicitement une consommation
+ *   quotidienne ; l'estimation hebdomadaire et le message combinent désormais les deux réglages.
+ * - **Stress** : curseur nu + chiffre brut remplacés par une échelle visuelle analogique (dégradé
+ *   confort→vigilance→toxique continu, ancres textuelles « Aucun stress »/« Stress extrême »,
+ *   jamais de note affichée).
  */
 
 type Volet = 'alcool' | 'sommeil' | 'stress';
@@ -31,7 +40,7 @@ const VOLETS: { id: Volet; label: string }[] = [
   { id: 'stress', label: 'Stress' },
 ];
 
-export default function LeviersModule({ shell, onNavigate }: ModuleProps) {
+export default function LeviersModule({ shell }: ModuleProps) {
   const [volet, setVolet] = useState<Volet>('alcool');
 
   if (!shell) return null;
@@ -56,9 +65,9 @@ export default function LeviersModule({ shell, onNavigate }: ModuleProps) {
   return (
     <ModuleShell titre={shell.titre} sources={shell.sources} onBack={shell.onBack} nav={nav} wide>
       <div className={styles.module}>
-        {volet === 'alcool' && <AlcoolPanel onNavigate={onNavigate} />}
+        {volet === 'alcool' && <AlcoolPanel />}
         {volet === 'sommeil' && <SommeilPanel />}
-        {volet === 'stress' && <StressPanel onNavigate={onNavigate} />}
+        {volet === 'stress' && <StressPanel />}
       </div>
     </ModuleShell>
   );
@@ -72,60 +81,121 @@ function tonClass(ton: Ton): string {
 
 const ALCOOL_MAX = 6;
 
-function alcoolTon(verres: number): Ton {
-  if (verres <= 1) return 'confort';
-  if (verres === 2) return 'vigilance';
-  return 'toxique';
+type Frequence = 'quotidien' | 'presque-quotidien' | 'hebdomadaire' | 'occasionnel';
+
+/** Jours/semaine représentatifs par fréquence (correction Thibault 2026-07-23 — remplace
+ *  l'hypothèse implicite « tous les jours » de l'ancien slider) : sert uniquement à l'estimation
+ *  affichée « X verres/semaine », jamais un chiffre de calibrage clinique. */
+const FREQUENCES: { id: Frequence; label: string; joursSemaine: number }[] = [
+  { id: 'quotidien', label: 'Tous les jours', joursSemaine: 7 },
+  { id: 'presque-quotidien', label: '5 jours par semaine', joursSemaine: 5 },
+  { id: 'hebdomadaire', label: '2 à 3 fois par semaine', joursSemaine: 2.5 },
+  { id: 'occasionnel', label: 'Occasionnellement', joursSemaine: 1 },
+];
+
+function alcoolSemaine(verres: number, frequence: Frequence): number {
+  return Math.round(verres * FREQUENCES.find((f) => f.id === frequence)!.joursSemaine);
 }
 
-function alcoolCaption(verres: number): string {
-  const semaine = verres * 7;
-  if (verres === 0) return 'Aucun verre aujourd’hui — le choix le plus simple pour la tension.';
-  if (verres === 1) return 'Occasionnel : dans les repères.';
-  if (verres === 2) {
-    return `2 verres chaque jour représenteraient ${semaine} par semaine — pensez à garder des jours sans alcool.`;
+function alcoolTon(verres: number, frequence: Frequence): Ton {
+  if (verres === 0) return 'confort';
+  if (frequence === 'quotidien' && verres >= 2) return 'toxique';
+  if (verres >= 3) return 'toxique';
+  if (alcoolSemaine(verres, frequence) > 10) return 'toxique';
+  if (frequence === 'quotidien' || verres === 2) return 'vigilance';
+  return 'confort';
+}
+
+/**
+ * Le repère SPF a 3 volets indépendants (« moins de 2 verres/jour », « pas tous les jours »,
+ * « ≤ 10/semaine ») : correction Thibault 2026-07-23 — l'ancienne version se contentait de
+ * multiplier verres×jours et de comparer le total à 10, ce qui traitait la fréquence comme un
+ * simple facteur arithmétique. Ici chaque branche nomme explicitement **lequel** des 3 volets
+ * est en jeu (dose par prise, jours sans alcool, cumul hebdomadaire) plutôt que de tout ramener
+ * à un seul chiffre.
+ */
+function alcoolCaption(verres: number, frequence: Frequence): string {
+  if (verres === 0) return 'Aucun verre — le choix le plus simple pour la tension.';
+  const freq = FREQUENCES.find((f) => f.id === frequence)!;
+  const semaine = alcoolSemaine(verres, frequence);
+  const quotidien = frequence === 'quotidien';
+
+  if (quotidien && verres >= 2) {
+    return `${verres} verres tous les jours : la dose dépasse le repère par occasion et il n'y a aucun jour sans alcool — deux repères non tenus en même temps (environ ${semaine} verres/semaine).`;
   }
-  return `Au-delà de 2 à 3 verres par jour, la tension a tendance à augmenter — et ${semaine} verres par semaine dépasse largement le repère.`;
+  if (verres >= 3) {
+    return `${verres} verres en une même occasion : au-delà de la dose recommandée, même si ce n'est pas quotidien (${freq.label.toLowerCase()}).`;
+  }
+  if (quotidien) {
+    return `Un verre tous les jours reste une faible dose, mais le repère recommande aussi de garder des jours sans alcool — ce n'est pas le cas ici.`;
+  }
+  if (semaine > 10) {
+    return `${freq.label} : la dose par prise est correcte, mais le cumul sur la semaine (environ ${semaine} verres) dépasse le repère.`;
+  }
+  if (verres === 2) {
+    return `2 verres, ${freq.label.toLowerCase()} : la dose est à la limite haute, mais l'espacement laisse bien des jours sans alcool.`;
+  }
+  return `${freq.label} : dose, fréquence et cumul hebdomadaire (environ ${semaine} verre${semaine > 1 ? 's' : ''}) sont dans les repères.`;
 }
 
-function AlcoolPanel({ onNavigate }: Pick<ModuleProps, 'onNavigate'>) {
+function AlcoolPanel() {
   const [verres, setVerres] = useState(1);
-  const ton = alcoolTon(verres);
-  const semaine = verres * 7;
+  const [frequence, setFrequence] = useState<Frequence>('quotidien');
+  const ton = alcoolTon(verres, frequence);
+
+  // Clic sur un verre déjà au sommet de la sélection = un cran de moins (comme une notation par
+  // étoiles) — seul moyen de redescendre à 0, pas de slider à ramener à zéro (correction 2026-07-23).
+  function handleGlassClick(i: number) {
+    const cible = i + 1;
+    setVerres((v) => (v === cible ? i : cible));
+  }
 
   return (
     <div className={`card ${styles.panel}`}>
-      <input
-        type="range"
-        min={0}
-        max={ALCOOL_MAX}
-        step={1}
-        value={verres}
-        onChange={(e) => setVerres(Number(e.target.value))}
-        className={styles.slider}
-        aria-label="Nombre de verres d'alcool par jour"
-      />
-      <div className={styles.glasses} aria-hidden="true">
-        {Array.from({ length: ALCOOL_MAX }, (_, i) => (
-          <span
-            key={i}
-            className={`${styles.glass}${i < verres ? ` ${styles.glassFilled} ${styles[`glassFilled--${ton}`]}` : ''}`}
-          />
-        ))}
+      <div className={styles.glasses} role="group" aria-label="Nombre de verres par jour — cliquez pour régler">
+        {Array.from({ length: ALCOOL_MAX }, (_, i) => {
+          const rempli = i < verres;
+          return (
+            <button
+              key={i}
+              type="button"
+              className={`${styles.glassBtn}${rempli ? ` ${styles.glassBtnFilled} ${styles[`glassBtnFilled--${ton}`]}` : ''}`}
+              onClick={() => handleGlassClick(i)}
+              aria-pressed={rempli}
+              aria-label={`${i + 1} verre${i > 0 ? 's' : ''} par jour`}
+            >
+              <Wine size={22} aria-hidden="true" />
+            </button>
+          );
+        })}
       </div>
       <p className={styles.valeur}>
-        {verres} verre{verres > 1 ? 's' : ''}/jour · {semaine} verres/semaine (estimation)
+        {verres} verre{verres > 1 ? 's' : ''}/jour
       </p>
+
+      <p className={styles.freqLabel}>À quelle fréquence ?</p>
+      <div className={styles.freqList} role="radiogroup" aria-label="Fréquence de consommation">
+        {FREQUENCES.map((f) => (
+          <button
+            key={f.id}
+            type="button"
+            role="radio"
+            aria-checked={frequence === f.id}
+            className={`${styles.freqChip}${frequence === f.id ? ` ${styles.freqChipOn}` : ''}`}
+            onClick={() => setFrequence(f.id)}
+          >
+            {f.label}
+          </button>
+        ))}
+      </div>
+
       <p className={tonClass(ton)} aria-live="polite">
-        {alcoolCaption(verres)}
+        {alcoolCaption(verres, frequence)}
       </p>
       <p className={styles.repere}>
         Repère (Santé Publique France) : moins de 2 verres/jour, pas tous les jours, ≤ 10 par
         semaine.
       </p>
-      <button type="button" className={styles.renvoiBtn} onClick={() => onNavigate('tension')}>
-        Et la tension, comment ça se joue ? <ArrowRight size={16} aria-hidden="true" />
-      </button>
     </div>
   );
 }
@@ -238,7 +308,7 @@ function stressCaption(n: number): { texte: string; ton: Ton } {
   return { texte: 'Niveau élevé et durable : un effet mesurable sur le corps, pas seulement sur le moral.', ton: 'toxique' };
 }
 
-function StressPanel({ onNavigate }: Pick<ModuleProps, 'onNavigate'>) {
+function StressPanel() {
   const [niveau, setNiveau] = useState(3);
   const [leviers, setLeviers] = useState<Record<string, boolean>>({});
 
@@ -252,17 +322,39 @@ function StressPanel({ onNavigate }: Pick<ModuleProps, 'onNavigate'>) {
     <div className={`card ${styles.panel}`}>
       <p className={styles.panelIntro}>Le stress chronique n'est pas que dans la tête.</p>
 
-      <input
-        type="range"
-        min={0}
-        max={10}
-        step={1}
-        value={niveau}
-        onChange={(e) => setNiveau(Number(e.target.value))}
-        className={styles.slider}
-        aria-label="Niveau de stress perçu, de 0 à 10"
-      />
-      <p className={styles.valeur}>Niveau perçu : {niveau}/10</p>
+      {/* Message fixe (indépendant du niveau réglé) sur l'impact cardiovasculaire du stress
+          chronique (correction Thibault 2026-07-23 — jusqu'ici seul le palier « élevé » de la
+          légende en disait un mot). Nomme les 3 formes reconnues (CONTENU_cardio.md §M9
+          Calibrage : stress pro, stress perçu, isolement social) sans jamais afficher leurs RR
+          (G1, « jamais à l'écran »). */}
+      <p className={styles.stressImpact}>
+        Stress professionnel, stress ressenti au quotidien, isolement social : ce sont des
+        facteurs de risque cardiovasculaire reconnus, au même titre que la tension ou le
+        cholestérol — ils élèvent tension et rythme cardiaque de façon répétée, ce qui use les
+        artères avec le temps.
+      </p>
+
+      {/* Échelle visuelle analogique (correction Thibault 2026-07-23) : remplace le curseur nu +
+          chiffre brut par un dégradé continu confort→vigilance→toxique, ancré par 2 mots seulement
+          (jamais de note affichée). */}
+      <div className={styles.evaWrap}>
+        <div className={styles.evaLabels} aria-hidden="true">
+          <span>Aucun stress</span>
+          <span>Stress extrême</span>
+        </div>
+        <div className={styles.evaTrack}>
+          <input
+            type="range"
+            min={0}
+            max={10}
+            step={1}
+            value={niveau}
+            onChange={(e) => setNiveau(Number(e.target.value))}
+            className={styles.evaInput}
+            aria-label="Niveau de stress perçu, de aucun à extrême"
+          />
+        </div>
+      </div>
       <p className={tonClass(caption.ton)} aria-live="polite">
         {caption.texte}
       </p>
@@ -290,10 +382,6 @@ function StressPanel({ onNavigate }: Pick<ModuleProps, 'onNavigate'>) {
           );
         })}
       </div>
-
-      <button type="button" className={styles.renvoiBtn} onClick={() => onNavigate('bouger')}>
-        Voir comment l'activité physique protège aussi <ArrowRight size={16} aria-hidden="true" />
-      </button>
     </div>
   );
 }
