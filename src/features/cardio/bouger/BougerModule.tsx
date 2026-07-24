@@ -62,9 +62,8 @@ const ACT_MIN_STEP = 5;
 const ACT_MIN_FLOOR = 5;
 const ACT_MIN_CEIL = 180;
 
-// à revalider (Thibault) : « Poids / tour de taille » (6ᵉ carte) — à coordonner avec
-// G-M7-taille (cohérence M2 cardio) ; si le tour de taille doit disparaître, retirer aussi
-// cette carte et redescendre la phrase d'intro (A6a-g §A6g, S4) à 5 bénéfices.
+// G-M7-taille tranchée (Thibault, 2026-07-24) : le tour de taille reste ici, acceptable dans
+// le contexte d'un bénéfice de l'activité (≠ facteur de risque du cockpit M2, où il a été retiré).
 /** Rayonnement des bénéfices (proto BEN, logique 805-813), verbatim. */
 const BENEFICES: { label: string; detail: string }[] = [
   { label: 'Tension', detail: 'Baisse la pression artérielle au repos.' },
