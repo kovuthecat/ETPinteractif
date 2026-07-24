@@ -1,5 +1,6 @@
 import type { ComponentType, CSSProperties } from 'react';
 import { FEU_TOKEN_STYLE, cumulMultiplicatif, type Feu } from '../lib/risqueCardio';
+import RisqueBarre from '../../../components/RisqueBarre';
 import styles from './CockpitFeux.module.css';
 
 /**
@@ -15,6 +16,11 @@ import styles from './CockpitFeux.module.css';
  * Cyclage : ce composant ne fait qu'appeler `onCycle(id)` au clic (comme
  * `RisqueCardioModule#cycleFactor`) — c'est l'appelant qui décide de la transition (typiquement
  * via `NEXT_ETAT` de la lib), afin que ce composant reste un pur composant de présentation.
+ *
+ * S7 (plans/refonte-audit-2026-07/S7.md, A10) : la barre elle-même est extraite dans
+ * `src/components/RisqueBarre.tsx` (générique, agnostique du thème) pour être rétro-portée vers
+ * `diabete/risque-cardio/RisqueCardioModule.tsx` — le calcul du score (`cumulMultiplicatif`,
+ * spécifique au modèle multiplicatif cardio) reste ici, inchangé.
  */
 
 export interface FacteurCockpit {
@@ -70,19 +76,10 @@ export default function CockpitFeux({ facteurs, feux, onCycle, showBarre = true,
       </div>
 
       {showBarre && (
-        <div
-          className={styles.barreWrap}
-          role="img"
-          aria-label={`Risque cumulé : ${scorePct} % — les facteurs se multiplient, ils ne s'additionnent pas`}
-        >
-          <div className={styles.barreLabels}>
-            <span>Risque faible</span>
-            <span>Risque élevé</span>
-          </div>
-          <div className={styles.barre}>
-            <div className={styles.barreCurseur} style={{ left: `${scorePct}%` }} />
-          </div>
-        </div>
+        <RisqueBarre
+          score={score}
+          ariaLabel={`Risque cumulé : ${scorePct} % — les facteurs se multiplient, ils ne s'additionnent pas`}
+        />
       )}
     </div>
   );

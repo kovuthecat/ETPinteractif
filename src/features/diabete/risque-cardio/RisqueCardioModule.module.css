@@ -123,6 +123,12 @@
   cursor: pointer;
 }
 
+/* Barre de synthèse « Risque faible → élevé » (S7, retro-port cardio M2, A10) — composant
+   partagé `src/components/RisqueBarre.tsx` ; ici, juste l'alignement avec le reste de la vue ①. */
+.risqueBarre {
+  margin: 0 auto;
+}
+
 .arterePanel {
   width: 100%;
   max-width: 720px;

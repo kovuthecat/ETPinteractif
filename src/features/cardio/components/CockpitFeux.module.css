@@ -47,40 +47,5 @@
   }
 }
 
-/* --- Barre de risque cumulée (multiplicative, D2) --- */
-
-.barreWrap {
-  width: 100%;
-  max-width: 440px;
-}
-
-.barreLabels {
-  display: flex;
-  justify-content: space-between;
-  font: 600 13px 'Work Sans', sans-serif;
-  color: var(--color-text-soft);
-  margin: 0 0 6px;
-}
-
-.barre {
-  position: relative;
-  height: 16px;
-  border-radius: var(--radius-pill);
-  background: linear-gradient(90deg, var(--color-confort), var(--color-vigilance), var(--color-toxique));
-}
-
-.barreCurseur {
-  position: absolute;
-  top: -6px;
-  width: 4px;
-  height: 28px;
-  border-radius: 2px;
-  background: var(--color-text);
-  transition: left 0.3s ease;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .barreCurseur {
-    transition: none;
-  }
-}
+/* Barre de risque cumulée : extraite dans `src/components/RisqueBarre.module.css` (S7,
+   plans/refonte-audit-2026-07/S7.md) — voir `RisqueBarre.tsx`. */

@@ -4,6 +4,7 @@ import { Droplet, Gauge, Droplets, Cigarette, Armchair } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import ModuleShell from '../../../components/ModuleShell';
 import FicheOverlay from '../../../components/FicheOverlay';
+import RisqueBarre from '../../../components/RisqueBarre';
 import PlaqueArtere, { plaquePassagePct } from '../components/PlaqueArtere';
 import Silhouette from '../components/Silhouette';
 import type { ZoneId, SilhouetteZoneState } from '../components/Silhouette';
@@ -16,6 +17,12 @@ import styles from './RisqueCardioModule.module.css';
  * risque (chips icônées Lucide → illustration `artere-saine.png` + plaque codée qui grossit dessus)
  * → ② l'anatomie (silhouette `bodyImage` + plaque en image posée sur le territoire) → ③ la fiche.
  * Outil « pour voir », non diagnostique : aucune donnée réelle n'est saisie ni conservée.
+ *
+ * S7 (plans/refonte-audit-2026-07/S7.md, A10) : la vue ① porte en plus la barre de synthèse
+ * « Risque faible → élevé » (`RisqueBarre`, `src/components/`), rétro-portée du cockpit cardio M2
+ * (`cardio/components/CockpitFeux.tsx`). Seule l'UI de la barre est partagée — le modèle de cumul
+ * cardio (multiplicatif, `cumulMultiplicatif`) et le modèle diabète (moyenne pondérée des feux,
+ * `score` ci-dessous) sont incompatibles et ne sont pas mutualisés (cf. S7 « Si bloqué »).
  */
 
 type FeuId = 'sucre' | 'tension' | 'cholesterol' | 'tabac' | 'sedentarite';
@@ -149,8 +156,9 @@ export default function RisqueCardioModule({ shell }: ModuleProps) {
   }
 
   // ---- Score cumulé (0..1) : les feux se potentialisent, ce n'est jamais affiché comme note. ----
-  // Utilisé par <PlaqueArtere> (encrassement visuel) et par l'aria-label de .artereImgWrap
-  // (plaquePassagePct) — S1 (audit) : le message texte associé a été retiré (narration orale).
+  // Utilisé par <PlaqueArtere> (encrassement visuel), par l'aria-label de .artereImgWrap
+  // (plaquePassagePct) — S1 (audit) : le message texte associé a été retiré (narration orale) —
+  // et par <RisqueBarre> (S7 : curseur de synthèse, même score, aucun texte numérique visible).
   const scoreSum = FEUX.reduce((acc, f) => acc + STATE_WEIGHT[factors[f.id]], 0);
   const score = scoreSum / FEUX.length;
 
@@ -210,13 +218,19 @@ export default function RisqueCardioModule({ shell }: ModuleProps) {
                   </button>
                   {hoverFeu === f.id && (
                     <p id={`feu-seuil-${f.id}`} role="tooltip" className={styles.feuTooltip}>
-                      {SEUILS[f.id]}
+                      Objectif : {SEUILS[f.id]}
                     </p>
                   )}
                 </div>
               );
             })}
           </div>
+
+          <RisqueBarre
+            score={score}
+            ariaLabel={`Risque cardiovasculaire cumulé : ${Math.round(score * 100)} %`}
+            className={styles.risqueBarre}
+          />
 
           <div className={`${styles.arterePanel} card`}>
             <div
