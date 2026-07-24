@@ -738,6 +738,14 @@
   gap: 8px;
 }
 
+/* A6d (S4, refonte-audit-2026-07) : borne la largeur de LA COURBE partagée à la fiche
+   « Mon assiette » — évite le débordement horizontal (cf. commentaire JSX ci-dessus). */
+.ficheCourbeWrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 /* --- C3 : panneau détail d'un aliment (contenu `InfoHover`, garde-manger + cartes défi ②) --- */
 
 .foodDetail {

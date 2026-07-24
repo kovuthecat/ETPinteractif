@@ -259,7 +259,7 @@ export default function AlerteModule({ shell }: ModuleProps) {
             <div className="fiche-bloc">
               <div className="fiche-contact">
                 <span className="fiche-contact-numero">15</span>
-                <p>Appelez immédiatement (ou 112). Ne conduisez pas. N'attendez pas que ça passe.</p>
+                <p>Appelez le 15 (ou 112). Ne conduisez pas. N'attendez pas que ça passe.</p>
               </div>
             </div>
           </FicheOverlay>

@@ -62,6 +62,9 @@ const ACT_MIN_STEP = 5;
 const ACT_MIN_FLOOR = 5;
 const ACT_MIN_CEIL = 180;
 
+// à revalider (Thibault) : « Poids / tour de taille » (6ᵉ carte) — à coordonner avec
+// G-M7-taille (cohérence M2 cardio) ; si le tour de taille doit disparaître, retirer aussi
+// cette carte et redescendre la phrase d'intro (A6a-g §A6g, S4) à 5 bénéfices.
 /** Rayonnement des bénéfices (proto BEN, logique 805-813), verbatim. */
 const BENEFICES: { label: string; detail: string }[] = [
   { label: 'Tension', detail: 'Baisse la pression artérielle au repos.' },
@@ -250,7 +253,10 @@ export default function BougerModule({ shell }: ModuleProps) {
             <div className={styles.benefices}>
               <p className="eyebrow">Ce que l&rsquo;activité régulière change, concrètement</p>
               <p className={styles.lead}>
-                Un seul effort, plusieurs bénéfices : tension, cholestérol, sucre, stress, cœur.
+                {/* A6g (S4, refonte-audit-2026-07) : la phrase ne listait que 5 bénéfices,
+                    le panneau ci-dessous en montre 6 (poids/tour de taille en plus) — alignée
+                    sur les cartes réellement affichées, cf. // à revalider ci-dessus. */}
+                Un seul effort, plusieurs bénéfices : tension, cholestérol, poids, sucre, stress, cœur.
               </p>
               <div className={styles.beneficesGrid}>
                 {BENEFICES.map((b) => (

@@ -311,6 +311,13 @@
   border-radius: var(--radius-lg);
   background: var(--color-bg);
   border: 2px solid var(--color-line);
+  /* A6f : la carte entière (hors stepper) est la cible d'ajout — cf. ActiviteModule.tsx. */
+  cursor: pointer;
+}
+
+.activityCard:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
 }
 
 .activityCardOn {
@@ -323,13 +330,15 @@
   flex-direction: column;
   align-items: center;
   gap: var(--space-xs);
+  width: 100%;
   background: transparent;
   border: none;
   padding: 0;
-  cursor: pointer;
   min-height: unset;
   min-width: unset;
   color: inherit;
+  /* A6f : purement visuel désormais (le toggle vit sur `.activityCard`). */
+  pointer-events: none;
 }
 
 .activityIllu {

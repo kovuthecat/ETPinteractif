@@ -389,17 +389,27 @@ export default function ActiviteModule({ shell }: ModuleProps) {
             </div>
             <div className={`card ${styles.activitiesGrid}`}>
               {reserveView.map((a) => (
+                // A6f (S4, refonte-audit-2026-07) : la cible d'ajout n'était que le petit
+                // cercle `.checkMark` en coin de carte (difficile à viser) ; le +/− ajustait
+                // les minutes sans rien ajouter au total tant que ce cercle n'était pas
+                // touché (piège). Toute la carte (hors stepper +/−) déclenche désormais
+                // l'ajout/retrait — cible large, affordance évidente.
                 <div
                   key={a.id}
                   className={`${styles.activityCard} ${a.isChecked ? styles.activityCardOn : ''}`}
                   data-intensite={a.intensite}
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={a.isChecked}
+                  aria-label={`${a.nom} — ${a.curMinutes} min — ${a.isChecked ? 'cochée, cliquer pour retirer' : 'cliquer pour ajouter au total'}`}
+                  onClick={() => toggleActivity(a.id)}
+                  onKeyDown={(e) => {
+                    if (e.key !== 'Enter' && e.key !== ' ') return;
+                    e.preventDefault();
+                    toggleActivity(a.id);
+                  }}
                 >
-                  <button
-                    type="button"
-                    className={styles.activityMain}
-                    onClick={() => toggleActivity(a.id)}
-                    aria-pressed={a.isChecked}
-                  >
+                  <span className={styles.activityMain}>
                     <span className={styles.activityIllu}>
                       <IllustrationSlot
                         id={`activite-${a.id}`}
@@ -415,8 +425,10 @@ export default function ActiviteModule({ shell }: ModuleProps) {
                     <span className={styles.checkMark} aria-hidden="true">
                       {a.isChecked ? '✓' : ''}
                     </span>
-                  </button>
-                  <div className={styles.stepper}>
+                  </span>
+                  {/* Le stepper reste une zone dédiée aux minutes : elle ne doit jamais
+                      déclencher le toggle de la carte (stopPropagation). */}
+                  <div className={styles.stepper} onClick={(e) => e.stopPropagation()}>
                     <button
                       type="button"
                       aria-label={`Réduire la durée de ${a.nom}`}

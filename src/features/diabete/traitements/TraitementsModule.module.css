@@ -283,12 +283,20 @@
 }
 
 /* Halo positif uniquement (systémique, « sucre ») — jamais de rouge, jamais de clignotement :
-   une seule transition d'opacité (brief §Module 7, corps pur). */
+   une seule transition d'opacité (brief §Module 7, corps pur).
+   A6a-g (S4, refonte-audit-2026-07 A6c) : la silhouette (opaque) recouvre le centre du dégradé,
+   là où l'opacité était la plus forte — seul le bord, déjà très atténué, dépassait. Le halo
+   « sucre » (seule zone systémique, sans ancre organe) restait donc quasi invisible à côté des
+   ancres organe (cœur/reins) qui, elles, ont un anneau plein bien visible. Dégradé en double
+   anneau (creux au centre, plein autour du contour du corps) pour rendre l'effet perceptible sans
+   changer la sémantique (toujours vert, toujours une seule transition d'opacité). */
 .halo {
   position: absolute;
-  inset: -20%;
+  inset: -10%;
   border-radius: 50%;
-  background: radial-gradient(circle, var(--color-confort-soft) 0%, rgba(0, 0, 0, 0) 70%);
+  background:
+    radial-gradient(circle, transparent 38%, var(--color-confort-soft) 58%, transparent 78%),
+    radial-gradient(circle, transparent 38%, var(--color-confort-soft) 58%, transparent 78%);
   transition: opacity 0.3s ease;
   pointer-events: none;
 }

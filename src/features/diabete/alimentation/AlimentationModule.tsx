@@ -1334,12 +1334,21 @@ export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
           </div>
           <div className="fiche-bloc">
             <span className="fiche-bloc-eyebrow">Ma courbe</span>
-            <CourbeGlycemie
-              courbes={[{ id: 'fiche', d: synthCourbePrincipale.d, label: 'Votre repas', variante: 'principale' }]}
-              bandes={BANDES_Y}
-              marqueurs={MARQUEUR_REPAS}
-              axeLabels={AXE_LABELS}
-            />
+            {/* A6d (S4, refonte-audit-2026-07) : LA COURBE partagée impose un plancher de
+                440px à son conteneur (`CourbeGlycemie.module.css` .wrap, dès 480px de viewport) —
+                seule cette fiche l'embarque telle quelle (les autres fiches du thème n'ont pas de
+                courbe, cf. Hypoglycémie/Insuline) ; sur une fiche plus étroite que ce plancher,
+                ça débordait horizontalement (barre de défilement en bas de la fiche). On
+                contraint ici la largeur pour ne jamais dépasser la fiche, quitte à rogner le
+                plancher en dernier recours plutôt que déborder. */}
+            <div className={styles.ficheCourbeWrap}>
+              <CourbeGlycemie
+                courbes={[{ id: 'fiche', d: synthCourbePrincipale.d, label: 'Votre repas', variante: 'principale' }]}
+                bandes={BANDES_Y}
+                marqueurs={MARQUEUR_REPAS}
+                axeLabels={AXE_LABELS}
+              />
+            </div>
           </div>
           <div className="fiche-bloc">
             <span className="fiche-bloc-eyebrow">Les 4 principes</span>
