@@ -4,12 +4,13 @@
 
 > **Frontières** — STATUS : état actuel · `TASKS.md` : backlog + tâches · `plans/` : plan d'une tâche active · `VALIDATION.md` : checklist visuelle.
 >
-> **Dernière mise à jour :** 2026-07-24 (refonte-audit-2026-07 — suites de l'audit pédagogique des 3 thèmes, S1-S5+S7+S9 consolidés, S6 bloquée gate contenu, S8 en attente PNG)
+> **Dernière mise à jour :** 2026-07-24 (refonte-audit-2026-07 — suites de l'audit pédagogique des 3 thèmes, S1-S7+S9 consolidés en 2 passes, S8 en attente PNG)
 
 **Refonte audit 2026-07 — suites de l'audit pédagogique des 3 thèmes (2026-07-24)** — issu de l'audit
 bi-agents du 2026-07-23 (`Audit/audit-pedagogique-2026-07.md` + `-partie2.md`), verdict : socle solide,
-aucun trou conceptuel majeur, correctifs majoritairement de forme. 6 sessions codées sur 7 (S8 hors
-vague, bloquée PNG) :
+aucun trou conceptuel majeur, correctifs majoritairement de forme. **7 sessions codées sur 8** (S8 hors
+vague, bloquée PNG), en deux passes le même jour (1ʳᵉ passe S1-S5+S7, puis discussion des gates avec
+Thibault, puis 2ᵉ passe S6 + 3 gates supplémentaires) :
 
 - **A1 (S1) — layout des modules à grand visuel diabète** : Complications/Suivi/Insuline basale
   sur-dimensionnaient leur visuel principal (silhouette 560px, cadran 560px, insuline sans layout 2
@@ -37,14 +38,19 @@ vague, bloquée PNG) :
   s'affiche, et le message clé jusque-là absent (« un seul ennemi, plusieurs adresses → les mêmes
   leviers protègent partout ») est désormais permanent, avec renvoi textuel vers la famille Agir.
   Enrichi en place (gate G-A7, défaut appliqué), aucune fusion de module.
-- **A8 (S6) — cardio M6 « Le tabac », BLOQUÉ gate contenu G-A8** : le module réduit à une bascule
+- **A8 (S6) — cardio M6 « Le tabac », mécanisme CV câblé (2 passes)** : le module réduit à une bascule
   2 états (depuis le retrait de la frise de réversibilité le 2026-07-23) devait être ré-enrichi d'un
   objet démonstratif du mécanisme CV (paroi agressée → spasme → plaque accélérée → thrombose →
   réversibilité). `docs/cardio/CONTENU_cardio.md` §M6 ne couvrait que 2 des 5 étapes en registre
-  patient. Conformément à la consigne « ne pas inventer de mécanisme », une **proposition de contenu
-  sourcée** (OpenEvidence Socle §E.1/E.2) a été écrite dans le doc, marquée `// à revalider
-  (Thibault)`, et le code de l'objet interactif **n'a pas été fait** — validation clinique du
-  mécanisme indispensable avant tout câblage futur.
+  patient : 1ʳᵉ passe → **proposition de contenu sourcée** (OpenEvidence Socle §E.1/E.2) écrite dans
+  le doc, marquée `// à revalider (Thibault)`, code non fait (gate G-A8 bloquante, conforme à la
+  consigne « ne pas inventer de mécanisme »). **Thibault a validé les 5 formulations le 2026-07-24**
+  (« OK pour les 5 ») → 2ᵉ passe : la bascule 2 états est remplacée par un **curseur Fumeur → Arrêté à
+  5 repères** qui déroule successivement les 5 étapes sur l'**artère héros partagée**
+  (`ArtereCoupe`, réutilisée sans duplication, chrome calqué sur le moule M1) — paroi agressée →
+  artère qui se serre (étape neuve, absente de l'ancien M6) → plaque accélérée → risque de caillot →
+  réversibilité à l'arrêt (message positif conservé). Tabac reste binaire (Fumeur/Arrêté), aucun
+  chiffre à l'écran, pont vers le thème Tabac conservé.
 - **A10 (S7) — rétro-port de la barre de risque vers le cockpit diabète RCV** : le cockpit Cardio M2
   matérialisait mieux la multiplication des facteurs (barre « Risque faible → élevé ») que le cockpit
   Diabète RCV (feux seuls). Les modèles de cumul étant incompatibles (cardio = multiplicatif, diabète
@@ -52,22 +58,36 @@ vague, bloquée PNG) :
   `src/components/RisqueBarre.tsx` (score qualitatif 0-1, aucun chiffre affiché, invariant 4 respecté),
   consommé par `CockpitFeux` (cardio, extraction propre) et `RisqueCardioModule` (diabète, nouveau).
 
+**Gates supplémentaires tranchées par Thibault le 2026-07-24 (hors plan initial, discutées et codées
+dans la foulée)** :
+- **G-Suivi** — le pré-cochage automatique des mois passés (`statusForMonth()`, diabète Suivi) était
+  une conception délibérée mais contredisait l'esprit « couverture, pas bilan ». Tranchée « neutre » :
+  les mois passés retombent désormais à « à programmer » par défaut (au lieu de « fait »), le clic
+  manuel pour cocher un mois reste inchangé.
+- **G-M10-nausées** — « nausées isolées, sans autre signe » comme signe atypique d'infarctus (cardio
+  M10) jugée trop peu spécifique (risque de fausses alertes). Tranchée « à retirer » : la carte est
+  supprimée (4→3 cartes de formes atypiques), grille réajustée, fiche imprimable et
+  `docs/cardio/CONTENU_cardio.md` §M10 mis à jour. Les nausées **associées** à d'autres signes
+  classiques (sueurs froides, essoufflement) restent inchangées, hors périmètre de cette décision.
+- **G-M7-taille** — cohérence du « tour de taille » comme bénéfice de l'activité (M7, cardio) vs son
+  retrait du cockpit M2. Tranchée « acceptable » : aucun changement de code, seule l'annotation
+  `// à revalider (Thibault)` a été levée dans `cardio/bouger`.
+
 **Réconciliation faite avant planification** (évite d'ouvrir un chantier sur un faux positif) : le
 « défi Qualité sans courbe » de l'audit était un **faux positif** (la courbe est bien rendue mais sous
 le bouton d'action, hors écran — absorbé par A1) ; le pré-cochage des mois passés du Suivi diabète est
 **une conception délibérée** (`statusForMonth()`), pas un bug — question produit **G-Suivi** non
 tranchée, capturée mais non codée dans ce chantier.
 
-Gate finale (S1-S5, S7, S9) sur l'arbre cumulé : `npx tsc --noEmit` ✓ · `npm run build` ✓ · `npm test`
-✓ **127/127**, aucune dépendance runtime ajoutée. 7 commits atomiques + 1 push (S6 : commit doc seul,
-aucun commit code puisque bloquée). **Points `// à revalider (Thibault)`** : 3 phrases-conseil leviers
-stress (S3, doc ne fournissait pas de formulation prête à l'écran) ; 4 phrases de conséquence + libellé
-« Agir » de M3 (S5) ; sort du « tour de taille » M7 (S4, **G-M7-taille** non tranché) ; **G-A8** — les 5
-formulations patient du mécanisme CV tabac proposées en S6, validation clinique indispensable avant tout
-code d'objet interactif ; **G-Suivi** — pré-cochage des mois passés, décision produit non tranchée ;
-**G-M10-nausées** — arbitrage clinique sensibilité/spécificité, hors code. **Validation visuelle humaine
-(Thibault, `npm run dev`) reste entièrement à faire** — cf. `VALIDATION.md`. **S8 reste hors vague**,
-bloquée tant que les PNG (M10 VITE/infarctus + garde-manger) ne sont pas générés par Thibault.
+Gate finale (S1-S7, S9, + les 3 gates du 2026-07-24) sur l'arbre cumulé : `npx tsc --noEmit` ✓ ·
+`npm run build` ✓ · `npm test` ✓ **127/127**, aucune dépendance runtime ajoutée. **Toutes les gates du
+chantier sont désormais tranchées** : G-A8, G-Suivi, G-M10-nausées, G-M7-taille (2026-07-24) ; G-A1,
+G-A4, G-A5, G-A6a, G-A7 (défauts sobres appliqués le 2026-07-24, en attente de confirmation visuelle
+seulement, non bloquants). Points `// à revalider (Thibault)` restants (formulation, pas de gate
+bloquante) : 3 phrases-conseil leviers stress (S3) ; 4 phrases de conséquence + libellé « Agir » de M3
+(S5). **Validation visuelle humaine (Thibault, `npm run dev`) reste entièrement à faire** — cf.
+`VALIDATION.md`. **S8 reste hors vague**, bloquée tant que les PNG (M10 VITE/infarctus + garde-manger)
+ne sont pas générés par Thibault.
 
 **Enrichissement visuel 2026-07 — Finition visuelle & garde-manger (2026-07-23)** — issu de l'audit
 `rapport-audit-consultation-2026-07.md`. Trois axes consolidés : (1) illustrations déjà prévues

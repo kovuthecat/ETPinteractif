@@ -73,13 +73,20 @@ Aux 3 largeurs (desktop large, ~768px, ~380px) :
 - [ ] **Validation clinique** : mapping organe→accident (verbatim doc) + 4 phrases de conséquence +
       libellé « Agir » — marqués `// à revalider (Thibault)`.
 
-### S6 — Cardio M6 « Le tabac » — BLOQUÉE, rien à valider à l'écran
+### S6 — Cardio M6 « Le tabac » — mécanisme câblé (gate G-A8 levée 2026-07-24)
 
-Aucun code livré (gate contenu G-A8 non résolue). **À valider par Thibault avant tout câblage futur** :
-les 5 formulations patient du mécanisme CV proposées dans `docs/cardio/CONTENU_cardio.md` §M6 (paroi
-agressée, spasme/vasoconstriction, plaque accélérée, caillot/thrombose, réversibilité) — sourcées
-OpenEvidence Socle §E.1/E.2, traduction jargon→patient à valider notamment pour l'étape spasme
-(entièrement neuve) et la dysfonction endothéliale.
+- [ ] Le **curseur Fumeur → Arrêté** (5 repères) est visible et manipulable — ce n'est plus une simple
+      bascule 2 états.
+- [ ] Les 5 étapes défilent dans l'ordre et l'**artère héros évolue visiblement** à chaque étape
+      (paroi → resserrement → plaque → caillot → stabilisation à l'arrêt).
+- [ ] Les légendes correspondent au §M6 validé — mécanisme **compris**, pas seulement affiché.
+- [ ] La réversibilité (étape 5, zone « Arrêté ») est présente, message positif conservé (« le cœur
+      commence à se réparer »).
+- [ ] Registre non anxiogène (pas d'artère « gore »), aucun chiffre à l'écran.
+- [ ] Le pont « → Thème Tabac » est toujours présent.
+- [ ] Lisibilité à ~1 m, thèmes clair/sombre.
+- [ ] **Validation clinique finale du mécanisme confirmée à l'écran** (les 5 formulations ont été
+      validées en discussion le 2026-07-24, mais pas encore vues câblées sur l'artère).
 
 ### S7 — Rétro-port barre de risque (diabète RCV)
 
@@ -92,14 +99,17 @@ OpenEvidence Socle §E.1/E.2, traduction jargon→patient à valider notamment p
 
 ### Points ouverts (à valider Thibault)
 
-- [ ] **G-A8** (bloquant, S6) — validation clinique du mécanisme CV tabac avant tout code d'objet.
-- [ ] **G-Suivi** — pré-cochage des mois passés (`statusForMonth`) : conception délibérée, contredit-elle
-      « couverture, pas bilan » ? Repli proposé : mois passés = « à programmer » par défaut. Hors
-      périmètre code de ce chantier, capturé seulement.
-- [ ] **G-M10-nausées** — « nausées isolées » comme signe d'infarctus : arbitrage sensibilité/spécificité,
-      décision clinique hors code.
-- [ ] **G-M7-taille** — sort du « tour de taille » comme bénéfice M7 (cohérence avec son retrait de M2
-      cardio) : `// à revalider` posé en S4, non tranché.
+Toutes les gates sont **tranchées** (2026-07-24). Reste la validation **visuelle** de leur câblage :
+
+- [ ] **G-A8** — validation à l'écran du curseur mécanisme M6 (checklist ci-dessus).
+- [ ] **G-Suivi** — diabète Suivi : vérifier que les mois passés (ex. janvier, mai) s'affichent bien
+      « à programmer » (⏳) au premier chargement au lieu de « fait » (✓), et que le clic bascule
+      toujours correctement.
+- [ ] **G-M10-nausées** — cardio Alerte, onglet Infarctus : vérifier que « Parfois autrement » n'affiche
+      plus que 3 cartes (Dos/Ventre/Fatigue), sans trou visuel desktop ni asymétrie mobile ; fiche
+      imprimable cohérente.
+- [ ] **G-M7-taille** — rien à valider visuellement (aucun changement de code, décision actée en
+      commentaire).
 - [ ] **G-A7** — confirmation que l'enrichissement en place de M3 (pas de fusion) est la bonne décision
       après visualisation.
 
