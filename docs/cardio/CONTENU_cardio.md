@@ -282,7 +282,7 @@ aiguë) et sa **réversibilité rapide** — puis **orienter** vers le thème Ta
 - « Dès l'arrêt, le cœur **commence à se réparer**. »
 - « Pour arrêter, un accompagnement complet existe → **thème Tabac**. » *(pont.)*
 
-**// PROPOSITION DE RÉ-ENRICHISSEMENT — mécanisme CV, à revalider (Thibault)** *(gate G-A8,
+**RÉ-ENRICHISSEMENT — mécanisme CV, validé Thibault 2026-07-24** *(gate G-A8,
 plan `refonte-audit-2026-07/S6` — 2026-07-24)*
 > **Contexte.** La décision Thibault du 2026-07-23 (retrait de la frise de réversibilité, ligne
 > ci-dessus au Calibrage) a réduit le M6 câblé à une bascule 2 états sans mécanisme. La décision
@@ -294,28 +294,29 @@ plan `refonte-audit-2026-07/S6` — 2026-07-24)*
 > favorise la thrombose aiguë ») et **§E.2** (réversibilité). Ce qui manque, et qui doit être validé
 > cliniquement avant tout code, c'est la **traduction en registre patient** (sans jargon, sans
 > chiffre) de ces étapes et **l'ordre** dans lequel les montrer sur l'artère héros. Formulations
-> ci-dessous = **propositions**, chacune à valider.
+> ci-dessous = **validées** (Thibault 2026-07-24) — gate G-A8 levée.
 >
 > Séquence proposée sur l'**artère héros** partagée (Fumeur → Arrêté ; qualitatif, aucun chiffre) :
 > 1. **Agression de la paroi** (Socle E.1 — dysfonction endothéliale, stress oxydatif, inflammation) :
->    « À chaque cigarette, la **paroi intérieure de l'artère s'irrite et s'abîme**. » *(à revalider)*
+>    « À chaque cigarette, la **paroi intérieure de l'artère s'irrite et s'abîme**. » *(validé Thibault 2026-07-24)*
 > 2. **Vasoconstriction / spasme** (Socle E.1 — spasme coronaire) : « L'artère **se serre** : elle se
->    contracte et laisse moins bien passer le sang. » *(à revalider — étape absente du §M6 actuel)*
+>    contracte et laisse moins bien passer le sang. » *(validé Thibault 2026-07-24 — étape absente du §M6 précédent)*
 > 3. **Accélération de la plaque** (Socle E.1 — accélère l'athérosclérose) : « Sur cette paroi
->    fragilisée, la **plaque se dépose et grossit plus vite**. » *(à revalider)*
+>    fragilisée, la **plaque se dépose et grossit plus vite**. » *(validé Thibault 2026-07-24)*
 > 4. **Thrombose** (Socle E.1 — activation plaquettaire, ↑ fibrinogène, thrombose aiguë) : « Le sang
 >    devient **plus épais, plus collant** : un **caillot** peut boucher le passage d'un coup. »
->    *(à revalider)*
+>    *(validé Thibault 2026-07-24)*
 > 5. **Réversibilité** (Socle E.2 — surrisque coronaire −½ dès la 1ʳᵉ année, rejoint le non-fumeur
 >    en ~15 ans ; jamais chiffré à l'écran) : « **Dès l'arrêt**, l'artère se détend et le cœur
->    **commence à se réparer** — le sur-risque **reflue vite**. » *(à revalider ; conserve le message
+>    **commence à se réparer** — le sur-risque **reflue vite**. » *(validé Thibault 2026-07-24 ; conserve le message
 >    positif non négociable.)*
 >
 > **Garde-fous (invariants du thème, à respecter dans l'objet) :** aucun chiffre à l'écran (E.2
 > reste hors écran) ; aucune aspirine ; tabac **binaire** (Fumeur / Arrêté), pas de palier ;
 > registre non anxiogène (« voilà ce qu'on protège »), pas d'artère gore ; **pont** « → Thème
-> Tabac » conservé, non dupliqué. **STOP câblage** tant que les 5 formulations ci-dessus ne sont pas
-> validées cliniquement par Thibault (G-A8).
+> Tabac » conservé, non dupliqué. Les 5 formulations ci-dessus sont **validées cliniquement par
+> Thibault (2026-07-24)** — gate G-A8 levée, câblage de l'objet interactif autorisé (module M6
+> `src/features/cardio/tabac/`, S6).
 
 **2ᵉ niveau (survol).**
 - « **Même quelques cigarettes comptent** » : 2-5 cig/j → HR 1,57 sur la mortalité CV
@@ -482,11 +483,12 @@ minute compte » (time is brain / time is muscle).
      (irradiation).
   3. « Autour de la douleur : **sueurs froides, essoufflement**, parfois des nausées. » (signes
      associés).
-- **Infarctus — formes atypiques** (4 cartes, une par signe, chacune avec sa propre illustration —
-  avant 2026-07-23 un seul bloc/pictogramme portait les 4 signes) : « Douleur dans le **dos**, sans
-  douleur de poitrine. » / « Douleur dans le **ventre**, sans douleur de poitrine. » / « Une
-  **fatigue intense**, inhabituelle. » / « Des **nausées isolées**, sans autre signe. » — chapeauté
-  par « Parfois autrement — **surtout femmes, diabétiques, personnes âgées**. »
+- **Infarctus — formes atypiques** (3 cartes, une par signe, chacune avec sa propre illustration —
+  avant 2026-07-23 un seul bloc/pictogramme portait les 4 signes ; carte « nausées isolées »
+  retirée le 2026-07-24, décision Thibault, gate G-M10-nausées : signe jugé trop peu spécifique,
+  risque de fausses alertes) : « Douleur dans le **dos**, sans douleur de poitrine. » / « Douleur
+  dans le **ventre**, sans douleur de poitrine. » / « Une **fatigue intense**, inhabituelle. » —
+  chapeauté par « Parfois autrement — **surtout femmes, diabétiques, personnes âgées**. »
   **// à revalider (Thibault)** : formulation exacte des **signes classiques et atypiques**
   (équilibre sensibilité / fausses alertes) = jugement clinique (point signalé par S1.md). Le
   **Complément K** (« reconnaissance de l'accident aigu ») listé dans

@@ -1,3 +1,13 @@
+/*
+ * Module 6 — « Le tabac » : objet démonstratif du mécanisme CV (ré-enrichissement S6). Chrome
+ * repris du MOULE M1 (`artere/ArtereModule.module.css`) : carte centrée illustration + légende,
+ * fondu au changement d'étape, lien « Suivant / Recommencer » discret. Position/rotation de
+ * l'overlay SVG portées par `ArtereCoupe.module.css` — ne pas dupliquer ici.
+ *
+ * Spécifique M6 : le « curseur » Fumeur → Arrêté (rail à 5 repères, 2 zones), objet central
+ * manipulable du module. Registre non anxiogène ; aucun chiffre affiché.
+ */
+
 .module {
   display: flex;
   flex-direction: column;
@@ -5,81 +15,184 @@
   gap: var(--space-lg);
 }
 
-/* --- Toggle Fumeur / A arrêté (rendu dans le slot `nav` du ModuleShell, C12 — même parti pris
-   que les onglets « temps » d'ArtereModule/S4) --- */
+/* --- Carte centrale (illustration artère héros + légende) — repris de M1 --- */
 
-.toggle {
-  display: inline-flex;
-  border-radius: var(--radius-pill);
-  background: var(--color-line);
-  padding: 4px;
-  gap: 4px;
+.card {
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--space-xl);
+  padding: 44px 56px;
+  animation: fadeIn 0.35s ease;
 }
 
-.toggleBtn {
-  padding: 10px 20px;
-  border: none;
-  border-radius: var(--radius-pill);
-  background: transparent;
-  color: var(--color-text);
-  font: 600 15px 'Work Sans', sans-serif;
-  cursor: pointer;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-.toggleActive {
-  background: var(--color-surface);
-  box-shadow: var(--shadow-1);
-}
-
-.toggleBtn:focus-visible {
-  outline: 3px solid var(--color-nav);
-  outline-offset: 2px;
-}
-
-/* --- Carte : barre de risque + frise --- */
-
-.carte {
+.captionCol {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: var(--space-lg);
-  width: 100%;
-  max-width: 480px;
-  padding: var(--space-xl) var(--space-lg);
-}
-
-.barreWrap {
-  width: 100%;
-}
-
-.barreLabels {
-  display: flex;
-  justify-content: space-between;
-  font: 600 13px 'Work Sans', sans-serif;
-  color: var(--color-text-soft);
-  margin: 0 0 6px;
-}
-
-.barre {
-  height: 26px;
-  border-radius: var(--radius-pill);
-  background: var(--color-line);
-  overflow: hidden;
-}
-
-.barreRemplissage {
-  height: 100%;
-  border-radius: var(--radius-pill);
-  transition:
-    width 0.4s ease,
-    background-color 0.4s ease;
+  align-items: flex-start;
+  gap: var(--space-md);
+  flex: 1 1 260px;
+  max-width: 360px;
 }
 
 .caption {
   margin: 0;
-  text-align: center;
-  font: 500 17px/1.5 'Work Sans', sans-serif;
+  font: 600 24px/1.4 'Work Sans', sans-serif;
   color: var(--color-text);
+}
+
+/* --- Curseur Fumeur → Arrêté (objet central) --- */
+
+.curseur {
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.zones {
+  display: flex;
+}
+
+.zone {
+  font: 700 14px 'Work Sans', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Les 4 repères « fumeur » occupent 4/5 de la largeur, le repère « arrêté » le dernier 1/5. */
+.zoneFumeur {
+  flex: 4;
+  color: var(--color-toxique);
+}
+
+.zoneArrete {
+  flex: 1;
+  text-align: center;
+  color: var(--color-confort-strong);
+}
+
+.repereRail {
+  position: relative;
+  display: flex;
+  gap: var(--space-sm);
+}
+
+/* Trait de liaison derrière les repères (rappel « progression »). */
+.repereRail::before {
+  content: '';
+  position: absolute;
+  top: 21px;
+  left: 6%;
+  right: 6%;
+  height: 3px;
+  background: var(--color-line);
+  border-radius: var(--radius-pill);
+  z-index: 0;
+}
+
+.repereBtn {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 2px 6px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-soft);
+  cursor: pointer;
+}
+
+.reperePuce {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-pill);
+  border: 3px solid var(--color-line);
+  background: var(--color-surface);
+  font: 700 18px 'Work Sans', sans-serif;
+  color: var(--color-text-soft);
+  transition:
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+
+.repereLabel {
+  font: 600 13px/1.25 'Work Sans', sans-serif;
+  text-align: center;
+  max-width: 11ch;
+}
+
+/* Repère de la zone « arrêté » : teinte confort au repos (repère non chromatique = position en
+   bout de rail + libellé, jamais la couleur seule). */
+.repereArrete .reperePuce {
+  border-color: var(--color-confort-soft);
+}
+
+.repereBtn:hover .reperePuce {
+  border-color: var(--color-text-faint);
+}
+
+/* Étape active : puce pleine + libellé renforcé. Zone fumeur = toxique, zone arrêté = confort. */
+.repereActif .reperePuce {
+  border-color: var(--color-toxique);
+  background: var(--color-toxique);
+  color: var(--color-bg);
+}
+
+.repereActif.repereArrete .reperePuce {
+  border-color: var(--color-confort-strong);
+  background: var(--color-confort-strong);
+}
+
+.repereActif .repereLabel {
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.repereBtn:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
+  border-radius: var(--radius-md, 10px);
+}
+
+/* --- Lien « Suivant / Recommencer » (discret) — repris de M1 --- */
+
+.suivantBtn {
+  background: none;
+  border: none;
+  padding: 8px 12px;
+  color: var(--color-nav);
+  font: 600 15px 'Work Sans', sans-serif;
+  cursor: pointer;
+}
+
+.suivantBtn:hover {
+  text-decoration: underline;
+}
+
+.suivantBtn:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 2px;
 }
 
 /* --- Porte inter-thèmes (repli visuel, non-navigant en v1) --- */
@@ -97,4 +210,25 @@
   margin-top: 2px;
   font-weight: 600;
   color: var(--color-nav);
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: 28px 24px;
+    gap: var(--space-lg);
+  }
+
+  .caption {
+    font-size: 20px;
+  }
+
+  .repereLabel {
+    font-size: 11px;
+  }
+
+  .reperePuce {
+    width: 34px;
+    height: 34px;
+    font-size: 16px;
+  }
 }

@@ -101,7 +101,7 @@ export const MODULES: ModuleDef[] = [
     id: 'tabac',
     famille: 'agir',
     titre: 'Le tabac',
-    resume: "Voir le risque cardiovasculaire redescendre après l'arrêt du tabac.",
+    resume: "Suivre, étape par étape, comment le tabac abîme l'artère — et ce qui change à l'arrêt.",
     Icon: Cigarette,
     Component: TabacModule,
     hue: 'toxique',
