@@ -391,7 +391,7 @@ export default function SuiviModule({ shell }: ModuleProps) {
 
               {monthDots.map((m) => {
                 const p = pt(CX, CY, R_DOTS, angleForMonth(m));
-                return <circle key={m} cx={p.x} cy={p.y} r={4} className={styles.dialDot} />;
+                return <circle key={m} cx={p.x} cy={p.y} r={5} className={styles.dialDot} />;
               })}
 
               {monthLabels.map(({ m, x, y }) => (

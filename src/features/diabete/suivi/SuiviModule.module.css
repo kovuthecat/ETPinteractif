@@ -97,10 +97,14 @@
 /* S6-v3 : 480→560px — l'ancien override `@media (min-width:860px)` RÉTRÉCISSAIT le cadran à
    420px dès qu'on passait côte-à-côte (contre-intuitif : passer côte-à-côte réduisait le
    cadran). Supprimé : le cadran garde sa taille max quel que soit le layout. */
+/* S1 (refonte-audit-2026-07) : plafond 560→420 par défaut (mode empilé) — un cadran carré à
+   560px occupait tout l'écran et repoussait les rangées d'examens sous le pli. Le plafond
+   560px d'origine (S6-v3) est réservé au layout côte-à-côte (≥1200px, cf. media query
+   ci-dessous), où le cadran n'est jamais seul en haut d'écran. */
 .dialWrap {
   position: relative;
   width: 100%;
-  max-width: 560px;
+  max-width: 420px;
   flex-shrink: 0;
 }
 
@@ -116,14 +120,19 @@
   stroke-width: 2;
 }
 
+/* A6e (S4, refonte-audit-2026-07) : les points de mois « libres » utilisaient --color-line
+   (14 % d'opacité, pensé pour un simple filet de séparation) — au premier regard le cadran
+   paraissait vide, peu lisible à ~1 m. Passage à --color-text-faint (45 %) + rayon légèrement
+   agrandi, sans rouge ni changement de sémantique (toujours un simple repère de mois, pas un
+   statut). */
 .dialDot {
-  fill: var(--color-line);
+  fill: var(--color-text-faint);
 }
 
 .dialMonthLabel {
   font: 700 14px 'Work Sans', sans-serif;
   letter-spacing: 0.05em;
-  fill: var(--color-text-soft);
+  fill: var(--color-text);
 }
 
 .dialNeedle {
@@ -298,6 +307,12 @@
   .panel {
     flex: 1;
     min-width: 0;
+  }
+
+  /* S1 : côte-à-côte, le cadran retrouve sa taille max d'origine (S6-v3) — les examens sont
+     à côté, pas repoussés dessous, donc pas de risque de pousser les contrôles hors écran. */
+  .dialWrap {
+    max-width: 560px;
   }
 }
 
