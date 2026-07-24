@@ -153,13 +153,19 @@ export function computeConsultMonths(cfg: ConsultConfig): number[] {
 
 /**
  * Statut par défaut d'un mois donné par rapport au mois courant réel — RÈGLE GRAVÉE ①
- * appliquée ici seulement au moment du calcul initial : passé = fait, mois courant = à
- * programmer, futur = à venir. Le statut se fige ensuite (l'utilisateur le change via
- * un clic), il ne se recalcule jamais tout seul sur l'année civile.
+ * appliquée ici seulement au moment du calcul initial : passé et mois courant = à
+ * programmer (état neutre, rien n'est présumé fait sans confirmation), futur = à venir.
+ * Le statut se fige ensuite (l'utilisateur le change via un clic), il ne se recalcule
+ * jamais tout seul sur l'année civile.
+ *
+ * Décision Thibault (2026-07-24, gate G-Suivi) : un mois passé ne pré-suppose plus que
+ * l'examen a été fait — l'app ne connaît pas le vécu réel du patient. Avant ce
+ * changement, `month < currentMonth` renvoyait `'fait'`, ce qui pré-cochait
+ * automatiquement janvier/mai/etc. comme si les examens avaient eu lieu. Repli sur
+ * l'état neutre `'a_programmer'`, cochable manuellement par l'utilisateur (clic).
  */
 export function statusForMonth(month: number, currentMonth: number): Status {
-  if (month < currentMonth) return 'fait';
-  if (month === currentMonth) return 'a_programmer';
+  if (month <= currentMonth) return 'a_programmer';
   return 'a_venir';
 }
 
