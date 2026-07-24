@@ -16,6 +16,28 @@
 
 ---
 
+## Repas-types — moteur de proportions + 14 plats (2026-07-24)
+
+- [ ] Diabète, module Alimentation, défi ★ « Repas complet » : charger chaque preset (bouton
+      « Charger un repas-type ») et vérifier que la courbe glycémique change visiblement selon le
+      plat (un plat féculent-dominant comme le riz au gras doit donner un pic plus marqué qu'un
+      plat protéine-dominant comme la salade composée).
+- [ ] Cardio, module Manger, onglet Assiette : charger chaque preset et vérifier que le camembert
+      n'est plus systématiquement à parts égales — les 3 parts doivent visuellement refléter la
+      composition du plat (ex. dal lentilles-riz basmati : féculents très dominant, quasi pas de
+      protéines).
+- [ ] Les 4 nouveaux aliments (naan, agneau/bœuf, ghee, pâte d'arachide) apparaissent dans les
+      deux garde-manger (onglets Féculents/Protéines/Matières grasses), avec un placeholder
+      `IllustrationSlot` propre (pas de vignette cassée).
+- [ ] Les 9 nouveaux plats apparaissent dans la liste « Charger un repas-type » des deux modules,
+      libellés cohérents.
+- [ ] Aucune régression sur les 5 plats déjà existants (couscous-merguez, riz-poisson,
+      poulet-plantain, végétarien, petit-déj méditerranéen).
+- [ ] Composition/proportions des 14 plats (`// à revalider Thibault`) : à juger sur le rendu —
+      cohérence culturelle, réalisme des portions relatives.
+
+---
+
 ## Chantier refonte-audit-2026-07 — suites de l'audit pédagogique des 3 thèmes (2026-07-24)
 
 **Statut** : 6 sessions codées et consolidées (S1, S2, S3, S4, S5, S7), gates auto vertes (`tsc` + `build`

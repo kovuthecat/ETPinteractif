@@ -4,7 +4,37 @@
 
 > **Frontières** — STATUS : état actuel · `TASKS.md` : backlog + tâches · `plans/` : plan d'une tâche active · `VALIDATION.md` : checklist visuelle.
 >
-> **Dernière mise à jour :** 2026-07-24 (refonte-audit-2026-07 — suites de l'audit pédagogique des 3 thèmes, S1-S7+S9 consolidés en 2 passes, S8 en attente PNG)
+> **Dernière mise à jour :** 2026-07-24 (repas-types — moteur de proportions + enrichissement à 14 plats, 4 nouveaux ingrédients ; refonte-audit-2026-07 S1-S7+S9 consolidés en 2 passes, S8 en attente PNG)
+
+**Repas-types — moteur de proportions + enrichissement à 14 plats (2026-07-24)** — revue directe
+du garde-manger avec Thibault (Thibault génère actuellement les illustrations manquantes) :
+
+- **Proportions désormais réelles** : `portions` par aliment côté diabète (répété N fois dans
+  l'assiette, pèse N fois dans la courbe glycémique) + `proportionsCoeur` côté cardio (poids de
+  catégorie légumes/féculents/protéines, convertis en angles de camembert via la nouvelle
+  fonction pure `anglesFromProportions()`). Avant : chaque aliment comptait pour 1 portion fixe
+  côté diabète, et le camembert cardio revenait systématiquement à parts égales quel que soit le
+  plat chargé — aucune des deux n'était réaliste.
+- **9 nouveaux plats** (14 au total) couvrant les 5 populations majoritaires de la patientèle
+  MSP : française (poulet rôti-pommes de terre-haricots verts, salade composée), maghrébine
+  (tajine poulet-olives, en plus du couscous-merguez), Afrique subsaharienne (riz au gras/jollof,
+  attiéké-poisson, mafé riz-sauce arachide, en plus du riz-poisson et poulet-plantain), orientale/
+  pakistanaise (dal lentilles-riz basmati, curry d'agneau-riz-naan — famille jusque-là absente),
+  asiatique générique (riz-poulet-légumes sautés).
+- **4 nouveaux ingrédients** avec caractéristiques complètes dans les deux tables (`diabete/
+  alimentation/data.ts` + `cardio/manger/data.ts`) : naan, agneau/bœuf (1ʳᵉ viande rouge du
+  garde-manger, qui n'avait que volaille/poisson), ghee, pâte d'arachide. 4 prompts
+  d'illustration ajoutés (`design/illustrations/prompts-illustrations-diabete.html`, section
+  `gm-monde`).
+- **Matières grasses de cuisson systématisées** : ajoutées aux plats qui en manquaient
+  (couscous-merguez, riz-poisson, poulet-plantain — huile d'olive ; curry — ghee, plus fidèle).
+- **Symétrisation** : « Pâtes blanches » (existait côté diabète) ajoutée au garde-manger cardio.
+
+Gate : `npx tsc --noEmit` ✓ · `npm run build` ✓ · `npm test` ✓ **127/127**, aucune dépendance
+runtime ajoutée. Toutes les valeurs (nutritionnelles + proportions des 14 plats) restent
+`// à revalider (Thibault)`. **Validation visuelle humaine à faire** (`npm run dev`, les deux
+modules Alimentation/Manger, comparer le rendu de la courbe et du camembert avant/après
+chargement d'un preset) — cf. `VALIDATION.md`.
 
 **Refonte audit 2026-07 — suites de l'audit pédagogique des 3 thèmes (2026-07-24)** — issu de l'audit
 bi-agents du 2026-07-23 (`Audit/audit-pedagogique-2026-07.md` + `-partie2.md`), verdict : socle solide,

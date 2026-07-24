@@ -47,10 +47,12 @@ src/
                              # au-dessus du switcher de vues (survit à la navigation inter-modules, se
                              # réinitialise au rechargement) ; S10 corrections-audit-tabac, 2026-07-13
   content/
-    repas-types.ts          # presets « repas-types » partagés (5 repas : couscous-merguez, riz-poisson,
-                             # poulet-plantain, lentilles-œuf, petit-déj méditerranéen), créé S3
-                             # enrichissement-visuel-2026-07, consommé par MangerModule (cardio) +
-                             # AlimentationModule (diabète) — aucune dépendance thème
+    repas-types.ts          # presets « repas-types » partagés (14 repas couvrant français/maghrébin/
+                             # africain subsaharien/oriental-pakistanais/asiatique), créé S3
+                             # enrichissement-visuel-2026-07, enrichi 2026-07-24 (9 plats + moteur de
+                             # proportions : `portions` par aliment + `proportionsCoeur` par catégorie),
+                             # consommé par MangerModule (cardio) + AlimentationModule (diabète) —
+                             # aucune dépendance thème
   features/
     types.ts                # ModuleId/FamilleId (string génériques), Hue, ModuleDef, FamilleDef, ThemeDef (+ Icon: LucideIcon ajouté S4 enrichissement-visuel-2026-07), exergue?
     registry.ts              # THEMES: ThemeDef[] — registre des thèmes (tabac + diabete + cardio), avec icônes (tabac: CigaretteOff, diabete: Droplet, cardio: Heart)
