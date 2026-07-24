@@ -384,6 +384,17 @@
   outline-offset: 2px;
 }
 
+/* --- Stress : phrase-conseil révélée au clic sur un levier (A5, 2026-07-23) --- */
+
+.leverConseil {
+  margin: 0;
+  padding: var(--space-sm);
+  border-radius: var(--radius-sm);
+  background: var(--color-confort-soft);
+  color: var(--color-text);
+  font: 500 14px/1.5 'Work Sans', sans-serif;
+}
+
 @media (max-width: 480px) {
   .panel {
     padding: var(--space-md);

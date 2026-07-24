@@ -29,6 +29,15 @@ import styles from './LeviersModule.module.css';
  * - **Stress** : curseur nu + chiffre brut remplacés par une échelle visuelle analogique (dégradé
  *   confort→vigilance→toxique continu, ancres textuelles « Aucun stress »/« Stress extrême »,
  *   jamais de note affichée).
+ *
+ * **Correction A5 (2026-07-23, audit refonte)** — deux interactions étaient cliquables sans
+ * effet (pas d'erreur, juste aucun payoff) :
+ * - **Stress** : les 3 leviers (Activité/Relaxation/Lien social) révèlent désormais chacun une
+ *   phrase-conseil au clic (un seul ouvert à la fois, patron des 4D tabac) — voir
+ *   `LEVIER_CONSEILS` (`// à revalider (Thibault)`, doc source ne fournit pas de formulation
+ *   prête à l'écran par levier).
+ * - **Sommeil** : la check-list SAOS affiche un message d'orientation dès 1 case cochée
+ *   (renforcé au texte, jamais au diagnostic, à partir de 2) — voir `saosMessage`.
  */
 
 type Volet = 'alcool' | 'sommeil' | 'stress';
@@ -216,6 +225,26 @@ function sommeilCaption(h: number): { texte: string; ton: Ton } {
   return { texte: 'Trop long : associé lui aussi à un risque plus élevé.', ton: 'vigilance' };
 }
 
+/**
+ * Message d'orientation SAOS (A5, 2026-07-23) : dès 1 case cochée, on oriente déjà vers le
+ * médecin — jamais de score, jamais de diagnostic à l'écran (CONTENU_cardio.md §M9, « SAOS =
+ * orienter vers un dépistage, jamais diagnostiquer »). Renforcé (texte seulement, pas de ton
+ * plus alarmant) à partir de 2 signes.
+ */
+function saosMessage(count: number): { texte: string; ton: Ton } | null {
+  if (count === 0) return null;
+  if (count === 1) {
+    return {
+      texte: "Ce signe mérite d'en parler à votre médecin — un dépistage du sommeil est possible.",
+      ton: 'vigilance',
+    };
+  }
+  return {
+    texte: 'Plusieurs signes présents : parlez-en à votre médecin, un dépistage du SAOS peut être utile.',
+    ton: 'vigilance',
+  };
+}
+
 function SommeilPanel() {
   const [heures, setHeures] = useState(7);
   const [saos, setSaos] = useState<Record<string, boolean>>({});
@@ -226,6 +255,7 @@ function SommeilPanel() {
 
   const caption = sommeilCaption(heures);
   const saosCount = Object.values(saos).filter(Boolean).length;
+  const saosMsg = saosMessage(saosCount);
 
   return (
     <div className={`card ${styles.panel}`}>
@@ -285,9 +315,9 @@ function SommeilPanel() {
           );
         })}
       </div>
-      {saosCount >= 2 && (
-        <p className={tonClass('vigilance')} aria-live="polite">
-          Plusieurs signes présents : parlez-en, un dépistage du SAOS peut être utile.
+      {saosMsg && (
+        <p className={tonClass(saosMsg.ton)} aria-live="polite">
+          {saosMsg.texte}
         </p>
       )}
     </div>
@@ -302,6 +332,22 @@ const STRESS_LEVIERS: { id: string; label: string }[] = [
   { id: 'lien', label: 'Lien social' },
 ];
 
+/**
+ * Phrases-conseil par levier (A5, 2026-07-23 — interaction jusque-là muette : le clic bascule
+ * `aria-pressed` sans rien révéler). CONTENU_cardio.md §M9 nomme les 3 leviers (activité,
+ * relaxation, lien social) et leur rôle protecteur (« le gérer... protège aussi le cœur ») mais
+ * ne fournit pas de formulation prête à l'écran par levier — pas de RR affiché (calibrage
+ * hors écran, G1). Formulations sobres, concrètes, sans chiffre ni promesse de guérison.
+ * // à revalider (Thibault)
+ */
+const LEVIER_CONSEILS: Record<string, string> = {
+  activite:
+    "Une marche, du vélo, quelques minutes de mouvement chaque jour : l'activité physique aide à évacuer les tensions et fait baisser durablement le niveau de stress.",
+  relaxation:
+    'Respiration lente, cohérence cardiaque, méditation : quelques minutes suffisent pour faire retomber tension et rythme cardiaque.',
+  lien: "Parler à un proche, ne pas rester seul face aux difficultés : le lien social protège, au même titre que l'activité physique.",
+};
+
 function stressCaption(n: number): { texte: string; ton: Ton } {
   if (n <= 3) return { texte: 'Niveau bas — plutôt favorable.', ton: 'confort' };
   if (n <= 6) return { texte: 'Niveau modéré — la récupération (sommeil, pauses) compte.', ton: 'vigilance' };
@@ -310,10 +356,11 @@ function stressCaption(n: number): { texte: string; ton: Ton } {
 
 function StressPanel() {
   const [niveau, setNiveau] = useState(3);
-  const [leviers, setLeviers] = useState<Record<string, boolean>>({});
+  // Un seul levier « ouvert » à la fois (patron des 4D tabac) — clic à nouveau = referme.
+  const [levierOuvert, setLevierOuvert] = useState<string | null>(null);
 
   function toggleLevier(id: string) {
-    setLeviers((l) => ({ ...l, [id]: !l[id] }));
+    setLevierOuvert((cur) => (cur === id ? null : id));
   }
 
   const caption = stressCaption(niveau);
@@ -366,15 +413,15 @@ function StressPanel() {
       <p className={styles.saosInstruction}>
         Le gérer — activité, relaxation, lien social — protège aussi le cœur.
       </p>
-      <div className={styles.leviersList}>
+      <div className={styles.leviersList} role="group" aria-label="Leviers pour atténuer le stress — cliquez pour un conseil">
         {STRESS_LEVIERS.map((l) => {
-          const checked = !!leviers[l.id];
+          const ouvert = levierOuvert === l.id;
           return (
             <button
               key={l.id}
               type="button"
-              aria-pressed={checked}
-              className={`${styles.leverChip}${checked ? ` ${styles.leverChipOn}` : ''}`}
+              aria-expanded={ouvert}
+              className={`${styles.leverChip}${ouvert ? ` ${styles.leverChipOn}` : ''}`}
               onClick={() => toggleLevier(l.id)}
             >
               {l.label}
@@ -382,6 +429,11 @@ function StressPanel() {
           );
         })}
       </div>
+      {levierOuvert && (
+        <p className={styles.leverConseil} aria-live="polite">
+          {LEVIER_CONSEILS[levierOuvert]}
+        </p>
+      )}
     </div>
   );
 }
