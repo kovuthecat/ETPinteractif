@@ -86,6 +86,16 @@ const REGULARITE_TEXTE =
 const PONT_TEXTE =
   'La lente couvre toute la journée, du coucher au coucher ; la rapide zoome sur un seul repas.';
 
+/** Refrain de sécurité titration (constat audit A4, S2 refonte-audit-2026-07) : « la cadence
+ *  est le temps fort » (`docs/diabete/BRIEF_DESIGN_diabete.md` L248, `SPEC_outil_ETP_diabete.md`
+ *  L584/L686) + prudence déjà existante du module. Reste affiché quel que soit le choix de
+ *  décision (chip situation + baisser/laisser/monter) : ce n'est pas une récompense de bonne
+ *  réponse, c'est le message porteur (posture ETP non évaluative). // à revalider (Thibault) :
+ *  « une chose à la fois » n'est pas repris verbatim d'un doc, cf. cadence/attente ~3 jours.
+ */
+const REFRAIN_CADENCE_TEXTE =
+  "On change une chose à la fois et on attend ~3 jours avant de rejuger. Dans le doute, on ne monte pas — on traite l'hypo d'abord.";
+
 export default function InsulineModule({ onNavigate, shell }: ModuleProps) {
   const [situationId, setSituationId] = useState<SituationId | null>(null);
   const [segmentId, setSegmentId] = useState<'nuit' | 'repas' | null>(null);
@@ -129,6 +139,8 @@ export default function InsulineModule({ onNavigate, shell }: ModuleProps) {
     <div className={styles.module}>
       <p className={styles.introTexte}>{INTRO_ROLE_TEXTE}</p>
 
+      <div className={styles.layout}>
+      <div className={styles.graphCol}>
       <div className={`card ${styles.graphCard}`}>
         <div className={styles.graphHeader}>
           <span className={styles.graphLabel}>Courbe du capteur</span>
@@ -167,7 +179,9 @@ export default function InsulineModule({ onNavigate, shell }: ModuleProps) {
           </p>
         )}
       </div>
+      </div>
 
+      <div className={styles.controlsCol}>
       {/* Bloc décision, toujours visible (plus d'onglet « Décider ») : chips situations +
           réglage de la lente + message, et la carte « La trace plonge dans le bas ». */}
       <div className={styles.situations}>
@@ -257,7 +271,7 @@ export default function InsulineModule({ onNavigate, shell }: ModuleProps) {
       </div>
 
       <div className={styles.piedRefrain}>
-        <p className="filrouge">Dans le doute, on ne monte pas — on traite l'hypo d'abord.</p>
+        <p className="filrouge">{REFRAIN_CADENCE_TEXTE}</p>
         <p className={styles.accompagnement}>
           Régler la lente, c'est un travail d'équipe avec votre soignant — pas une décision à
           prendre seul.
@@ -265,6 +279,8 @@ export default function InsulineModule({ onNavigate, shell }: ModuleProps) {
       </div>
 
       <p className={styles.pontTexte}>{PONT_TEXTE}</p>
+      </div>
+      </div>
     </div>
     </ModuleShell>
   );
