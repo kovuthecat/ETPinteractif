@@ -282,6 +282,41 @@ aiguë) et sa **réversibilité rapide** — puis **orienter** vers le thème Ta
 - « Dès l'arrêt, le cœur **commence à se réparer**. »
 - « Pour arrêter, un accompagnement complet existe → **thème Tabac**. » *(pont.)*
 
+**// PROPOSITION DE RÉ-ENRICHISSEMENT — mécanisme CV, à revalider (Thibault)** *(gate G-A8,
+plan `refonte-audit-2026-07/S6` — 2026-07-24)*
+> **Contexte.** La décision Thibault du 2026-07-23 (retrait de la frise de réversibilité, ligne
+> ci-dessus au Calibrage) a réduit le M6 câblé à une bascule 2 états sans mécanisme. La décision
+> Thibault du **2026-07-23** demande de **ré-enrichir** le module avec un objet qui **montre comment
+> le tabac abîme les artères** (pas restaurer la frise — nouvel objet mécanisme). Les 5 étapes du
+> mécanisme sont **sourcées** dans le rapport OpenEvidence Socle **§E.1** (`evidence-cardio/
+> 2026-07-21-…-socle.md`, ligne 108 : « Dysfonction endothéliale, activation plaquettaire, ↑
+> fibrinogène, stress oxydatif, inflammation, spasme coronaire → accélère l'athérosclérose +
+> favorise la thrombose aiguë ») et **§E.2** (réversibilité). Ce qui manque, et qui doit être validé
+> cliniquement avant tout code, c'est la **traduction en registre patient** (sans jargon, sans
+> chiffre) de ces étapes et **l'ordre** dans lequel les montrer sur l'artère héros. Formulations
+> ci-dessous = **propositions**, chacune à valider.
+>
+> Séquence proposée sur l'**artère héros** partagée (Fumeur → Arrêté ; qualitatif, aucun chiffre) :
+> 1. **Agression de la paroi** (Socle E.1 — dysfonction endothéliale, stress oxydatif, inflammation) :
+>    « À chaque cigarette, la **paroi intérieure de l'artère s'irrite et s'abîme**. » *(à revalider)*
+> 2. **Vasoconstriction / spasme** (Socle E.1 — spasme coronaire) : « L'artère **se serre** : elle se
+>    contracte et laisse moins bien passer le sang. » *(à revalider — étape absente du §M6 actuel)*
+> 3. **Accélération de la plaque** (Socle E.1 — accélère l'athérosclérose) : « Sur cette paroi
+>    fragilisée, la **plaque se dépose et grossit plus vite**. » *(à revalider)*
+> 4. **Thrombose** (Socle E.1 — activation plaquettaire, ↑ fibrinogène, thrombose aiguë) : « Le sang
+>    devient **plus épais, plus collant** : un **caillot** peut boucher le passage d'un coup. »
+>    *(à revalider)*
+> 5. **Réversibilité** (Socle E.2 — surrisque coronaire −½ dès la 1ʳᵉ année, rejoint le non-fumeur
+>    en ~15 ans ; jamais chiffré à l'écran) : « **Dès l'arrêt**, l'artère se détend et le cœur
+>    **commence à se réparer** — le sur-risque **reflue vite**. » *(à revalider ; conserve le message
+>    positif non négociable.)*
+>
+> **Garde-fous (invariants du thème, à respecter dans l'objet) :** aucun chiffre à l'écran (E.2
+> reste hors écran) ; aucune aspirine ; tabac **binaire** (Fumeur / Arrêté), pas de palier ;
+> registre non anxiogène (« voilà ce qu'on protège »), pas d'artère gore ; **pont** « → Thème
+> Tabac » conservé, non dupliqué. **STOP câblage** tant que les 5 formulations ci-dessus ne sont pas
+> validées cliniquement par Thibault (G-A8).
+
 **2ᵉ niveau (survol).**
 - « **Même quelques cigarettes comptent** » : 2-5 cig/j → HR 1,57 sur la mortalité CV
   (Socle E.1-E.2 — Cross-Cohort Collaboration, PLoS Med 2025).
