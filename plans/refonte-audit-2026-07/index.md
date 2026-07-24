@@ -78,7 +78,7 @@ chantier sur un faux positif :
 | [S3](S3.md) | A5 | Cardio M9 : leviers stress + check-list SAOS réactifs | Sonnet | medium | — | `cardio/leviers` (+ css) | [x] |
 | [S4](S4.md) | A6 | Micro-fixes groupés (tooltip feu, fiche M10, metformine, débordements, cadran, cibles) | Sonnet | medium | — | `diabete/risque-cardio`, `cardio/alerte`, `diabete/traitements`, `diabete/alimentation`, `diabete/suivi`, `diabete/activite`, `cardio/bouger` | [x] |
 | [S5](S5.md) | A7 | Cardio M3 « Où l'accident frappe » : refonte partielle (plaque-pivot) | Opus | high | — | `cardio/territoires` (+ css) | [x] |
-| [S6](S6.md) | A8 | Cardio M6 « Le tabac » : ré-enrichir le mécanisme CV (contenu d'abord) | Opus | high | — | `docs/cardio/CONTENU_cardio.md`, `cardio/tabac` (+ css) | [!] bloqué gate G-A8 (proposition contenu livrée, code non fait) |
+| [S6](S6.md) | A8 | Cardio M6 « Le tabac » : ré-enrichir le mécanisme CV (contenu d'abord) | Opus | high | — | `docs/cardio/CONTENU_cardio.md`, `cardio/tabac` (+ css) | [x] (gate G-A8 levée 2026-07-24, objet câblé en 2ᵉ passe) |
 | [S7](S7.md) | A10 | Rétro-port barre « Risque faible → élevé » vers cockpit diabète (RCV) | Sonnet | medium | — | `diabete/risque-cardio`, éventuel composant partagé `src/components/` | [x] |
 | [S8](S8.md) | A2, A3 | Câblage illustrations M10 VITE + garde-manger (**bloqué : PNG Thibault**) | Sonnet | medium | PNG générés | `cardio/alerte`, `cardio/manger`/`diabete/alimentation` (mapping), `public/illustrations/` | [ ] BLOQUÉ |
 | [S9](S9.md) | — | Consolidation (commits, statuts, contexte, push, redeploy) | Haiku | minimal | toutes | `STATUS/TASKS/VALIDATION/DECISIONS/PROJECT_MAP/index` | [x] |
@@ -144,11 +144,14 @@ points `// à revalider (Thibault)`. La consolidation (S9) fige les réponses.
 
 ## Clôture
 
-**Chantier consolidé le 2026-07-24.** 6 sessions sur 7 exécutées et codées : S1, S2, S3, S4, S5, S7 —
-gate finale sur l'arbre cumulé vert (`tsc --noEmit` ✓, `npm run build` ✓, `npm test` 127/127 ✓). **S6
-bloquée sur la gate contenu G-A8** : le doc `docs/cardio/CONTENU_cardio.md` §M6 ne couvrait que 2 des 5
-étapes du mécanisme CV en registre patient — une proposition sourcée (OpenEvidence Socle §E.1/E.2) a été
-écrite dans le doc, marquée `// à revalider (Thibault)`, mais l'objet interactif n'a **pas** été codé
-(conforme à la consigne « ne pas inventer de mécanisme »). **S8 reste BLOQUÉE** (PNG non générés par
-Thibault). Détail complet, gates tranchées/en attente et validation visuelle → `STATUS.md`/
-`VALIDATION.md`/`DECISIONS.md`. 7 commits atomiques + 1 push effectués (cf. `git log`).
+**Chantier consolidé le 2026-07-24, en deux passes.** 1ʳᵉ passe : S1-S5 + S7 codées, S6 arrêtée sur la
+gate contenu G-A8 (proposition de mécanisme sourcée écrite, code non fait) — 11 commits + 1 push. 2ᵉ
+passe (mêmes jour, après discussion des gates avec Thibault) : **G-A8 levée** (les 5 formulations du
+mécanisme CV tabac validées) → S6 câblée (curseur 5 étapes sur l'artère héros partagée, cardio M6) ;
+**G-Suivi** tranchée « neutre » → mois passés du Suivi diabète repassés à « à programmer » par défaut ;
+**G-M10-nausées** tranchée « à retirer » → carte « nausées isolées » retirée des formes atypiques
+d'infarctus (cardio M10) ; **G-M7-taille** tranchée « acceptable » → annotation `// à revalider` levée
+dans `cardio/bouger`, aucun changement de code. Gate finale sur l'arbre cumulé vert (`tsc --noEmit` ✓,
+`npm run build` ✓, `npm test` 127/127 ✓) après les deux passes. **7/7 sessions du plan désormais
+codées ; seule S8 reste BLOQUÉE** (PNG non générés par Thibault). Détail complet et validation visuelle
+→ `STATUS.md`/`VALIDATION.md`/`DECISIONS.md`. Commits atomiques + push effectués (cf. `git log`).
