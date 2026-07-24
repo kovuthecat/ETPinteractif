@@ -742,11 +742,22 @@ export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
    *  mécanisme que `addToPlate`/`synthPlate` (pas de 2ᵉ mécanisme parallèle) — remplace l'assiette
    *  courante par les aliments du preset, résolus via `foodById`. Point de départ modifiable :
    *  le patient ajoute/retire ensuite des aliments normalement, comme s'il avait composé ce repas
-   *  lui-même — jamais un état verrouillé. */
+   *  lui-même — jamais un état verrouillé.
+   *
+   *  Proportions (2026-07-24) : chaque aliment est répété `portions` fois (défaut 1) dans
+   *  l'assiette — c'est la même mécanique que d'ajouter 2× le même aliment à la main, donc il
+   *  pèse 2× dans la somme cg/fibres/proteines/lipides qui alimente la courbe. Plafonné à
+   *  10 items comme `addToPlate` (aucun repas-type actuel n'en approche). */
   function chargerRepasType(repas: RepasType) {
     const items = repas.aliments
-      .filter((id) => foodById(id))
-      .map((id) => ({ uid: `${id}-${Date.now()}-${Math.random()}`, id }));
+      .filter((a) => foodById(a.id))
+      .flatMap((a) => {
+        const n = Math.max(1, Math.round(a.portions ?? 1));
+        return Array.from({ length: n }, () => ({
+          uid: `${a.id}-${Date.now()}-${Math.random()}`,
+          id: a.id,
+        }));
+      });
     setSynthPlate(items.slice(0, 10));
   }
 

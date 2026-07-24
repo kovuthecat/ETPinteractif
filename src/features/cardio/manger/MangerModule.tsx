@@ -126,6 +126,25 @@ function fracBetween(from: number, to: number): number {
   return (unwrapAngle(to, from) - from) / 360;
 }
 
+/** Convertit des poids relatifs {légumes, féculents, protéines} (non normalisés, ex. venant de
+ *  `RepasType.proportionsCoeur`) en angles de frontière — inverse de `pct` ci-dessous. Poids tous
+ *  nuls ou absents → parts égales (`ANGLES_DEFAUT`), même repère de départ (« midi », -90°) pour
+ *  rester cohérent avec le camembert manipulé à la main. */
+function anglesFromProportions(
+  poids: Partial<Record<CategorieCoeur, number>> | undefined,
+): Record<Boundary, number> {
+  const legumes = Math.max(0, poids?.legumes ?? 0);
+  const feculents = Math.max(0, poids?.feculents ?? 0);
+  const proteines = Math.max(0, poids?.proteines ?? 0);
+  const total = legumes + feculents + proteines;
+  if (total <= 0) return ANGLES_DEFAUT;
+  const start = -90;
+  const pl = start;
+  const lf = start + (legumes / total) * 360;
+  const fp = lf + (feculents / total) * 360;
+  return { pl, lf, fp };
+}
+
 function angleFromPointer(svg: SVGSVGElement, e: { clientX: number; clientY: number }): number {
   const pt = svg.createSVGPoint();
   pt.x = e.clientX;
@@ -212,13 +231,19 @@ export default function MangerModule({ shell }: ModuleProps) {
    *  son représentant (`repFood`) ; les autres aliments du preset (catégorie-cœur déjà pourvue,
    *  ou catégorie « extra » lipides/fruits/laitiers) rejoignent `extras`, même mécanique que
    *  `assignerAliment`. Point de départ modifiable — jamais un état verrouillé, le patient
-   *  continue d'utiliser le garde-manger et les frontières normalement après. Proportions
-   *  remises au défaut équilibré : le calibrage précis par repas reste // à revalider (Thibault). */
+   *  continue d'utiliser le garde-manger et les frontières normalement après.
+   *
+   *  Proportions (2026-07-24) : les 3 frontières du camembert sont calibrées depuis
+   *  `repas.proportionsCoeur` (poids de catégorie, pas la somme des `portions` par aliment — un
+   *  plat où le féculent domine visuellement garde un poids féculent élevé même avec plusieurs
+   *  légumes légers en garniture) via `anglesFromProportions`. Absent → parts égales
+   *  (`ANGLES_DEFAUT`, comportement antérieur). Calibrage = ordre de grandeur pédagogique,
+   *  // à revalider (Thibault) comme le reste de la composition. */
   function chargerRepasType(repas: RepasType) {
     const nextRepFood: Partial<Record<CategorieCoeur, AlimentPlateau>> = {};
     const nextExtras: { uid: string; id: string }[] = [];
-    for (const id of repas.aliments) {
-      const aliment = ALIMENTS_PLATEAU.find((a) => a.id === id);
+    for (const a of repas.aliments) {
+      const aliment = ALIMENTS_PLATEAU.find((food) => food.id === a.id);
       if (!aliment) continue;
       const cat = aliment.categorie;
       if ((cat === 'legumes' || cat === 'feculents' || cat === 'proteines') && !nextRepFood[cat]) {
@@ -229,7 +254,7 @@ export default function MangerModule({ shell }: ModuleProps) {
     }
     setRepFood(nextRepFood);
     setExtras(nextExtras.slice(-EXTRAS_MAX));
-    setAngles(ANGLES_DEFAUT);
+    setAngles(anglesFromProportions(repas.proportionsCoeur));
   }
 
   // ── Camembert : géométrie des 3 parts + poignées des 3 frontières (généralise le patron à
