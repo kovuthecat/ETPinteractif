@@ -204,15 +204,17 @@
   color: var(--color-text);
 }
 
+/* 3 cartes depuis le retrait de « nausées isolées » le 2026-07-24 (gate G-M10-nausées) — même
+   patron que .signeGrid (1 colonne mobile, 3 à partir de 640px), pour éviter une case vide. */
 .atypiqueGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   gap: var(--space-md);
 }
 
 @media (min-width: 640px) {
   .atypiqueGrid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 

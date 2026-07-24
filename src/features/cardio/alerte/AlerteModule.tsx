@@ -86,12 +86,15 @@ const SIGNES_CLASSIQUES: Signe[] = [
 
 // Formes atypiques — une carte + une illustration par signe (avant 2026-07-23, un seul bloc
 // générique portait les 4 signes en un seul texte). Encadré chapeauté par la mention
-// femmes/diabétiques/âgés, cf. rendu JSX.
+// femmes/diabétiques/âgés, cf. rendu JSX. Carte « nausées isolées, sans autre signe » retirée le
+// 2026-07-24 (décision Thibault, gate G-M10-nausées) : signe jugé trop peu spécifique (nausée
+// isolée fréquente et peu discriminante, risque de fausses alertes). Ne pas confondre avec la
+// mention « nausées » dans SIGNES_CLASSIQUES ci-dessus (associée aux sueurs/essoufflement, non
+// isolée — hors périmètre de cette décision).
 const SIGNES_ATYPIQUES: Signe[] = [
   { id: 'infarctus-atypique-dos', titre: 'Dos', texte: 'Douleur dans le dos, sans douleur de poitrine.' },
   { id: 'infarctus-atypique-ventre', titre: 'Ventre', texte: 'Douleur dans le ventre, sans douleur de poitrine.' },
   { id: 'infarctus-atypique-fatigue', titre: 'Fatigue', texte: 'Une fatigue intense, inhabituelle.' },
-  { id: 'infarctus-atypique-nausees', titre: 'Nausées', texte: 'Des nausées isolées, sans autre signe.' },
 ];
 
 function handleTabsKeyDown(
@@ -251,7 +254,7 @@ export default function AlerteModule({ shell }: ModuleProps) {
                 </p>
               ))}
               <p className={styles.ficheAtypiqueTexte}>
-                Parfois autrement : dos, ventre, fatigue intense, nausées isolées —{' '}
+                Parfois autrement : dos, ventre, fatigue intense —{' '}
                 <strong>surtout femmes, diabétiques, personnes âgées</strong>.
               </p>
             </div>
