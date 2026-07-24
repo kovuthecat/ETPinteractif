@@ -4,7 +4,70 @@
 
 > **Frontières** — STATUS : état actuel · `TASKS.md` : backlog + tâches · `plans/` : plan d'une tâche active · `VALIDATION.md` : checklist visuelle.
 >
-> **Dernière mise à jour :** 2026-07-23 (enrichissement-visuel-2026-07 — garde-manger enrichi + icônes thème + repas-types + garde-manger cardio en onglets, S1-S4+V0-bis consolidés)
+> **Dernière mise à jour :** 2026-07-24 (refonte-audit-2026-07 — suites de l'audit pédagogique des 3 thèmes, S1-S5+S7+S9 consolidés, S6 bloquée gate contenu, S8 en attente PNG)
+
+**Refonte audit 2026-07 — suites de l'audit pédagogique des 3 thèmes (2026-07-24)** — issu de l'audit
+bi-agents du 2026-07-23 (`Audit/audit-pedagogique-2026-07.md` + `-partie2.md`), verdict : socle solide,
+aucun trou conceptuel majeur, correctifs majoritairement de forme. 6 sessions codées sur 7 (S8 hors
+vague, bloquée PNG) :
+
+- **A1 (S1) — layout des modules à grand visuel diabète** : Complications/Suivi/Insuline basale
+  sur-dimensionnaient leur visuel principal (silhouette 560px, cadran 560px, insuline sans layout 2
+  colonnes) et repoussaient les contrôles sous le pli en mode empilé (< 900-1200px). Corrigé par
+  réduction du visuel en empilé (420/380px) + nouveau layout 2 colonnes pour Insuline basale
+  (`.graphCol`/`.controlsCol`). Effet de bord Alimentation (courbes défi Qualité hors écran) renvoyé
+  à S4 (structure différente, pas mutualisable).
+- **A4 (S2) — insuline basale, feedback des décisions** : l'état sélectionné et la conséquence sur la
+  courbe étaient déjà en place (travail antérieur non référencé par le plan) ; seul manquait le
+  refrain de sécurité « on attend ~3 jours avant de rejuger / dans le doute on ne monte pas », affiché
+  désormais en permanence quel que soit le choix (posture ETP non évaluative).
+- **A5 (S3) — cardio M9, leviers stress + SAOS** : les 3 leviers stress (Activité/Relaxation/Lien
+  social) et la check-list SAOS étaient cliquables sans rien révéler. Ajout d'une phrase-conseil par
+  levier (accordéon à un seul volet ouvert, patron des 4D tabac) et d'un message d'orientation
+  non diagnostique dès 1 signe SAOS coché (renforcé à ≥2).
+- **A6a-g (S4) — 7 micro-fixes groupés, tous reproduits et corrigés** : tooltip de feu diabète
+  préfixé « Objectif : » (ne se lit plus comme la valeur actuelle) ; fiche imprimable M10 alignée sur
+  l'écran (« Appelez le 15 (ou 112) » partout) ; halo « sucre » de la metformine rendu perceptible
+  (gradient en anneau plutôt que centré, caché par la silhouette) ; débordement horizontal de la fiche
+  « Mon assiette » contraint ; contraste des points/labels du cadran de suivi renforcé ; cible de clic
+  de la jauge d'activité agrandie à la carte entière ; décompte des bénéfices M7 aligné (5→6).
+- **A7 (S5) — cardio M3 « Où l'accident frappe », plaque-pivot** : module le plus faible de l'audit
+  (un seul mot par organe, aucun 2ᵉ niveau) transformé en pivot pédagogique — la plaque partagée
+  (réutilise `ArtereCoupe` de M1/M2) **voyage** vers l'organe cliqué, une ligne de conséquence sobre
+  s'affiche, et le message clé jusque-là absent (« un seul ennemi, plusieurs adresses → les mêmes
+  leviers protègent partout ») est désormais permanent, avec renvoi textuel vers la famille Agir.
+  Enrichi en place (gate G-A7, défaut appliqué), aucune fusion de module.
+- **A8 (S6) — cardio M6 « Le tabac », BLOQUÉ gate contenu G-A8** : le module réduit à une bascule
+  2 états (depuis le retrait de la frise de réversibilité le 2026-07-23) devait être ré-enrichi d'un
+  objet démonstratif du mécanisme CV (paroi agressée → spasme → plaque accélérée → thrombose →
+  réversibilité). `docs/cardio/CONTENU_cardio.md` §M6 ne couvrait que 2 des 5 étapes en registre
+  patient. Conformément à la consigne « ne pas inventer de mécanisme », une **proposition de contenu
+  sourcée** (OpenEvidence Socle §E.1/E.2) a été écrite dans le doc, marquée `// à revalider
+  (Thibault)`, et le code de l'objet interactif **n'a pas été fait** — validation clinique du
+  mécanisme indispensable avant tout câblage futur.
+- **A10 (S7) — rétro-port de la barre de risque vers le cockpit diabète RCV** : le cockpit Cardio M2
+  matérialisait mieux la multiplication des facteurs (barre « Risque faible → élevé ») que le cockpit
+  Diabète RCV (feux seuls). Les modèles de cumul étant incompatibles (cardio = multiplicatif, diabète
+  = moyenne pondérée), **seule l'UI est partagée** : nouveau composant générique
+  `src/components/RisqueBarre.tsx` (score qualitatif 0-1, aucun chiffre affiché, invariant 4 respecté),
+  consommé par `CockpitFeux` (cardio, extraction propre) et `RisqueCardioModule` (diabète, nouveau).
+
+**Réconciliation faite avant planification** (évite d'ouvrir un chantier sur un faux positif) : le
+« défi Qualité sans courbe » de l'audit était un **faux positif** (la courbe est bien rendue mais sous
+le bouton d'action, hors écran — absorbé par A1) ; le pré-cochage des mois passés du Suivi diabète est
+**une conception délibérée** (`statusForMonth()`), pas un bug — question produit **G-Suivi** non
+tranchée, capturée mais non codée dans ce chantier.
+
+Gate finale (S1-S5, S7, S9) sur l'arbre cumulé : `npx tsc --noEmit` ✓ · `npm run build` ✓ · `npm test`
+✓ **127/127**, aucune dépendance runtime ajoutée. 7 commits atomiques + 1 push (S6 : commit doc seul,
+aucun commit code puisque bloquée). **Points `// à revalider (Thibault)`** : 3 phrases-conseil leviers
+stress (S3, doc ne fournissait pas de formulation prête à l'écran) ; 4 phrases de conséquence + libellé
+« Agir » de M3 (S5) ; sort du « tour de taille » M7 (S4, **G-M7-taille** non tranché) ; **G-A8** — les 5
+formulations patient du mécanisme CV tabac proposées en S6, validation clinique indispensable avant tout
+code d'objet interactif ; **G-Suivi** — pré-cochage des mois passés, décision produit non tranchée ;
+**G-M10-nausées** — arbitrage clinique sensibilité/spécificité, hors code. **Validation visuelle humaine
+(Thibault, `npm run dev`) reste entièrement à faire** — cf. `VALIDATION.md`. **S8 reste hors vague**,
+bloquée tant que les PNG (M10 VITE/infarctus + garde-manger) ne sont pas générés par Thibault.
 
 **Enrichissement visuel 2026-07 — Finition visuelle & garde-manger (2026-07-23)** — issu de l'audit
 `rapport-audit-consultation-2026-07.md`. Trois axes consolidés : (1) illustrations déjà prévues

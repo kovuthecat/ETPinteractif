@@ -8,6 +8,18 @@ Index des tâches : backlog + actives. Historique des tâches faites : `git log`
 
 ## Tâches
 
+### Refonte audit 2026-07 — suites de l'audit pédagogique des 3 thèmes (2026-07-24) · plan: → plans/refonte-audit-2026-07/ (index + S1-S9)
+- [x] S1 — A1 : layout des modules à grand visuel (Complications/Suivi/Insuline basale, colonnes visuel+contrôles) · modèle: Sonnet, effort: high · plan: → S1.md (auto OK : tsc + build verts)
+- [x] S2 — A4 : insuline basale, feedback des décisions de titration + refrain « ~3 jours » permanent · modèle: Sonnet, effort: high · plan: → S2.md (auto OK : tsc + build + test 127/127 verts)
+- [x] S3 — A5 : cardio M9, leviers stress réactifs (phrase-conseil par levier) + message d'orientation SAOS · modèle: Sonnet, effort: medium · plan: → S3.md (auto OK : tsc + build verts)
+- [x] S4 — A6a-g : micro-fixes groupés (tooltip feu, fiche M10, halo metformine, débordement assiette, cadran suivi, cible activité, bénéfices M7) · modèle: Sonnet, effort: medium · plan: → S4.md (auto OK : tsc + build verts, 7/7 points reproduits et corrigés)
+- [x] S5 — A7 : cardio M3 « Où l'accident frappe », refonte partielle plaque-pivot (la plaque partagée voyage vers l'organe cliqué + message « un seul ennemi, mêmes leviers ») · modèle: Opus, effort: high · plan: → S5.md (auto OK : tsc + build + test 127/127 verts)
+- [!] S6 — A8 : cardio M6 « Le tabac », ré-enrichir le mécanisme CV · modèle: Opus, effort: high · plan: → S6.md — **bloqué gate contenu G-A8** : proposition de contenu (5 étapes, sourcée OpenEvidence) écrite dans `docs/cardio/CONTENU_cardio.md` §M6, objet interactif non codé (mécanisme non validé cliniquement)
+- [x] S7 — A10 : rétro-port de la barre « Risque faible → élevé » vers le cockpit diabète RCV (nouveau composant partagé `src/components/RisqueBarre.tsx`) · modèle: Sonnet, effort: medium · plan: → S7.md (auto OK : tsc + build + test 127/127 verts)
+- [ ] S8 — A2, A3 : câblage illustrations M10 VITE + garde-manger · modèle: Sonnet, effort: medium · plan: → S8.md — **BLOQUÉ**, dépend de la génération des PNG par Thibault
+- [x] S9 — Consolidation : commits atomiques + statuts + STATUS/VALIDATION/DECISIONS/PROJECT_MAP + push · modèle: Haiku, effort: minimal · plan: → S9.md (auto OK sur l'arbre cumulé : tsc + build + test 127/127 verts)
+  - Vagues : V1 = S1 (bloquant, avant S2/S4) → V2 = S2·S3·S4·S5·S6 (parallèles, zones disjointes ; S6 arrêtée sur gate contenu) → V3 = S7 (après S4, partage `diabete/risque-cardio`) → V4 = S9 (consolidation). **Chantier consolidé le 2026-07-24** : 6/7 sessions codées, S6 bloquée gate contenu (proposition livrée), S8 hors vague (PNG Thibault). Validation visuelle humaine entièrement à faire — cf. `VALIDATION.md`.
+
 ### Enrichissement visuel 2026-07 — Finition visuelle & garde-manger (2026-07-23) · plan: → plans/enrichissement-visuel-2026-07/ (index + S1-S7)
 - [x] V0 — Prompts d'illustration ajoutés au HTML (6 vf tabac + 10 légumes + 7 aliments-situations) · modèle: Opus, effort: — · plan: → index.md (fait le 2026-07-23, écriture du fichier HTML)
 - [x] S1 — Data enrichie (légumes×10 + situations×7, cardio avec féculents diabète) · modèle: Sonnet, effort: high · plan: → S1.md (auto OK : tsc + build + test 127/127 verts) · commit `31d92a9`

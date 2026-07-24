@@ -16,6 +16,95 @@
 
 ---
 
+## Chantier refonte-audit-2026-07 — suites de l'audit pédagogique des 3 thèmes (2026-07-24)
+
+**Statut** : 6 sessions codées et consolidées (S1, S2, S3, S4, S5, S7), gates auto vertes (`tsc` + `build`
++ `test` 127/127). **S6 bloquée** (gate contenu G-A8, proposition de contenu livrée, aucun code). **S8
+hors vague** (bloquée, attente PNG Thibault). **Validation visuelle humaine entièrement à faire**
+(`npm run dev`) — aucune vérification navigateur faite côté Claude (règle projet).
+
+### S1 — Layout des modules à grand visuel (diabète)
+
+Aux 3 largeurs (desktop large, ~768px, ~380px) :
+- [ ] **Complications** : pas de bande vide en haut ; « Voir la fiche » (branche pied) visible sans
+      scroll acrobatique.
+- [ ] **Suivi** : cadran réduit en empilé (< 1200px), rangées d'examens visibles sans scroll
+      acrobatique ; côte-à-côte (≥ 1200px, desktop large) le cadran garde sa taille d'origine.
+- [ ] **Insuline basale** : layout 2 colonnes ≥ 900px (courbe/contrôles), empilé en dessous ; la carte
+      « la trace plonge dans le bas » et le refrain de sécurité visibles sans scroll acrobatique.
+- [ ] Aucune régression visuelle sur le contenu/logique des 3 modules.
+
+### S2 — Insuline basale : feedback des décisions
+
+- [ ] Pour chaque motif nocturne, cliquer chaque décision (Baisser/Laisser/Monter) : état sélectionné
+      visible, cohérence courbe + message.
+- [ ] Le refrain « on attend ~3 jours avant de rejuger » + « dans le doute, on ne monte pas » reste
+      affiché en permanence, quel que soit le choix.
+- [ ] Aucun chiffre de dose visible nulle part.
+
+### S3 — Cardio M9 : leviers stress + SAOS
+
+- [ ] Cliquer chaque levier stress (Activité/Relaxation/Lien social) : un conseil apparaît, un seul
+      levier ouvert à la fois, reclic referme.
+- [ ] Cocher 1 puis 2 signes SAOS : message d'orientation apparaît puis se renforce, disparaît à 0 ;
+      ton non diagnostique, non culpabilisant.
+- [ ] Aucune interaction du module ne reste « muette ».
+
+### S4 — Micro-fixes groupés (A6a-g)
+
+- [ ] **A6a** Diabète RCV : le 2ᵉ niveau d'un feu affiche « Objectif : … » (ne se lit plus comme la
+      valeur actuelle du patient).
+- [ ] **A6b** Fiche M10 imprimée : « Appelez le 15 (ou 112) », identique à l'écran.
+- [ ] **A6c** Traitements, Metformine seule : « Voir l'effet » allume un halo perceptible (anneau
+      autour du contour du corps, plus caché derrière la silhouette).
+- [ ] **A6d** Fiche « Mon assiette » : plus de barre de défilement horizontale.
+- [ ] **A6e** Cadran de Suivi : points/labels plus contrastés, lisibles à 1 m (sans rouge introduit).
+- [ ] **A6f** Jauge d'activité : toute la carte (hors +/-) déclenche l'ajout, cible facile à viser.
+- [ ] **A6g** M7 Bouger : la phrase de tête liste bien les 6 bénéfices affichés par le panneau.
+
+### S5 — Cardio M3 « Où l'accident frappe » (plaque-pivot)
+
+- [ ] Cliquer chaque organe : la plaque (`ArtereCoupe`) se déplace visuellement vers l'organe cliqué
+      (transition fluide, ancrage correct sur chaque territoire).
+- [ ] Une conséquence lisible (accident + phrase sobre) s'affiche à chaque clic.
+- [ ] Le message « un seul ennemi, plusieurs adresses → les mêmes leviers protègent partout » + renvoi
+      vers la famille Agir est visible en permanence.
+- [ ] Ton non anxiogène, lisibilité à 1 m, empilage correct (< 1020px).
+- [ ] **Validation clinique** : mapping organe→accident (verbatim doc) + 4 phrases de conséquence +
+      libellé « Agir » — marqués `// à revalider (Thibault)`.
+
+### S6 — Cardio M6 « Le tabac » — BLOQUÉE, rien à valider à l'écran
+
+Aucun code livré (gate contenu G-A8 non résolue). **À valider par Thibault avant tout câblage futur** :
+les 5 formulations patient du mécanisme CV proposées dans `docs/cardio/CONTENU_cardio.md` §M6 (paroi
+agressée, spasme/vasoconstriction, plaque accélérée, caillot/thrombose, réversibilité) — sourcées
+OpenEvidence Socle §E.1/E.2, traduction jargon→patient à valider notamment pour l'étape spasme
+(entièrement neuve) et la dysfonction endothéliale.
+
+### S7 — Rétro-port barre de risque (diabète RCV)
+
+- [ ] Diabète → Risque cardiovasculaire : passer les feux au rouge/vert, vérifier que la barre glisse
+      cohéremment (curseur reflète le cumul).
+- [ ] Barre qualitative uniquement, aucun chiffre visible à l'écran.
+- [ ] Cohérence de grammaire visuelle avec Cardio M2 (même dégradé, mêmes libellés).
+- [ ] Non-régression du tooltip A6a (S4) et du cockpit cardio M2 après l'extraction du composant
+      partagé `RisqueBarre`.
+
+### Points ouverts (à valider Thibault)
+
+- [ ] **G-A8** (bloquant, S6) — validation clinique du mécanisme CV tabac avant tout code d'objet.
+- [ ] **G-Suivi** — pré-cochage des mois passés (`statusForMonth`) : conception délibérée, contredit-elle
+      « couverture, pas bilan » ? Repli proposé : mois passés = « à programmer » par défaut. Hors
+      périmètre code de ce chantier, capturé seulement.
+- [ ] **G-M10-nausées** — « nausées isolées » comme signe d'infarctus : arbitrage sensibilité/spécificité,
+      décision clinique hors code.
+- [ ] **G-M7-taille** — sort du « tour de taille » comme bénéfice M7 (cohérence avec son retrait de M2
+      cardio) : `// à revalider` posé en S4, non tranché.
+- [ ] **G-A7** — confirmation que l'enrichissement en place de M3 (pas de fusion) est la bonne décision
+      après visualisation.
+
+---
+
 ## Chantier enrichissement-visuel-2026-07 — Finition visuelle & garde-manger (2026-07-23)
 
 **Statut** : 5 commits consolidés (S1-S4 + V0-bis), **chantier non clos**. S1-S4 **exécutés et gates
