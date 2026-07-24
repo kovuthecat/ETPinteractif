@@ -226,6 +226,14 @@ export const FOODS: Food[] = [
   { id: 'olives', name: 'Olives', famille: 'lipides', cg: 0, fibres: 1, proteines: 0.5, lipides: 4, portion: '30 g (~10 olives)', sel: 'eleve', graisses: 'insaturees' }, // à revalider (Thibault)
   { id: 'houmous', name: 'Houmous', famille: 'lipides', cg: 3, fibres: 1.5, proteines: 2, lipides: 4, portion: '2 c. à s. (30 g)', sel: 'modere', graisses: 'insaturees' }, // à revalider (Thibault)
   { id: 'pois-casses', name: 'Pois cassés / niébé', famille: 'feculents', cg: 7, fibres: 7, proteines: 9, lipides: 0.5, portion: '150 g cuits', sel: 'faible', atout: 'Légumineuse : un féculent qui monte doucement (riche en fibres et protéines).' }, // à revalider (Thibault)
+
+  // Diversité culturelle 2026-07-24 (enrichissement des repas-types, demande Thibault : familles
+  // orientale/pakistanaise et cuisine à sauce arachide, quasi absentes du garde-manger). Valeurs
+  // = ordres de grandeur Ciqual/GI-GL — à revalider (Thibault).
+  { id: 'naan', name: 'Naan', famille: 'feculents', cg: 24, fibres: 2, proteines: 6, lipides: 4, portion: '1 naan (~80 g)', sel: 'eleve' }, // à revalider (Thibault)
+  { id: 'viande-rouge', name: 'Agneau / bœuf', famille: 'proteines', cg: 0, fibres: 0, proteines: 26, lipides: 15, portion: '120 g', sel: 'faible', graisses: 'saturees' }, // à revalider (Thibault) — pièce maigre présumée, très variable selon le morceau
+  { id: 'ghee', name: 'Ghee (beurre clarifié)', famille: 'lipides', cg: 0, fibres: 0, proteines: 0, lipides: 10, portion: '1 c. à s. (10 g)', graisses: 'saturees' }, // à revalider (Thibault)
+  { id: 'arachide', name: "Pâte d'arachide", famille: 'lipides', cg: 2, fibres: 2, proteines: 7, lipides: 16, portion: '2 c. à s. (30 g)', sel: 'modere', graisses: 'mixte' }, // à revalider (Thibault)
 ];
 
 export function foodById(id: string): Food | undefined {

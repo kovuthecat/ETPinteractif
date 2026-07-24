@@ -11,7 +11,10 @@
  *   afficher de chiffre/quantité (G1 : « jamais de chiffres imposés » — brief M8, pas seulement
  *   le sel).
  *
- * - `ALIMENTS_PLATEAU` (onglet Assiette, garde-manger) : 49 aliments concrets. Champs
+ * - `ALIMENTS_PLATEAU` (onglet Assiette, garde-manger) : 54 aliments concrets. +1 « Pâtes
+ *   blanches » (symétrisée le 2026-07-24 avec `diabete/alimentation/data.ts`, qui l'avait déjà
+ *   depuis S7 illustrations-diabete 2026-07-10) ; +4 diversité orientale/pakistanaise (naan,
+ *   agneau/bœuf, ghee, pâte d'arachide) pour enrichir les repas-types du 2026-07-24. Champs
  *   `sel`/`graisses` = paliers qualitatifs (jamais un gramme), utilisés uniquement pour compter
  *   les ajouts à surveiller (avertissement qualitatif « limiter le sel », jamais un seuil
  *   chiffré, cf. G1).
@@ -73,6 +76,7 @@ export const ALIMENTS_PLATEAU: AlimentPlateau[] = [
   { id: 'patate-douce', name: 'Patate douce', categorie: 'feculents', sel: 'faible' },
   { id: 'lentilles', name: 'Lentilles', categorie: 'feculents', sel: 'faible' },
   { id: 'pois-chiches', name: 'Pois chiches', categorie: 'feculents', sel: 'faible' },
+  { id: 'pates-blanches', name: 'Pâtes blanches', categorie: 'feculents', sel: 'faible' },
   { id: 'pates-completes', name: 'Pâtes complètes', categorie: 'feculents', sel: 'faible' },
   { id: 'haricots-rouges', name: 'Haricots rouges', categorie: 'feculents', sel: 'faible' },
   { id: 'brocoli', name: 'Brocoli', categorie: 'legumes', sel: 'faible' },
@@ -121,6 +125,14 @@ export const ALIMENTS_PLATEAU: AlimentPlateau[] = [
   { id: 'couscous-complet', name: 'Couscous complet', categorie: 'feculents', sel: 'faible' },
   { id: 'galette-riz', name: 'Galette de riz soufflé', categorie: 'feculents', sel: 'faible' },
   { id: 'dattes', name: 'Dattes', categorie: 'fruits', sel: 'faible' },
+
+  // Diversité culturelle 2026-07-24 (enrichissement des repas-types, familles orientale/
+  // pakistanaise et cuisine à sauce arachide — mêmes id/name/sel que
+  // `diabete/alimentation/data.ts`, valeurs à revalider Thibault).
+  { id: 'naan', name: 'Naan', categorie: 'feculents', sel: 'eleve' },
+  { id: 'viande-rouge', name: 'Agneau / bœuf', categorie: 'proteines', sel: 'faible', graisses: 'saturees' },
+  { id: 'ghee', name: 'Ghee (beurre clarifié)', categorie: 'lipides', graisses: 'saturees' },
+  { id: 'arachide', name: "Pâte d'arachide", categorie: 'lipides', sel: 'modere', graisses: 'mixte' },
 ];
 
 // ---------------------------------------------------------------------------
@@ -226,4 +238,9 @@ export const REPERE_PAR_ALIMENT: Record<string, string> = {
   'pain-complet': 'cerealescompletes',
   'riz-complet': 'cerealescompletes',
   'pates-completes': 'cerealescompletes',
+  // Diversité 2026-07-24 : arachide = légumineuse (comme lentilles/pois chiches), ghee/viande
+  // rouge = graisses saturées (repère « à limiter », cohérent avec beurre/viandes grasses).
+  arachide: 'legumineuses',
+  ghee: 'graisses-saturees',
+  'viande-rouge': 'graisses-saturees',
 };
