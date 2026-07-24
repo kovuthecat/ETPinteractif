@@ -12,7 +12,9 @@
 
 .silhouetteCol {
   flex: 0 0 auto;
-  width: 560px;
+  /* S1 (refonte-audit-2026-07) : 560→420 — un carré 1:1 à 560px monopolisait la colonne
+     visuelle et repoussait le panneau/« Voir la fiche » hors du premier écran. */
+  width: 420px;
   max-width: 100%;
   display: flex;
   flex-direction: column;
@@ -22,11 +24,11 @@
 
 .panneau {
   flex: 1;
-  min-width: 0;
+  min-width: 280px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-height: 420px;
+  min-height: 380px;
 }
 
 .fade {
@@ -261,6 +263,12 @@
   .layout {
     flex-direction: column;
     align-items: center;
+  }
+
+  /* S1 : en empilé, la silhouette ne doit pas occuper tout l'écran — sinon les contrôles
+     (« Voir la fiche ») restent hors du premier écran, cf. patron cible G-A1. */
+  .silhouetteCol {
+    width: 320px;
   }
 
   .piedExtra {
