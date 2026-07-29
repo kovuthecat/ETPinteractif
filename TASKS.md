@@ -1,360 +1,54 @@
 # TASKS.md
 
-Index des tâches : backlog + actives. Historique des tâches faites : `git log`.
+Index du **backlog** : ce qu'il reste à faire. Plafond : 60 lignes (appliqué par hook).
+Historique des tâches faites : `git log` + `plans/<chantier>/index.md` (statut d'un plan clos).
 
-> **Frontières** — TASKS : le quoi · `STATUS.md` : l'état · `plans/` : le comment · `VALIDATION.md` : visuel.
-> Convention : `- [statut] T-ID — titre · modèle: X, effort: Y · plan: <lien ou —>`
-> effort : `minimal · low · medium · high · max` (à vérifier avant de lancer la session).
+> **Frontières** — TASKS : le *quoi* qui reste · `plans/P<n>/index.md` : l'*avancement* des tâches
+> planifiées · `STATUS.md` : l'état actuel · `VALIDATION.md` : jugement humain (N2) en attente.
 
-## Tâches
+## Convention
 
-### Refonte audit 2026-07 — suites de l'audit pédagogique des 3 thèmes (2026-07-24) · plan: → plans/refonte-audit-2026-07/ (index + S1-S9)
-- [x] S1 — A1 : layout des modules à grand visuel (Complications/Suivi/Insuline basale, colonnes visuel+contrôles) · modèle: Sonnet, effort: high · plan: → S1.md (auto OK : tsc + build verts)
-- [x] S2 — A4 : insuline basale, feedback des décisions de titration + refrain « ~3 jours » permanent · modèle: Sonnet, effort: high · plan: → S2.md (auto OK : tsc + build + test 127/127 verts)
-- [x] S3 — A5 : cardio M9, leviers stress réactifs (phrase-conseil par levier) + message d'orientation SAOS · modèle: Sonnet, effort: medium · plan: → S3.md (auto OK : tsc + build verts)
-- [x] S4 — A6a-g : micro-fixes groupés (tooltip feu, fiche M10, halo metformine, débordement assiette, cadran suivi, cible activité, bénéfices M7) · modèle: Sonnet, effort: medium · plan: → S4.md (auto OK : tsc + build verts, 7/7 points reproduits et corrigés)
-- [x] S5 — A7 : cardio M3 « Où l'accident frappe », refonte partielle plaque-pivot (la plaque partagée voyage vers l'organe cliqué + message « un seul ennemi, mêmes leviers ») · modèle: Opus, effort: high · plan: → S5.md (auto OK : tsc + build + test 127/127 verts)
-- [x] S6 — A8 : cardio M6 « Le tabac », ré-enrichir le mécanisme CV · modèle: Opus, effort: high · plan: → S6.md — 2 passes : gate contenu G-A8 (proposition sourcée OpenEvidence écrite dans `docs/cardio/CONTENU_cardio.md` §M6) puis **levée par Thibault le 2026-07-24** ; objet câblé (curseur 5 étapes sur l'artère héros partagée, remplace la bascule 2 états) (auto OK : tsc + build + test 127/127 verts)
-- [x] S7 — A10 : rétro-port de la barre « Risque faible → élevé » vers le cockpit diabète RCV (nouveau composant partagé `src/components/RisqueBarre.tsx`) · modèle: Sonnet, effort: medium · plan: → S7.md (auto OK : tsc + build + test 127/127 verts)
-- [ ] S8 — A2, A3 : câblage illustrations M10 VITE + garde-manger · modèle: Sonnet, effort: medium · plan: → S8.md — **BLOQUÉ**, dépend de la génération des PNG par Thibault
-- [x] S9 — Consolidation : commits atomiques + statuts + STATUS/VALIDATION/DECISIONS/PROJECT_MAP + push · modèle: Haiku, effort: minimal · plan: → S9.md (auto OK sur l'arbre cumulé : tsc + build + test 127/127 verts)
-- [x] Gates du 2026-07-24 (discussion Thibault, hors plan initial) — **G-Suivi** tranchée « neutre » : `statusForMonth()` (diabète Suivi) ne pré-coche plus les mois passés, ils sont désormais « à programmer » par défaut · modèle: Sonnet, effort: low (auto OK : tsc + build + test 127/127 verts) — **G-M10-nausées** tranchée « à retirer » : carte « nausées isolées » retirée des formes atypiques d'infarctus (cardio M10, 4→3 cartes, fiche imprimable + doc à jour) · modèle: Sonnet, effort: low (auto OK : tsc + build verts) — **G-M7-taille** tranchée « acceptable » : annotation `// à revalider` levée dans `cardio/bouger`, aucun changement de code
-  - Vagues : V1 = S1 (bloquant, avant S2/S4) → V2 = S2·S3·S4·S5·S6 (parallèles, zones disjointes ; S6 arrêtée sur gate contenu 1ʳᵉ passe) → V3 = S7 (après S4, partage `diabete/risque-cardio`) → V4 = S9 (consolidation, 1ʳᵉ passe, 11 commits + push) → V5 = discussion des gates avec Thibault (2026-07-24) → V6 = S6 2ᵉ passe (câblage) ∥ G-Suivi ∥ G-M10-nausées ∥ G-M7-taille (parallèles, zones disjointes). **Chantier consolidé le 2026-07-24 en 2 passes** : 7/7 sessions du plan codées, S8 seule hors vague (PNG Thibault). Validation visuelle humaine entièrement à faire — cf. `VALIDATION.md`.
+**Non planifiée** : `- [ ] T-ID — titre · modèle: X, effort: Y`.
+**Entrée dans un plan** (statut dans l'`index.md` du plan, pas ici) : `- T-ID — titre · → plans/<chantier>/S<k>.md`.
+Modèles/efforts : `WORKFLOW.md` §2-3. `env: Desktop` si la tâche exige le navigateur in-app (N1).
 
-### Enrichissement visuel 2026-07 — Finition visuelle & garde-manger (2026-07-23) · plan: → plans/enrichissement-visuel-2026-07/ (index + S1-S7)
-- [x] V0 — Prompts d'illustration ajoutés au HTML (6 vf tabac + 10 légumes + 7 aliments-situations) · modèle: Opus, effort: — · plan: → index.md (fait le 2026-07-23, écriture du fichier HTML)
-- [x] S1 — Data enrichie (légumes×10 + situations×7, cardio avec féculents diabète) · modèle: Sonnet, effort: high · plan: → S1.md (auto OK : tsc + build + test 127/127 verts) · commit `31d92a9`
-- [x] S2 — Cardio Manger : garde-manger passé en onglets par catégorie (Légumes/Féculents/Protéines/Matières grasses/Fruits/Laitiers) · modèle: Sonnet, effort: medium · plan: → S2.md (auto OK) · commit `78931ce`
-- [x] S3 — Presets repas-types (5 presets partagés cardio+diabète, bouton « Charger »)  · modèle: Sonnet, effort: high · plan: → S3.md (auto OK : tsc + build + test 127/127 verts) · commit `bc3577c` · **G-repas** (composition/proportions à revalider Thibault)
-- [x] S4 — Écran thèmes : icônes par thème + grille équilibrée (ThemeDef.Icon + ThemeSelector) · modèle: Sonnet, effort: low · plan: → S4.md (auto OK) · commit `09a6cd1`
-- [x] V0-bis — Nettoyage prompts : 71 retirés, 23+11 cardio+6 tabac conservés/ajoutés, fichier de structure valide · modèle: Opus, effort: low · plan: → index.md (vérification statique OK, aucun PNG généré) · commit `164886b`
-- [ ] S5 — Familles cardio : picto par repère remplace la flamme (→ `IllustrationSlot repere-<id>`) · modèle: Sonnet, effort: medium · plan: → S5.md · **[ ] pending** — bloqué **G-familles** (approche à valider Thibault) + assets `repere-*.png` à générer
-- [ ] S6 — Câblage/vérif assets générés (Alerte cardio, 6 vf tabac, aliments) · modèle: Haiku, effort: low · plan: → S6.md · **[ ] pending** — dépend Thibault (génération PNG Alerte/vf/aliments)
-  - Vagues : V0 → S1 (bloquant) → S2/S4 parallèles (après S1) → S3 (après S1 + **G-repas**) → S5 (après **G-familles**) → S6 (après génération PNG) → S7 (consolidation). Chantier **non clos** : S5/S6 restent pendantes, validation visuelle Thibault entièrement à faire — cf. `VALIDATION.md`. **Points ouverts** : G-nutrition (valeurs nutritionnelles 17 aliments + 6 situations), G-repas (composition 5 presets), G-familles (approche picto).
+## Plan refonte-audit-2026-07 — 7/8 sessions faites
 
-### M10 « Reconnaître l'alerte » — signes classiques + atypiques détaillés (2026-07-23) · plan: — (hors plan, demande directe de Thibault)
-- [x] Signes classiques : 1 → 3 cartes illustrées (douleur, irradiation bras/mâchoire/dos, sueurs/essoufflement/nausées), contenu restauré depuis `BRIEF_DESIGN_cardio.md` · `AlerteModule.tsx`/`.module.css`
-- [x] Formes atypiques : 1 bloc générique → 4 cartes illustrées individuellement (dos/ventre/fatigue/nausées)
-- [x] `docs/cardio/CONTENU_cardio.md` §M10 mis à jour (autorité de contenu)
-- [x] Prompts ChatGPT ajoutés/reliés dans `design/illustrations/prompts-illustrations-diabete.html` (3 signes classiques réutilisent des prompts déjà écrits mais jamais câblés ; 4 formes atypiques = nouveaux prompts, section `cardio-inf-atypique`)
-- [x] Vérification visuelle par Claude (navigateur intégré, exceptionnelle) : `npm run dev`, 2 onglets + fiche imprimable
-  - Gate : `tsc --noEmit` + `vite build` + `npm test` 127/127 verts. ⚠️ Validation humaine finale (Thibault) et jugement clinique sur la formulation restent à faire — cf. `VALIDATION.md`.
+- S8 — Câblage illustrations M10 VITE + garde-manger · **BLOQUÉ**, dépend de la génération des
+  PNG par Thibault · → plans/refonte-audit-2026-07/S8.md
 
-### Revue prod cardio — 1ʳᵉ passe de retouches (2026-07-23) · plan: — (hors plan, revue directe de Thibault sur le déployé)
-- [x] M2 « Mon risque global » : sédentarité remplace poids/tour de taille, tabac binaire, retrait message « robinet sucre » + fiche · commit `11ceafa`
-- [x] Retrait des renvois inter-modules en pied d'écran (M1/M3/M4/M5/M7/M11) · commit `10da742`
-- [x] M6 « Le tabac » : retrait de la frise de réversibilité (doublon de la barre de risque) · commit `d3d4168`
-- [x] M8 « Manger pour ses artères » : assiette repensée (aliment concret par glisser-déposé, camembert 3 frontières), Fritures→Graisses saturées, Huile d'olive→Huiles végétales · commit `71c2f57`
-- [x] Diabète — défi Proportion (Alimentation) : camembert généralisé à 3 frontières + fix bug de bornage à 0 % · commit `764caa6`
-- [x] M9 « Les autres leviers » : alcool en icônes+fréquence, stress en échelle analogique, retrait renvois inline · commit `b9f2378`
-- [x] M12 « Mon suivi » : glycémie remplace tension/LDL/tour de taille (orphelin depuis M2), icônes dérivées des stations, phrase d'ouverture · commit `2fdabb5`
-- [x] Docs : `CONTENU_cardio.md` resynchronisé sur M2/M6/M8/M12 · commit `ed06af0`
-  - **8 commits faits en session précédente, non consolidés côté contexte à l'époque** ; resynchronisation STATUS/TASKS/DECISIONS/VALIDATION faite le 2026-07-23, aucun changement de code dans cette passe. ⚠️ Validation VISUELLE humaine (Thibault, `npm run dev`) des modules retouchés reste à faire — cf. `VALIDATION.md`.
+## Plan enrichissement-visuel-2026-07 — 4/6 sessions faites
 
-### Nouveau thème cardio — « Prévention cardiovasculaire », 12 modules (2026-07-22) · plan: → plans/theme-cardio-2026-07/ (index + S1-S14)
-- [x] S1 — C1 : contenu clinique des 12 modules (`docs/cardio/CONTENU_cardio.md`, gate G1) · modèle: Opus, effort: high · plan: → plans/theme-cardio-2026-07/S1.md (**G1 validée par Thibault 2026-07-22** — 6 arbitrages cliniques, cf. STATUS.md)
-- [x] S2 — C2-C4 : socle (entrée `cardio` dans `THEMES`, registre 12 modules, lib `risqueCardio` 21 tests, 4 composants cardio-owned) · modèle: Sonnet, effort: high · plan: → plans/theme-cardio-2026-07/S2.md (auto OK : tsc --noEmit + vite build + npm test 127/127 verts)
-- [x] S3 — C5-C6 : assets (46 PNG réutilisés dans `public/illustrations/cardio/`) + prompts des illustrations neuves (VITE/infarctus/tabac/brassard) · modèle: Haiku, effort: low · plan: → plans/theme-cardio-2026-07/S3.md (auto OK)
-- [x] S4 — C7 : module pilote M1 « L'artère qui s'encrasse » (séquence 4 temps réversible) · modèle: Sonnet, effort: high · plan: → plans/theme-cardio-2026-07/S4.md (auto OK ; **validé visuellement par Thibault**)
-- [x] S5 — C8 : module pilote M2 « Mon risque global » (cockpit + cumul multiplicatif + fiche) · modèle: Sonnet, effort: high · plan: → plans/theme-cardio-2026-07/S5.md (auto OK ; **validé visuellement par Thibault**)
-- [x] S6 — C9 : module pilote M3 « Où l'accident frappe » (silhouette 4 territoires) · modèle: Sonnet, effort: medium · plan: → plans/theme-cardio-2026-07/S6.md (auto OK ; **validé visuellement par Thibault après correction** silhouette 380→560px, alignée sur l'anatomie Risque CV diabète)
-- [x] S7 — C10 : module M4 « La tension » (artère sous pression + règle des 3 + fiche) · modèle: Sonnet, effort: high · plan: → plans/theme-cardio-2026-07/S7.md (auto OK)
-- [x] S8 — C11-C12 : module M5 « Cholestérol (LDL) » (curseur qualitatif) + module M6 « Tabac » (réversibilité CV + repli pont thème Tabac) · modèle: Sonnet, effort: medium · plan: → plans/theme-cardio-2026-07/S8.md (auto OK)
-- [x] S9 — C13 : module M7 « Bouger » (volume sans plafond + régularité) · modèle: Sonnet, effort: high · plan: → plans/theme-cardio-2026-07/S9.md (auto OK ; relancé après stall infra transitoire, aucune perte)
-- [x] S10 — C14 : module M8 « Manger pour ses artères » (familles + assiette + fiche) · modèle: Sonnet, effort: high · plan: → plans/theme-cardio-2026-07/S10.md (auto OK ; relancé après stall infra transitoire, aucune perte)
-- [x] S11 — C15 : module M9 « Les autres leviers » (alcool/sommeil-SAOS/stress) · modèle: Sonnet, effort: medium · plan: → plans/theme-cardio-2026-07/S11.md (auto OK)
-- [x] S12 — C16 : module M10 « Reconnaître l'alerte » (carte VITE — seul objet neuf du thème — + infarctus + bandeau 15) · modèle: Sonnet, effort: high · plan: → plans/theme-cardio-2026-07/S12.md (auto OK ; aucune mention d'aspirine, vérifié par grep)
-- [x] S13 — C17 : module M11 « Mes traitements qui protègent » (ordonnance ↔ silhouette protégée) · modèle: Sonnet, effort: high · plan: → plans/theme-cardio-2026-07/S13.md (auto OK ; aspirine retirée de la table des classes)
-- [x] S14 — C18 : module M12 « Mon suivi » (« mes 3 chiffres » + grille de voyants, jamais de rouge) · modèle: Sonnet, effort: medium · plan: → plans/theme-cardio-2026-07/S14.md (auto OK ; CSS complété par l'orchestrateur après stall infra du TSX)
-  - Vagues : V0 = S1 (solo, gate G1) → V1 = S2·S3 (parallèles) → V2 = S4·S5·S6 (pilote, parallèles puis gate visuelle G-moule) → V3 = S7-S11 (agir, parallèles) → V4 = S12-S14 (se soigner, parallèles) → consolidation (18 commits atomiques + contexte, ce lot). **Chantier non clos** : validation visuelle humaine des modules M4-M12 (Thibault, `npm run dev`) reste à faire (pilote M1-M3 déjà validé) — cf. `VALIDATION.md`. Réserve non bloquante : fréquences de suivi M12 à confirmer par Thibault auprès de l'HAS. Porte inter-thèmes réelle (M2→diabète, M6→tabac) et généralisation des composants cardio dans `src/components/` : hors v1, réactivables plus tard (gates tranchées avec Thibault 2026-07-22, cf. `DECISIONS.md`).
+- S5 — Familles cardio : picto par repère · **BLOQUÉ**, approche non tranchée (**G-familles**) +
+  assets `repere-*.png` à générer · → plans/enrichissement-visuel-2026-07/S5.md
+- S6 — Câblage des assets générés (VITE cardio, vrai/faux tabac, aliments) · **BLOQUÉ**, dépend de
+  la génération des PNG par Thibault · → plans/enrichissement-visuel-2026-07/S6.md
 
-### Revue prod (2026-07-21, navigateur in-app) · plan: → plans/revue-prod-2026-07/ (index + S1-S6)
-- [x] S1 — RP1 : patient — monter les outils interactifs (parité consultation, early-return sur `PatientSituations.tsx`) · modèle: Sonnet, effort: high · plan: → plans/revue-prod-2026-07/S1.md (auto OK : tsc --noEmit + vite build (2 entrées) verts)
-- [x] S2 — RP2 : « Mon plan d'arrêt » réduit aux sections 1 (date) & 7 (écart) + « + autre » situation dans Composantes (RP2b, gate G-RP2 tranchée oui) · modèle: Sonnet, effort: high · plan: → plans/revue-prod-2026-07/S2.md (auto OK : tsc --noEmit + vite build + npm test 106/106 verts)
-- [x] S3 — RP3 : QR du livret reformulé (composant partagé `QRBlock.tsx`, aussi utilisé par les fiches individuelles) + validation au blur des champs « + autre » (plan-arret + composantes) · modèle: Sonnet, effort: medium · plan: → plans/revue-prod-2026-07/S3.md (auto OK : tsc --noEmit + vite build + npm test 106/106 verts)
-- [x] S4 — RP4 : ergonomie consultation vérifiée puis corrigée — 5/5 points reproduits et corrigés (clamp bulles Composantes, tolérance cadran Motivation, libellé Alimentation, gate « Voir l'effet » Traitements, alignement en-têtes à onglets multiples) · modèle: Sonnet, effort: high · plan: → plans/revue-prod-2026-07/S4.md (auto OK : tsc --noEmit + vite build verts)
-- [x] S5 — RP6 : cohérence & finitions tabac — silhouette bénéfices surligne l'organe (gate G-RP6 a), affordance « Mes raisons », troncatures boîte à outils ; quiz Vrai/Faux resté non-évaluatif (gate G-RP6 b, aucun code) · modèle: Sonnet, effort: medium · plan: → plans/revue-prod-2026-07/S5.md (auto OK : tsc --noEmit + vite build verts)
-- [x] S6 — Consolidation : 6 commits atomiques (staging explicite par sujet) + contexte (index/STATUS/TASKS/VALIDATION/DECISIONS/PROJECT_MAP) + 1 push · modèle: Haiku, effort: minimal · plan: → plans/revue-prod-2026-07/S6.md (auto OK : tsc --noEmit + vite build (2 entrées) + npm test 106/106 verts sur l'arbre consolidé)
-  - Vagues : V1 = S1·S2·S4·S5 (parallèles, zones disjointes) → V2 = S3 (après S2, partage `PlanArretModule.tsx`) → V3 = S6 (consolidation). **Chantier clos 2026-07-21.** ⚠️ Validation VISUELLE humaine (Thibault, `npm run dev`) reste entièrement à faire — cf. `VALIDATION.md`. `AddictionModule.tsx`/`.module.css` et `PlanArretModule.tsx`/`.module.css` ont reçu des contributions de plusieurs sessions (S2+S3(+S4) / S2+S3) — commits groupés par fichier, messages composés en conséquence (cf. `git log`).
+## Backlog — contenu à fournir par Thibault (non bloquant)
 
-### Insuline basale/rapide — affinements de revue prod (2026-07-21) · plan: → plans/insuline-affinements-2026-07/ (index + S1-S6)
-- [x] S1 — Contenu & sources : `docs/diabete/09-insuline-basale.md` (créé) + section « rapide sans repas » du `10` (IA1/IA2, gate G1) · modèle: Opus, effort: high · plan: → plans/insuline-affinements-2026-07/S1.md (pas de code, contenu sourcé OpenEvidence ; **G1 validée par Thibault 2026-07-21**)
-- [x] S2 — Item 6 : slider timing rapide, `timingPhase(delay)` source de vérité unique, libellé dynamique remplace les 4 étiquettes fixes (IA3) · modèle: Sonnet, effort: high · plan: → plans/insuline-affinements-2026-07/S2.md (auto OK : tsc --noEmit + vite build (2 entrées) + npm test 101/101 verts)
-- [x] S3 — Item 5 : garde-fou local dans `sampleRepasAvecBolus` (lib `glycemieCurve.ts`), plus de creux sous baseline au cas adéquat, 5 nouveaux invariants (IA4) · modèle: Sonnet, effort: high · plan: → plans/insuline-affinements-2026-07/S3.md (auto OK : tsc --noEmit + npm test 106/106 + vite build verts, aucun invariant existant assoupli)
-- [x] S4 — Basale : intro « à quoi sert la lente » + bloc régularité/horaire (générique, sans molécule G2) + phrase-pont (IA5) · modèle: Sonnet, effort: high · plan: → plans/insuline-affinements-2026-07/S4.md (auto OK : tsc --noEmit + vite build + npm test 106/106 verts)
-- [x] S5 — Rapide : 5ᵉ onglet « Et si je ne mange pas ? » (gate G5) + phrase-pont (IA6) · modèle: Sonnet, effort: high · plan: → plans/insuline-affinements-2026-07/S5.md (auto OK : tsc --noEmit + vite build + npm test 106/106 verts)
-- [x] S6 — Consolidation : commits (docs S1, S3, S4, S2+S5 combiné, contexte) + statuts + STATUS/VALIDATION/DECISIONS/PROJECT_MAP · modèle: Haiku, effort: minimal · plan: → plans/insuline-affinements-2026-07/S6.md (auto OK : tsc --noEmit + vite build (2 entrées) + npm test 106/106 verts sur l'arbre consolidé)
-  - Vagues : V0 = S1 (solo, gate G1) → V1 = S2·S3 (parallèles, zones disjointes) → V2 = S4·S5 (parallèles, après G1 ; S5 après S3) → V3 = S6 (consolidation). **Chantier clos 2026-07-21.** ⚠️ Validation VISUELLE humaine (Thibault, `npm run dev`) reste entièrement à faire — cf. `VALIDATION.md`. Phrases-pont S4/S5 conceptuellement cohérentes mais pas identiques mot pour mot — arbitrage Thibault en attente.
+- [ ] Références de sources par module dans `registry.ts` (HAS / Tabac Info Service) — seul point de
+  contenu encore en attente (l'encart « Sources » affiche « à compléter ») · modèle: Sonnet, effort: low
+- [ ] « Bonnes pratiques / erreurs fréquentes » par forme de substitut (module Substituts) · modèle:
+  Sonnet, effort: low
+- [ ] `InfoHover` (2e niveau de lecture tabac) : composant prêt, câblage dès que Thibault valide tout
+  ou partie des 3 entrées de `docs/BRIEF_TABAC.md` §3.5 + leurs sources exactes · modèle: Sonnet,
+  effort: medium
 
-### Outils interactifs (2026-07-21, revue produit Thibault) · plan: → plans/outils-interactifs-2026-07/ (index + S1-S8)
-- [x] S1 — Socle : registre `OUTILS_INTERACTIFS` + persistance injectée (`outilsData`/`useConsultationStore`/`usePatientStore`) + fiche perso + respiration recâblée en consultation (OI1-OI4) · modèle: Sonnet, effort: high · plan: → plans/outils-interactifs-2026-07/S1.md (auto OK : tsc --noEmit + vite build (2 entrées) + npm test 101/101 verts · commits 2a24fa7/269b2c0/ee875c7/0fe136e)
-- [x] S2 — Constructeur « SI… ALORS… » (OI5, flagship efficacité démontrée) · modèle: Sonnet, effort: high · plan: → plans/outils-interactifs-2026-07/S2.md (auto OK : tsc --noEmit + vite build verts · commit 14e87ad)
-- [x] S3 — Calculette « tirelire » (OI6, économies + récompense, prix paquet 12€/20 cigs G3) · modèle: Sonnet, effort: medium · plan: → plans/outils-interactifs-2026-07/S3.md (auto OK : tsc --noEmit + vite build verts · commit 11c40c5)
-- [x] S4 — `OutilChecklist` générique (OI7) → place-nette, mains-bouche, anti-ennui, routine, items pré-remplis (G4) · modèle: Sonnet, effort: high · plan: → plans/outils-interactifs-2026-07/S4.md (auto OK : tsc --noEmit + vite build verts · commit 15bb02e)
-- [x] S5 — `MinuteurGuide` générique (OI8) → bouger 10 min, surfer sur l'envie · modèle: Sonnet, effort: high · plan: → plans/outils-interactifs-2026-07/S5.md (auto OK : tsc --noEmit + vite build + npm test 101/101 verts · commit 52defdd)
-- [x] S6 — Plan de secours (OI9, en cas d'écart) + Ma phrase de refus (OI10) · modèle: Sonnet, effort: medium · plan: → plans/outils-interactifs-2026-07/S6.md (auto OK : tsc --noEmit + vite build verts · commits aa9e20b/57e8f23)
-- [x] S7 — Journal (OI11) : renvoi carnet existant côté patient + gabarit hebdo imprimable côté consultation (G5) · modèle: Sonnet, effort: medium · plan: → plans/outils-interactifs-2026-07/S7.md (auto OK : tsc --noEmit + vite build verts · commit a0928da)
-- [x] S8 — Consolidation : commits tâche par tâche (11, OI1-OI11) + statuts (index/TASKS) + STATUS/VALIDATION/DECISIONS/PROJECT_MAP · modèle: Haiku, effort: minimal · plan: → plans/outils-interactifs-2026-07/S8.md (auto OK : tsc --noEmit + vite build (2 entrées) + npm test 101/101 verts)
-  - Vagues : V1 = S1 (socle solo) → V2 = S2·S3·S4·S5·S6·S7 (parallèles, zones disjointes) → V3 = S8 (consolidation). **Chantier clos 2026-07-21** (14 outils sur 14 : interactifs ou renvoi assumé, dans les deux bundles). Gates G1-G5 tranchées le 2026-07-21 (cf. `DECISIONS.md`). ⚠️ Validation VISUELLE humaine (Thibault, `npm run dev`, deux bundles) reste entièrement à faire — push différé, à confirmer par Thibault.
+## Backlog (Phases suivantes — non cadré)
 
-### Revue Chrome — vague de corrections (revue navigateur Thibault, 2026-07-15) · plan: → plans/revue-chrome-2026-07/ (index + S1-S17)
-- [ ] S1 — Diabète : donut→camembert (C1) + ordonnance vide/état vide (C3) + bulle cardio fond+gras (C4) · modèle: Sonnet, effort: medium · plan: → plans/revue-chrome-2026-07/S1.md
-- [ ] S2 — « Ce que l'arrêt répare » : halo actif unique (A1) + illus agrandies (A2) + frise pleine largeur en tête (A3) + doublon Peau/Jambes + tri temporel (A4) · modèle: Sonnet, effort: medium · plan: → plans/revue-chrome-2026-07/S2.md
-- [ ] S3 — Insuline basale : retrait profil + bande {25,60} (80/70/50) + axe/repères/légende Coucher/Réveil (C5) · modèle: Sonnet, effort: high · plan: → plans/revue-chrome-2026-07/S3.md
-- [ ] S4 — Carte-réflexe hypo : illustrations signes + resucrage dans la modale imprimable (C6) · modèle: Sonnet, effort: medium · plan: → plans/revue-chrome-2026-07/S4.md
-- [ ] S5 — Substituts desktop : disposition 2 colonnes anti-scroll (B1) · modèle: Sonnet, effort: medium · plan: → plans/revue-chrome-2026-07/S5.md
-- [ ] S6 — Patient : schéma détail agrandi (E2) + label « Émotions propices au tabac » (E5) · modèle: Sonnet, effort: low · plan: → plans/revue-chrome-2026-07/S6.md
-- [ ] S7 — Outils : pertinence par pilier, Stress ≠ 4D en tête (E4, partagé consultation+patient) · modèle: Sonnet, effort: high · plan: → plans/revue-chrome-2026-07/S7.md
-- [ ] S8 — Titration : extraction composant partagé paramétré `TitrationPatch` (E3a, après S5) · modèle: Sonnet, effort: high · plan: → plans/revue-chrome-2026-07/S8.md
-- [ ] S9 — Livret : format A5 (D1) + impression N&B (D2) + pagination compacte · modèle: Sonnet, effort: medium · plan: → plans/revue-chrome-2026-07/S9.md
-- [ ] S10 — Livret : réordonnancement (D3) + « 4D » (D6) + situations par composante (D4) · modèle: Sonnet, effort: high · plan: → plans/revue-chrome-2026-07/S10.md
-- [ ] S11 — Titration → SelectionContext consultation, mémoire session (E3b, après S8) · modèle: Sonnet, effort: medium · plan: → plans/revue-chrome-2026-07/S11.md
-- [ ] S12 — Titration app patient + localStorage, jour/nuit (E3c, après S8) · modèle: Sonnet, effort: high · plan: → plans/revue-chrome-2026-07/S12.md
-- [ ] S13 — Livret : substituts `contain` (D5a) + carte patch page dédiée avec dose (D5b, après S10+S11) · modèle: Sonnet, effort: high · plan: → plans/revue-chrome-2026-07/S13.md
-- [ ] S14 — Patient : visuels produit substituts (E1, gate assets — 6 prompts dans S14) · modèle: Sonnet, effort: medium · plan: → plans/revue-chrome-2026-07/S14.md
-- [ ] S15 — Respiration guidée interactive (E6, gate rythme) · modèle: Sonnet, effort: high · plan: → plans/revue-chrome-2026-07/S15.md
-- [ ] S16 — Carnet de suivi localStorage (E7, après S12, gate champs) · modèle: Sonnet, effort: high · plan: → plans/revue-chrome-2026-07/S16.md
-- [ ] S18 — Camembert : réglage des proportions au drag, modèle % continu + dérivation courbe (C2, après S1) · modèle: Sonnet, effort: high · plan: → plans/revue-chrome-2026-07/S18.md
-- [ ] S17 — Consolidation : commits tâche par tâche + statuts + DECISIONS/STATUS/VALIDATION/PROJECT_MAP + push · modèle: Haiku, effort: minimal · plan: → plans/revue-chrome-2026-07/S17.md
-  - Vagues : V1 = S1·S2·S3·S4·S5·S6 (parallèles) → V2 = S7·S8·S9·S10 (S8 après S5) → V3 = S11∥S12 (après S8) puis S13 (après S10+S11) → V4 gated/features = S14·S15·S16·S18 (S18 après S1) → V finale = S17.
+- [ ] Thème diabète : finaliser le cadrage des modules 5-8 (`docs/diabete/`) avant transmission à
+  Claude Design.
+- [ ] Occurrences résiduelles du mot « craving » hors périmètre (`registry.ts`, `NicotineModule.tsx`,
+  `PlanArretModule.tsx`) — signalées, non bloquantes.
 
-### Corrections revue guidée — Tabac A-D + Diabète E (revue guidée Thibault, 2026-07-14) · plan: → plans/corrections-revue-guidee/ (index + S1-S7)
-- [x] S1 — « Ce que l'arrêt répare » : retrait « Étape X/N » (T1-A) + frise chronologique à hotspots remplace la barre de chips (T2-A) + silhouette anatomique en mode hotspot, ancres % (T3-A) + illustration de détail agrandie/centrée (T4-A) · modèle: Opus, effort: xhigh · plan: → plans/corrections-revue-guidee/S1.md (auto OK : tsc + vite build + npm test 95/95 verts ; visuel validé Thibault 2026-07-14 → VALIDATION.md ; + correctif post-validation : silhouette et illustration de détail encore agrandies)
-- [x] S2 — Substituts : technique de prise Vapoteuse visible sans défiler (compactage + `scrollIntoView` filet) (T1-B) · modèle: Sonnet, effort: medium · plan: → plans/corrections-revue-guidee/S2.md (auto OK : tsc + vite build + npm test 95/95 verts ; visuel validé Thibault 2026-07-14 → VALIDATION.md)
-- [x] S3 — Boîte à outils : retrait toggle « Dans ma fiche » de la grille (T1-C) + retrait des 2 renvois redondants vers le plan d'arrêt dans `src/content/tabac/outils.ts`, app patient vérifiée non impactée (T2-C) · modèle: Sonnet, effort: low · plan: → plans/corrections-revue-guidee/S3.md (auto OK : tsc + vite build (2 entrées) + npm test 95/95 verts ; visuel validé Thibault 2026-07-14 → VALIDATION.md)
-- [x] S4 — Plan d'arrêt : sélecteur de stratégie Arrêt complet / Réduction progressive, champ `strategie` en mémoire dans `SelectionContext`, libellés conditionnels seuls (T1-D) · modèle: Opus, effort: high · plan: → plans/corrections-revue-guidee/S4.md (auto OK : tsc + vite build + npm test 95/95 verts ; visuel validé Thibault 2026-07-14 → VALIDATION.md ; textes `// à revalider (Thibault)`)
-- [x] S5 — Insuline rapide : temps ① dose habituelle fixe, résultat = écart dose−glucides (T1-E) + réglages fins temps ③ (T2-E) + redessin temps ④ « redescend seule » (T3-E) + temps ④ résultat/bouton visibles sans défiler (T4-E) · modèle: Opus, effort: xhigh · plan: → plans/corrections-revue-guidee/S5.md (auto OK : tsc + vite build + npm test verts ; visuel validé Thibault 2026-07-14 → VALIDATION.md ; constantes `// à revalider (Thibault)` ; + correctifs post-validation A/B : `excesGate` (excès gaté post-pic) dans `glycemieCurve.ts`, 96/96 tests)
-- [x] S6 — Insuline rapide : encadré commun situation→réponse→résultat (`.situationCard`) sur les temps ①③④, aligné sur l'insuline basale (T1-F) · modèle: Sonnet, effort: medium · plan: → plans/corrections-revue-guidee/S6.md (auto OK : tsc + vite build + npm test 96/96 verts ; visuel validé Thibault 2026-07-14 → VALIDATION.md)
-- [x] Correctif — Boîte à outils : les 4D activés un par un (`VagueCraving.tsx`, `activeDs: Set` → `activeD: DKey | null`), vague de l'envie dégagée par défaut, D actif superposé sur la vague · plan: → plans/corrections-revue-guidee/index.md (hors plan initial, décidé par Thibault en séance de validation visuelle 2026-07-14 ; auto OK : tsc + vite build + npm test verts ; visuel validé Thibault 2026-07-14 → VALIDATION.md)
-- [x] Correctif — Insuline basale en écran unique : retrait complet des onglets `InsulineModule.tsx` (remplace l'idée initiale d'aligner la nav sur les onglets de rapide), bloc « Décider » toujours visible, `scenarios.ts` intact · plan: → plans/corrections-revue-guidee/index.md (hors plan initial, décidé par Thibault en séance de validation visuelle 2026-07-14 ; auto OK : tsc + vite build + npm test verts ; visuel validé Thibault 2026-07-14 → VALIDATION.md)
-- [ ] S7 — Consolidation : contexte (STATUS/TASKS/VALIDATION/DECISIONS/PROJECT_MAP/index) + commits tâche par tâche + push · modèle: Haiku, effort: minimal · plan: → plans/corrections-revue-guidee/S7.md
-  - Vagues : V1 = S1·S2·S3·S4·S5 (parallèles, zones disjointes) → V2 = S6 (solo, dépend de S5 — même fichier `InsulineRapideModule.tsx`) → V3 = S7 (consolidation). **S1-S6 faites et validées visuellement par Thibault le 2026-07-14** ; S7 (cette consolidation) en cours — reste commits + push.
+## Archivage
 
-### Corrections v2 (2026-07-01, captures Thibault) · plan: → plans/PLAN_corrections-v2.md
-- [~] R1 — Borner contenu + graphiques SVG (anti-débordement) · modèle: Sonnet, effort: low (auto en attente : npm indispo dans cet env ; visuel → VALIDATION.md)
-- [~] R2 — Nicotine-toxique : étiquettes alignées + pop-up ancré · modèle: Sonnet, effort: medium (auto en attente : npm indispo dans cet env ; visuel → VALIDATION.md)
-- [~] R3 — Craving : cartes 4D dans le cadre (overlay borné) · modèle: Sonnet, effort: medium (auto en attente : npm indispo dans cet env ; visuel → VALIDATION.md)
-- [x] R4 — Nicotine : cinétique temps réel au clic + refonte visuelle · modèle: Sonnet, effort: high (auto OK : tsc+vite build+vitest verts ; visuel → VALIDATION.md)
-- [x] R5 — Soulagement : temps réel + repère non-fumeur superposé · modèle: Sonnet, effort: high *(récit à valider Thibault)* (auto OK : tsc+vite build+vitest 17 tests verts ; visuel → VALIDATION.md)
-- [~] R6 — Addiction : exploration lisible + outils enrichis · modèle: Sonnet, effort: medium (auto OK ; visuel → VALIDATION.md ; enrichissement outils au-delà de la source non fait, cf. VALIDATION.md)
-- [~] R7 — Craving : courbe « vague » plus expressive · modèle: Haiku, effort: low (auto OK ; visuel → VALIDATION.md)
-- [~] R8 — Substituts : refonte ergonomique de la titration · modèle: Sonnet, effort: medium (auto OK ; visuel → VALIDATION.md)
-- [x] R9 — Nouveau module M7 « Explorer ma motivation » (échelles + tableau blanc) · modèle: Sonnet, effort: high *(contenu à valider Thibault)* (auto OK : tsc+vite build+vitest 17 tests verts ; visuel → VALIDATION.md)
-  - Ordre recommandé : R1 → R3 → R2 → R7 → R6 → R8 → R4 → R5 → R9.
-
-### Corrections v3 (2026-07-01, captures Thibault) · plan: → plans/corrections-v3/ (1 fichier/étape)
-- [x] V1 — Addiction : agrandir le diagramme de Venn (lisibilité) · modèle: Haiku, effort: low · plan: → plans/corrections-v3/V1-addiction-agrandir.md
-- [x] V2 — Addiction : items « De quoi parle-t-on » en menu radial autour du cercle · modèle: Sonnet, effort: medium · plan: → plans/corrections-v3/V2-addiction-radial.md (auto OK : tsc+vite build verts ; visuel → VALIDATION.md)
-- [x] V3 — Nicotine : cumul sur axe fixe (supprime balayage/curseur) + retune amplitudes · modèle: Sonnet, effort: high · plan: → plans/corrections-v3/V3-nicotine-cumul.md (auto OK : tsc+vite build+vitest 20 tests verts ; visuel → VALIDATION.md)
-- [x] V4 — Soulagement : clic → chute/remontée figée, plus de curseur · modèle: Sonnet, effort: medium · plan: → plans/corrections-v3/V4-soulagement-clic.md (auto OK : tsc+vite build+vitest 20 tests verts ; visuel → VALIDATION.md)
-- [x] V5 — Craving : les 4 D masquent progressivement le pic (opacité) · modèle: Sonnet, effort: medium · plan: → plans/corrections-v3/V5-craving-masque-pic.md (auto OK : tsc+vite build verts ; visuel → VALIDATION.md)
-- [x] V6 — Nicotine-toxique : « Mélange chimique » reformulé avec conséquence · modèle: Haiku, effort: low · plan: → plans/corrections-v3/V6-toxique-melange.md (auto OK : tsc+vite build verts ; texte à valider Thibault → VALIDATION.md)
-- [x] V7 — Motivation : scinder en 2 onglets · modèle: Sonnet, effort: low · plan: → plans/corrections-v3/V7-motivation-onglets.md (auto OK : tsc+vite build verts ; visuel → VALIDATION.md)
-- [x] V8 — Motivation : tableau agrandi + cartes en réserve à glisser · modèle: Sonnet, effort: high · plan: → plans/corrections-v3/V8-motivation-reserve.md (auto OK : tsc+vite build verts ; drag limité au repositionnement intra-tableau, boutons Placer/Retirer pour changer de zone → VALIDATION.md)
-  - Ordre recommandé : V6 → V1 → V2 → V5 → V7 → V8 → V3 → V4. Dépendances : V2 après V1, V8 après V7, V4 après V3 (lib partagée).
-
-### Corrections v4 (2026-07-02, audit Playwright 2026-07-01) · plan: → plans/corrections-v4/ (1 fichier/étape)
-- [x] A1 — Substituts : contenu validé (5 formes) + repli « en rédaction » + titration précisée · modèle: Sonnet, effort: medium · plan: → plans/corrections-v4/A1-substituts-contenu.md (auto OK ; visuel → VALIDATION.md §A1)
-- [x] A2 — Motivation : corriger masquage onglets (`.section[hidden] { display: none }`) · modèle: Haiku, effort: minimal · plan: → plans/corrections-v4/A2-motivation-masquage.md (auto OK ; visuel → VALIDATION.md §A2)
-- [x] A3 — Accueil : grille par familles (Comprendre / Agir / Se motiver) · modèle: Sonnet, effort: medium · plan: → plans/corrections-v4/A3-accueil-grille.md (auto OK ; visuel → VALIDATION.md §A3)
-- [x] A4 — Coquille : libellé « Sources » explicite + focus clavier visible · modèle: Sonnet, effort: low · plan: → plans/corrections-v4/A4-affordances-sources.md (auto OK ; visuel → VALIDATION.md §A4)
-- [x] A5 — Addiction : vocabulaire desktop + titre physique + légende couleur/symptômes/stratégies · modèle: Sonnet, effort: medium · plan: → plans/corrections-v4/A5-addiction-desktop-legende.md (auto OK ; visuel → VALIDATION.md §A5)
-- [x] A6 — Nicotine : consigne d'amorce + chip « Pic atteint » + frise plus lisible · modèle: Sonnet, effort: low · plan: → plans/corrections-v4/A6-nicotine-consigne-libelle.md (auto OK ; visuel → VALIDATION.md §A6)
-- [x] A7 — Nicotine-toxique : double encodage non chromatique + atténuation légère · modèle: Sonnet, effort: medium · plan: → plans/corrections-v4/A7-toxique-equilibre.md (auto OK ; visuel → VALIDATION.md §A7)
-- [x] A8 — Soulagement : consigne 2 temps + annotation délai chute/remontée + « tension liée au manque » · modèle: Sonnet, effort: low · plan: → plans/corrections-v4/A8-soulagement-lecture.md (auto OK ; visuel → VALIDATION.md §A8)
-- [x] A9 — Craving : « C'est passé » réservé à la fin réelle de la vague (3 états) · modèle: Sonnet, effort: medium · plan: → plans/corrections-v4/A9-craving-timing.md (auto OK ; visuel → VALIDATION.md §A9)
-- [x] A10 — Motivation : cartes élargies (220–280 px) + sliders épaissis + bornes 0/10 + tableau moins haut · modèle: Sonnet, effort: medium · plan: → plans/corrections-v4/A10-motivation-cartes-sliders.md (auto OK ; visuel → VALIDATION.md §A10)
-- [x] A11 — Nicotine : drag-and-drop des prises sur la frise (position = temps) + fallback clic/clavier · modèle: Sonnet, effort: high · plan: → plans/corrections-v4/A11-nicotine-drag-frise.md (auto OK ; visuel → VALIDATION.md §A11)
-- [x] A12 — Motivation : placer/retirer les cartes par drag-and-drop HTML5 (réserve ↔ tableau) + Entrée/Suppr · modèle: Sonnet, effort: high · plan: → plans/corrections-v4/A12-motivation-drag-drop.md (auto OK : tsc+vite build verts ; visuel → VALIDATION.md §A12)
-  - Ordre : Wave 1 (A1–A9 en parallèle, 9 agents) → Wave 2 (A10+A11, 2 agents) → Wave 3 (A12). 3 commits.
-
-### Amélioration UI/UX v5 (2026-07-03) · plan: → plans/PLAN_amelioration-ui-ux-v5.md
-- [x] B1 — Addiction : stabiliser le diagramme actif · modèle: Codex, effort: medium (Playwright ciblé 1440 × 900 OK ; npm run build OK ; npm test 20/20 OK)
-
-### Refonte UI (2026-07-06, maquette Claude Design) · plan: → plans/refonte-ui/ (index + S1–S9) · design: → docs/DESIGN_REFONTE.md
-- [x] S1 — Socle : fonts auto-hébergées + tokens oklch + primitives globales · modèle: Sonnet, effort: high · plan: → plans/refonte-ui/S1.md (auto OK : tsc+vite build+vitest 20 tests verts ; visuel → VALIDATION.md)
-- [x] S10 — Réécrire la logique des courbes (nicotineCurve.ts + tests) — modèle 0–100 / 24 h (handoff) · modèle: Sonnet, effort: high · plan: → plans/refonte-ui/S10.md
-- [x] S2 — Chrome : accueil + coquille + carte + Sources · modèle: Sonnet, effort: medium · plan: → plans/refonte-ui/S2.md
-- [x] S3 — Restyle Addiction · modèle: Sonnet, effort: medium · plan: → plans/refonte-ui/S3.md
-- [x] S4 — Ré-implémenter Nicotine (24 h, 3 outils, dose ; nouveau modèle) · modèle: Sonnet, effort: high · plan: → plans/refonte-ui/S4.md
-- [x] S5 — Restyle Substituts (+ encart technique de prise) · modèle: Sonnet, effort: medium · plan: → plans/refonte-ui/S5.md
-- [x] S6 — Restyle Nicotine ≠ toxique · modèle: Sonnet, effort: medium · plan: → plans/refonte-ui/S6.md
-- [x] S7 — Ré-implémenter Soulagement (tension découplée ; nouveau modèle) · modèle: Sonnet, effort: high · plan: → plans/refonte-ui/S7.md
-- [x] S8 — Restyle Craving (4D) · modèle: Sonnet, effort: medium · plan: → plans/refonte-ui/S8.md
-- [x] S9 — Motivation : cadran circulaire + flux 2 questions (réécriture d'interaction) · modèle: Sonnet, effort: high · plan: → plans/refonte-ui/S9.md
-- [x] T12 — Consolidation : contexte (STATUS/TASKS/VALIDATION/PROJECT_MAP/DECISIONS) + audit Codex + push · modèle: Haiku/Codex, effort: low
-  - Vagues : V1 = S1 (bloquante) → V2 = S2–S9 en parallèle (8 agents, zones disjointes) → V3 = T12. **Complètes, 2026-07-08**.
-
-### Moteur multi-thèmes (2026-07-08) · plan: → C:\Users\kovu\.claude\plans\elegant-fluttering-dragon.md
-- [x] M1 — Déplacer le thème tabac sous `src/features/tabac/` (7 modules + `nicotineCurve.ts`), généraliser
-  `types.ts`/`registry.ts` (ModuleId/FamilleId en `string`, `Hue` dans `ModuleDef`, `ThemeDef`), navigation
-  à 3 niveaux dans `App.tsx`, nouveau `ThemeSelector`, scaffold vide `src/features/diabete/` · modèle: Sonnet,
-  effort: high (auto OK : tsc + vite build + vitest verts ; visuel → VALIDATION.md)
-
-### Alimentation-v2 — amélioration module 2 diabète (2026-07-10) · plan: → plans/alimentation-v2/ (index + S1-S4)
-- [x] S1 — Données : champs qualitatifs + paliers dérivés + 3 aliments oméga-3 · modèle: Sonnet, effort: medium · plan: → plans/alimentation-v2/S1.md (auto OK : tsc+vite build+vitest 61 tests verts)
-- [x] S2 — Composants partagés : `InfoHover` survol+clic · extensions optionnelles `CourbeGlycemie` · modèle: Sonnet, effort: high · plan: → plans/alimentation-v2/S2.md (auto OK : tsc+vite build+vitest 61 tests verts)
-- [x] S3 — Module Alimentation : déroulé guide + lisibilité défi ② + 2ᵉ niveau InfoHover · modèle: Sonnet, effort: high · plan: → plans/alimentation-v2/S3.md (auto OK : tsc+vite build+vitest 61 tests verts)
-- [x] S4 — Consolidation : contexte (index/STATUS/TASKS/VALIDATION/DECISIONS/PROJECT_MAP) + commits (S1/S2/S3/contexte) · modèle: Haiku, effort: low · plan: → plans/alimentation-v2/S4.md (auto OK : tsc+vite build+vitest 61 tests verts)
-  - Vagues : V1 = S1·S2 (parallèles, zones disjointes) → V2 = S3 (solo) → V3 = S4 (solo). **Chantier clos 2026-07-10.**
-  - ⚠️ Points ouverts Thibault : valeurs qualitatives sel/graisses/oméga-3 (à revalider), bande moyen étroite défi ② (recalibrage futur), illustrations 3 aliments (placeholders).
-
-### Approfondissement tabac (2026-07-09, refonte courbe + 2 modules + prompts) · plan: → plans/approfondissement-tabac/ (index + S1-S7)
-- [x] AP1 — Registre +2 modules (benefices-arret, idees-recues) + stubs + IllustrationSlot tabac · modèle: Sonnet, effort: low · plan: → plans/approfondissement-tabac/S1.md (auto OK : tsc --noEmit + vite build verts)
-- [x] AP2 — Silhouette générique SilhouetteCorps + wrapper diabète iso-API · modèle: Sonnet, effort: medium · plan: → plans/approfondissement-tabac/S2.md (auto OK : tsc --noEmit + vite build + vitest 61 tests verts)
-- [x] AP3 — Refonte nicotineCurve.ts (demi-vie 2h, Bateman, saturation, tension) + tests invariants · modèle: Sonnet, effort: high · plan: → plans/approfondissement-tabac/S3.md (auto OK : tsc --noEmit + vite build + vitest 78 tests verts)
-- [x] AP4 — Prompts illustrations tabac (bénéfices + vrai/faux) + style carré tabacsq · modèle: Sonnet, effort: low · plan: → plans/approfondissement-tabac/S4.md (verification statique OK)
-- [x] AP5 — Module 9 « Ce que l'arrêt répare » (silhouette + frise 10 jalons) · modèle: Sonnet, effort: high · plan: → plans/approfondissement-tabac/S5.md (auto OK : tsc --noEmit + vite build verts)
-- [x] AP6 — Module 10 « Vrai ou faux ? » (15 idées reçues sourcées, toutes actives) · modèle: Sonnet, effort: high · plan: → plans/approfondissement-tabac/S6.md (auto OK : tsc --noEmit + vite build verts)
-- [x] AP7 — Consolidation docs + contexte + 8 commits (S1-S6 + docs + contexte) · modèle: Haiku, effort: low · plan: → plans/approfondissement-tabac/S7.md (auto OK : tsc --noEmit + vite build + vitest 78 tests verts)
-  - Vagues : V1 = S1·S2·S3·S4 parallèles → V2 = S5·S6 parallèles → V3 = S7 solo. **Chantier clos 2026-07-10.**
-  - ⚠️ Points ouverts Thibault : jalons S5 chiffres (Tabac Info Service/OMS) ; cartes S6 n°4/14/15 à revalider ; mention graphe S3 actualisée (derrière `// à revalider`) ; illustrations tabac → `public/illustrations/tabac/<id>.png`.
-
-### Boîte à outils du sevrage + refonte Composantes + enrichissements (2026-07-10) · plan: → plans/boite-a-outils/ (index + S1-S9)
-- [x] BO1 — Moteur : contexte de navigation générique + registre + `situations.ts` + stub `boite-a-outils/` · modèle: Sonnet, effort: medium · plan: → plans/boite-a-outils/S1.md (auto OK : tsc --noEmit + vite build verts)
-- [x] BO2 — Module « Stratégies & outils » (14 outils, filtres, vague 4D héritée, fiche imprimable) · modèle: Sonnet, effort: xhigh · plan: → plans/boite-a-outils/S2.md (auto OK : tsc --noEmit + vite build verts ; `craving/` supprimé sans import cassé)
-- [x] BO3 — Composantes : situations radiales sélectionnables + CTA contextuel · modèle: Sonnet, effort: high · plan: → plans/boite-a-outils/S3.md (auto OK : tsc --noEmit + vite build verts)
-- [x] BO4 — Vrai/faux : 6 nouvelles cartes (poids/vapoteuse) + reformulation faux-pas + renvois · modèle: Sonnet, effort: medium · plan: → plans/boite-a-outils/S4.md (auto OK : tsc --noEmit vert ; `npm run build` bloqué par des erreurs pré-existantes hors zone diabète/activité d'une autre session de la même vague, sans lien avec `idees-recues`)
-- [x] BO5 — Substituts : forme « Vapoteuse » (réduction des risques) · modèle: Sonnet, effort: medium · plan: → plans/boite-a-outils/S5.md (auto OK : tsc --noEmit + vite build verts)
-- [x] BO6 — Plan d'arrêt : section « Si j'ai un écart » + vapoteuse dans les chips · modèle: Sonnet, effort: medium · plan: → plans/boite-a-outils/S6.md (auto OK : tsc --noEmit + vite build verts)
-- [x] BO7 — Prompts d'illustrations (14 outils + vapoteuse) dans le HTML · modèle: Sonnet, effort: low · plan: → plans/boite-a-outils/S7.md (vérification statique OK)
-- [x] BO8 — Diabète/Activité : interrupteur « activités toniques uniquement » · modèle: Sonnet, effort: low · plan: → plans/boite-a-outils/S8.md (auto OK : tsc --noEmit + vite build + npm test 78/78 verts)
-- [x] BO9 — Consolidation : docs (`contenu-modules-tabac.md`) + contexte + 9 commits (BO1-BO8 + contexte) · modèle: Sonnet, effort: low · plan: → plans/boite-a-outils/S9.md (auto OK : tsc --noEmit + vite build + npm test verts)
-  - Vagues : V1 = BO1·BO4·BO5·BO7·BO8 parallèles (5 agents, zones disjointes) → V2 = BO2·BO3·BO6 parallèles (3 agents) → V3 = BO9 solo. **Chantier clos 2026-07-10.**
-  - ⚠️ Points ouverts Thibault (n'empêchent pas d'exécuter) : vapoteuse substituts (BO5, technique à revalider) ; 11/21 cartes Vrai/faux à revalider (BO4, sources internationales) ; formulations patient des 14 outils (BO2, à juger à l'usage) ; illustrations 14 outils + vapoteuse à générer (BO7 → `public/illustrations/tabac/<id>.png`) ; occurrences résiduelles du mot « craving » hors périmètre (`src/features/registry.ts`, `nicotine/NicotineModule.tsx`, `plan-arret/PlanArretModule.tsx` — cf. `DECISIONS.md`).
-
-### Illustrations diabète (2026-07-10, virage illustration-driven) · plan: → plans/illustrations-diabete/ (index + S1-S7)
-- [x] S1 — Pipeline d'assets (`build_assets.py`) + silhouette partagée `bodyImage`/hotspots · modèle: Sonnet, effort: xhigh · plan: → plans/illustrations-diabete/S1.md (auto OK : tsc --noEmit + vite build + npm test 78/78 verts). 7 assets déposés dans `public/illustrations/diabete/` (silhouette + organes yeux/reins/nerfs + pied auto-examen + plaque + artère saine), palette adaptative 256 couleurs pour tenir sous ~90 Ko/asset. `SilhouetteCorps` reçoit `bodyImage?` (mode hotspot, rétro-compat tabac stricte) ; wrapper diabète recalibré en % de l'image carrée (index §7) ; `RisqueCardioModule.tsx` (M4) ajusté pour son overlay plaque existant. Visuel → VALIDATION.md.
-- [x] S2 — M5 Complications : illustration d'organe en tête du panneau détail · modèle: Sonnet, effort: xhigh · plan: → plans/illustrations-diabete/S2.md (auto OK : tsc --noEmit + vite build + npm test 78/78 verts). `ComplicationsModule.tsx` affiche `organe-yeux/reins/nerfs.png` ou `pied-auto-examen.png` (104 px, cadre doux) à côté du titre pour les 4 organes explorables ; cœur/cerveau (verrouillés) inchangés ; aucune donnée texte modifiée. Visuel → VALIDATION.md.
-- [x] S3 — M4 Risque CV : artère illustrée + plaque codée croissante, plaque image sur silhouette, feux → lucide · modèle: Sonnet, effort: xhigh · plan: → plans/illustrations-diabete/S3.md (auto OK : tsc --noEmit + vite build + npm test 78/78 verts). `PlaqueArtere.tsx` réécrit (dépôt seul, plus de vaisseau codé) ; vue ② artère = `artere-saine.png` + overlay `PlaqueArtere` (rotation ≈-25° par PCA) ; vue ③ anatomie = `plaque.png` posée/pivotée par territoire (`PLAQUE_OVERLAYS`) ; 5 feux = icônes lucide (Droplet/Gauge/Droplets/Cigarette/Armchair). ⚠️ alignement fin de l'overlay à revalider visuellement (jamais vérifié à l'écran par Claude). Visuel → VALIDATION.md.
-- [x] S4 — M1 Mécanisme : animation illustration-driven à 4 modes, contrôle par cellule · modèle: Sonnet, effort: xhigh · plan: → plans/illustrations-diabete/S4.md (auto OK : tsc --noEmit + vite build + npm test 78/78 verts). `MecanismeModule.tsx` réécrit (remplace le wizard 4-temps/5-cellules) : sélecteur de mode (sain/pénie/résistance/mixte), boucle 3 phases (clés → serrures → sang), 6 nouveaux assets (cellules/clé/jeton/pancréas), `prefers-reduced-motion` géré en JS (état final statique). Artère sous les cellules restée codée (option image écartée, cf. DECISIONS.md). ⚠️ positions/rotations des clés jamais vérifiées à l'écran. Visuel → VALIDATION.md.
-- [x] S5 — M7 Traitements : vérification silhouette `bodyImage` + halo · modèle: Sonnet, effort: high · plan: → plans/illustrations-diabete/S5.md (aucun changement de code : déjà satisfait par le passage générique `bodyImage` de S1 ; gates inchangés verts). Cœur/reins `allume` (halo confort) selon la ligne sélectionnée, 6 autres zones masquées, halo « sucre » CSS existant compatible avec le conteneur carré.
-- [x] S6 — M6 Suivi : stations/organes du cadran → lucide · modèle: Sonnet, effort: medium · plan: → plans/illustrations-diabete/S6.md (auto OK : tsc --noEmit + vite build + npm test 78/78 verts). Composant local `StationIcon` remplace 9 `IllustrationSlot` (`suivi-*`) par des icônes lucide (stéthoscope/prise de sang/vaisseaux/cœur/yeux/défenses/pied) dans un cadre neutre ; rein reste l'image `organe-reins.png` (S1, exception assumée) ; dentiste → `Smile`. Cadran/aiguille/centre restent codés.
-- [x] S7 — Vignettes M2/M3/M8 (session récurrente, lot complet) · modèle: Sonnet, effort: medium · plan: → plans/illustrations-diabete/S7.md (auto OK : tsc --noEmit + vite build + npm test 78/78 verts). 62 nouvelles vignettes déposées (33 aliments M2 dont 5 nouveaux · 18 activité M3 dont `sol` nouveau · 11 hypoglycémie M8) ; `alimentation/data.ts` et `activite/data.ts` mis à jour (`// à revalider`). `public/illustrations/diabete/` : 75 fichiers au total. Session marquée récurrente (index §8) — à rouvrir au prochain lot.
-  - **Chantier `illustrations-diabete` (S1-S7) clos le 2026-07-10.** Points ouverts non bloquants : alignement plaque overlay M4 (S3) et clés volantes M1 (S4) jamais vérifiés à l'écran ; valeurs nutritionnelles `// à revalider (Thibault)`.
-
-### App d'aide patient autonome (2ᵉ surface applicative, T16 du chantier corrections-audit-tabac, 2026-07-13) · plan: → plans/aide-patient/ (index + S1-S6)
-- [x] T1 — Couche `src/content/tabac/` (relocalisation données partagées, déplacement pur) · modèle: Sonnet, effort: high · plan: → plans/aide-patient/S1.md (auto OK : tsc --noEmit + vite build + npm test 95/95 verts)
-- [x] T2 — 2ᵉ entrée Vite + coquille app patient (home + nav par état, bundle isolé) · modèle: Sonnet, effort: high · plan: → plans/aide-patient/S2.md (auto OK : tsc --noEmit + vite build deux entrées + npm test 95/95 verts)
-- [x] T3 — Écran « Mes substituts » (voix patient) · modèle: Sonnet, effort: medium · plan: → plans/aide-patient/S3.md (auto OK : tsc --noEmit + vite build + npm test 95/95 verts)
-- [x] T4 — Écran « Agir face à une situation » (situation → outils, voix patient) · modèle: Sonnet, effort: high · plan: → plans/aide-patient/S4.md (auto OK : tsc --noEmit + vite build + npm test 95/95 verts)
-- [x] T5 — QR statique unique vers l'app patient sur fiches et livret · modèle: Sonnet, effort: low · plan: → plans/aide-patient/S5.md (auto OK : tsc --noEmit + vite build + npm test 95/95 verts)
-  - Vagues : V1 = S1 (solo, bloquante) → V2 = S2 (solo) → V3 = S3·S4·S5 (parallèles, zones disjointes) → V4 = S6 (consolidation). **S1-S5 faites, gates verts (2026-07-13).**
-  - ⚠️ Points ouverts Thibault (non bloquants) : habillage voix patient (3 phrases de Home + 3 de PatientSituations + 1 de QRBlock), marqués `// à revalider (Thibault)` ; PATIENT_APP_URL placeholder à fixer au déploiement + `public/qr/patient.png` à régénérer ; maquette Claude Design non faite (v1-directe retenue par défaut, cf. index §Maquette) ; déploiement de l'URL patient (2ᵉ projet Vercel ou sous-domaine) différé.
-
-## Reliquat v1
-- [~] C10 — Compléter le contenu non bloquant · modèle: Sonnet, effort: low · plan: → plans/PLAN_corrections-ux.md
-  - [ ] Références de sources par module (HAS / Tabac Info Service) dans `registry.ts`
-  - [ ] « Bonnes pratiques / erreurs fréquentes » par forme de substitut (Module 3-A)
-  - **Bloqué** : en attente du contenu à fournir par Thibault.
-- [ ] T-301 — Passe de validation visuelle/UX par Thibault (`npm run dev`, cf. `VALIDATION.md`) · humain
-
-### Backlog — thème diabète
-- [x] D0 — Cadrage du contenu du thème diabète avec Thibault · humain + Sonnet · **clos le 2026-07-09** :
-  SPEC consolidée (`docs/diabete/SPEC_outil_ETP_diabete.md`, 9 modules) + brief design
-  (`docs/diabete/BRIEF_DESIGN_diabete.md`) + **maquette Claude Design reçue** (handoff
-  `maquettes/Maquette handsoff diabete/extracted/`, 9 pages `.dc.html`). Suite → plan theme-diabete.
-
-### Thème diabète — câblage (2026-07-09, maquette Claude Design) · plan: → plans/theme-diabete/ (index + S1-S13)
-- [x] D1 — Socle thème : registre 9 modules + familles + stubs + `IllustrationSlot` · modèle: Sonnet, effort: medium · plan: → plans/theme-diabete/S1.md (auto OK : tsc+vite build verts)
-- [x] D2 — Lib courbe de glycémie (`glycemieCurve.ts` + tests) — modèle physiologique (note Thibault : courbes réalistes M2/M3/M9) · modèle: Sonnet, effort: high · plan: → plans/theme-diabete/S2.md (auto OK : npm test 50 verts ; tsc+vite build verts)
-- [x] D3 — Objets transversaux SVG : Silhouette, CourbeGlycemie, PlaqueArtere, SignatureEvitable · modèle: Sonnet, effort: high · plan: → plans/theme-diabete/S3.md (auto OK : tsc+vite build verts)
-- [x] D4 — Module 1 « C'est quoi le diabète » (clé/serrure, 4 temps) · modèle: Sonnet, effort: medium · plan: → plans/theme-diabete/S4.md (auto OK : tsc+vite build verts)
-- [x] D5 — Module 2 « Alimentation » (4 défis + synthèse, courbe physiologique, fiche assiette) · modèle: Sonnet, effort: high · plan: → plans/theme-diabete/S5.md (auto OK : npm test 50 verts ; tsc+vite build verts)
-- [x] D6 — Module 3 « Activité physique » (rayonnement, jauge ouverte, timing sur la courbe) · modèle: Sonnet, effort: high · plan: → plans/theme-diabete/S6.md (auto OK : npm test 50 verts ; tsc+vite build verts)
-- [x] D7 — Module 4 « Risque cardiovasculaire » (5 feux, artère réversible, anatomie, fiche) · modèle: Sonnet, effort: high · plan: → plans/theme-diabete/S7.md (auto OK : tsc+vite build verts)
-- [x] D8 — Module 5 « Complications » (silhouette, signature « évitable », fiche pied) · modèle: Sonnet, effort: medium · plan: → plans/theme-diabete/S8.md (auto OK : tsc+vite build verts)
-- [x] D9 — Module 6 « Suivi » (cadran de l'année + fiche calendrier frigo) · modèle: Sonnet, effort: high · plan: → plans/theme-diabete/S9.md (auto OK : tsc+vite build verts)
-- [x] D10 — Module 7 « Traitements » (ordonnance ↔ silhouette, double protection) · modèle: Sonnet, effort: medium · plan: → plans/theme-diabete/S10.md (auto OK : tsc+vite build verts)
-- [x] D11 — Module 8 « Hypoglycémie » (15/15, récupération/overshoot, carte-réflexe) · modèle: Sonnet, effort: medium · plan: → plans/theme-diabete/S11.md (auto OK : npm test 50 verts ; tsc+vite build verts)
-- [x] D12 — Module 9 « Insuline » (traces capteur générées, TIR vivant, 3 situations) · modèle: Sonnet, effort: high · plan: → plans/theme-diabete/S12.md (auto OK : npm test 50 verts ; tsc+vite build verts)
-- [x] D13 — Consolidation : contexte + commits par tâche + audit Codex + push · modèle: Haiku (+Codex), effort: low · plan: → plans/theme-diabete/S13.md (auto OK : tsc+vite build+npm test verts ; 13 commits atomiques D1-D13 réalisés)
-  - Vagues : V1 = S1·S2·S3 (parallèles, zones disjointes) → V2 = S4-S12 (9 agents parallèles, un module chacun) → V3 = S13 (solo).
-  - ⚠️ Points ouverts Thibault (n'empêchent pas d'exécuter) : familles d'accueil, illustrations à générer (`design/illustrations/prompts-illustrations-diabete.html` → `public/illustrations/diabete/`), fréquences module 6 + seuils module 4 à revalider.
-- [x] D14 — Corrections bugs revue visuelle du 2026-07-09 (7 bugs, 5 modules + lib) · modèle: Sonnet, effort: high · plan: → plans/theme-diabete/S14.md (auto OK : tsc+vite build+npm test 61 tests verts). Lib `glycemieCurve.ts` : modèle repas par **composition réelle** (CG/fibres/protéines/lipides, remplace les heuristiques de familles + proximité à l'assiette-modèle), `ordreFeculent` gradué (remplace le booléen `ordreFeculentDernier`), assiette vide → courbe plate, scénario nocturne `nuit_isolee` → `descend_hypo_matinale`, raccord nuit→jour continu. **B1** défi 1 Alimentation : assiette libre (vide au montage, toutes familles + doublons, plafond 10). **B2** défi 3 Ordre : courbe graduée + aliments remplaçables + carte courbe bornée 760px. **B3** défi 4 Proportion : portions réelles (aliment répété par portion). **B4** Activité : `z-index` au survol/focus des rayons. **B5** Suivi : cadran vide au montage (**inverse D9 n°2**), grille une-ligne-par-examen. **B6** Hypoglycémie : `.panel[hidden]{display:none}`. **B7** Insuline : chip « nuit isolée » retiré, chip « Ça descend la nuit » ajouté. **B8** `IllustrationSlot` : libellé placeholder tronqué + masqué sous 56px. Visuel → `VALIDATION.md` (thème diabète) + checklist détaillée dans `S14.md`.
-
-### Extensions tabac (2026-07-09, analyse Fable vs brief diabète) · plan: → plans/extensions-tabac/ · autorité: docs/BRIEF_TABAC.md
-- [x] X1 — Socle fiches : `FicheOverlay` générique + CSS impression A4 · modèle: Sonnet, effort: high · plan: → plans/extensions-tabac/X1.md (auto OK : tsc --noEmit + vite build verts ; visuel → VALIDATION.md §X1)
-- [x] X2 — Fiche « Ma carte anti-envie » (Craving, référence + D perso) · modèle: Sonnet, effort: medium · plan: → plans/extensions-tabac/X2.md (plan marqué fait le 2026-07-09 ; code vérifié X7 : `FicheOverlay` câblé dans `CravingModule.tsx`, bouton « Préparer ma carte » ; visuel → VALIDATION.md)
-- [x] X3 — Fiche « Ma méthode patch » (Substituts, règles + dose du moment) · modèle: Sonnet, effort: medium · plan: → plans/extensions-tabac/X3.md (plan marqué fait le 2026-07-09 ; code vérifié X7 : `FicheOverlay` câblé dans `SubstitutsModule.tsx`, bouton « Imprimer ma méthode » ; visuel → VALIDATION.md)
-- [x] X4 — Fiche « Mes raisons » (Motivation, cartes + échelles) · modèle: Sonnet, effort: medium · plan: → plans/extensions-tabac/X4.md (plan marqué fait le 2026-07-09 ; code vérifié X7 : `FicheOverlay` câblé dans `MotivationModule.tsx`, bouton « Imprimer mes raisons » ; visuel → VALIDATION.md)
-- [x] X5 — Nouveau module « Mon plan d'arrêt » + fiche (famille Agir) · modèle: Sonnet, effort: high · plan: → plans/extensions-tabac/X5.md (plan marqué fait le 2026-07-09 ; code vérifié X7 : `plan-arret/PlanArretModule.tsx` au registre tabac, `id: 'plan-arret'`, famille `agir`, `FicheOverlay` câblé ; visuel → VALIDATION.md)
-- [~] X6 — Portes de fin de module + fil rouge + 2ᵉ niveau (InfoHover) · modèle: Sonnet, effort: high · plan: → plans/extensions-tabac/X6.md (auto OK : tsc --noEmit + vite build + vitest 20 tests verts ; `ModuleFooterNav`/fil rouge câblés et vérifiés en X7 ; **T4 InfoHover livré seul, non câblé** — aucune entrée §3.5 validée dans `BRIEF_TABAC.md` §5, reconfirmé encore vrai en X7 (comportement attendu, pas un défaut) ; visuel → VALIDATION.md §X6)
-- [x] X7 — Resynchroniser les docs sur le code (contenu-modules, STATUS, PROJECT_MAP, TASKS) · modèle: Sonnet, effort: low · plan: → plans/extensions-tabac/X7.md (auto OK : tsc --noEmit + vite build verts, aucun fichier `src/` modifié)
-  - Vagues : V1 = X1 (bloquante) → V2 = X2-X5 en parallèle (fichiers disjoints, X5 seul sur `registry.ts`) → V3 = X6 → V4 = X7. **Chantier clos le 2026-07-09.**
-  - ⚠️ Avant/pendant : validations Thibault listées dans `docs/BRIEF_TABAC.md §5` (fil rouge, contenus 2ᵉ niveau + sources, libellés plan d'arrêt) — le fil rouge et le plan d'arrêt sont partis sur la v1 proposée ; le 2ᵉ niveau (InfoHover) reste non câblé faute de validation, cf. X6 ci-dessus.
-- [x] X8 — Fiche patch : marge « à colorier » + prise ponctuelle (demande Thibault 2026-07-09, hors brief initial) · modèle: Sonnet, effort: medium · plan: → plans/extensions-tabac/X8.md (auto OK : tsc --noEmit + vite build + vitest 50 tests verts). `PatchQuarts` accepte `quartsVides` (dose de jour affichée en vert + marge = patch en cours complété + 1 patch vide, coloriable au stylo à l'impression via contour pointillé + `print-color-adjust: exact`) ; nouveau composant `TechniqueIllustration` (table `ILLUSTRATIONS` toute à `null`, image-ready) partagé écran/fiche ; sélecteur dédié fiche « Ajouter une prise ponctuelle » (gomme/pastille/sublingual/spray, indépendant de la forme explorée à l'écran) → bloc optionnel « Ma prise ponctuelle » sur la fiche. `BRIEF_TABAC.md §3.1` resynchronisé ; visuel (aplat vert imprimé, tenue 1 page A4) → VALIDATION.md §X8.
-
-### Corrections visuelles diabète (revue Thibault 2026-07-11, 13 captures → 5 causes-racines) · plan: → plans/corrections-visuelles-diabete/ (index + S1-S8)
-- [x] CVD-S1 — Silhouette partagée : agrandir + halo « allumé » franc + retrait boutons organe (Traitements/Complications/Risque cardio ③) · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete/S1.md (auto OK : tsc + vite build + npm test 78/78 verts ; visuel → VALIDATION.md)
-- [x] CVD-S2 — Courbe glycémie : désaturer K_CHARGE, amplifier l'ordre, bande-cible module 2, comparaison fantôme systématique · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete/S2.md (auto OK : tsc + vite build + npm test 80/80 verts ; visuel → VALIDATION.md)
-- [x] CVD-S3 — Layout Alimentation : scène pleine largeur, éléments agrandis (dépend de S2) · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete/S3.md (auto OK : tsc + vite build + npm test 80/80 verts ; visuel → VALIDATION.md)
-- [x] CVD-S4 — Suivi : refonte Parcours (empilé, lisible, plus de débordement) · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete/S4.md (auto OK : tsc + vite build + npm test 80/80 verts ; visuel → VALIDATION.md)
-- [x] CVD-S5 — Activité ① Rayonnement : l'image remplit le nœud · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete/S5.md (auto OK : tsc + vite build + npm test 80/80 verts ; visuel → VALIDATION.md)
-- [x] CVD-S6 — Mécanisme : ralentir l'animation + tenir l'état final · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete/S6.md (auto OK : tsc + vite build + npm test 80/80 verts ; visuel → VALIDATION.md)
-- [x] CVD-S7 — Plaque d'athérome : dépôt en croissant collé à la paroi · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete/S7.md (auto OK : tsc + vite build + npm test 80/80 verts ; visuel → VALIDATION.md, alignement à caler par Thibault)
-- [x] CVD-S8 — Passe « moins de texte » agressive (9 modules) + libellé Insuline ③ (dépend de toutes) · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete/S8.md (auto OK : tsc + vite build + npm test 80/80 verts, bundle réduit ; visuel → VALIDATION.md)
-  - Ordre : S1 → S2 → S3 → S4 → S5 → S6 → S7 → S8. **Chantier clos 2026-07-11** (les 8 sessions faites). Mode solo (Sonnet), commits + push groupés en fin de plan.
-
-### Corrections visuelles diabète, tour 2 (revue Thibault 2026-07-11, par-dessus S1-S8 ci-dessus) · plan: → plans/corrections-visuelles-diabete-v2/ (index + S1-S6)
-- [x] CVD2-S1 — Silhouettes vraiment dominantes (560/640px) + plaque localisée à la zone active + retrait texte Traitements · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete-v2/S1.md (auto OK : tsc + vite build + npm test 80/80 verts ; visuel → VALIDATION.md)
-- [x] CVD2-S2 — Feux cardio : icône = bouton coloré (bordure = sévérité, nom accessible) + artère ~30% de lumière au max · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete-v2/S2.md (auto OK : tsc + vite build + npm test 80/80 verts ; visuel → VALIDATION.md)
-- [x] CVD2-S3 — Suivi : cadran + examens side-by-side (≥860px) sans déborder, icône Lucide « placer/retirer » · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete-v2/S3.md (auto OK : tsc + vite build + npm test 80/80 verts ; visuel → VALIDATION.md, critère bloquant non-débordement à revalider)
-- [x] CVD2-S4 — Insuline : profil en toggle permanent, onglet lecture dégraissé, décider sans titre trompeur · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete-v2/S4.md (auto OK : tsc + vite build + npm test 80/80 verts ; visuel → VALIDATION.md)
-- [x] CVD2-S5 — Activité : rayonnement 480→640px, volume dé-grillé (rythme visuel) + débordement corrigé, micro-coupures 44px · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete-v2/S5.md (auto OK : tsc + vite build + npm test 80/80 verts ; visuel → VALIDATION.md)
-- [x] CVD2-S6 — Alimentation : débordements Qualité/Ordre (passe défensive CSS) + plancher/plafond partagé de LA COURBE · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete-v2/S6.md (auto OK : tsc + vite build + npm test 80/80 verts ; visuel → VALIDATION.md, critère bloquant non-débordement à revalider en priorité — cause exacte non confirmée sans navigateur)
-  - Ordre : S1 → S2 (même fichier), puis S3/S4/S5/S6 indépendants. **Chantier clos 2026-07-11** (les 6 sessions faites). Mode solo (Sonnet), commits par tâche en fin de plan, push en attente de validation Thibault.
-
-### Corrections visuelles diabète, tour 3 (audit Chrome déployé 2026-07-11, par-dessus S1-S6 tour 2) · plan: → plans/corrections-visuelles-diabete-v3/ (index + S1-S10)
-- [x] CVD3-S1 — Fondation chrome diabète : `ModuleShell` gagne `nav`/`wide` (agnostiques) ; 9 modules diabète câblés (barre d'onglets → header pour 6 d'entre eux, `wide` partout) · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete-v3/S1.md (auto OK : tsc + vite build + npm test 80/80 verts ; visuel → VALIDATION.md)
-- [x] CVD3-S2 — Retrait de `ModuleFooterNav` partout (9 diabète + 8 tabac) + suppression composant/CSS/données · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete-v3/S2.md (auto OK : tsc + vite build + npm test 80/80 verts, grep 0 résultat ; visuel → VALIDATION.md)
-- [x] CVD3-S3 — Risque cardio : feux 3/2, fix Bézier plaque (lumière ~30% réelle), pin découplé des feux · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete-v3/S3.md (auto OK : tsc + vite build + npm test 80/80 verts ; visuel → VALIDATION.md)
-- [x] CVD3-S4 — Alimentation : courbe pleine largeur, Qualité côte à côte, Ordre sur une ligne · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete-v3/S4.md (auto OK : tsc + vite build + npm test 80/80 verts ; visuel → VALIDATION.md)
-- [x] CVD3-S5 — Activité ② Volume : grille pleine largeur + total en bandeau, tient sans scroll · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete-v3/S5.md (auto OK : tsc + vite build + npm test 80/80 verts ; visuel → VALIDATION.md)
-- [x] CVD3-S6 — Suivi ① Parcours : cadran agrandi + plus de double scroll (breakpoint remonté) · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete-v3/S6.md (auto OK : tsc + vite build + npm test 80/80 verts ; visuel → VALIDATION.md)
-- [x] CVD3-S7 — Traitements : ordonnance élargie (colonne grid) + picto clé/serrure par mécanisme · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete-v3/S7.md (auto OK : tsc + vite build + npm test 80/80 verts ; visuel → VALIDATION.md, classement clinique iDPP4/aGLP1 à valider)
-- [x] CVD3-S8 — Hypoglycémie : preview affiche tous les signes sélectionnés (retrait état mort) · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete-v3/S8.md (auto OK : tsc + vite build + npm test 80/80 verts ; visuel → VALIDATION.md)
-- [x] CVD3-S9 — Insuline : retrait propre de « Temps dans la cible » · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete-v3/S9.md (auto OK : tsc + vite build + npm test 80/80 verts ; visuel → VALIDATION.md)
-- [x] CVD3-S10 — Nouveau module « Insuline rapide (pré-prandial) » — implémenté sur feu vert explicite de
-  Thibault (2026-07-11), **avant la relecture finale formelle** du contenu `docs/diabete/10-insuline-rapide.md`
-  (statut du doc encore « en attente de relecture » — reste à confirmer a posteriori) : modèle
-  `sampleRepasAvecBolus` (`lib/glycemieCurve.ts`, PK/PD qualitative d'un bolus rapide, `BOLUS_DUREE`
-  recalibré 240→180 min pour qu'une dose unique bien dosée ne creuse pas artificiellement sous la baseline),
-  10ᵉ module `insuline-rapide/InsulineRapideModule.tsx` (4 temps : couvrir le repas / le bon moment /
-  corriger avant le repas / le piège du cumul), enregistré dans `registry.ts` (famille « soigner », après
-  le module 9) · modèle: Sonnet, effort: xhigh · plan: → plans/corrections-visuelles-diabete-v3/S10.md +
-  S10-implementation.md (auto OK : tsc + vite build + npm test 86/86 verts ; visuel → VALIDATION.md ;
-  contenu → relecture finale Thibault toujours attendue)
-  - Ordre : S1 (fondation, fait) → S2 indépendante → S3-S9 indépendantes entre elles (fichiers disjoints) → S10 en dernier (contenu à sourcer). Mode solo (Sonnet). **S1-S9 faites et gates verts (2026-07-11) ; S10 bloquée en attente de validation du contenu par Thibault.** Commit/push en fin de plan une fois toutes les sessions faites et validées par Thibault.
-
-### Audit diabète — 12 corrections (audit manuel Thibault sur le déployé, 2026-07-12) · plan: → plans/audit-diabete/ (index + S1-S6)
-- [x] S1 — Cardio : fusion « ① Les leviers » dans « ② L'artère » → « ① Les facteurs de risque » (audit #2, T1) + retrait des 3 textes explicatifs sous l'artère — narration orale (audit #3, T2) · modèle: Sonnet, effort: high · plan: → plans/audit-diabete/S1.md (auto OK : tsc + vite build + npm test 86/86 verts ; visuel → docs/diabete/VALIDATION.md)
-- [x] S2 — Hypo : illustrations des signes (motif `previewItem`) dans le bloc « Mes signes » de la carte-réflexe (audit #8, T3) · modèle: Sonnet, effort: medium · plan: → plans/audit-diabete/S2.md (auto OK : tsc + vite build + npm test 86/86 verts ; visuel → docs/diabete/VALIDATION.md)
-- [x] S3 — Alimentation : la courbe « Glycémie après le repas » sort de sous `.layout` et vit dans la colonne de chaque défi, agrandie (audit #4/5/6/7, T4) + Composition sans compteur/reset en icône/assiette agrandie (audit #4, T5) + Qualité sans duels ni verdicts textuels (audit #5, T6) + Ordre/Repas complet vérifiés (audit #6-7, T7) · modèle: Sonnet, effort: xhigh · plan: → plans/audit-diabete/S3.md (auto OK : tsc + vite build + npm test 86/86 verts ; visuel → docs/diabete/VALIDATION.md)
-- [x] S4 — Insuline « Décider » : réglage manipulable de la lente (−1/pareil/+1 cran) qui fait réagir en direct la courbe des nuits suivantes, réutilise des scénarios existants (audit #9, T8) · modèle: Sonnet, effort: high · plan: → plans/audit-diabete/S4.md (auto OK : tsc + vite build + npm test 86/86 verts, `glycemieCurve.test.ts` non touché ; visuel → docs/diabete/VALIDATION.md)
-- [x] S5 — Insuline rapide : onglet ③ courbes de départ convergentes + correction expérimentable (audit #10-11, T9) + onglet ④ cumul à 2 situations × 3 recorrections expérimentable, 6 cases (audit #12, T10 — **3 tentatives de modélisation**, 2 rejetées par preuve numérique avant le mécanisme d'excès persistant/IOB proposé par Fable, cf. `DECISIONS.md`) · modèle: Sonnet, effort: xhigh · plan: → plans/audit-diabete/S5.md (auto OK : tsc + vite build + npm test 92/92 verts, 55 `glycemieCurve.test.ts` dont 4 nouveaux ; visuel → docs/diabete/VALIDATION.md)
-- [x] S6 — Zéro scroll : resserrement du rythme vertical du cadre partagé (`ModuleShell`, `Home` — paddings/marges, `min-height: 100dvh`, aucun `overflow:hidden` ajouté, rétro-compat tabac respectée) + mesure des 10 modules diabète + accueil à 1366×768/1024×768 (audit #1, T11) · modèle: Sonnet, effort: high · plan: → plans/audit-diabete/S6.md (auto OK : tsc + vite build + npm test 88/88 verts à l'exécution de cette session ; visuel → docs/diabete/VALIDATION.md)
-  - Vagues : V1 = S1·S2·S3·S4·S5 (parallèles, zones disjointes) → V2 = S6 (solo, après S1+S3) → V3 = consolidation contexte (Haiku/orchestrateur). **Chantier clos 2026-07-12** (12 points d'audit traités via 11 tâches T1-T11).
-  - ⚠️ Points ouverts Thibault : débordement zéro-scroll résiduel sur Suivi (« Le parcours », +~615px estimé à 1024×768) et Traitements (avec panneau, +~500-550px estimé à 1024×768) — cause : breakpoints de layout mal calés, pas un manque de resserrement (cf. `STATUS.md`, `S6.md` bilan) ; constantes `// à caler (Thibault)` non cliniquement validées : `CORRECTION_DOSE` (S5/T9), `EXCES_SITUATION_B`/`EXCES_CONSOMMATION` (S5/T10), `DEPART_RESORPTION` (S5/T9), mapping situation×ajustement de `insuline/scenarios.ts` (S4/T8).
-
-### Illustrations tabac (2026-07-12, 1ʳᵉ génération d'illustrations du thème) · plan: →
-- [x] IT1 — Pipeline `build_assets_tabac.py` + 42 vignettes déposées dans `public/illustrations/tabac/` + `TechniqueIllustration.tsx` recâblé sur `substitut-<forme>.png` · modèle: Sonnet, effort: high (auto OK : tsc --noEmit + vite build + npm test 95/95 verts). Mapping par correspondance de titre/affirmation depuis `Downloads\illustration ETP\` : bénéfices-arrêt (7/8 zones), boîte à outils (14/14), idées reçues (15/21), substituts-techniques (6/6). Aucune action côté diabète (lot diabète du même dossier déjà intégralement absorbé par `illustrations-diabete` S1-S7). Détail du mapping et des choix arbitrés (allocation `vf-poids`, ids sans image) dans `DECISIONS.md` 2026-07-12. Visuel → `VALIDATION.md`.
-  - **Chantier clos 2026-07-12.** Points ouverts non bloquants : 7 ids sans image dédiée dans le lot (`benef-horizon`, `vf-poids-coeur`, `vf-fumer-mince`, `vf-poids-regime`, `vf-vape-aide`, `vf-double-usage`, `vf-vapeur-eau`) restent en placeholder — à générer si Thibault le souhaite, aucun code à changer (les slots existent déjà).
-
-### Corrections audit Chrome — thème Tabac + 2 retours Diabète (audit Thibault 2026-07-13) · plan: → plans/corrections-audit-tabac/ · rapports: → rapport-bugs-etp-tabac.md, rapport-bugs-etp-diabete.md
-- [x] AT-D1 — Diabète : Hypoglycémie en dernier + « Insuline : adapter les doses » → « Insuline basale » · modèle: Opus, effort: minimal (auto OK : tsc --noEmit vert ; `registry.ts` données ; visuel → VALIDATION.md)
-- [x] AT-S1 — Substituts : titration conditionnelle au Patch (T6) + illustration vapoteuse responsive (T7) · modèle: Sonnet, effort: high · plan: → plans/corrections-audit-tabac/S1.md (rapport #T6/#T7) (auto OK : tsc+build+test verts ; visuel → VALIDATION.md)
-- [x] AT-S2 — Vrai/faux : grille attractive + fix a11y `role=listitem` (T4) + taille illustration détail (T5) · modèle: Sonnet, effort: high · plan: → plans/corrections-audit-tabac/S2.md (rapport #T4/#T5) (auto OK : tsc+build+test verts ; visuel → VALIDATION.md)
-- [x] AT-S3 — Boîte à outils : checkbox→icône d'état (T8) + tailles d'illustrations (T10) + overlay 4D transparent (T9) · modèle: Sonnet, effort: high · plan: → plans/corrections-audit-tabac/S3.md (rapport #T8/#T10/#T9) (auto OK : tsc+build+test verts ; visuel → VALIDATION.md)
-- [x] AT-S4 — Composantes : cercle « Comportementale » anti-débordement + suppression légende (T1) · modèle: Sonnet, effort: medium · plan: → plans/corrections-audit-tabac/S4.md (rapport #T1) (auto OK : tsc+test verts ; build temporairement bloqué pendant la session par un fichier hors zone — motivation — en cours de modification par une session parallèle, vert une fois la vague mergée ; visuel → VALIDATION.md)
-- [x] AT-S5 — Nicotine : agrandir + moderniser la box de courbe (T2) · modèle: Sonnet, effort: high · plan: → plans/corrections-audit-tabac/S5.md (rapport #T2) (auto OK : tsc+build+test 95/95 verts ; visuel → VALIDATION.md)
-- [x] AT-S6 — Ce que l'arrêt répare : afficher les illustrations d'organes en vue frise (T12) · modèle: Sonnet, effort: medium · plan: → plans/corrections-audit-tabac/S6.md (rapport #T12) (auto OK : tsc+build+test verts ; visuel → VALIDATION.md)
-- [x] AT-S7 — Marqueurs « R »/« A » → icônes Lucide (`CourbeGlycemie`, tous onglets Insuline) (T3) · modèle: Sonnet, effort: low · plan: → plans/corrections-audit-tabac/S7.md (rapport #T3) (auto OK : tsc+test verts ; build temporairement bloqué pendant la session par le même fichier hors zone que S4, vert une fois la vague mergée ; visuel → VALIDATION.md)
-- [x] AT-S8 — Cartes-raisons : icônes Lucide en en-tête + retrait placeholders (T13) · modèle: Sonnet, effort: low · plan: → plans/corrections-audit-tabac/S8.md (rapport #T13) (auto OK : tsc+build+test verts ; visuel → VALIDATION.md)
-- [x] AT-S9 — Accueil tabac : ordre familles « Se motiver → Comprendre → Agir » (T15) · modèle: Sonnet, effort: minimal · plan: → plans/corrections-audit-tabac/S9.md (rapport #T15) (auto OK : tsc+build+test verts ; visuel → VALIDATION.md)
-- [x] AT-S10 — État de sélection partagé (React Context **en mémoire**, zéro localStorage) (T11) · modèle: Opus, effort: xhigh · plan: → plans/corrections-audit-tabac/S10.md (rapport #T11) (auto OK : tsc+build+test verts, grep persistance clean ; visuel → VALIDATION.md)
-- [x] AT-S11 — Livret d'accompagnement + double mode d'impression (T14) · modèle: Opus, effort: xhigh · plan: → plans/corrections-audit-tabac/S11.md (rapport #T14) (auto OK : tsc+build+test 95/95 verts ; **proposition livrée sans validation visuelle, à ajuster après retour Thibault** → VALIDATION.md)
-- [ ] AT-S12 — Module d'aide patient autonome (QR, **sous-domaine séparé**, contenu générique, v1 substituts+situations) (T16) · modèle: Sonnet, effort: xhigh · **chantier séparé désormais CADRÉ** (Thibault 2026-07-13) : `plans/aide-patient/index.md` (contenu générique · surface/bundle séparé, 2ᵉ entrée Vite · v1 « Mes substituts » + « Agir face à une situation » · QR unique vers la racine · contenu réutilisé + habillage patient proposé par Claude à revalider) — reste différable : hébergement de l'URL · plan: → plans/aide-patient/ (rapport #T16)
-- [x] AT-S13 — Consolidation : contexte (STATUS/TASKS/VALIDATION/DECISIONS/PROJECT_MAP) + commits par tâche · modèle: Haiku, effort: low · plan: → plans/corrections-audit-tabac/ (cette consolidation documentaire, 2026-07-13 ; commits/push restent une action séparée)
-  - Vagues : V1 = S1·S2·S3·S4·S5·S6·S7·S8·S9 (parallèles, zones disjointes) → V2 = S10 (solo) → V3 = S11 (solo, dépend S10) → V4 = S13. **S1-S11 + S13 faites, gates finaux verts (`tsc --noEmit` + `npm run build` + `npm test` 95/95)** — validation VISUELLE humaine (Thibault, `npm run dev`) encore entièrement à faire, cf. `VALIDATION.md`. Hors vagues : S12 sorti en chantier séparé cadré `plans/aide-patient/`, non démarré.
-  - ⚠️ Décision structurante : persistance **en mémoire** (Context dans `App.tsx`), jamais `localStorage` (invariant « zéro persistance »). Rapport Diabète #1–#6 : à réconcilier avec `git log` (audit-diabete 2026-07-12) avant d'en faire des sessions.
+Supprimer la ligne d'une tâche dès que son plan est clos — historique dans `git log` +
+`plans/<chantier>/index.md`. Purgé 2026-07-29 (migration workflow) : theme-diabete, boite-a-outils,
+extensions-tabac, illustrations-diabete, aide-patient, audit-diabete, illustrations-tabac,
+corrections-audit-tabac, corrections-visuelles-diabete (v1/v2/v3), corrections-revue-guidee,
+insuline-affinements-2026-07, outils-interactifs-2026-07, revue-prod-2026-07, revue-chrome-2026-07,
+theme-cardio-2026-07, M10/revue-prod-cardio (hors plan) — tous confirmés clos par `git log` (au moins
+un plan, `revue-chrome-2026-07`, était déjà terminé dans son propre `index.md` mais encore listé
+comme *à faire* ici : c'est exactement la désynchronisation que la règle « un statut, un seul
+endroit » élimine).

@@ -31,3 +31,6 @@ Thumbs.db
 .codex-tmp/
 output/
 test-results/
+
+# Marqueur local de vague parallèle (WORKFLOW.md §4b) — jamais versionné
+.claude/wave.lock
