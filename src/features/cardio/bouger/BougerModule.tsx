@@ -3,6 +3,8 @@ import type { ModuleProps } from '../../types';
 import ModuleShell from '../../../components/ModuleShell';
 import InfoHover from '../../../components/InfoHover';
 import IllustrationSlot from '../components/IllustrationSlot';
+import { ACTIVITIES, ACT_MIN_STEP, ACT_MIN_FLOOR, ACT_MIN_CEIL } from '../../../content/activites';
+import { protectionColor, protectionValues } from '../lib/protectionSemaine';
 import styles from './BougerModule.module.css';
 
 /**
@@ -15,9 +17,13 @@ import styles from './BougerModule.module.css';
  * 4 messages à l'écran et le repère « 150 min ». Aucun marqueur `// à revalider` dans §M7 (rien
  * à reporter). Grille d'activités, compteurs +/- minutes et formule de jauge : « patron de code »
  * `diabete/activite/ActiviteModule.tsx` (S6), adaptée sans son interrupteur « toniques
- * uniquement » (hors périmètre S9). Rayonnement des bénéfices, calendrier semaine et barres de
- * protection : proto §MODULE 7 (lignes 201-281, logique 771-813), repris à l'identique (design
- * fixé) — ACTIVITIES/BEN verbatim, décroissance de la protection (-45/jour inactif, plancher 0).
+ * uniquement » (hors périmètre S9). Les 13 activités (`ACTIVITIES`) sont partagées avec ce module
+ * via `src/content/activites.ts` depuis le 2026-08-06 (`plans/recette-outils-2026-08/S7.md`) —
+ * ne plus les dupliquer ici. Rayonnement des bénéfices, calendrier semaine et barres de
+ * protection : proto §MODULE 7 (lignes 201-281, logique 771-813) — BEN verbatim. Décroissance de
+ * la protection adoucie le 2026-08-06 (`plans/recette-outils-2026-08/S3.md`, cf. constante
+ * `PROTECTION_DECAY` ci-dessous) : le proto d'origine (-45/jour, seuils 60/25) faisait passer au
+ * rouge un patient conforme au repère « pas plus de 2 jours consécutifs sans activité ».
  *
  * Pièges (brief M7, rappelés par S9) : jauge **sans plafond** (pas de barre « objectif
  * atteint/échoué ») ; **aucun chiffre d'étude à l'écran** — seul le repère « 150 min » (OMS/ESC)
@@ -31,36 +37,6 @@ const ONGLETS: { id: Onglet; label: string }[] = [
   { id: 'volume', label: 'Combien je bouge' },
   { id: 'regularite', label: 'La régularité' },
 ];
-
-interface ActiviteDef {
-  id: string;
-  nom: string;
-  /** Minutes par défaut (ajustables par pas de `ACT_MIN_STEP`, cf. proto `ACTIVITIES`). */
-  minutes: number;
-  /** Marqueur discret « bon pour les muscles » (décision clé S9) — jamais une catégorie séparée. */
-  muscle: boolean;
-}
-
-/** Les 13 activités du proto (§MODULE 7, logique 771-786), verbatim. */
-const ACTIVITIES: ActiviteDef[] = [
-  { id: 'marche', nom: 'Marche', minutes: 20, muscle: false },
-  { id: 'velo', nom: 'Vélo', minutes: 30, muscle: false },
-  { id: 'menage', nom: 'Ménage', minutes: 15, muscle: false },
-  { id: 'bricolage', nom: 'Bricolage', minutes: 25, muscle: false },
-  { id: 'jardinage', nom: 'Jardinage', minutes: 30, muscle: false },
-  { id: 'courses', nom: 'Porter les courses', minutes: 10, muscle: true },
-  { id: 'escaliers', nom: 'Prendre les escaliers', minutes: 5, muscle: true },
-  { id: 'chaise', nom: 'Se lever d’une chaise', minutes: 5, muscle: true },
-  { id: 'danse', nom: 'Danser', minutes: 20, muscle: false },
-  { id: 'petitsenfants', nom: 'Jouer avec les enfants', minutes: 15, muscle: false },
-  { id: 'voiture', nom: 'Laver la voiture', minutes: 20, muscle: false },
-  { id: 'chien', nom: 'Marcher le chien', minutes: 15, muscle: false },
-  { id: 'sol', nom: 'Se relever du sol', minutes: 5, muscle: true },
-];
-
-const ACT_MIN_STEP = 5;
-const ACT_MIN_FLOOR = 5;
-const ACT_MIN_CEIL = 180;
 
 // G-M7-taille tranchée (Thibault, 2026-07-24) : le tour de taille reste ici, acceptable dans
 // le contexte d'un bénéfice de l'activité (≠ facteur de risque du cockpit M2, où il a été retiré).
@@ -83,15 +59,6 @@ const JOURS: { court: string; complet: string }[] = [
   { court: 'S', complet: 'Samedi' },
   { court: 'D', complet: 'Dimanche' },
 ];
-
-/** Décroissance de la protection : -45 par jour sans activité, plancher 0 (proto ligne 802-804). */
-const PROTECTION_DECAY = 45;
-
-function protectionColor(v: number): string {
-  if (v >= 60) return 'var(--color-confort)';
-  if (v >= 25) return 'var(--color-vigilance)';
-  return 'var(--color-toxique)';
-}
 
 export default function BougerModule({ shell }: ModuleProps) {
   const [onglet, setOnglet] = useState<Onglet>('volume');
@@ -138,13 +105,7 @@ export default function BougerModule({ shell }: ModuleProps) {
     setWeekActive((prev) => prev.map((v, idx) => (idx === i ? !v : v)));
   }
 
-  const protectionValues = useMemo(() => {
-    let prot = 0;
-    return weekActive.map((on) => {
-      prot = on ? 100 : Math.max(0, prot - PROTECTION_DECAY);
-      return prot;
-    });
-  }, [weekActive]);
+  const protectionParJour = useMemo(() => protectionValues(weekActive), [weekActive]);
 
   if (!shell) return null;
 
@@ -322,7 +283,7 @@ export default function BougerModule({ shell }: ModuleProps) {
 
               <p className={styles.protectionLabel}>Protection sur la semaine</p>
               <div className={styles.barsRow} role="img" aria-label="Niveau de protection estimé, jour par jour">
-                {protectionValues.map((v, i) => (
+                {protectionParJour.map((v, i) => (
                   <div key={i} className={styles.barCol}>
                     <div
                       className={styles.bar}

@@ -137,6 +137,13 @@ export default function BoiteAOutilsModule({ onNavigate, context }: ModuleProps)
             </button>
           )}
 
+          {outilDetail.interactif === 'bouger' && (
+            // Cadrage (S6, plans/recette-outils-2026-08) : le minuteur de 10 min n'a pas sa
+            // place au temps de consultation ; il reste lancable ici (le patient peut vouloir
+            // le découvrir), mais on ne le présente plus comme les 13 autres outils courts.
+            <p className={styles.aparte}>À faire chez vous, ou pour découvrir l&rsquo;outil.</p>
+          )}
+
           <div className={styles.detailActions}>
             {outilDetail.interactif && OUTILS_INTERACTIFS[outilDetail.interactif] && (
               <button

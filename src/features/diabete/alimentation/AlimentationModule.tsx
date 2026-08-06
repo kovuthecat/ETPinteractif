@@ -992,7 +992,7 @@ export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
                         {NIVEAUX.map((level) => {
                           const isGuess = d2Guess[slot] === level;
                           const isCorrect = level === card.correct;
-                          let state = styles.levelDefault;
+                          let state = '';
                           if (d2Revealed) {
                             if (isCorrect) state = styles.levelCorrect;
                             else if (isGuess) state = styles.levelWrongGuess;

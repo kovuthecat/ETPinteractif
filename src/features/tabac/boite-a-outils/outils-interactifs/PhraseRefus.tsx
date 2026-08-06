@@ -89,13 +89,6 @@ export default function PhraseRefus({ outil, store, onClose }: OutilInteractifPr
       )}
 
       <p className={styles.astuce}>{ASTUCE}</p>
-
-      <div className={`${styles.vigilance} callout`}>
-        <p className={styles.vigilanceTexte}>
-          Vigilance particulière avec l'alcool, qui baisse la garde : les premières semaines,
-          mieux vaut le limiter.
-        </p>
-      </div>
     </div>
   );
 }

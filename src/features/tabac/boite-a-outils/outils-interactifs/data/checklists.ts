@@ -59,6 +59,10 @@ export const CHECKLISTS: Record<ChecklistInteractifId, ChecklistData> = {
     ajoutLibre: true,
   },
   'anti-ennui': {
+    // Liste portée à 10 suggestions le 2026-08-06 (plans/recette-outils-2026-08/S1.md) : la
+    // cible affichait « 6 / 10 choisis » même en cochant toutes les suggestions d'origine — un
+    // déficit permanent. 4 items ajoutés, validés par Thibault, mêmes critères que les 6
+    // premiers : gratuit, sans matériel, court, incompatible physiquement avec la cigarette.
     items: [
       "Appeler quelqu'un",
       'Ranger un tiroir',
@@ -66,6 +70,10 @@ export const CHECKLISTS: Record<ChecklistInteractifId, ChecklistData> = {
       "S'étirer",
       'Écouter un podcast',
       'Marcher en mâchant un chewing-gum',
+      "Sortir prendre l'air 5 minutes",
+      'Écouter de la musique',
+      'Faire la vaisselle',
+      'Prendre une douche',
     ],
     ajoutLibre: true,
     cible: 10,

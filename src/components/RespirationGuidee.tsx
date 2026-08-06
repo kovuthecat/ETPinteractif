@@ -18,7 +18,12 @@ import styles from './RespirationGuidee.module.css';
 
 type RythmeId = 'coherence' | '478';
 type PhaseKey = 'inspir' | 'retenue' | 'expir';
-type Etat = 'idle' | 'running' | 'done';
+// 'paused' (S6, plans/recette-outils-2026-08) : les deux effets ci-dessous ne tournent que sur
+// `etat === 'running'`, donc y entrer les arrête proprement (cleanup des `setTimeout`/
+// `setInterval`) sans code dédié. La reprise redémarre le cycle de phases à `inspir` (idx 0) —
+// acceptable pour un exercice de respiration : mieux vaut reprendre un souffle propre qu'une
+// rétention interrompue — mais conserve le minuteur global là où il en était.
+type Etat = 'idle' | 'running' | 'paused' | 'done';
 
 interface Phase {
   key: PhaseKey;
@@ -144,6 +149,14 @@ export default function RespirationGuidee({ onClose, dureeSeconde = DUREE_DEFAUT
     setTotalTimeLeft(dureeSeconde);
   }
 
+  function pause() {
+    setEtat('paused');
+  }
+
+  function reprendre() {
+    setEtat('running');
+  }
+
   // Contracté au repos (idle/done) et pendant l'expir ; dilaté pendant l'inspir/la
   // retenue — l'oscillation est continue d'un cycle au suivant (cf. commentaire de tête).
   const cercleScale = etat === 'running' ? (phase.key === 'expir' ? 0.55 : 1) : 0.55;
@@ -193,11 +206,14 @@ export default function RespirationGuidee({ onClose, dureeSeconde = DUREE_DEFAUT
 
         <div aria-live="polite">
           {etat === 'running' && <p className={styles.phaseLabel}>{phase.label}</p>}
+          {etat === 'paused' && <p className={styles.phaseLabel}>En pause.</p>}
           {etat === 'idle' && <p className={styles.phaseLabel}>Prêt·e ?</p>}
           {etat === 'done' && <p className={styles.phaseLabel}>Bien joué.</p>}
         </div>
 
-        {etat === 'running' && <p className={styles.minuteur}>{formatMinuteur(totalTimeLeft)}</p>}
+        {(etat === 'running' || etat === 'paused') && (
+          <p className={styles.minuteur}>{formatMinuteur(totalTimeLeft)}</p>
+        )}
 
         {etat === 'idle' && (
           <button type="button" className="btn btn--primary" onClick={start}>
@@ -207,10 +223,28 @@ export default function RespirationGuidee({ onClose, dureeSeconde = DUREE_DEFAUT
         )}
 
         {etat === 'running' && (
-          <button type="button" className="btn btn--ghost" onClick={stop}>
-            <Square size={18} aria-hidden="true" />
-            Arrêter
-          </button>
+          <div className={styles.runningActions}>
+            <button type="button" className="btn btn--ghost" onClick={pause}>
+              Pause
+            </button>
+            <button type="button" className="btn btn--ghost" onClick={stop}>
+              <Square size={18} aria-hidden="true" />
+              Arrêter
+            </button>
+          </div>
+        )}
+
+        {etat === 'paused' && (
+          <div className={styles.runningActions}>
+            <button type="button" className="btn btn--primary" onClick={reprendre}>
+              <Play size={18} aria-hidden="true" />
+              Reprendre
+            </button>
+            <button type="button" className="btn btn--ghost" onClick={stop}>
+              <Square size={18} aria-hidden="true" />
+              Arrêter
+            </button>
+          </div>
         )}
 
         {etat === 'done' && (

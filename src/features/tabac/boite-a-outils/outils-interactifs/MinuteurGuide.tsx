@@ -43,6 +43,11 @@ export default function MinuteurGuide({ outil, onClose }: OutilInteractifProps) 
 
   const [phase, setPhase] = useState<Phase>('idle');
   const [timeLeft, setTimeLeft] = useState(dureeSec);
+  // Pause (S6, plans/recette-outils-2026-08) : une interruption (appel, quelqu'un qui parle)
+  // ne doit plus obliger à repartir de zéro sur un minuteur de 10 min. `paused` ne coexiste
+  // qu'avec `phase === 'active'` ; l'intervalle est arrêté/relancé plutôt que de sauter des
+  // ticks, pour garder un décompte précis à la seconde.
+  const [paused, setPaused] = useState(false);
   const intervalRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -51,10 +56,7 @@ export default function MinuteurGuide({ outil, onClose }: OutilInteractifProps) 
     };
   }, []);
 
-  function start() {
-    if (intervalRef.current !== null) clearInterval(intervalRef.current);
-    setPhase('active');
-    setTimeLeft(dureeSec);
+  function scheduleTick() {
     intervalRef.current = window.setInterval(() => {
       setTimeLeft((t) => {
         const next = t - 1;
@@ -69,12 +71,34 @@ export default function MinuteurGuide({ outil, onClose }: OutilInteractifProps) 
     }, 1000);
   }
 
+  function start() {
+    if (intervalRef.current !== null) clearInterval(intervalRef.current);
+    setPhase('active');
+    setPaused(false);
+    setTimeLeft(dureeSec);
+    scheduleTick();
+  }
+
+  function pause() {
+    if (intervalRef.current !== null) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    setPaused(true);
+  }
+
+  function reprendre() {
+    setPaused(false);
+    scheduleTick();
+  }
+
   function reset() {
     if (intervalRef.current !== null) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
     setPhase('idle');
+    setPaused(false);
     setTimeLeft(dureeSec);
   }
 
@@ -121,7 +145,7 @@ export default function MinuteurGuide({ outil, onClose }: OutilInteractifProps) 
           </div>
 
           <p className={styles.invite} role="status">
-            {invite ? invite.texte : def.rappel}
+            {paused ? 'En pause.' : invite ? invite.texte : def.rappel}
           </p>
 
           <div className={styles.progressTrack}>
@@ -129,6 +153,15 @@ export default function MinuteurGuide({ outil, onClose }: OutilInteractifProps) 
           </div>
 
           <div className={styles.buttonRow}>
+            {paused ? (
+              <button type="button" className="btn btn--primary" onClick={reprendre}>
+                Reprendre
+              </button>
+            ) : (
+              <button type="button" className="btn btn--ghost" onClick={pause}>
+                Pause
+              </button>
+            )}
             <button type="button" className="btn btn--ghost" onClick={reset}>
               Arrêter
             </button>

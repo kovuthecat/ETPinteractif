@@ -123,6 +123,10 @@ export default function VagueCraving({ onBack }: VagueCravingProps) {
   const [activeD, setActiveD] = useState<DKey | null>(null);
   const [selectedDs, setSelectedDs] = useState<Set<DKey>>(new Set());
   const [ficheOpen, setFicheOpen] = useState(false);
+  // Pause (S6, plans/recette-outils-2026-08) : une interruption pendant les 3 min de la vague
+  // ne doit plus obliger à repartir de zéro. Arrêt/relance de l'intervalle plutôt que de sauter
+  // des ticks, pour garder un décompte précis.
+  const [paused, setPaused] = useState(false);
   const intervalRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -131,11 +135,7 @@ export default function VagueCraving({ onBack }: VagueCravingProps) {
     };
   }, []);
 
-  function start() {
-    if (intervalRef.current !== null) clearInterval(intervalRef.current);
-    setPhase('active');
-    setTimeLeft(CRAVING_DURATION);
-    setActiveD(null);
+  function scheduleTick() {
     intervalRef.current = window.setInterval(() => {
       setTimeLeft((t) => {
         const next = t - 1;
@@ -150,12 +150,35 @@ export default function VagueCraving({ onBack }: VagueCravingProps) {
     }, 1000);
   }
 
+  function start() {
+    if (intervalRef.current !== null) clearInterval(intervalRef.current);
+    setPhase('active');
+    setPaused(false);
+    setTimeLeft(CRAVING_DURATION);
+    setActiveD(null);
+    scheduleTick();
+  }
+
+  function pause() {
+    if (intervalRef.current !== null) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    setPaused(true);
+  }
+
+  function reprendre() {
+    setPaused(false);
+    scheduleTick();
+  }
+
   function reset() {
     if (intervalRef.current !== null) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
     setPhase('idle');
+    setPaused(false);
     setTimeLeft(CRAVING_DURATION);
     setActiveD(null);
   }
@@ -192,7 +215,7 @@ export default function VagueCraving({ onBack }: VagueCravingProps) {
         <div className={`${styles.centerCard} card`}>
           <p className={styles.centerTitle}>Une envie arrive ?</p>
           <button type="button" className="btn btn--primary" onClick={start}>
-            Je ressens un craving
+            J'ai une envie de fumer
           </button>
           <p className={styles.centerHint}>Ça dure en général 3 à 5 minutes</p>
         </div>
@@ -271,10 +294,24 @@ export default function VagueCraving({ onBack }: VagueCravingProps) {
             })}
           </div>
           <p className={styles.dHint}>
-            {activeD
-              ? 'Touchez à nouveau le D actif pour revenir à la vague'
-              : "Touchez un D pour agir — il aide à tenir pendant le pic de l'envie"}
+            {paused
+              ? 'En pause.'
+              : activeD
+                ? 'Touchez à nouveau le D actif pour revenir à la vague'
+                : "Touchez un D pour agir — il aide à tenir pendant le pic de l'envie"}
           </p>
+
+          <div className={styles.ficheButtonRow}>
+            {paused ? (
+              <button type="button" className="btn btn--primary" onClick={reprendre}>
+                Reprendre
+              </button>
+            ) : (
+              <button type="button" className="btn btn--ghost" onClick={pause}>
+                Pause
+              </button>
+            )}
+          </div>
         </div>
       )}
 
