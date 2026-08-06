@@ -80,7 +80,7 @@ chantier sur un faux positif :
 | [S5](S5.md) | A7 | Cardio M3 « Où l'accident frappe » : refonte partielle (plaque-pivot) | Opus | high | — | `cardio/territoires` (+ css) | [x] |
 | [S6](S6.md) | A8 | Cardio M6 « Le tabac » : ré-enrichir le mécanisme CV (contenu d'abord) | Opus | high | — | `docs/cardio/CONTENU_cardio.md`, `cardio/tabac` (+ css) | [x] (gate G-A8 levée 2026-07-24, objet câblé en 2ᵉ passe) |
 | [S7](S7.md) | A10 | Rétro-port barre « Risque faible → élevé » vers cockpit diabète (RCV) | Sonnet | medium | — | `diabete/risque-cardio`, éventuel composant partagé `src/components/` | [x] |
-| [S8](S8.md) | A2, A3 | Câblage illustrations M10 VITE + garde-manger (**bloqué : PNG Thibault**) | Sonnet | medium | PNG générés | `cardio/alerte`, `cardio/manger`/`diabete/alimentation` (mapping), `public/illustrations/` | [ ] BLOQUÉ |
+| [S8](S8.md) | A2, A3 | Câblage illustrations M10 VITE + garde-manger | Sonnet | medium | PNG générés | `cardio/alerte`, `cardio/manger`/`diabete/alimentation` (mapping), `public/illustrations/` | [x] fait 2026-08-06 · N1+N2 validés |
 | [S9](S9.md) | — | Consolidation (commits, statuts, contexte, push, redeploy) | Haiku | minimal | toutes | `STATUS/TASKS/VALIDATION/DECISIONS/PROJECT_MAP/index` | [x] |
 
 ## Ordonnancement
@@ -152,6 +152,7 @@ mécanisme CV tabac validées) → S6 câblée (curseur 5 étapes sur l'artère 
 **G-M10-nausées** tranchée « à retirer » → carte « nausées isolées » retirée des formes atypiques
 d'infarctus (cardio M10) ; **G-M7-taille** tranchée « acceptable » → annotation `// à revalider` levée
 dans `cardio/bouger`, aucun changement de code. Gate finale sur l'arbre cumulé vert (`tsc --noEmit` ✓,
-`npm run build` ✓, `npm test` 127/127 ✓) après les deux passes. **7/7 sessions du plan désormais
-codées ; seule S8 reste BLOQUÉE** (PNG non générés par Thibault). Détail complet et validation visuelle
+`npm run build` ✓, `npm test` 127/127 ✓) après les deux passes. **7/7 sessions codées** ; S8 restait
+bloquée en attente des PNG Thibault — **débloquée et close le 2026-08-06** (dépôt des illustrations +
+N1/N2 validés, cf. `S8.md`). **8/8 sessions du plan closes.** Détail complet et validation visuelle
 → `STATUS.md`/`VALIDATION.md`/`DECISIONS.md`. Commits atomiques + push effectués (cf. `git log`).

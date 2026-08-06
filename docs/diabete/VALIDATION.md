@@ -36,8 +36,6 @@
 
 ## Enrichissement-visuel-2026-07 (2026-07-23) — garde-manger diabète
 
-- [ ] Garde-manger Alimentation : 10 légumes + 7 aliments-situations visibles, placeholders propres,
-      courbe glycémie réactive aux nouveaux aliments, aucune régression (défis, InfoHover, fiche).
 - [ ] **G-nutrition** : valeurs nutritionnelles des aliments neufs à revalider (partagé avec cardio,
       cf. `docs/cardio/VALIDATION.md`).
 

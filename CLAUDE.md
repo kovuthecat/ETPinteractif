@@ -21,8 +21,9 @@ npm test
 # Test unitaire ciblé
 npx vitest run src/lib/nicotineCurve.test.ts
 
-# Typecheck seul (sans build complet)
-npx tsc --noEmit
+# Typecheck seul (sans build complet) — JAMAIS `npx tsc --noEmit` : le tsconfig racine est en
+# `files: []` + références de projet, donc cette commande compile 0 fichier et rend un vert vide.
+npx tsc -b --noEmit
 ```
 
 - Pas de script `lint` dédié dans ce projet.

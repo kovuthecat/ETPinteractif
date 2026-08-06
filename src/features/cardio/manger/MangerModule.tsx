@@ -1,6 +1,19 @@
 import { useRef, useState } from 'react';
 import type { DragEvent, PointerEvent as ReactPointerEvent } from 'react';
-import { Beef, Carrot, Flame, RotateCcw, Wheat } from 'lucide-react';
+import {
+  Bean,
+  Beef,
+  Carrot,
+  Croissant,
+  Donut,
+  Droplet,
+  Fish,
+  Ham,
+  Nut,
+  RotateCcw,
+  Sparkles,
+  Wheat,
+} from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import ModuleShell from '../../../components/ModuleShell';
@@ -81,6 +94,23 @@ const CORE_CATEGORIES: { id: CategorieCoeur; label: string; colorVar: string; Ic
   { id: 'feculents', label: 'Féculents', colorVar: '--color-nav', Icon: Wheat },
   { id: 'proteines', label: 'Protéines', colorVar: '--color-toxique', Icon: Beef },
 ];
+
+/** Un pictogramme distinct par repère (S5, `plans/enrichissement-visuel-2026-07/`) — remplace la
+ *  flamme unique (audit consultation 2026-07-23 : « pictos des familles = flamme monotone »).
+ *  Choix d'icônes Lucide arbitrés avec Thibault (G-familles, 2026-08-06) plutôt que 10 nouvelles
+ *  illustrations : cohérent avec le tabac, qui couvre déjà ses petits pictos en Lucide. */
+const REPERE_ICONS: Record<string, LucideIcon> = {
+  huiles: Droplet,
+  omega3: Fish,
+  legumes: Carrot,
+  legumineuses: Bean,
+  oleagineux: Nut,
+  cerealescompletes: Wheat,
+  charcuterie: Ham,
+  'graisses-saturees': Croissant,
+  sucreries: Donut,
+  sel: Sparkles,
+};
 
 /** Les 3 frontières du camembert, une entre chaque paire de catégories voisines (cyclique) :
  *  `pl` (protéines → légumes, le point de « fermeture » du cercle), `lf` (légumes → féculents),
@@ -176,9 +206,10 @@ function RepereCard({ repere, selected, onSelect }: RepereCardProps) {
   if (selected) {
     cardClass += ` ${repere.ami ? styles.repereCardSelectedAmi : styles.repereCardSelectedLimiter}`;
   }
+  const Icon = REPERE_ICONS[repere.id] ?? Carrot;
   return (
     <button type="button" className={cardClass} onClick={onSelect} aria-pressed={selected}>
-      <Flame size={18} aria-hidden="true" className={repere.ami ? styles.flameAmi : styles.flameLimiter} />
+      <Icon size={18} aria-hidden="true" className={repere.ami ? styles.repereIconAmi : styles.repereIconLimiter} />
       {repere.label}
     </button>
   );

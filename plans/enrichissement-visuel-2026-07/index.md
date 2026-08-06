@@ -60,10 +60,10 @@ Côté **diabète** (`AlimentationModule`) : pré-remplit l'assiette et **alimen
 (`paramsFromAssiette`). Un bouton « Charger un repas-type » ; l'assiette reste ensuite modifiable.
 **Gate G-repas** (liste + composition + calibrage clinique = Thibault). Zéro persistance.
 
-**D5 — Familles cardio : picto par repère, sous réserve.** Remplacer la flamme unique de `RepereCard`
-par un `IllustrationSlot` `repere-<id>` (nouveaux assets `cardio/repere-*.png`). **Gate G-familles**
-(Thibault valide l'approche → Claude ajoute les prompts `repere-*` → Thibault génère → câblage).
-Repli sûr si non retenu : garder la flamme, différencier au moins par une teinte/forme.
+**D5 — Familles cardio : icônes Lucide par repère (tranchée 2026-08-06).** `RepereCard` utilise un
+`REPERE_ICONS: Record<string, LucideIcon>` (Droplet/Fish/Carrot/Bean/Nut/Wheat pour les 6 « amis » ;
+Ham/Croissant/Donut/Sparkles pour les 4 « à limiter ») au lieu de la flamme unique. **Aucun nouvel
+asset** — cohérent avec le tabac, déjà tout en Lucide. Détail : [décision](../../docs/decisions/2026-08-06-cloture-enrichissement-visuel-2026-07-s5-s8-depot-illustrations-g-famil.md).
 
 **D6 — Écran de choix de thème : icône + grille équilibrée.** `ThemeSelector` affiche l'icône
 signature de chaque thème (ajouter un champ `icon`/`hue` au besoin dans `ThemeDef`/`registry.ts`,
@@ -79,8 +79,8 @@ en restant générique) et équilibre la grille (3 colonnes ou 3 cartes alignée
 | [S3](S3.md) | V3 | Presets « repas-types » (source partagée + câblage cardio + diabète) | Sonnet | high | S1, **G-repas** | `src/content/repas-types.ts` (créé), `features/cardio/manger/**`, `features/diabete/alimentation/**` | [x] fait 2026-07-23 · commit `bc3577c` · **G-repas** (composition/calibrage `// à revalider`) |
 | [S4](S4.md) | V4 | Finition écran « Choisir un thème » (icônes + grille) | Sonnet | low | — | `components/ThemeSelector.tsx` + css, `features/registry.ts`/`types.ts` si champ ajouté | [x] fait 2026-07-23 · commit `09a6cd1` |
 | V0-bis | — | Nettoyage prompts : 71 retirés, 23+11 cardio+6 tabac conservés/ajoutés | Opus | low | V0 | `design/illustrations/prompts-illustrations-diabete.html` | [x] fait 2026-07-23 · commit `164886b` |
-| [S5](S5.md) | V5 | Familles cardio : picto par repère (remplace la flamme) | Sonnet | medium | **G-familles** + assets `repere-*` générés | `features/cardio/manger/MangerModule.tsx` + css | [ ] pending — bloqué **G-familles** (approche à trancher Thibault) |
-| [S6](S6.md) | V6 | Câblage/vérif des illustrations générées (Alerte, vf, aliments) | Haiku | low | Thibault a généré les PNG | `public/illustrations/**` (dépôt), aucune modif code attendue (IllustrationSlot résout par id) | [ ] pending — dépend PNG Thibault (17 aliments + 11 cardio Alerte + 6 tabac vf) |
+| S5 | V5 | Familles cardio : icônes Lucide par repère (remplace la flamme) | Sonnet | low | **G-familles** | `features/cardio/manger/MangerModule.tsx` + `.module.css` | [x] fait 2026-08-06 · N1 vérifié (10 icônes distinctes confirmées en DOM), N2 à valider par Thibault |
+| [S6](S6.md) | V6 | Câblage/vérif des illustrations générées (Alerte, vf, aliments) | Haiku | low | Thibault a généré les PNG | `public/illustrations/**` (dépôt), aucune modif code attendue (IllustrationSlot résout par id) | [x] fait 2026-08-06 · 41 PNG déposés (21 aliments partagés dont 4 « monde » + 6 tabac vf + 14 cardio Alerte/artère/automesure), pipeline `build_assets_manquantes_2026_08.py` · **N1 + N2 validés** (Thibault, 2026-08-06) |
 | [S7](S7.md) | V7 | Consolidation (commits par tâche, statuts, contexte, push) | Haiku | minimal | S1-S4 + V0-bis + STATUS/VALIDATION/DECISIONS/PROJECT_MAP | `STATUS/TASKS/DECISIONS/PROJECT_MAP/VALIDATION/index` + remise en ordre du plan | [x] fait 2026-07-23 (cette consolidation) · commit à venir |
 
 > Les fichiers `S1.md`–`S7.md` se rédigent au lancement de chaque vague (le détail n'est pas figé
@@ -121,8 +121,7 @@ en restant générique) et équilibre la grille (3 colonnes ou 3 cartes alignée
   pilotes validés avant les 6.
 - **S4 `écran thèmes`** : icône par thème + grille équilibrée dans `ThemeSelector`. Garder le moteur
   générique (le champ éventuel vit dans `ThemeDef`, pas en dur).
-- **S5 `familles cardio`** : `RepereCard` → `IllustrationSlot repere-<id>` (10 assets). Conditionné à
-  G-familles + génération. Repli : conserver la flamme.
+- **S5 `familles cardio`** : `RepereCard` → `REPERE_ICONS` (map id → `LucideIcon`), fait 2026-08-06.
 - **S6 `assets`** : déposer les PNG générés (Alerte cardio, 6 vf tabac, légumes, situations) ;
   `IllustrationSlot` les résout par id — aucune modif code sauf `benef-horizon` si retenu. Validation
   visuelle Thibault.
@@ -133,8 +132,7 @@ en restant générique) et équilibre la grille (3 colonnes ou 3 cartes alignée
   aliments neufs. `// à revalider` ; non bloquant pour le rendu, bloquant pour la justesse.
 - **G-repas** ⛔ — **liste + composition des repas-types + calibrage de la courbe glycémie (diabète)**.
   Verrou de S3. Repas ancrés sur la population MSP (Maghreb / Afrique / Antilles).
-- **G-familles** — approche « picto par famille » remplaçant la flamme unique (S5). Si oui → Claude
-  ajoute les prompts `repere-*`, Thibault génère.
+- **G-familles** — tranchée 2026-08-06 : icônes Lucide par repère (S5), pas de nouvel asset.
 - **G-visuel** — validation à l'écran de tout l'enrichissement (`npm run dev`), comme d'habitude —
   cf. `VALIDATION.md` (règle : validation visuelle = humaine).
 
@@ -159,8 +157,8 @@ en restant générique) et équilibre la grille (3 colonnes ou 3 cartes alignée
 - [x] **S3** : Repas-types partagés (commit `bc3577c`). Composition/proportions/calibrage glycémie `// à revalider`.
 - [x] **S4** : Écran thèmes avec icônes (commit `09a6cd1`).
 - [x] **V0-bis** : Nettoyage prompts (commit `164886b`).
-- [ ] **S5** : Familles cardio (picto par repère) — **PENDING** — bloqué **G-familles** (approche à trancher).
-- [ ] **S6** : Câblage assets générés — **PENDING** — dépend PNG Thibault (17 aliments + 11 cardio Alerte + 6 tabac vf).
+- [x] **S5** : Familles cardio (icônes Lucide) — fait 2026-08-06, G-familles tranchée.
+- [x] **S6** : Câblage assets générés — fait 2026-08-06 (41 PNG déposés). N1 + N2 validés (Thibault).
 
 ### Gates finales
 
@@ -180,13 +178,16 @@ en restant générique) et équilibre la grille (3 colonnes ou 3 cartes alignée
 - 5 presets : couscous-merguez, riz-poisson thiéboudienne, poulet-plantain, lentilles-œuf, petit-déj méditerranéen.
 - Portion/proportion cible par aliment + calibrage courbe glycémie (diabète) à valider.
 
-**Familles cardio (G-familles)** — proposée mais non exécutée (S5 bloquée) :
-- Approche « picto par repère » (remplace la flamme unique de `RepereCard` manger cardio).
-- À trancher avec Thibault avant code.
+**Familles cardio (G-familles, S5, 2026-08-06)** — icônes Lucide par repère (`REPERE_ICONS`),
+aucun asset. N2 (jugement esthétique) à valider par Thibault.
 
-**Illustrations à générer** — prompts prêts, génération en attente Thibault (S6) :
-- 17 aliments garde-manger (10 légumes + 7 situations) : sections `gm-legumes-enrichi` + `gm-situations`.
-- 11 cardio Alerte (4 VITE + 7 infarctus) : section `cardio-vite` + `cardio-inf` + `cardio-inf-atypique`.
+**Illustrations générées et câblées (S6, 2026-08-06)** — plus aucun placeholder sur ces écrans,
+N1+N2 validés :
+- 21 aliments garde-manger (10 légumes + 7 situations + 4 « monde ») : sections `gm-legumes-enrichi` +
+  `gm-situations` + `gm-monde`, déposés dans `diabete/` ET `cardio/`.
+- 14 cardio Alerte/artère/automesure (4 VITE + 3 infarctus + 4 atypiques + 2 artère tabac + 1
+  automesure) : sections `cardio-vite` + `cardio-inf` + `cardio-inf-atypique` + `cardio-tabac` +
+  `cardio-auto`.
 - 6 tabac vrai/faux : section `tabac-vf`.
 
 ### Commits
@@ -196,19 +197,19 @@ en restant générique) et équilibre la grille (3 colonnes ou 3 cartes alignée
 - `bc3577c` — feat(repas-types) : presets S3
 - `09a6cd1` — feat(theme-selector) : icônes S4
 - `164886b` — chore(illustrations) : nettoyage prompts V0-bis
+- S5+S6 (2026-08-06) : illustrations déposées + icônes Lucide repères — **non commités**, cf. §Chantier non clos.
 
 ### Validation visuelle humaine
 
-**Entièrement à faire par Thibault** (`npm run dev`) — cf. `VALIDATION.md` pour la checklist complète :
-- Écran sélection de thème : grille, icônes, équilibre.
-- Garde-manger diabète : aliments neufs, intégration courbe.
-- Garde-manger cardio : onglets, aliments enrichis, assiette.
+**Faite par Thibault (2026-08-06)** pour S6 (Alerte cardio, garde-manger, vrai/faux tabac) — cf.
+`VALIDATION.md`/`docs/cardio/VALIDATION.md`/`docs/diabete/VALIDATION.md` (purgés). Restant :
+- Écran sélection de thème : grille, icônes, équilibre (S4, jamais revu depuis).
 - Presets repas-types : chargement, modifiabilité, cohérence.
-- Illustrations placeholders : aucune cassure, structure intacte.
-
-**Non bloquant** : génération PNG (S6) à valider visuellement après dépôt Thibault.
+- Familles cardio (S5, icônes Lucide) : juste déployées, pas encore vues à l'écran.
 
 ### Chantier non clos
 
-- **S5/S6 pendantes** : à débloquer selon décisions G-familles + génération PNG.
-- **Statut consolidation** : S1-S4 + V0-bis engagés, contexte mis à jour (`STATUS/TASKS/DECISIONS/PROJECT_MAP/VALIDATION/plans/index`), commit S7 à créer.
+- **Commit S5+S6** : 62 PNG + `build_assets_manquantes_2026_08.py` + swap d'icônes `MangerModule` —
+  en attente de l'accord de Thibault pour committer/pousser (cf. session en cours).
+- Plan **clos sur le fond** (6/6 sessions faites) ; ne reste que la mécanique de consolidation S7
+  (déjà exécutée le 2026-07-23 pour S1-S4) à refaire pour S5/S6 lors du commit.

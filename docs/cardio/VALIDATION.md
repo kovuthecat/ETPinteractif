@@ -27,8 +27,6 @@ Pilote (modules 1-3) validé par Thibault le 2026-07-22 (après recalage silhoue
       classes proposées ; aucune suggestion de molécule.
 - [ ] M12 Suivi : « mes 3 chiffres » (glycémie remplace tension/LDL/tour de taille) ; jamais de rouge ;
       fréquences de suivi à confirmer par Thibault auprès de l'HAS.
-- [ ] Assets à générer (non bloquant) : pictos VITE, signes infarctus, artère/poumon tabac 2 états,
-      brassard automesure.
 
 ## Refonte-audit-2026-07 (2026-07-24) — volet cardio
 
@@ -49,7 +47,8 @@ Pilote (modules 1-3) validé par Thibault le 2026-07-22 (après recalage silhoue
       aucun débordement mobile (~375px).
 - [ ] Presets repas-types : sélectionner un preset remplit l'assiette + les 3 frontières du camembert,
       reste modifiable ensuite.
-- [ ] **G-familles** (non exécutée) : approche « picto par repère » — à trancher avant tout code.
+- [ ] Familles (onglet Familles) : les 10 repères ont chacun leur icône Lucide distincte (S5,
+      2026-08-06, `REPERE_ICONS`) — juger la lisibilité/pertinence de chaque icône à l'écran.
 - [ ] **G-nutrition** (partagé diabète) : ordres de grandeur nutritionnels des aliments neufs à
       revalider culturellement/cliniquement.
 

@@ -132,11 +132,11 @@
   color: var(--color-toxique);
 }
 
-.flameAmi {
+.repereIconAmi {
   color: var(--color-confort-strong);
 }
 
-.flameLimiter {
+.repereIconLimiter {
   color: var(--color-toxique);
 }
 

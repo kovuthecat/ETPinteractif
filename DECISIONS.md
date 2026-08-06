@@ -72,6 +72,7 @@ aucune raison d'être en contexte tant que la décision n'est pas remise en jeu.
 - 2026-07-24 — **Chantier refonte-audit-2026-07** — suites de l'audit pédagogique des 3 thèmes → [détail](docs/decisions/2026-07-24-chantier-refonte-audit-2026-07-suites-de-l-audit-pedagogique-des-3-the.md)
 - 2026-07-24 — **Gates du chantier refonte-audit-2026-07 tranchées avec Thibault** (2e passe) → [détail](docs/decisions/2026-07-24-gates-du-chantier-refonte-audit-2026-07-tranchees-avec-thibault-2-pass.md)
 - 2026-07-24 — **Repas-types** — moteur de proportions + enrichissement de la base (14 plats) → [détail](docs/decisions/2026-07-24-repas-types-moteur-de-proportions-enrichissement-de-la-base-14-plats.md)
+- 2026-08-06 — **Clôture enrichissement-visuel-2026-07 (S5-S8)** — dépôt de 41 illustrations + G-familles tranchée (icônes Lucide, pas de nouvel asset) → [détail](docs/decisions/2026-08-06-cloture-enrichissement-visuel-2026-07-s5-s8-depot-illustrations-g-famil.md)
 
 ---
 
