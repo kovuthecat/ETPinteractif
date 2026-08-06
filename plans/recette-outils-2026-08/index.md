@@ -48,9 +48,9 @@ tranchée** : synthèse minimale à 3 agrégats, sans courbe de progrès ni obje
 | Session | Titre | Modèle | Effort | Dépend de | Zone modifiée | Statut |
 | --- | --- | --- | --- | --- | --- | --- |
 | S1 | Finitions de vocabulaire & code mort (5 correctifs, dont anti-ennui) | Haiku | low | — | `VagueCraving.tsx`, `PhraseRefus.tsx` (+`.module.css`), `AlimentationModule.tsx`, `checklists.ts` | [x] fait 2026-08-06 · N1 vérifié navigateur · anti-ennui complété à 10/10, libellés validés Thibault |
-| S2 | Fiche « Ma boîte à outils » : rattachement auto + case sur la tuile + débordement | Sonnet | medium | — | `BoiteAOutilsModule.tsx` + `.module.css` | [ ] |
+| S2 | Fiche « Ma boîte à outils » : rattachement auto + case sur la tuile + débordement | Sonnet | medium | — | `BoiteAOutilsModule.tsx` + `.module.css` | [x] fait 2026-08-06 · N1 vérifié navigateur (auto-ajout SI…ALORS, retrait manuel non re-coché, 14/14 titres avec fiche compacte) |
 | S3 | Cardio Bouger : barème adouci + test unitaire de la table de vérité | Sonnet | low | — | `BougerModule.tsx`, `cardio/lib/protectionSemaine.ts` (créé) + test | [x] fait 2026-08-06 · N1 vérifié navigateur (Lundi+Jeudi actifs → jamais de rouge) · 4 tests unitaires ajoutés |
-| S4 | Cardio Manger : analyse croisée aliments × proportions | Sonnet | high | libellés matrice | `MangerModule.tsx` + `.module.css` + test | [ ] |
+| S4 | Cardio Manger : analyse croisée aliments × proportions | Sonnet | high | — | `MangerModule.tsx`, `cardio/lib/analyseAssiette.ts` (créé) + test | [x] fait 2026-08-06 · N1 vérifié navigateur (cas source recette : 6 légumes → « De beaux légumes », plus de contradiction) · 9 tests unitaires |
 | S5 | Carnet patient : synthèse « mes moments à risque » (3 agrégats) | Sonnet | medium | — | `PatientCarnet.tsx` | [ ] |
 | S6 | Minuteurs : pause + cadrage « à faire chez vous » | Sonnet | low | — | `MinuteurGuide.tsx` (+css), `VagueCraving.tsx`, `RespirationGuidee.tsx` (+css), `BoiteAOutilsModule.tsx` | [x] fait 2026-08-06 · N1 vérifié navigateur (3 minuteurs : pause/reprise testées en direct, chrono gelé puis reparti) |
 | S7 | Mutualisation des 13 activités diabète/cardio | Sonnet | medium | — | `src/content/activites.ts` (créé), `diabete/activite/data.ts`, `cardio/bouger/BougerModule.tsx` | [x] fait 2026-08-06 · N1 vérifié navigateur (13 activités identiques dans les deux modules) |
@@ -250,11 +250,41 @@ du registre attendu.
 tout, les 10 items s'affichent. **Vague 1 intégralement close.**
 
 ### Commits
-En cours — Thibault a demandé le commit/push de la vague 1 le 2026-08-06.
+`0c991ae` (illustrations + G-familles, chantier précédent) · `c6b9339` (vague 1) — poussés sur
+`origin/main` le 2026-08-06.
+
+## Clôture Vague 2 (S2, S4 — 2026-08-06)
+
+### Gates auto
+`npx tsc -b --noEmit` ✓ · `npm run build` ✓ · `npm test` ✓ **143/143** (+9 tests sur
+`analyseAssiette.ts`, aucune dépendance runtime ajoutée).
+
+### N1 (navigateur in-app)
+- **S2** : composition d'un plan « SI…ALORS… » → rattachement automatique vérifié (bouton détail
+  déjà sur « Dans ma fiche » sans clic supplémentaire, compteur passé à (1)) ; retrait manuel via
+  la case de tuile → compteur (0), **non re-coché** par l'automatisme tant que le contenu reste ;
+  ré-ajout manuel → recoché, compteur (1). 14 outils cochés → 14 titres imprimés (fiche compacte
+  activée), fini les consignes orphelines de l'ancien repli à 8 titres.
+- **S4** : cas exact constaté en recette (6 légumes ajoutés, camembert non touché à 33/33/34) →
+  « De beaux légumes — laissez-leur plus de place. », **contradiction levée**. Vignette du
+  camembert toujours le dernier aliment déposé (Poivron, inchangé). Chargement d'un repas-type
+  (Couscous légumes-merguez, féculents à 43 %) → branche « Beaucoup de féculents » inchangée,
+  avertissements sel/gras (charcuterie/merguez) et repères positifs (légumineuses) toujours
+  affichés. Réinitialisation → retour au message d'assiette vide.
+
+### Point de contenu — grammaire de messages
+La matrice croisée (`cardio/lib/analyseAssiette.ts`) reprend au plus près les 3 exemples donnés
+dans ce plan (§Spécification S4) plutôt que d'inventer une taxonomie plus large : « proportions
+bonnes + peu de variété » nomme la catégorie la moins variée (légumes d'abord), « légumes en
+part faible + variété bonne » crédite le choix, « les deux bons » renforce positivement.
+**Validée par Thibault le 2026-08-06.** Vague 2 intégralement close.
+
+### Commits
+Non commité — en attente d'un feu vert de Thibault, comme prévu.
 
 ### Prochaine étape
-Vague 2 (S2 + S4) — les deux sessions restantes ouvrent chacune un point de contenu
-supplémentaire (débordement de fiche à re-preciser en S2 ; matrice de messages croisés en S4).
+Vague 3 (S5 + S8), toutes deux côté app patient — à enchaîner pour ne rouvrir/revalider le
+bundle qu'une fois.
 
 ## Références
 

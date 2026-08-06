@@ -140,6 +140,20 @@
   color: var(--color-nav);
 }
 
+/* S2 (plans/recette-outils-2026-08) : case « Dans ma fiche » directe sur la tuile — 1 clic
+   au lieu des 3 (tuile → détail → « Ajouter à ma fiche » → retour) constatés en recette. */
+.tileFicheToggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--space-sm);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--color-line);
+  font-size: 0.82em;
+  opacity: 0.75;
+  cursor: pointer;
+}
+
 .tileBody {
   display: flex;
   flex-direction: column;
@@ -305,6 +319,18 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: var(--space-md) var(--space-lg);
+}
+
+/* S2 (plans/recette-outils-2026-08) : au-delà de 10 outils, typographie compacte plutôt que
+   de retirer des titres (l'ancien repli laissait des consignes orphelines, sans savoir à quel
+   outil elles se rapportaient). */
+.ficheGridCompact {
+  gap: 6px var(--space-md);
+}
+
+.ficheGridCompact .ficheItemTitre,
+.ficheGridCompact .ficheItemConsigne {
+  font-size: 12px;
 }
 
 .ficheItem {

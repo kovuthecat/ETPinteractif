@@ -29,6 +29,7 @@ import {
   type CategoriePlateau,
   type RepereAliment,
 } from './data';
+import { analyseAssietteVide, analyseEquilibreAssiette } from '../lib/analyseAssiette';
 import styles from './MangerModule.module.css';
 
 /**
@@ -40,7 +41,8 @@ import styles from './MangerModule.module.css';
  * - **Diversité culturelle** : l'onglet Familles reste volontairement générique (huile, oméga-3,
  *   légumineuses, céréales complètes…) — ce n'est pas un catalogue par origine culinaire.
  * - Pas de moralisation, pas de régime restrictif punitif. Jamais de chiffre imposé à l'écran
- *   (les seuils internes de `analyseEquilibre` ne sont jamais imprimés littéralement).
+ *   (les seuils internes de `analyseEquilibreAssiette`, `cardio/lib/analyseAssiette.ts`, ne sont
+ *   jamais imprimés littéralement).
  *
  * Décision clé (proto §MODULE 8, lignes 284-375, logique 815-888) :
  * - Onglet **Familles** : deux colonnes (amis des artères / à limiter), détail au clic d'un
@@ -66,6 +68,14 @@ import styles from './MangerModule.module.css';
  * L'analyse d'équilibre pioche désormais ses messages positifs/de vigilance directement dans
  * `REPERES_ALIMENTS` (onglet Familles, via `REPERE_PAR_ALIMENT`) plutôt que d'écrire un second
  * texte qui dirait la même chose autrement.
+ *
+ * **Analyse croisée (S4, 2026-08-06, `plans/recette-outils-2026-08/`, gate G-assiette)** —
+ * `foodsParCat` conserve maintenant TOUS les aliments déposés par catégorie-cœur (avant : un
+ * seul, écrasé à chaque ajout) ; `analyseEquilibreAssiette` (`cardio/lib/analyseAssiette.ts`)
+ * croise les proportions du camembert ET la variété d'aliments distincts par catégorie, pour ne
+ * plus contredire un patient qui ajoute des légumes sans toucher aux frontières (constat recette
+ * navigateur 2026-08-06). Le camembert reste manipulable à la main, jamais recalculé depuis les
+ * aliments déposés — c'est lui qui porte la pédagogie des proportions.
  */
 
 type Onglet = 'familles' | 'assiette';
@@ -77,13 +87,6 @@ const ONGLETS: { id: Onglet; label: string }[] = [
 
 /** Nombre d'« extras » (matières grasses/fruits/laitiers) conservés dans la liste, proto `.slice(-6)`. */
 const EXTRAS_MAX = 6;
-/** Tolérance (points de %) autour du modèle ½ · ¼ · ¼ pour considérer l'assiette équilibrée (proto ligne 883). */
-const EQUILIBRE_TOLERANCE = 12;
-/** Seuils de déséquilibre (proto lignes 884-886) — jamais imprimés tels quels, seulement des
- *  branches de texte qualitatif. */
-const SEUIL_LEGUMES_BAS = 35;
-const SEUIL_PROTEINES_HAUT = 40;
-const SEUIL_FECULENTS_HAUT = 40;
 
 type CategorieCoeur = 'legumes' | 'feculents' | 'proteines';
 
@@ -225,9 +228,15 @@ export default function MangerModule({ shell }: ModuleProps) {
   // pédagogie de l'onglet Familles met en avant (« moitié de l'assiette en légumes »).
   const [categorieGardeManger, setCategorieGardeManger] = useState<CategoriePlateau>('legumes');
 
-  // ── Assiette : un aliment concret par catégorie-cœur (repFood) + proportions continues (pct,
-  // réglées au drag des frontières) — les deux mécaniques restent indépendantes, comme demandé. ──
-  const [repFood, setRepFood] = useState<Partial<Record<CategorieCoeur, AlimentPlateau>>>({});
+  // ── Assiette : TOUS les aliments déposés par catégorie-cœur (foodsParCat) + proportions
+  // continues (pct, réglées au drag des frontières) — les deux mécaniques restent indépendantes
+  // (camembert manipulable à la main, jamais recalculé depuis les aliments), mais l'analyse
+  // d'équilibre croise désormais les deux (S4, plans/recette-outils-2026-08, gate G-assiette) :
+  // avant cette session, un seul aliment par catégorie était retenu (le dernier écrasait les
+  // précédents), et l'analyse ne lisait que le camembert — ajouter 6 légumes sans toucher aux
+  // frontières laissait « Pas assez de légumes » à l'écran (constat recette navigateur
+  // 2026-08-06). La vignette affichée sur le camembert reste le DERNIER aliment déposé. ──
+  const [foodsParCat, setFoodsParCat] = useState<Partial<Record<CategorieCoeur, AlimentPlateau[]>>>({});
   const [angles, setAngles] = useState<Record<Boundary, number>>(ANGLES_DEFAUT);
   const [dragging, setDragging] = useState<Boundary | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -239,7 +248,7 @@ export default function MangerModule({ shell }: ModuleProps) {
   function assignerAliment(aliment: AlimentPlateau) {
     const cat = aliment.categorie;
     if (cat === 'legumes' || cat === 'feculents' || cat === 'proteines') {
-      setRepFood((prev) => ({ ...prev, [cat]: aliment }));
+      setFoodsParCat((prev) => ({ ...prev, [cat]: [...(prev[cat] ?? []), aliment] }));
     } else {
       setExtras((prev) => [...prev, { uid: `${aliment.id}-${Date.now()}-${Math.random()}`, id: aliment.id }].slice(-EXTRAS_MAX));
     }
@@ -252,17 +261,17 @@ export default function MangerModule({ shell }: ModuleProps) {
   }
 
   function reinitialiserPlateau() {
-    setRepFood({});
+    setFoodsParCat({});
     setAngles(ANGLES_DEFAUT);
     setExtras([]);
   }
 
-  /** Charge un repas-type (`src/content/repas-types.ts`, source partagée cardio/diabète) : pour
-   *  chaque catégorie-cœur, le PREMIER aliment du preset dont la catégorie correspond devient
-   *  son représentant (`repFood`) ; les autres aliments du preset (catégorie-cœur déjà pourvue,
-   *  ou catégorie « extra » lipides/fruits/laitiers) rejoignent `extras`, même mécanique que
-   *  `assignerAliment`. Point de départ modifiable — jamais un état verrouillé, le patient
-   *  continue d'utiliser le garde-manger et les frontières normalement après.
+  /** Charge un repas-type (`src/content/repas-types.ts`, source partagée cardio/diabète) : chaque
+   *  aliment du preset dont la catégorie est une catégorie-cœur rejoint `foodsParCat[cat]` (tous
+   *  conservés depuis S4, pas seulement le premier) ; les aliments de catégorie « extra »
+   *  (lipides/fruits/laitiers) rejoignent `extras`, même mécanique que `assignerAliment`. Point
+   *  de départ modifiable — jamais un état verrouillé, le patient continue d'utiliser le
+   *  garde-manger et les frontières normalement après.
    *
    *  Proportions (2026-07-24) : les 3 frontières du camembert sont calibrées depuis
    *  `repas.proportionsCoeur` (poids de catégorie, pas la somme des `portions` par aliment — un
@@ -271,19 +280,19 @@ export default function MangerModule({ shell }: ModuleProps) {
    *  (`ANGLES_DEFAUT`, comportement antérieur). Calibrage = ordre de grandeur pédagogique,
    *  // à revalider (Thibault) comme le reste de la composition. */
   function chargerRepasType(repas: RepasType) {
-    const nextRepFood: Partial<Record<CategorieCoeur, AlimentPlateau>> = {};
+    const nextFoodsParCat: Partial<Record<CategorieCoeur, AlimentPlateau[]>> = {};
     const nextExtras: { uid: string; id: string }[] = [];
     for (const a of repas.aliments) {
       const aliment = ALIMENTS_PLATEAU.find((food) => food.id === a.id);
       if (!aliment) continue;
       const cat = aliment.categorie;
-      if ((cat === 'legumes' || cat === 'feculents' || cat === 'proteines') && !nextRepFood[cat]) {
-        nextRepFood[cat] = aliment;
+      if (cat === 'legumes' || cat === 'feculents' || cat === 'proteines') {
+        nextFoodsParCat[cat] = [...(nextFoodsParCat[cat] ?? []), aliment];
       } else {
         nextExtras.push({ uid: `${aliment.id}-${Date.now()}-${Math.random()}`, id: aliment.id });
       }
     }
-    setRepFood(nextRepFood);
+    setFoodsParCat(nextFoodsParCat);
     setExtras(nextExtras.slice(-EXTRAS_MAX));
     setAngles(anglesFromProportions(repas.proportionsCoeur));
   }
@@ -329,6 +338,15 @@ export default function MangerModule({ shell }: ModuleProps) {
     proteines: fracBetween(angles.fp, angles.pl),
   };
 
+  // Vignette affichée sur chaque part du camembert = le DERNIER aliment déposé dans la catégorie
+  // (comportement inchangé côté affichage) ; `foodsParCat[cat]` conserve désormais tous les
+  // aliments déposés, pas seulement celui-là (S4).
+  const repFood: Partial<Record<CategorieCoeur, AlimentPlateau>> = {};
+  for (const cat of CORE_CATEGORIES) {
+    const list = foodsParCat[cat.id];
+    if (list && list.length > 0) repFood[cat.id] = list[list.length - 1];
+  }
+
   let angleCursor = angles.pl;
   const slices = CORE_CATEGORIES.map((cat) => {
     const frac = pct[cat.id];
@@ -362,31 +380,30 @@ export default function MangerModule({ shell }: ModuleProps) {
   const pctFeculents = Math.round(pct.feculents * 100);
   const pctProteines = 100 - pctLegumes - pctFeculents;
 
-  const hasAnyRepFood = Object.keys(repFood).length > 0;
-
-  let analyse: string;
-  if (!hasAnyRepFood) {
-    analyse = 'Glissez ou touchez un aliment du garde-manger pour composer votre assiette.';
-  } else if (
-    Math.abs(pctLegumes - 50) <= EQUILIBRE_TOLERANCE &&
-    Math.abs(pctFeculents - 25) <= EQUILIBRE_TOLERANCE &&
-    Math.abs(pctProteines - 25) <= EQUILIBRE_TOLERANCE
-  ) {
-    analyse = "Bel équilibre — proche de l'assiette santé (½ légumes, ¼ féculents, ¼ protéines).";
-  } else if (pctLegumes < SEUIL_LEGUMES_BAS) {
-    analyse = 'Pas assez de légumes : pensez à leur laisser la moitié de l’assiette, pour les fibres et le potassium.';
-  } else if (pctProteines > SEUIL_PROTEINES_HAUT) {
-    analyse = 'Beaucoup de protéines par rapport aux légumes : allégez un peu ce côté de l’assiette.';
-  } else if (pctFeculents > SEUIL_FECULENTS_HAUT) {
-    analyse = 'Beaucoup de féculents : laissez plus de place aux légumes.';
-  } else {
-    analyse = 'Assiette correcte — encore un peu de rééquilibrage possible vers le modèle ½ · ¼ · ¼.';
+  // Variété par catégorie-cœur (S4, G-assiette) = nombre d'aliments DISTINCTS déposés — un même
+  // aliment ajouté deux fois ne compte qu'une fois, la variété porte sur le choix, pas le geste.
+  function varieteCategorie(cat: CategorieCoeur): number {
+    return new Set((foodsParCat[cat] ?? []).map((f) => f.id)).size;
   }
 
-  // Aliments réellement présents (les 3 représentants du camembert + les extras) — sert à la fois
-  // aux avertissements sel/gras et à l'enrichissement positif depuis l'onglet Familles.
+  const hasAnyRepFood = Object.keys(repFood).length > 0;
+
+  const analyse = hasAnyRepFood
+    ? analyseEquilibreAssiette({
+        pctLegumes,
+        pctFeculents,
+        pctProteines,
+        varieteLegumes: varieteCategorie('legumes'),
+        varieteFeculents: varieteCategorie('feculents'),
+        varieteProteines: varieteCategorie('proteines'),
+      })
+    : analyseAssietteVide();
+
+  // Aliments réellement présents (TOUS ceux déposés par catégorie-cœur, S4 — plus seulement le
+  // dernier — + les extras) — sert à la fois aux avertissements sel/gras et à l'enrichissement
+  // positif depuis l'onglet Familles.
   const extrasFoods = extras.map((e) => ALIMENTS_PLATEAU.find((a) => a.id === e.id)).filter((f): f is AlimentPlateau => !!f);
-  const foodsSurAssiette = [...Object.values(repFood).filter((f): f is AlimentPlateau => !!f), ...extrasFoods];
+  const foodsSurAssiette = [...Object.values(foodsParCat).flat().filter((f): f is AlimentPlateau => !!f), ...extrasFoods];
 
   const repereSel = REPERES_ALIMENTS.find((r) => r.id === 'sel');
   const repereGras = REPERES_ALIMENTS.find((r) => r.id === 'graisses-saturees');

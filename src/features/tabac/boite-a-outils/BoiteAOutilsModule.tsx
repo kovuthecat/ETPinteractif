@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowRight, Check, ChevronLeft } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import IllustrationSlot from '../components/IllustrationSlot';
@@ -34,7 +34,7 @@ const SITUATIONS_PAR_ID = new Map<string, SituationDef>(SITUATIONS.map((s) => [s
  * et sélection de fiche sont du state React éphémère.
  */
 export default function BoiteAOutilsModule({ onNavigate, context }: ModuleProps) {
-  const { state, toggle } = useSelection();
+  const { state, toggle, add } = useSelection();
   const consultationStore = useConsultationStore();
   const ficheItems = state.outilsFiche;
   // Filtre local (éphémère) : pré-alimenté au montage depuis les situations
@@ -47,6 +47,10 @@ export default function BoiteAOutilsModule({ onNavigate, context }: ModuleProps)
   // fermer l'outil (`onClose`) revienne au détail plutôt qu'à la grille.
   const [activeOutilId, setActiveOutilId] = useState<string | null>(null);
   const [ficheOpen, setFicheOpen] = useState(false);
+  // Rattachement auto à la fiche (S2, G-fiche, plans/recette-outils-2026-08) : mémoire locale
+  // (éphémère, pas de persistance) des outils explicitement RETIRÉS par le soignant, pour que
+  // l'automatisme ci-dessous ne les recoche pas tant qu'ils ne sont pas re-remplis à la main.
+  const [retiresManuellement, setRetiresManuellement] = useState<Set<string>>(new Set());
 
   function toggleSituation(id: string) {
     setActiveSituations((prev) => {
@@ -58,8 +62,31 @@ export default function BoiteAOutilsModule({ onNavigate, context }: ModuleProps)
   }
 
   function toggleFiche(id: string) {
+    const present = ficheItems.includes(id);
+    setRetiresManuellement((prev) => {
+      if (present === prev.has(id)) return prev;
+      const next = new Set(prev);
+      if (present) next.add(id);
+      else next.delete(id);
+      return next;
+    });
     toggle('outilsFiche', id);
   }
+
+  // Un outil rejoint la fiche dès qu'il porte du contenu personnalisé (store.setList non vide :
+  // SI…ALORS, tirelire, les 4 checklists, phrase de refus) — le patient ne peut plus perdre son
+  // travail en oubliant de cocher « Ajouter à ma fiche » (constat recette 2026-08-06 : le
+  // compteur restait à 0 après composition de 5 plans « SI… ALORS… »). Les outils sans rien à
+  // conserver (minuteurs, exercices) ne sont pas concernés — `state.outilsData` reste vide pour
+  // eux, la condition `perso.length > 0` ne se déclenche jamais.
+  useEffect(() => {
+    for (const outil of OUTILS) {
+      const perso = state.outilsData[outil.id];
+      if (perso && perso.length > 0 && !ficheItems.includes(outil.id) && !retiresManuellement.has(outil.id)) {
+        add('outilsFiche', outil.id);
+      }
+    }
+  }, [state.outilsData, ficheItems, retiresManuellement, add]);
 
   const activeSituationDefs = SITUATIONS.filter((s) => activeSituations.has(s.id));
   // Pertinence par pilier (E4) : même fonction de sélection/tri que l'app patient
@@ -68,8 +95,10 @@ export default function BoiteAOutilsModule({ onNavigate, context }: ModuleProps)
   const visibleOutils = selectionnerOutilsPertinents(OUTILS, activeSituationDefs);
   const ficheOutils = OUTILS.filter((o) => ficheItems.includes(o.id));
 
-  // Si bloqué (plans/boite-a-outils/S2.md « Si bloqué ») : au-delà de 10 outils
-  // cochés, on retire le titre des blocs à partir du 9e pour tenir sur l'A4.
+  // Débordement (S2, plans/recette-outils-2026-08 — remplace l'ancien repli « titres retirés
+  // au-delà du 9e », qui laissait des consignes orphelines sans qu'on sache à quel outil elles
+  // se rapportaient). Au-delà de 10 outils cochés, chaque titre reste affiché mais la fiche
+  // passe en typographie compacte (`.ficheGridCompact`) pour tenir sur l'A4.
   const ficheDebordement = ficheOutils.length > 10;
 
   const activeOutil = activeOutilId ? (OUTILS.find((o) => o.id === activeOutilId) ?? null) : null;
@@ -226,21 +255,32 @@ export default function BoiteAOutilsModule({ onNavigate, context }: ModuleProps)
       </div>
 
       <div className={styles.grid} role="list">
-        {visibleOutils.map((outil) => (
-          <div key={outil.id} className={`${styles.tile} card`} role="listitem">
-            <button
-              type="button"
-              className={styles.tileBtn}
-              onClick={() => setSelectedId(outil.id)}
-            >
-              <IllustrationSlot id={outil.id} label={outil.titre} size={96} />
-              <span className={styles.tileBody}>
-                <span className={styles.tileTitre}>{outil.titre}</span>
-                <span className={styles.tileAccroche}>{outil.accroche}</span>
-              </span>
-            </button>
-          </div>
-        ))}
+        {visibleOutils.map((outil) => {
+          const dansLaFiche = ficheItems.includes(outil.id);
+          return (
+            <div key={outil.id} className={`${styles.tile} card`} role="listitem">
+              <button
+                type="button"
+                className={styles.tileBtn}
+                onClick={() => setSelectedId(outil.id)}
+              >
+                <IllustrationSlot id={outil.id} label={outil.titre} size={96} />
+                <span className={styles.tileBody}>
+                  <span className={styles.tileTitre}>{outil.titre}</span>
+                  <span className={styles.tileAccroche}>{outil.accroche}</span>
+                </span>
+              </button>
+              <label className={styles.tileFicheToggle}>
+                <input
+                  type="checkbox"
+                  checked={dansLaFiche}
+                  onChange={() => toggleFiche(outil.id)}
+                />
+                Dans ma fiche
+              </label>
+            </div>
+          );
+        })}
       </div>
 
       <p className={styles.aparte}>
@@ -272,8 +312,8 @@ export default function BoiteAOutilsModule({ onNavigate, context }: ModuleProps)
         >
           <div className="fiche-bloc">
             <span className="fiche-bloc-eyebrow">Mes outils</span>
-            <div className={styles.ficheGrid}>
-              {ficheOutils.map((outil, index) => {
+            <div className={`${styles.ficheGrid}${ficheDebordement ? ` ${styles.ficheGridCompact}` : ''}`}>
+              {ficheOutils.map((outil) => {
                 // Contenu personnalisé (S1/OI4) : si l'outil a des lignes enregistrées
                 // (`outilsData[outil.id]`, via `store.get`), on les affiche à la place de
                 // la consigne générique — le patient repart avec SES plans, pas un texte
@@ -281,9 +321,7 @@ export default function BoiteAOutilsModule({ onNavigate, context }: ModuleProps)
                 const perso = consultationStore.get(outil.id);
                 return (
                   <div key={outil.id} className={styles.ficheItem}>
-                    {(!ficheDebordement || index < 8) && (
-                      <p className={styles.ficheItemTitre}>{outil.titre}</p>
-                    )}
+                    <p className={styles.ficheItemTitre}>{outil.titre}</p>
                     {perso.length > 0 ? (
                       perso.map((ligne, ligneIndex) => (
                         <p key={ligneIndex} className={styles.ficheItemConsigne}>
