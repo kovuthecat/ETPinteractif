@@ -32,8 +32,15 @@ pédagogique (garde-manger, repas-types) et correctifs issus des audits/revues d
 - **Socle partagé** : moteur multi-thèmes agnostique (aucun id de thème en dur), `SelectionContext`
   (mémoire de session, zéro persistance côté consultation), fiches à emporter génériques, mécanisme
   « repas-types » partagé cardio/diabète (5 presets), garde-manger enrichi (2 thèmes).
-- Gate systématique : `npx tsc --noEmit` ✓ · `npm run build` ✓ · `npm test` ✓ **127/127**, aucune
-  dépendance runtime ajoutée depuis le scaffold initial.
+- **Plan `recette-outils-2026-08` clos (8/8 sessions)** : fiche « Ma boîte à outils » tabac
+  rattache désormais automatiquement le contenu personnalisé (SI…ALORS, tirelire, checklists,
+  phrase de refus) ; barème de protection cardio (module Bouger) adouci pour rester cohérent avec
+  son propre repère ; analyse d'équilibre cardio Manger croise proportions et variété d'aliments
+  (ne contredit plus le patient) ; carnet patient affiche une synthèse (tranches horaires,
+  contextes fréquents, total 7 jours) dès 5 saisies ; app patient en tuile + détail au lieu du
+  tout-déplié (5,7 → 1,3 écran sur le cas le plus chargé). 3 minuteurs pausables.
+- Gate systématique : `npx tsc -b --noEmit` ✓ · `npm run build` ✓ · `npm test` ✓ **153/153**
+  (+14 tests sur ce plan), aucune dépendance runtime ajoutée depuis le scaffold initial.
 
 ## Ce qui casse / n'est pas testé
 
@@ -42,9 +49,9 @@ pédagogique (garde-manger, repas-types) et correctifs issus des audits/revues d
 - **Validation visuelle/UX humaine** (N2) en retard sur les autres chantiers récents (revue-prod tabac,
   insuline-affinements, refonte-audit diabète/cardio, repas-types) — cf. `VALIDATION.md`. Les
   illustrations du 2026-08-06 (Alerte cardio, garde-manger, vrai/faux tabac) sont validées ; les
-  icônes de repères cardio (S5) sont déployées mais pas encore vues à l'écran par Thibault.
-- **Rien n'est commité** depuis le dépôt des 62 PNG + le swap d'icônes S5 (2026-08-06) — en attente
-  d'accord pour committer/pousser.
+  icônes de repères cardio et le plan `recette-outils-2026-08` (fiche auto, analyse croisée,
+  synthèse carnet, app patient) sont vérifiés N1 (navigateur) mais pas encore vus à l'écran par
+  Thibault en usage réel.
 - Illustration `infarctus-atypique-nausees.png` déposée (lot 2026-08-06) mais **orpheline** : la carte
   « nausées isolées » a été retirée du code cardio M10 (**G-M10-nausées**, 2026-07-24) — fichier
   inutilisé, aucune action requise sauf si Thibault souhaite la restaurer.

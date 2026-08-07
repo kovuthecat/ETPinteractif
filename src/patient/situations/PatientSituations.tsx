@@ -118,6 +118,15 @@ export default function PatientSituations({ onBack, onNavigate }: PatientSituati
   // Outil interactif actuellement lancé (S1/OI3) — distinct de `selectedSituation`, réinitialisé
   // au changement de situation (cf. bouton « Autre situation » plus bas).
   const [activeOutilId, setActiveOutilId] = useState<string | null>(null);
+  // Outil dont le détail complet est déplié (S8, plans/recette-outils-2026-08, gate G-densite) :
+  // avant cette session, TOUS les outils adaptés à une situation s'affichaient dépliés d'un
+  // coup — jusqu'à 8 cartes complètes, 5,7 écrans de défilement sur mobile pour « Envie
+  // irrépressible » (constat recette navigateur 2026-08-06), l'inverse du registre attendu pour
+  // un patient en situation de crise. `null` résout vers le PREMIER outil de la liste (le plus
+  // pertinent, déjà trié par `selectionnerOutilsPertinents`) : c'est lui qui reste déplié par
+  // défaut, pour ne pas coûter de geste supplémentaire sur le cas le plus probable. Les autres
+  // outils sont accessibles en un tap via la rangée de vignettes.
+  const [selectedOutilId, setSelectedOutilId] = useState<string | null>(null);
   const patientStore = usePatientStore();
 
   if (selectedSituation) {
@@ -125,6 +134,8 @@ export default function PatientSituations({ onBack, onNavigate }: PatientSituati
     // Pertinence par pilier (E4) : même fonction de sélection/tri que la consultation
     // (BoiteAOutilsModule) — repli sur `OUTILS` en entier si la situation est introuvable.
     const outilsAdaptes = selectionnerOutilsPertinents(OUTILS, situation ? [situation] : []);
+    const displayedOutil =
+      outilsAdaptes.find((o) => o.id === selectedOutilId) ?? outilsAdaptes[0] ?? null;
     const activeOutil = activeOutilId
       ? (outilsAdaptes.find((o) => o.id === activeOutilId) ?? null)
       : null;
@@ -144,6 +155,7 @@ export default function PatientSituations({ onBack, onNavigate }: PatientSituati
           onClick={() => {
             setSelectedSituation(null);
             setActiveOutilId(null);
+            setSelectedOutilId(null);
           }}
         >
           <ArrowLeft size={16} aria-hidden="true" />
@@ -196,36 +208,60 @@ export default function PatientSituations({ onBack, onNavigate }: PatientSituati
         {/* à revalider (Thibault) : phrase de cadrage auto-portante */}
         <p className={styles.intro}>Voici ce qui peut vous aider dans cette situation.</p>
 
-        <div className={styles.list}>
-          {outilsAdaptes.map((outil) => (
-            <article key={outil.id} className={`${styles.card} card`}>
-              <div className={styles.cardHead}>
-                <span className={styles.cardIllustration}>
-                  <OutilIllustration id={outil.id} label={outil.titre} />
-                </span>
-                <div className={styles.cardHeadText}>
-                  <h2 className={styles.cardTitre}>{outil.titre}</h2>
-                  <p className={styles.preuve}>{PREUVE_LABELS[outil.preuve]}</p>
-                </div>
+        {displayedOutil && (
+          <article className={`${styles.card} card`}>
+            <div className={styles.cardHead}>
+              <span className={styles.cardIllustration}>
+                <OutilIllustration id={displayedOutil.id} label={displayedOutil.titre} />
+              </span>
+              <div className={styles.cardHeadText}>
+                <h2 className={styles.cardTitre}>{displayedOutil.titre}</h2>
+                <p className={styles.preuve}>{PREUVE_LABELS[displayedOutil.preuve]}</p>
               </div>
-              <p className={styles.principe}>{outil.principe}</p>
-              <div className={styles.commentFaireBlock}>
-                <span className="eyebrow">Comment faire</span>
-                <p className={styles.commentFaire}>{commentFaire(outil)}</p>
-              </div>
-              {outil.interactif && OUTILS_INTERACTIFS[outil.interactif] && (
-                <button
-                  type="button"
-                  className="btn btn--primary"
-                  onClick={() => setActiveOutilId(outil.id)}
-                >
-                  <Play size={16} aria-hidden="true" />
-                  Démarrer
-                </button>
-              )}
-            </article>
-          ))}
-        </div>
+            </div>
+            <p className={styles.principe}>{displayedOutil.principe}</p>
+            <div className={styles.commentFaireBlock}>
+              <span className="eyebrow">Comment faire</span>
+              <p className={styles.commentFaire}>{commentFaire(displayedOutil)}</p>
+            </div>
+            {displayedOutil.interactif && OUTILS_INTERACTIFS[displayedOutil.interactif] && (
+              <button
+                type="button"
+                className="btn btn--primary"
+                onClick={() => setActiveOutilId(displayedOutil.id)}
+              >
+                <Play size={16} aria-hidden="true" />
+                Démarrer
+              </button>
+            )}
+          </article>
+        )}
+
+        {outilsAdaptes.length > 1 && (
+          <div className={styles.switchGroup}>
+            <span className="eyebrow">Autres idées pour cette situation</span>
+            <div className={styles.switchRow} role="list">
+              {outilsAdaptes.map((outil) => {
+                const selected = outil.id === displayedOutil?.id;
+                return (
+                  <button
+                    key={outil.id}
+                    type="button"
+                    role="listitem"
+                    className={`${styles.switchBtn}${selected ? ` ${styles.switchBtnActive}` : ''}`}
+                    aria-pressed={selected}
+                    onClick={() => setSelectedOutilId(outil.id)}
+                  >
+                    <span className={styles.switchIllustration}>
+                      <OutilIllustration id={outil.id} label={outil.titre} />
+                    </span>
+                    <span className={styles.switchTitre}>{outil.titre}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
     );
   }

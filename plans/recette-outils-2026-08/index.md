@@ -51,14 +51,13 @@ tranchée** : synthèse minimale à 3 agrégats, sans courbe de progrès ni obje
 | S2 | Fiche « Ma boîte à outils » : rattachement auto + case sur la tuile + débordement | Sonnet | medium | — | `BoiteAOutilsModule.tsx` + `.module.css` | [x] fait 2026-08-06 · N1 vérifié navigateur (auto-ajout SI…ALORS, retrait manuel non re-coché, 14/14 titres avec fiche compacte) |
 | S3 | Cardio Bouger : barème adouci + test unitaire de la table de vérité | Sonnet | low | — | `BougerModule.tsx`, `cardio/lib/protectionSemaine.ts` (créé) + test | [x] fait 2026-08-06 · N1 vérifié navigateur (Lundi+Jeudi actifs → jamais de rouge) · 4 tests unitaires ajoutés |
 | S4 | Cardio Manger : analyse croisée aliments × proportions | Sonnet | high | — | `MangerModule.tsx`, `cardio/lib/analyseAssiette.ts` (créé) + test | [x] fait 2026-08-06 · N1 vérifié navigateur (cas source recette : 6 légumes → « De beaux légumes », plus de contradiction) · 9 tests unitaires |
-| S5 | Carnet patient : synthèse « mes moments à risque » (3 agrégats) | Sonnet | medium | — | `PatientCarnet.tsx` | [ ] |
+| S5 | Carnet patient : synthèse « mes moments à risque » (3 agrégats) | Sonnet | medium | — | `PatientCarnet.tsx` (+css), `patient/lib/carnetSynthese.ts` (créé) + test | [x] fait 2026-08-06 · N1 vérifié navigateur (tranches/total/contextes corrects sur données injectées, synthèse masquée sous 5 saisies) · 10 tests unitaires |
 | S6 | Minuteurs : pause + cadrage « à faire chez vous » | Sonnet | low | — | `MinuteurGuide.tsx` (+css), `VagueCraving.tsx`, `RespirationGuidee.tsx` (+css), `BoiteAOutilsModule.tsx` | [x] fait 2026-08-06 · N1 vérifié navigateur (3 minuteurs : pause/reprise testées en direct, chrono gelé puis reparti) |
 | S7 | Mutualisation des 13 activités diabète/cardio | Sonnet | medium | — | `src/content/activites.ts` (créé), `diabete/activite/data.ts`, `cardio/bouger/BougerModule.tsx` | [x] fait 2026-08-06 · N1 vérifié navigateur (13 activités identiques dans les deux modules) |
-| S8 | App patient : tuile + détail au lieu du tout-déplié | Sonnet | high | — | `PatientSituations.tsx` + `.module.css` | [ ] |
+| S8 | App patient : tuile + détail au lieu du tout-déplié | Sonnet | high | — | `PatientSituations.tsx` + `.module.css` | [x] fait 2026-08-06 · N1 vérifié navigateur mobile (« Envie irrépressible » : 5,7 → 1,3 écran ; bouton Démarrer toujours y=644, aucune régression) |
 
-> Toutes les gates étant tranchées, **plus aucune session n'est bloquée par un arbitrage**. Restent
-> deux points de **contenu** (les 4 libellés anti-ennui en S1, la matrice de messages en S4) qui
-> peuvent être livrés en dernier sans retenir le reste de leur session.
+> **Plan intégralement clos le 2026-08-06** — 8/8 sessions faites, les deux points de contenu
+> (libellés anti-ennui en S1, matrice de messages en S4) validés par Thibault en cours de route.
 
 ## Ordonnancement
 
@@ -280,11 +279,52 @@ part faible + variété bonne » crédite le choix, « les deux bons » renforce
 **Validée par Thibault le 2026-08-06.** Vague 2 intégralement close.
 
 ### Commits
-Non commité — en attente d'un feu vert de Thibault, comme prévu.
+`d765d94` — poussé sur `origin/main` le 2026-08-06 (accord Thibault reçu après validation de la
+grammaire).
 
-### Prochaine étape
-Vague 3 (S5 + S8), toutes deux côté app patient — à enchaîner pour ne rouvrir/revalider le
-bundle qu'une fois.
+## Clôture Vague 3 (S5, S8 — 2026-08-06)
+
+### Gates auto
+`npx tsc -b --noEmit` ✓ · `npm run build` ✓ · `npm test` ✓ **153/153** (+10 tests sur
+`carnetSynthese.ts`, aucune dépendance runtime ajoutée).
+
+### N1 (navigateur in-app)
+- **S5** : données injectées dans `localStorage` (5 entrées sur 7 jours + 1 hors fenêtre) →
+  synthèse correcte à l'écran (total 5, tranches Matin 2 / Midi 0 / Après-midi 0 / Soir 3,
+  contextes avec comptes). Avec 2 entrées seulement → bloc « Vos tendances » **absent**, conforme
+  au seuil minimal (pas d'illusion de motif sur trop peu de saisies).
+- **S8** : cas source de la recette (« Envie irrépressible », 8 outils, mobile 375×812) →
+  **5,7 écrans ramenés à 1,3 écran**. Le bouton « Démarrer » du premier outil reste à **y = 644**,
+  identique à avant — aucune régression sur l'accès en situation de crise. Rangée de 8 vignettes
+  vérifiée : clic sur « SI…ALORS… » bascule le détail et l'état `aria-pressed`, lancement de
+  l'outil depuis le nouveau détail confirmé fonctionnel.
+
+### Commits
+En attente de l'accord de Thibault.
+
+## Clôture du plan
+
+**8/8 sessions faites, 3 vagues, aucune session restée bloquée après arbitrage des 6 gates le
+2026-08-06.** Deux points de contenu ouverts en cours de route (libellés anti-ennui S1, matrice
+de messages S4) tous deux validés par Thibault avant câblage — aucun contenu patient n'a été
+mis en ligne sans confirmation. Récapitulatif des defects fermés, un par décision structurante :
+
+- **D1 (G-fiche, S2)** — le travail personnalisé du patient (SI…ALORS, tirelire, checklists,
+  phrase de refus) atteint désormais systématiquement la fiche imprimée.
+- **D2 (G-assiette, S4)** — l'analyse cardio Manger ne contredit plus le geste du patient quand
+  il ajoute des aliments sans toucher au camembert.
+- **D3 (G-baremes, S3 + cible anti-ennui S1)** — deux écrans qui sanctionnaient un comportement
+  conforme à leur propre repère affiché sont corrigés.
+- **D4 (G-carnet, S5)** — le carnet patient tient enfin sa promesse de « repérer les moments à
+  risque ».
+- Plus : rattachement fiche + débordement compact (S2), pause sur les 3 minuteurs + cadrage
+  « Bouger » (S6), fin de la duplication des 13 activités (S7), densité de l'app patient en
+  situation de crise (S8), 5 finitions de vocabulaire/code mort (S1).
+
+**14 tests unitaires ajoutés** (`protectionSemaine`, `analyseAssiette`, `carnetSynthese`) sur des
+fonctions pures extraites en `lib/`, aucune n'existait avant ce plan sur ces mécaniques. Tous les
+commits poussés sur `origin/main` : `0c991ae`, `c6b9339`, `d765d94`, plus le commit final de
+cette vague à venir.
 
 ## Références
 

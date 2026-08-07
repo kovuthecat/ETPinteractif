@@ -2,6 +2,12 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { ArrowLeft, Pencil, Plus, ShieldCheck, Trash2, X } from 'lucide-react';
 import { readJSON, writeJSON } from '../lib/storage';
+import {
+  syntheseCarnet,
+  TRANCHE_ORDER,
+  TRANCHE_LABELS,
+  type CarnetEntry,
+} from '../lib/carnetSynthese';
 import styles from './PatientCarnet.module.css';
 
 interface PatientCarnetProps {
@@ -11,15 +17,6 @@ interface PatientCarnetProps {
 
 /** Clé localStorage dédiée (E7, revue-chrome-2026-07) — cf. `src/patient/lib/storage.ts`. */
 const STORAGE_KEY = 'etp.patient.carnetConso';
-
-/** Une entrée = une consommation (décision tranchée du plan, cf. S16.md). */
-interface CarnetEntry {
-  id: string;
-  /** Format `datetime-local` (`YYYY-MM-DDTHH:mm`), toujours en heure locale du patient. */
-  dateHeure: string;
-  contexte: string;
-  ressenti: string;
-}
 
 interface FormState {
   dateHeure: string;
@@ -115,6 +112,11 @@ export default function PatientCarnet({ onBack }: PatientCarnetProps) {
   // Liste chronologique, la plus récente en tête (v1 = liste ; courbe d'évolution = option ultérieure).
   const triees = [...entries].sort((a, b) => (a.dateHeure < b.dateHeure ? 1 : -1));
 
+  // Synthèse « mes moments à risque » (S5, plans/recette-outils-2026-08, gate G-carnet) : la
+  // liste seule ne tenait pas la promesse du libellé d'intro. `null` tant que le volume de
+  // saisies (7 jours glissants) est trop faible pour qu'un agrégat ait du sens.
+  const synthese = syntheseCarnet(entries);
+
   return (
     <div className={styles.screen}>
       <button type="button" className={`btn btn--ghost ${styles.back}`} onClick={onBack}>
@@ -179,6 +181,32 @@ export default function PatientCarnet({ onBack }: PatientCarnetProps) {
           )}
         </div>
       </form>
+
+      {synthese && (
+        <div className={`${styles.synthese} card`} aria-live="polite">
+          <p className={styles.syntheseTitre}>Vos tendances — 7 derniers jours</p>
+          <p className={styles.syntheseTotal}>
+            {synthese.total7Jours} consommation{synthese.total7Jours > 1 ? 's' : ''} notée
+            {synthese.total7Jours > 1 ? 's' : ''}.
+          </p>
+          <div className={styles.syntheseTranches}>
+            {TRANCHE_ORDER.map((tranche) => (
+              <div key={tranche} className={styles.trancheItem}>
+                <span className={styles.trancheLabel}>{TRANCHE_LABELS[tranche]}</span>
+                <span className={styles.trancheValeur}>{synthese.parTranche[tranche]}</span>
+              </div>
+            ))}
+          </div>
+          {synthese.topContextes.length > 0 && (
+            <p className={styles.syntheseContextes}>
+              Contextes les plus fréquents :{' '}
+              {synthese.topContextes
+                .map((c) => `${c.libelle} (${c.count})`)
+                .join(' · ')}
+            </p>
+          )}
+        </div>
+      )}
 
       <div className={styles.listHead}>
         <span className={styles.listTitle}>Historique</span>
