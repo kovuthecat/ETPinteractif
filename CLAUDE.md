@@ -30,7 +30,7 @@ npx tsc -b --noEmit
 - Variables d'environnement : aucune (application 100% statique, sans backend).
 - Ne jamais committer de secret (`.env`, clés, tokens) — non applicable ici en l'état (aucun `.env`).
 
-@C:\Users\kovu\SynologyDrive\Thibault\Projets\Templates\CLAUDE-BASE.md
+<!-- Règles communes injectées à chaque session par le plugin `workflow` (hook SessionStart) — ne pas les recopier ici. -->
 
 ## Règles spécifiques au projet
 
