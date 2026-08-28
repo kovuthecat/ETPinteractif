@@ -37,6 +37,8 @@ npx tsc -b --noEmit
 ### À lire avant une tâche importante
 
 - `PROJECT_BRIEF.md` (objectif, périmètre, contraintes) · `DECISIONS.md` (décisions structurantes)
+- Collecte de preuve pour un contenu médical : dérouler le skill **`recherche-preuve-etp`**. Usage
+  du CLI Interface-OE (OpenEvidence en ligne de commande) : `docs/OUTIL-INTERFACE-OE.md`.
 - `PROJECT_MAP.md` (localisation des modules) · contenu médical par thème, autorité du contenu : `docs/contenu-modules-tabac.md` (thème tabac, fichier unique) · `docs/diabete/` (thème diabète, un fichier par module + `00-global.md` pour la grammaire commune — évite un fichier unique démesuré)
 
 ### Invariants non négociables
