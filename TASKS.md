@@ -37,6 +37,8 @@ Modèles/efforts : `WORKFLOW.md` §2-3. `env: Desktop` si la tâche exige le nav
 - [ ] T-U8 — Fonctionnel diabète/cardio : Suivi (fréquences, statut unique, station groupée), nom de molécule libre qui reçoit un effet (invariant 5), résultats sous le pli, analyse d'assiette incohérente, régularité en image seule, zones qui se chevauchent : 16 majeurs ; les 2 écarts texte/courbe des insulines (#c-4-58 #c-4-59) d'abord arbitrés par Thibault → #c-4-40 #c-4-41 #c-4-42 #c-4-43 #c-4-46 #c-4-47 #c-4-14 #c-4-17 #c-6-2 #c-6-13 #c-6-14 #c-6-21 #c-6-22 #c-6-23 · modèle: Sonnet, effort: high · env: Desktop
 - [ ] T-U9 — App patient : précédent qui quitte l'app, « cf. titration » sans écran, tirelire qui arrondit 6,5 et persiste la valeur fausse, récompense effacée à la réouverture (dev, StrictMode — vérifier en build de prod), pas d'effacement des outils, boutons du carnet au même nom, édition hors écran : 7 majeurs → #c-7-2 #c-7-3 #c-7-12 #c-7-18 #c-8-1 #c-8-2 #c-8-3 · modèle: Sonnet, effort: medium · env: Desktop
 
+- [ ] T-C1 — Recalibrer les courbes nicotine/tension et glycémie selon le propos arrêté (yo-yo en Manque, pas de Surdosage du fumeur, titration nette, ajouts nets, basale hors cible, bande 180 mg/dL, activité) → `docs/revues/2026-10-06-courbes.md` · `/cadrer` puis `/nouveau-plan` · modèle: Opus, effort: high
+
 ## Backlog (Phases suivantes — non cadré)
 
 - [ ] Thème diabète : finaliser le cadrage des modules 5-8 (`docs/diabete/`) avant transmission à
