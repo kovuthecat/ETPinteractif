@@ -1,7 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import type { ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import QRBlock from './QRBlock';
+import { useModalFocus } from './useModalFocus';
 import styles from './FicheOverlay.module.css';
 
 interface FicheOverlayProps {
@@ -18,27 +19,16 @@ interface FicheOverlayProps {
  * Composant agnostique du thème : aucun contenu en dur, tout vient des props.
  */
 export default function FicheOverlay({ eyebrow, titre, footer, onClose, children }: FicheOverlayProps) {
-  const fermerRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    fermerRef.current?.focus();
-  }, []);
-
-  useEffect(() => {
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
-        onClose();
-      }
-    }
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const feuilleRef = useRef<HTMLDivElement>(null);
+  useModalFocus(overlayRef, { open: true, onClose, initialFocus: feuilleRef });
 
   const dateDuJour = new Date().toLocaleDateString('fr-FR', { dateStyle: 'long' });
 
   return createPortal(
     <div
       className={`fiche-overlay ${styles.overlay}`}
+      ref={overlayRef}
       role="dialog"
       aria-modal="true"
       aria-label={titre}
@@ -48,7 +38,7 @@ export default function FicheOverlay({ eyebrow, titre, footer, onClose, children
         }
       }}
     >
-      <div className={`fiche-sheet ${styles.sheet}`}>
+      <div className={`fiche-sheet ${styles.sheet}`} ref={feuilleRef} tabIndex={0} aria-label={titre}>
         <header className={styles.header}>
           <span className={`eyebrow ${styles.eyebrow}`}>{eyebrow}</span>
           <h2 className={styles.titre}>{titre}</h2>
@@ -65,7 +55,7 @@ export default function FicheOverlay({ eyebrow, titre, footer, onClose, children
         <button type="button" className="btn btn--primary" onClick={() => window.print()}>
           Imprimer
         </button>
-        <button type="button" className="btn btn--ghost" ref={fermerRef} onClick={onClose}>
+        <button type="button" className="btn btn--ghost" onClick={onClose}>
           Fermer
         </button>
       </div>
