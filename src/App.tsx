@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { THEMES } from './features/registry';
 import type { ModuleId, ThemeId } from './features/types';
 import ThemeSelector from './components/ThemeSelector';
@@ -18,6 +18,33 @@ function App() {
   const [history, setHistory] = useState<View[]>([initialView]);
 
   const currentView = history[history.length - 1];
+
+  // Point unique : titre de page, retour en haut et focus sur le h1 à chaque changement de vue.
+  const firstRender = useRef(true);
+  useEffect(() => {
+    const marque = 'ETP interactif';
+    let titre = `Choisir un thème — ${marque}`;
+    if (currentView.type !== 'themes') {
+      const theme = THEMES.find((t) => t.id === currentView.themeId);
+      if (theme) {
+        titre =
+          currentView.type === 'home'
+            ? `${theme.titre} — ${marque}`
+            : `${theme.modules.find((m) => m.id === currentView.moduleId)?.titre ?? 'Module'} — ${theme.titre} — ${marque}`;
+      }
+    }
+    document.title = titre;
+    window.scrollTo(0, 0);
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    const h1 = document.querySelector('h1');
+    if (h1) {
+      h1.setAttribute('tabindex', '-1');
+      h1.focus({ preventScroll: true });
+    }
+  }, [currentView]);
 
   const navigateToTheme = (themeId: ThemeId) => {
     setHistory([...history, { type: 'home', themeId }]);
@@ -65,7 +92,11 @@ function App() {
     if (!theme) return null;
     const inner =
       currentView.type === 'home' ? (
-        <Home theme={theme} onNavigate={navigateToModule} />
+        <Home
+          theme={theme}
+          onNavigate={navigateToModule}
+          onChangeTheme={history.length > 1 ? handleBack : undefined}
+        />
       ) : (
         renderModule(theme, currentView)
       );

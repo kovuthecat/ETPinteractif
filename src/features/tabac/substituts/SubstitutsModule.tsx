@@ -80,7 +80,7 @@ export default function SubstitutsModule(_props: ModuleProps) {
         {formeData && (
           <div className={styles.panels}>
             <div className={`${styles.panel} ${styles.panelBonnes}`}>
-              <h3 className={styles.panelTitle}>Bonnes pratiques — {formeData.label}</h3>
+              <h2 className={styles.panelTitle}>Bonnes pratiques — {formeData.label}</h2>
               <ul className={styles.panelList}>
                 {formeData.bonnesPratiques.map((item, idx) => (
                   <li key={idx}>{item}</li>
@@ -88,7 +88,7 @@ export default function SubstitutsModule(_props: ModuleProps) {
               </ul>
             </div>
             <div className={`${styles.panel} ${styles.panelErreurs}`}>
-              <h3 className={styles.panelTitle}>Erreurs fréquentes</h3>
+              <h2 className={styles.panelTitle}>Erreurs fréquentes</h2>
               <ul className={styles.panelList}>
                 {formeData.erreurs.map((item, idx) => (
                   <li key={idx}>{item}</li>
