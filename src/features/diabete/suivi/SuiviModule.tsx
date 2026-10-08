@@ -29,6 +29,7 @@ import {
 } from './logic';
 import type { ExamId, ProtectsId, Status, ConsultConfig, ExamConfig } from './logic';
 import styles from './SuiviModule.module.css';
+import { useTabsKeyboard } from '../../../components/useTabsKeyboard';
 
 // Le corps SVG partagé (S3, frozen) n'expose que 8 ancres nommées, calées sur les organes
 // du module 5 — « vaisseaux », « bouche » et « défenses immunitaires » (module 6 uniquement)
@@ -221,6 +222,11 @@ export default function SuiviModule({ shell }: ModuleProps) {
 
   const [state, dispatch] = useReducer(reducer, currentMonth, initSuiviState);
   const [ficheOpen, setFicheOpen] = useState(false);
+  const { getTabProps } = useTabsKeyboard({
+    count: 2,
+    selected: state.temps === 'parcours' ? 0 : 1,
+    onSelect: (i) => dispatch({ type: 'SET_TEMPS', temps: i === 0 ? 'parcours' : 'fiche' }),
+  });
 
   const consultMonths = computeConsultMonths(state.consultConfig);
   const annualN = Math.round(12 / state.consultConfig.interval);
@@ -361,8 +367,7 @@ export default function SuiviModule({ shell }: ModuleProps) {
     <div className={styles.tabs} role="tablist" aria-label="Étapes du module Suivi">
       <button
         type="button"
-        role="tab"
-        aria-selected={state.temps === 'parcours'}
+        {...getTabProps(0)}
         className={state.temps === 'parcours' ? `${styles.tab} ${styles.tabActive}` : styles.tab}
         onClick={() => dispatch({ type: 'SET_TEMPS', temps: 'parcours' })}
       >
@@ -370,8 +375,7 @@ export default function SuiviModule({ shell }: ModuleProps) {
       </button>
       <button
         type="button"
-        role="tab"
-        aria-selected={state.temps === 'fiche'}
+        {...getTabProps(1)}
         className={state.temps === 'fiche' ? `${styles.tab} ${styles.tabActive}` : styles.tab}
         onClick={() => {
           dispatch({ type: 'SET_TEMPS', temps: 'fiche' });

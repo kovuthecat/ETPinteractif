@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
 import type { ModuleProps } from '../../types';
 import ModuleShell from '../../../components/ModuleShell';
 import FicheOverlay from '../../../components/FicheOverlay';
@@ -12,6 +11,7 @@ import CourbeGlycemie, {
 } from '../components/CourbeGlycemie';
 import { sampleRecuperation, toSvgPath, LEVEL_MAX, BANDE_CIBLE_DEFAUT } from '../lib/glycemieCurve';
 import styles from './HypoglycemieModule.module.css';
+import { useTabsKeyboard } from '../../../components/useTabsKeyboard';
 
 /**
  * Module 8 — Hypoglycémie (plan theme-diabete/S11.md). Panneau de sortie de secours,
@@ -82,19 +82,17 @@ function signeIllustrationId(label: string): string {
   return `signe-${slugify(label)}`;
 }
 
-function handleTabsKeyDown(e: ReactKeyboardEvent<HTMLButtonElement>, index: number, onSelect: (n: Temps) => void) {
-  if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
-  e.preventDefault();
-  const nextIndex = (index + (e.key === 'ArrowRight' ? 1 : -1) + TEMPS_TABS.length) % TEMPS_TABS.length;
-  onSelect(TEMPS_TABS[nextIndex].n);
-}
-
 export default function HypoglycemieModule({ shell }: ModuleProps) {
   const [temps, setTemps] = useState<Temps>(1);
   const [signes, setSignes] = useState<Record<string, boolean>>({});
   const [resucrage, setResucrage] = useState<string>('comprimes');
   const [showOvershoot, setShowOvershoot] = useState(false);
   const [ficheOpen, setFicheOpen] = useState(false);
+  const { getTabProps } = useTabsKeyboard({
+    count: TEMPS_TABS.length,
+    selected: TEMPS_TABS.findIndex((t) => t.n === temps),
+    onSelect: (i) => setTemps(TEMPS_TABS[i].n),
+  });
 
   function toggleSigne(signe: string) {
     setSignes((prev) => ({ ...prev, [signe]: !prev[signe] }));
@@ -178,14 +176,11 @@ export default function HypoglycemieModule({ shell }: ModuleProps) {
         <button
           key={tab.n}
           type="button"
-          role="tab"
+          {...getTabProps(index)}
           id={`m8-tab-${tab.n}`}
-          aria-selected={temps === tab.n}
           aria-controls={`m8-panel-${tab.n}`}
-          tabIndex={temps === tab.n ? 0 : -1}
           className={temps === tab.n ? `${styles.tab} ${styles.tabActive}` : styles.tab}
           onClick={() => setTemps(tab.n)}
-          onKeyDown={(e) => handleTabsKeyDown(e, index, setTemps)}
         >
           {tab.label}
         </button>

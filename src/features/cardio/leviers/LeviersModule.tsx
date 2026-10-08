@@ -3,6 +3,7 @@ import { Wine } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import ModuleShell from '../../../components/ModuleShell';
 import styles from './LeviersModule.module.css';
+import { useTabsKeyboard } from '../../../components/useTabsKeyboard';
 
 /**
  * Module 9 — « Les autres leviers » (alcool · sommeil/apnées · stress), C15,
@@ -51,17 +52,21 @@ const VOLETS: { id: Volet; label: string }[] = [
 
 export default function LeviersModule({ shell }: ModuleProps) {
   const [volet, setVolet] = useState<Volet>('alcool');
+  const { getTabProps } = useTabsKeyboard({
+    count: VOLETS.length,
+    selected: VOLETS.findIndex((v) => v.id === volet),
+    onSelect: (i) => setVolet(VOLETS[i].id),
+  });
 
   if (!shell) return null;
 
   const nav = (
     <div className={styles.tabs} role="tablist" aria-label="Les trois leviers">
-      {VOLETS.map((v) => (
+      {VOLETS.map((v, index) => (
         <button
           key={v.id}
           type="button"
-          role="tab"
-          aria-selected={volet === v.id}
+          {...getTabProps(index)}
           className={`${styles.tab}${volet === v.id ? ` ${styles.tabActive}` : ''}`}
           onClick={() => setVolet(v.id)}
         >

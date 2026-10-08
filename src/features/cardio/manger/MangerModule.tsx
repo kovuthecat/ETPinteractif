@@ -31,6 +31,7 @@ import {
 } from './data';
 import { analyseAssietteVide, analyseEquilibreAssiette } from '../lib/analyseAssiette';
 import styles from './MangerModule.module.css';
+import { useTabsKeyboard } from '../../../components/useTabsKeyboard';
 
 /**
  * Module 8 — « Manger pour ses artères » (C14, plans/theme-cardio-2026-07/S10.md ; moule onglets
@@ -236,6 +237,11 @@ function RepereCard({ repere, selected, onSelect }: RepereCardProps) {
 
 export default function MangerModule({ shell }: ModuleProps) {
   const [onglet, setOnglet] = useState<Onglet>('familles');
+  const { getTabProps } = useTabsKeyboard({
+    count: ONGLETS.length,
+    selected: ONGLETS.findIndex((o) => o.id === onglet),
+    onSelect: (i) => setOnglet(ONGLETS[i].id),
+  });
   const [repereSelectionne, setRepereSelectionne] = useState<string | null>(null);
   // Garde-manger à chips de catégorie (même patron que le module diabète, `AlimentationModule`
   // `familyTabs`) — 49 aliments ne tiennent plus en une colonne empilée lisible (correction
@@ -471,12 +477,11 @@ export default function MangerModule({ shell }: ModuleProps) {
 
   const nav = (
     <div className={styles.tabs} role="tablist" aria-label="Familles d'aliments et assiette">
-      {ONGLETS.map((o) => (
+      {ONGLETS.map((o, index) => (
         <button
           key={o.id}
           type="button"
-          role="tab"
-          aria-selected={onglet === o.id}
+          {...getTabProps(index)}
           className={`${styles.tab}${onglet === o.id ? ` ${styles.tabActive}` : ''}`}
           onClick={() => setOnglet(o.id)}
         >

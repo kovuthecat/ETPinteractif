@@ -20,6 +20,7 @@ import {
 } from '../lib/glycemieCurve';
 import { ACTIVITIES, RAYONS, ACT_MIN_STEP, ACT_MIN_FLOOR, ACT_MIN_CEIL, type RayonId } from './data';
 import styles from './ActiviteModule.module.css';
+import { useTabsKeyboard } from '../../../components/useTabsKeyboard';
 
 /**
  * Module 3 — Activité physique (plan `theme-diabete/S6.md`, D6). Trois temps, portage
@@ -97,6 +98,11 @@ function formatMg(level: number): string {
 
 export default function ActiviteModule({ shell }: ModuleProps) {
   const [temps, setTemps] = useState<Temps>(1);
+  const tempsTabs = useTabsKeyboard({
+    count: TEMPS_TABS.length,
+    selected: TEMPS_TABS.findIndex((t) => t.n === temps),
+    onSelect: (i) => setTemps(TEMPS_TABS[i].n),
+  });
 
   // Temps ① — rayonnement
   const [t1Active, setT1Active] = useState<RayonId | 'all' | null>(null);
@@ -111,6 +117,11 @@ export default function ActiviteModule({ shell }: ModuleProps) {
 
   // Temps ③ — timing
   const [regime, setRegime] = useState<'marche' | 'microcoupures'>('marche');
+  const regimeTabs = useTabsKeyboard({
+    count: 2,
+    selected: regime === 'marche' ? 0 : 1,
+    onSelect: (i) => setRegime(i === 0 ? 'marche' : 'microcoupures'),
+  });
   const [delay, setDelay] = useState(DELAY_DEFAUT);
   const [microChecked, setMicroChecked] = useState<Record<number, boolean>>({});
 
@@ -264,12 +275,11 @@ export default function ActiviteModule({ shell }: ModuleProps) {
 
   const navBar = (
     <div className={styles.tempsTabs} role="tablist" aria-label="Étape du module">
-      {TEMPS_TABS.map((t) => (
+      {TEMPS_TABS.map((t, index) => (
         <button
           key={t.n}
           type="button"
-          role="tab"
-          aria-selected={temps === t.n}
+          {...tempsTabs.getTabProps(index)}
           className={`${styles.tab} ${temps === t.n ? styles.tabActive : ''}`}
           onClick={() => setTemps(t.n)}
         >
@@ -485,8 +495,7 @@ export default function ActiviteModule({ shell }: ModuleProps) {
           <div className={styles.regimeTabs} role="tablist" aria-label="Régime de mouvement">
             <button
               type="button"
-              role="tab"
-              aria-selected={regime === 'marche'}
+              {...regimeTabs.getTabProps(0)}
               className={`${styles.tab} ${regime === 'marche' ? styles.tabActive : ''}`}
               onClick={() => setRegime('marche')}
             >
@@ -494,8 +503,7 @@ export default function ActiviteModule({ shell }: ModuleProps) {
             </button>
             <button
               type="button"
-              role="tab"
-              aria-selected={regime === 'microcoupures'}
+              {...regimeTabs.getTabProps(1)}
               className={`${styles.tab} ${regime === 'microcoupures' ? styles.tabActive : ''}`}
               onClick={() => setRegime('microcoupures')}
             >

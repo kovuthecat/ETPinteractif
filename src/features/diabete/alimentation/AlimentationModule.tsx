@@ -42,6 +42,7 @@ import {
   type Palier3,
 } from './data';
 import styles from './AlimentationModule.module.css';
+import { useTabsKeyboard } from '../../../components/useTabsKeyboard';
 
 /**
  * Module 2 — Alimentation (S5). Terrain de jeu : le garde-manger (gauche) alimente,
@@ -420,6 +421,11 @@ function CourbeSection({ courbes, onNavigateActivite, animerTrace }: CourbeSecti
 
 export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
   const [defi, setDefi] = useState<DefiId>(1);
+  const { getTabProps } = useTabsKeyboard({
+    count: DEFI_ORDER.length,
+    selected: DEFI_ORDER.indexOf(defi),
+    onSelect: (i) => setDefi(DEFI_ORDER[i]),
+  });
   const [gmFamily, setGmFamily] = useState(FAMILIES[0].id);
 
   // ── Progression douce (A2) — état éphémère, jamais persisté (perdu à la sortie du module). ──
@@ -850,13 +856,6 @@ export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
     else if (defi === 5) addToPlate(id);
   }
 
-  function handleTabKeyDown(e: ReactKeyboardEvent<HTMLButtonElement>, index: number) {
-    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
-    e.preventDefault();
-    const nextIndex = (index + (e.key === 'ArrowRight' ? 1 : -1) + DEFI_ORDER.length) % DEFI_ORDER.length;
-    setDefi(DEFI_ORDER[nextIndex]);
-  }
-
   // A2 · CTA « Défi suivant → » : jamais bloquant, les onglets restent tous cliquables
   // (invariant : aucun enchaînement forcé). N'apparaît jamais sur ★ (pas de « suivant »).
   const showNextCta = defi !== 5 && playedDefis.has(defi);
@@ -878,12 +877,9 @@ export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
           <button
             key={n}
             type="button"
-            role="tab"
-            aria-selected={defi === n}
-            tabIndex={defi === n ? 0 : -1}
+            {...getTabProps(index)}
             className={defi === n ? `${styles.tab} ${styles.tabActive}` : styles.tab}
             onClick={() => setDefi(n)}
-            onKeyDown={(e) => handleTabKeyDown(e, index)}
             aria-label={played ? `${DEFI_LABELS[n]} — défi joué` : undefined}
           >
             {DEFI_LABELS[n]}

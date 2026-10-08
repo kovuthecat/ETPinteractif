@@ -7,6 +7,7 @@ import { useSelection } from '../../../state/SelectionContext';
 import Dial from './Dial';
 import { MOTIVATION_SEED, iconForRaison } from './data';
 import styles from './MotivationModule.module.css';
+import { useTabsKeyboard } from '../../../components/useTabsKeyboard';
 
 const MOVE_THRESHOLD = 4;
 /** Déplacement clavier d'une carte du tableau, en % du tableau : flèche = 5, Maj + flèche = 15. */
@@ -141,12 +142,11 @@ export default function MotivationModule(_props: ModuleProps) {
     { id: 'raisons', label: 'Mes raisons' },
   ];
 
-  function handleTabKeyDown(e: ReactKeyboardEvent<HTMLButtonElement>, index: number) {
-    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
-    e.preventDefault();
-    const nextIndex = (index + (e.key === 'ArrowRight' ? 1 : -1) + onglets.length) % onglets.length;
-    setOnglet(onglets[nextIndex].id);
-  }
+  const { getTabProps } = useTabsKeyboard({
+    count: onglets.length,
+    selected: onglets.findIndex((o) => o.id === onglet),
+    onSelect: (i) => setOnglet(onglets[i].id),
+  });
 
   // ── Réserve → tableau ────────────────────────────────────────────────────
   function addToBoard(reserveId: number) {
@@ -249,14 +249,11 @@ export default function MotivationModule(_props: ModuleProps) {
           <button
             key={o.id}
             type="button"
-            role="tab"
+            {...getTabProps(index)}
             id={`tab-${o.id}`}
-            aria-selected={onglet === o.id}
             aria-controls={`panel-${o.id}`}
-            tabIndex={onglet === o.id ? 0 : -1}
             className={onglet === o.id ? `${styles.tab} ${styles.tabActive}` : styles.tab}
             onClick={() => setOnglet(o.id)}
-            onKeyDown={(e) => handleTabKeyDown(e, index)}
           >
             {o.label}
           </button>

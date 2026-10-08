@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
 import type { ModuleProps } from '../../types';
 import ModuleShell from '../../../components/ModuleShell';
 import CourbeGlycemie, {
@@ -19,6 +18,7 @@ import {
   type RepasParams,
 } from '../lib/glycemieCurve';
 import styles from './InsulineRapideModule.module.css';
+import { useTabsKeyboard } from '../../../components/useTabsKeyboard';
 
 /**
  * Module 10 — Insuline rapide (pré-prandial). Contenu : `docs/diabete/10-insuline-rapide.md`
@@ -44,13 +44,6 @@ const TEMPS_TABS: { n: Temps; label: string }[] = [
   // lignes est automatique si besoin, sans changement de code).
   { n: 5, label: '⑤ Et si je ne mange pas ?' },
 ];
-
-function handleTabsKeyDown(e: ReactKeyboardEvent<HTMLButtonElement>, index: number, onSelect: (n: Temps) => void) {
-  if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
-  e.preventDefault();
-  const nextIndex = (index + (e.key === 'ArrowRight' ? 1 : -1) + TEMPS_TABS.length) % TEMPS_TABS.length;
-  onSelect(TEMPS_TABS[nextIndex].n);
-}
 
 // --- Repère temporel commun aux 4 temps : repas fixé à t=0, domaine -60→+180 min (span 240),
 // ce qui aligne exactement l'étiquette « Repas » sur la 2ᵉ des 5 étiquettes d'axe. ---
@@ -346,6 +339,11 @@ function DoseSelector({ value, onChange }: { value: DoseNiveau; onChange: (n: Do
 
 export default function InsulineRapideModule({ onNavigate, shell }: ModuleProps) {
   const [temps, setTemps] = useState<Temps>(1);
+  const { getTabProps } = useTabsKeyboard({
+    count: TEMPS_TABS.length,
+    selected: TEMPS_TABS.findIndex((t) => t.n === temps),
+    onSelect: (i) => setTemps(TEMPS_TABS[i].n),
+  });
   const [repasId, setRepasId] = useState<RepasCranId>('moyen');
   const [delay, setDelay] = useState(T_INJECTION_DEFAUT);
   const [departId, setDepartId] = useState<DepartId>('cible');
@@ -488,14 +486,11 @@ export default function InsulineRapideModule({ onNavigate, shell }: ModuleProps)
         <button
           key={tab.n}
           type="button"
-          role="tab"
+          {...getTabProps(index)}
           id={`m10-tab-${tab.n}`}
-          aria-selected={temps === tab.n}
           aria-controls={`m10-panel-${tab.n}`}
-          tabIndex={temps === tab.n ? 0 : -1}
           className={temps === tab.n ? `${styles.tab} ${styles.tabActive}` : styles.tab}
           onClick={() => setTemps(tab.n)}
-          onKeyDown={(e) => handleTabsKeyDown(e, index, setTemps)}
         >
           {tab.label}
         </button>

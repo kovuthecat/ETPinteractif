@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
 import type { ModuleProps } from '../../types';
 import ModuleShell from '../../../components/ModuleShell';
 import FicheOverlay from '../../../components/FicheOverlay';
 import IllustrationSlot from '../components/IllustrationSlot';
 import styles from './AlerteModule.module.css';
+import { useTabsKeyboard } from '../../../components/useTabsKeyboard';
 
 /**
  * Module 10 — Reconnaître l'alerte (C16, plans/theme-cardio-2026-07/S12.md). Module de
@@ -97,20 +97,14 @@ const SIGNES_ATYPIQUES: Signe[] = [
   { id: 'infarctus-atypique-fatigue', titre: 'Fatigue', texte: 'Une fatigue intense, inhabituelle.' },
 ];
 
-function handleTabsKeyDown(
-  e: ReactKeyboardEvent<HTMLButtonElement>,
-  index: number,
-  onSelect: (o: Onglet) => void,
-) {
-  if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
-  e.preventDefault();
-  const nextIndex = (index + (e.key === 'ArrowRight' ? 1 : -1) + TABS.length) % TABS.length;
-  onSelect(TABS[nextIndex].id);
-}
-
 export default function AlerteModule({ shell }: ModuleProps) {
   const [onglet, setOnglet] = useState<Onglet>('vite');
   const [ficheOpen, setFicheOpen] = useState(false);
+  const { getTabProps } = useTabsKeyboard({
+    count: TABS.length,
+    selected: TABS.findIndex((t) => t.id === onglet),
+    onSelect: (i) => setOnglet(TABS[i].id),
+  });
 
   if (!shell) return null;
 
@@ -120,14 +114,11 @@ export default function AlerteModule({ shell }: ModuleProps) {
         <button
           key={tab.id}
           type="button"
-          role="tab"
+          {...getTabProps(index)}
           id={`m10-tab-${tab.id}`}
-          aria-selected={onglet === tab.id}
           aria-controls={`m10-panel-${tab.id}`}
-          tabIndex={onglet === tab.id ? 0 : -1}
           className={onglet === tab.id ? `${styles.tab} ${styles.tabActive}` : styles.tab}
           onClick={() => setOnglet(tab.id)}
-          onKeyDown={(e) => handleTabsKeyDown(e, index, setOnglet)}
         >
           {tab.label}
         </button>
