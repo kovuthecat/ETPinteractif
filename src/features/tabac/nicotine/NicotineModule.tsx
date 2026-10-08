@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useId, useMemo, useRef, useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { AlertTriangle, CheckCircle2, RotateCcw } from 'lucide-react';
 import type { ModuleProps } from '../../types';
@@ -102,6 +102,28 @@ function levelToY(level: number): number {
   return GY_BOT - (clamped / LEVEL_MAX) * GRAPH_H;
 }
 
+// Curseur clavier de la frise : pas de 15 min (Maj : 1 h), borné à [0, TIME_MAX].
+const KBD_STEP = 0.25;
+const KBD_STEP_BIG = 1;
+
+function stepCursor(t: number, direction: 1 | -1, big: boolean): number {
+  const next = t + direction * (big ? KBD_STEP_BIG : KBD_STEP);
+  return Math.max(0, Math.min(TIME_MAX, Math.round(next * 4) / 4));
+}
+
+/** 10.5 → « 10 h 30 » (forme annoncée et affichée pour le curseur clavier). */
+function formatClock(t: number): string {
+  const h = Math.floor(t);
+  const m = Math.round((t - h) * 60);
+  return `${h} h ${String(m).padStart(2, '0')}`;
+}
+
+const TOOL_NOUN: Record<NicotineEventType, { label: string; posed: string; removed: string }> = {
+  cigarette: { label: 'Cigarette', posed: 'posée', removed: 'retirée' },
+  patch: { label: 'Patch', posed: 'posé', removed: 'retiré' },
+  substitut: { label: 'Substitut', posed: 'posé', removed: 'retiré' },
+};
+
 function formatDose(dose: number): string {
   const n = Math.round(dose * 4);
   if (n % 4 === 0) return `×${n / 4}`;
@@ -140,6 +162,14 @@ export default function NicotineModule(_props: ModuleProps) {
   const [tool, setTool] = useState<NicotineEventType>('cigarette');
   const [markers, setMarkers] = useState<Marker[]>([]);
   const [hoverZone, setHoverZone] = useState<HoverZone | null>(null);
+  const [cursorTime, setCursorTime] = useState(0);
+  const [cursorShown, setCursorShown] = useState(false);
+  const [announce, setAnnounce] = useState({ text: '', n: 0 });
+  const hintId = useId();
+
+  function say(text: string) {
+    setAnnounce((prev) => ({ text, n: prev.n + 1 }));
+  }
 
   const events = useMemo(
     () => markers.map(({ type, time, dose }) => ({ type, time, dose })),
@@ -175,22 +205,54 @@ export default function NicotineModule(_props: ModuleProps) {
     return Math.round(t * 4) / 4;
   }
 
-  function handleGraphClick(e: React.MouseEvent<SVGSVGElement>) {
-    const time = timeFromClientX(e.clientX);
+  function placeMarker(time: number) {
     const dose = tool === 'patch' ? 1 : undefined;
     setMarkers((prev) => [...prev, { id: nextId.current++, type: tool, time, dose }]);
+    say(`${TOOL_NOUN[tool].label} ${TOOL_NOUN[tool].posed} à ${formatClock(time)}`);
+  }
+
+  function handleGraphClick(e: React.MouseEvent<SVGSVGElement>) {
+    placeMarker(timeFromClientX(e.clientX));
+  }
+
+  /** Clavier sur la frise elle-même (pas sur un repère ou un bouton qu'elle contient). */
+  function handleGraphKeyDown(e: React.KeyboardEvent<SVGSVGElement>) {
+    if (e.target !== e.currentTarget) return;
+    let next: number | null = null;
+    if (e.key === 'ArrowRight') next = stepCursor(cursorTime, 1, e.shiftKey);
+    else if (e.key === 'ArrowLeft') next = stepCursor(cursorTime, -1, e.shiftKey);
+    else if (e.key === 'Home') next = 0;
+    else if (e.key === 'End') next = TIME_MAX;
+    if (next !== null) {
+      e.preventDefault();
+      setCursorTime(next);
+      say(`Curseur à ${formatClock(next)}`);
+      return;
+    }
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      placeMarker(cursorTime);
+    }
+  }
+
+  /** Retire un repère ; au clavier, le focus revient à la frise (le repère disparaît). */
+  function deleteMarker(id: number, viaKeyboard: boolean) {
+    const m = markers.find((x) => x.id === id);
+    setMarkers((prev) => prev.filter((x) => x.id !== id));
+    if (m) say(`${TOOL_NOUN[m.type].label} ${TOOL_NOUN[m.type].removed} (${formatClock(m.time)})`);
+    if (viaKeyboard) svgRef.current?.focus();
   }
 
   function removeMarker(id: number, e: React.SyntheticEvent) {
     e.stopPropagation();
-    setMarkers((prev) => prev.filter((m) => m.id !== id));
+    deleteMarker(id, false);
   }
 
   function removeMarkerKey(id: number, e: React.KeyboardEvent) {
-    if (e.key === 'Enter' || e.key === ' ') {
+    if (e.key === 'Enter' || e.key === ' ' || e.key === 'Delete' || e.key === 'Backspace') {
       e.preventDefault();
       e.stopPropagation();
-      setMarkers((prev) => prev.filter((m) => m.id !== id));
+      deleteMarker(id, true);
     }
   }
 
@@ -210,8 +272,9 @@ export default function NicotineModule(_props: ModuleProps) {
   return (
     <div className={styles.module}>
       <p className={styles.consigne}>
-        Choisissez un outil, puis cliquez sur la frise pour placer un événement à cet instant. Observez comment
-        le taux de nicotine traverse les trois zones.
+        Choisissez un outil, puis cliquez sur la frise pour placer un événement à cet instant (au clavier :
+        Tab jusqu'à la frise, ← → pour régler l'heure, Entrée pour poser). Observez comment le taux de
+        nicotine traverse les trois zones.
       </p>
 
       <div className={styles.toolbar}>
@@ -242,9 +305,18 @@ export default function NicotineModule(_props: ModuleProps) {
           ref={svgRef}
           className={styles.graphSvg}
           viewBox={`0 0 ${VB_WIDTH} ${VB_HEIGHT}`}
-          role="img"
-          aria-label="Taux de nicotine sur 24 h selon les événements placés (échelle illustrative)"
+          role="group"
+          tabIndex={0}
+          aria-label="Frise de 24 h : taux de nicotine selon les événements placés (échelle illustrative)"
+          aria-describedby={hintId}
           onClick={handleGraphClick}
+          onKeyDown={handleGraphKeyDown}
+          onFocus={(e) => {
+            if (e.target === e.currentTarget) setCursorShown(true);
+          }}
+          onBlur={(e) => {
+            if (e.target === e.currentTarget) setCursorShown(false);
+          }}
         >
           <defs>
             <clipPath id="nicotinePlotClip">
@@ -281,6 +353,20 @@ export default function NicotineModule(_props: ModuleProps) {
               className={styles.guideLine}
             />
           ))}
+
+          {cursorShown && (
+            <g className={styles.kbdCursor} aria-hidden="true">
+              <line x1={timeToX(cursorTime)} y1={GY_TOP} x2={timeToX(cursorTime)} y2={MARKER_CY} />
+              <circle cx={timeToX(cursorTime)} cy={MARKER_CY} r={6} />
+              <text
+                x={timeToX(cursorTime)}
+                y={GY_TOP - 8}
+                textAnchor={cursorTime < 2 ? 'start' : cursorTime > 22 ? 'end' : 'middle'}
+              >
+                {formatClock(cursorTime)}
+              </text>
+            </g>
+          )}
 
           <g transform={`translate(${GX0},${GY_TOP})`}>
             {areaPath && <path d={areaPath} className={styles.curveArea} />}
@@ -505,7 +591,13 @@ export default function NicotineModule(_props: ModuleProps) {
           </div>
         )}
         </div>
-        <p className={styles.hint}>Cliquez sur un marqueur pour le retirer</p>
+        <p id={hintId} className={styles.hint}>
+          Cliquez sur un marqueur pour le retirer. Au clavier : ← → déplacent le curseur (Maj : 1 h), Entrée pose
+          l'outil choisi, Suppr retire le repère sélectionné.
+        </p>
+        <p className={styles.srOnly} role="status" aria-live="polite">
+          <span key={announce.n}>{announce.text}</span>
+        </p>
       </div>
 
       <p

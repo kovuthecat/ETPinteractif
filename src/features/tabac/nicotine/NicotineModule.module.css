@@ -58,6 +58,48 @@
   cursor: crosshair;
 }
 
+.graphSvg:focus-visible {
+  outline: 3px solid var(--color-nav);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+.kbdCursor line {
+  stroke: var(--color-nav);
+  stroke-width: 2.5;
+  pointer-events: none;
+}
+
+.kbdCursor circle {
+  fill: var(--color-nav);
+  stroke: #fff;
+  stroke-width: 2;
+  pointer-events: none;
+}
+
+.kbdCursor text {
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  fill: var(--color-nav);
+  paint-order: stroke;
+  stroke: #fff;
+  stroke-width: 3px;
+  pointer-events: none;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .sheen {
   pointer-events: none;
 }

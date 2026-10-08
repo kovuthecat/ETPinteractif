@@ -1,4 +1,4 @@
-import { useMemo, useState, type CSSProperties, type MouseEvent } from 'react';
+import { useId, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type MouseEvent } from 'react';
 import { Cigarette } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import { sampleTension, toSvgPath, TENSION_NONSMOKER, TENSION_TAU, TIME_MAX } from '../lib/nicotineCurve';
@@ -13,6 +13,22 @@ const MARKER_RADIUS = 11;
 const MARKER_Y = HEIGHT + 14;
 const HOUR_MARKS = [0, 6, 12, 18, 24];
 
+// Curseur clavier de la frise : pas de 15 min (Maj : 1 h), borné à [0, TIME_MAX].
+const KBD_STEP = 0.25;
+const KBD_STEP_BIG = 1;
+
+function stepCursor(t: number, direction: 1 | -1, big: boolean): number {
+  const next = t + direction * (big ? KBD_STEP_BIG : KBD_STEP);
+  return Math.max(0, Math.min(TIME_MAX, Math.round(next * 4) / 4));
+}
+
+/** 10.5 → « 10 h 30 » (forme annoncée et affichée pour le curseur clavier). */
+function formatClock(t: number): string {
+  const h = Math.floor(t);
+  const m = Math.round((t - h) * 60);
+  return `${h} h ${String(m).padStart(2, '0')}`;
+}
+
 function timeToX(t: number): number {
   return (t / TIME_MAX) * WIDTH;
 }
@@ -24,6 +40,15 @@ function levelToY(level: number): number {
 export default function SoulagementModule(_props: ModuleProps) {
   const [cigTimes, setCigTimes] = useState<number[]>([]);
   const [compare, setCompare] = useState(false);
+  const [cursorTime, setCursorTime] = useState(0);
+  const [cursorShown, setCursorShown] = useState(false);
+  const [announce, setAnnounce] = useState({ text: '', n: 0 });
+  const svgRef = useRef<SVGSVGElement>(null);
+  const hintId = useId();
+
+  function say(text: string) {
+    setAnnounce((prev) => ({ text, n: prev.n + 1 }));
+  }
 
   const tensionValues = useMemo(() => sampleTension({ cigTimes, n: N }), [cigTimes]);
   const tensionPath = useMemo(
@@ -58,12 +83,53 @@ export default function SoulagementModule(_props: ModuleProps) {
     const rect = event.currentTarget.getBoundingClientRect();
     const ratio = (event.clientX - rect.left) / rect.width;
     const t = (Math.round(Math.min(1, Math.max(0, ratio)) * TIME_MAX * 4) / 4) as number;
+    addCigarette(t);
+  }
+
+  function addCigarette(t: number) {
     setCigTimes((prev) => [...prev, t]);
+    say(`Cigarette posée à ${formatClock(t)}`);
+  }
+
+  /** Clavier sur la frise elle-même (pas sur un repère qu'elle contient). */
+  function handleGraphKeyDown(event: KeyboardEvent<SVGSVGElement>) {
+    if (event.target !== event.currentTarget) return;
+    let next: number | null = null;
+    if (event.key === 'ArrowRight') next = stepCursor(cursorTime, 1, event.shiftKey);
+    else if (event.key === 'ArrowLeft') next = stepCursor(cursorTime, -1, event.shiftKey);
+    else if (event.key === 'Home') next = 0;
+    else if (event.key === 'End') next = TIME_MAX;
+    if (next !== null) {
+      event.preventDefault();
+      setCursorTime(next);
+      say(`Curseur à ${formatClock(next)}`);
+      return;
+    }
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      addCigarette(cursorTime);
+    }
+  }
+
+  /** Retire un repère ; au clavier, le focus revient à la frise (le repère disparaît). */
+  function deleteCigarette(index: number, viaKeyboard: boolean) {
+    const t = cigTimes[index];
+    setCigTimes((prev) => prev.filter((_, i) => i !== index));
+    if (t !== undefined) say(`Cigarette retirée (${formatClock(t)})`);
+    if (viaKeyboard) svgRef.current?.focus();
   }
 
   function removeCigaretteAt(index: number, event: MouseEvent<SVGGElement>) {
     event.stopPropagation();
-    setCigTimes((prev) => prev.filter((_, i) => i !== index));
+    deleteCigarette(index, false);
+  }
+
+  function removeCigaretteKey(index: number, event: KeyboardEvent<SVGGElement>) {
+    if (event.key === 'Enter' || event.key === ' ' || event.key === 'Delete' || event.key === 'Backspace') {
+      event.preventDefault();
+      event.stopPropagation();
+      deleteCigarette(index, true);
+    }
   }
 
   function reset() {
@@ -74,7 +140,8 @@ export default function SoulagementModule(_props: ModuleProps) {
     <div className={styles.module}>
       <p className={styles.intro}>
         Cliquez sur la frise pour « fumer une cigarette » : observez la tension liée au manque
-        chuter au creux, puis remonter. Cliquez sur un repère pour le retirer.
+        chuter au creux, puis remonter. Cliquez sur un repère pour le retirer. Au clavier : Tab jusqu'à
+        la frise, ← → pour régler l'heure, Entrée pour poser, Suppr sur un repère pour le retirer.
       </p>
 
       <div className={`callout ${styles.calloutText}`}>
@@ -85,10 +152,21 @@ export default function SoulagementModule(_props: ModuleProps) {
 
       <div className={styles.graphCard}>
         <svg
+          ref={svgRef}
           className={styles.graph}
           viewBox={`0 0 ${WIDTH} ${VIEW_HEIGHT}`}
-          aria-label="Schéma illustratif : cliquer sur la frise dépose une cigarette et fait chuter puis remonter la tension liée au manque. Cliquer sur un repère le retire. Comparer au non-fumeur superpose le niveau stable d'un non-fumeur, toujours sous le point le plus bas atteint par le fumeur."
+          role="group"
+          tabIndex={0}
+          aria-label="Frise de 24 h, schéma illustratif : poser une cigarette fait chuter puis remonter la tension liée au manque. Comparer au non-fumeur superpose le niveau stable d'un non-fumeur, toujours sous le point le plus bas atteint par le fumeur."
+          aria-describedby={hintId}
           onClick={addCigaretteAtClick}
+          onKeyDown={handleGraphKeyDown}
+          onFocus={(event) => {
+            if (event.target === event.currentTarget) setCursorShown(true);
+          }}
+          onBlur={(event) => {
+            if (event.target === event.currentTarget) setCursorShown(false);
+          }}
         >
           <text x={4} y={14} className={styles.axisTitle}>
             tension liée au manque ↑
@@ -143,13 +221,32 @@ export default function SoulagementModule(_props: ModuleProps) {
 
           <line x1={0} y1={HEIGHT} x2={WIDTH} y2={HEIGHT} className={styles.axisLine} />
 
+          {cursorShown && (
+            <g className={styles.kbdCursor} aria-hidden="true">
+              <line x1={timeToX(cursorTime)} y1={0} x2={timeToX(cursorTime)} y2={MARKER_Y} />
+              <circle cx={timeToX(cursorTime)} cy={MARKER_Y} r={5} />
+              <text
+                x={timeToX(cursorTime) + (cursorTime > 20 ? -8 : 8)}
+                y={HEIGHT - 8}
+                textAnchor={cursorTime > 20 ? 'end' : 'start'}
+              >
+                {formatClock(cursorTime)}
+              </text>
+            </g>
+          )}
+
           {cigTimes.map((t, i) => (
             <g
               key={i}
               transform={`translate(${timeToX(t)}, ${MARKER_Y})`}
               className={styles.marker}
+              role="button"
+              tabIndex={0}
+              aria-label={`Retirer : cigarette à ${formatClock(t)}`}
               onClick={(event) => removeCigaretteAt(i, event)}
+              onKeyDown={(event) => removeCigaretteKey(i, event)}
             >
+              <rect x={-22} y={-22} width={44} height={44} fill="transparent" />
               <circle r={MARKER_RADIUS} className={styles.markerCircle} />
               <Cigarette size={14} x={-7} y={-7} className={styles.markerIcon} aria-hidden="true" />
             </g>
@@ -167,8 +264,12 @@ export default function SoulagementModule(_props: ModuleProps) {
             </text>
           ))}
         </svg>
-        <p className={styles.hint}>
-          Cliquez sur la frise pour ajouter une cigarette · cliquez un repère pour le retirer
+        <p id={hintId} className={styles.hint}>
+          Cliquez sur la frise pour ajouter une cigarette · cliquez un repère pour le retirer. Au clavier : ← →
+          déplacent le curseur (Maj : 1 h), Entrée pose, Suppr retire le repère sélectionné.
+        </p>
+        <p className={styles.srOnly} role="status" aria-live="polite">
+          <span key={announce.n}>{announce.text}</span>
         </p>
       </div>
 
