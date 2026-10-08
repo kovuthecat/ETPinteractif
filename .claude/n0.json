@@ -1,0 +1,7 @@
+{
+  "commandes": [
+    { "nom": "build", "cmd": "npm run build", "delaiMs": 300000 },
+    { "nom": "test", "cmd": "npx vitest run", "delaiMs": 300000 }
+  ],
+  "testCible": "npx vitest run {fichier}"
+}
