@@ -61,6 +61,17 @@ body {
   background: var(--color-bg);
 }
 
+/* Indicateur de focus clavier de base (WCAG 2.4.7) ; motif : InfoHover.module.css */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Cible de focus programmatique à chaque changement de vue (App.tsx) : pas un contrôle, pas d'anneau. */
+h1[tabindex='-1']:focus-visible {
+  outline: none;
+}
+
 h1,
 h2,
 h3 {

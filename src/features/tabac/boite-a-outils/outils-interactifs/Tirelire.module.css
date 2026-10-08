@@ -97,7 +97,8 @@
 }
 
 .champInput:focus-visible {
-  outline: none;
+  outline: 2px solid var(--color-nav);
+  outline-offset: 2px;
   border-color: var(--color-nav);
 }
 
@@ -194,7 +195,8 @@
 }
 
 .recompenseInput:focus-visible {
-  outline: none;
+  outline: 2px solid var(--color-nav);
+  outline-offset: 2px;
   border-color: var(--color-nav);
 }
 

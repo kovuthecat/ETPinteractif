@@ -106,7 +106,6 @@
 
 .zoneLabelHit {
   cursor: help;
-  outline: none;
 }
 
 .zoneLabelHit:focus-visible rect {
@@ -185,7 +184,6 @@
 
 .marker {
   cursor: pointer;
-  outline: none;
 }
 
 .marker:focus-visible circle {
@@ -210,7 +208,6 @@
 
 .doseBtn {
   cursor: pointer;
-  outline: none;
 }
 
 .doseBtn:focus-visible circle {

@@ -551,7 +551,6 @@
   height: 6px;
   border-radius: var(--radius-pill);
   background: var(--color-line);
-  outline: none;
 }
 
 .slider::-webkit-slider-thumb {

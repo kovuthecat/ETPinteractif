@@ -159,7 +159,8 @@
 }
 
 .paireInput:focus-visible {
-  outline: none;
+  outline: 2px solid var(--color-nav);
+  outline-offset: 2px;
   border-color: var(--color-nav);
 }
 
@@ -216,6 +217,7 @@
 }
 
 .ajoutInput:focus-visible {
-  outline: none;
+  outline: 2px solid var(--color-nav);
+  outline-offset: 2px;
   border-color: var(--color-nav);
 }
