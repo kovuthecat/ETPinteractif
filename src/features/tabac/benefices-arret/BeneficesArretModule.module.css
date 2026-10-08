@@ -227,6 +227,22 @@
   margin-top: var(--space-sm);
 }
 
+.horizonIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  height: 150px;
+  border-radius: var(--radius);
+  background: var(--color-confort-soft);
+  color: var(--color-confort);
+}
+
+/* Les halos décoratifs des hotspots ne captent pas le clic : le centre d'une zone active cette zone. */
+.silhouetteCol button::before {
+  pointer-events: none;
+}
+
 /* --- Détail de zone --- */
 
 .detailZone {

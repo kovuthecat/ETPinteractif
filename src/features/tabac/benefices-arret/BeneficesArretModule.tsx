@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Sunrise } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import SilhouetteCorps, { type SilhouetteZone } from '../../../components/SilhouetteCorps';
 import IllustrationSlot from '../components/IllustrationSlot';
@@ -156,7 +156,9 @@ export default function BeneficesArretModule(_props: ModuleProps) {
 
                 {jalonIndex === DERNIER_JALON_INDEX && (
                   <div className={styles.horizon}>
-                    <IllustrationSlot id="benef-horizon" label="L'horizon retrouvé" shape="rounded" size={150} />
+                    <span className={styles.horizonIcon} role="img" aria-label="L'horizon retrouvé">
+                      <Sunrise size={72} aria-hidden="true" />
+                    </span>
                   </div>
                 )}
               </div>

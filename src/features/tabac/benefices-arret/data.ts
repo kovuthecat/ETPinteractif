@@ -25,13 +25,13 @@ export interface ZoneDef {
 // (A4 : 20 min → 8h → 24h → 48h → 2 sem.–3 mois → 5 ans), pour que la page ET le livret
 // (qui itère `ZONES`, cf. livretSections.tsx) présentent les zones dans cet ordre.
 export const ZONES: ZoneDef[] = [
-  { id: 'coeur', label: 'Cœur', x: 47, y: 26, r: 26, illustrationLabel: 'Cœur soulagé' },
+  { id: 'coeur', label: 'Cœur', x: 47, y: 26, r: 24, illustrationLabel: 'Cœur soulagé' },
   { id: 'sang', label: 'Sang & vaisseaux', x: 33, y: 40, r: 22, illustrationLabel: 'Sang mieux oxygéné' },
-  { id: 'poumons', label: 'Poumons', x: 55, y: 23, r: 26, illustrationLabel: 'Poumons qui respirent' },
-  { id: 'bouche', label: 'Goût & odorat', x: 50, y: 13, r: 22, illustrationLabel: 'Goût et odorat retrouvés' },
+  { id: 'poumons', label: 'Poumons', x: 55, y: 23, r: 22, illustrationLabel: 'Poumons qui respirent' },
+  { id: 'bouche', label: 'Goût & odorat', x: 50, y: 14, r: 22, illustrationLabel: 'Goût et odorat retrouvés' },
   { id: 'peau', label: 'Peau', x: 67, y: 45, r: 22, illustrationLabel: 'Peau qui s’éclaircit' },
   { id: 'jambes', label: 'Jambes & circulation', x: 46, y: 66, r: 30, illustrationLabel: 'Jambes qui repartent' },
-  { id: 'cerveau', label: 'Cerveau', x: 50, y: 7, r: 24, illustrationLabel: 'Cerveau apaisé' },
+  { id: 'cerveau', label: 'Cerveau', x: 50, y: 6, r: 22, illustrationLabel: 'Cerveau apaisé' },
 ];
 
 export const ZONES_BY_ID: Record<ZoneId, ZoneDef> = Object.fromEntries(
