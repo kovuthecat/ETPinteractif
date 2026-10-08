@@ -91,8 +91,19 @@ export const CLASSES: ClasseTraitement[] = [
   },
 ];
 
-export function classById(id: string): ClasseTraitement {
-  return CLASSES.find((c) => c.id === id) ?? CLASSES[0];
+/** Classe correspondant à un identifiant ; `undefined` tant qu'aucune classe n'est choisie (ou si l'id est inconnu). */
+export function classById(id: string): ClasseTraitement | undefined {
+  return CLASSES.find((c) => c.id === id);
+}
+
+/**
+ * Sujet affiché au-dessus du message d'effet : la **classe** choisie, jamais le texte libre de la
+ * molécule (invariant 5 : aucune affirmation thérapeutique accolée à un nom non reconnu).
+ * `null` tant qu'aucune classe n'est choisie : aucun effet.
+ */
+export function effetDeClasse(classId: string): { sujet: string; message: string } | null {
+  const cls = classById(classId);
+  return cls ? { sujet: cls.label, message: cls.message } : null;
 }
 
 export interface Ligne {
@@ -102,7 +113,8 @@ export interface Ligne {
 }
 
 let ligneUid = 0;
-export function newLigne(molecule: string, classId: string): Ligne {
+/** `classId` vide = aucune classe choisie : rien n'est présélectionné. */
+export function newLigne(molecule: string, classId = ''): Ligne {
   ligneUid += 1;
   return { uid: `l${ligneUid}`, molecule, classId };
 }

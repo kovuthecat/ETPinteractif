@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { Clock, Info, KeyRound, LifeBuoy, Lock, Plus, Syringe, X } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import ModuleShell from '../../../components/ModuleShell';
 import Silhouette from '../components/Silhouette';
 import type { SilhouetteZoneState, ZoneId as SilhouetteZoneId } from '../components/Silhouette';
-import { CLASSES, ZONE_MSG, classById, lignesInitiales, newLigne, type Ligne, type ZoneTraitementId } from './data';
+import { CLASSES, classById, lignesInitiales, newLigne, phraseEffet, type Ligne, type ZoneTraitementId } from './data';
 import styles from './TraitementsModule.module.css';
 
 /**
@@ -63,7 +63,19 @@ export default function TraitementsModule({ onNavigate, shell }: ModuleProps) {
   const [selectedUid, setSelectedUid] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('line');
 
-  const addLigne = () => setLignes((prev) => [...prev, newLigne('', 'metformine')]);
+  // Panneau d'effet : après « Voir l'effet » (ou la vue d'ensemble), on le ramène dans la vue et on y pose le focus.
+  const panelRef = useRef<HTMLDivElement>(null);
+  const [panelPing, setPanelPing] = useState(0);
+  useEffect(() => {
+    if (panelPing === 0) return;
+    const el = panelRef.current;
+    if (!el) return;
+    if (typeof el.scrollIntoView === 'function') el.scrollIntoView({ block: 'nearest' });
+    el.focus({ preventScroll: true });
+  }, [panelPing]);
+
+  // Aucune classe présélectionnée : le patient (ou le soignant) la choisit, rien n'est présumé.
+  const addLigne = () => setLignes((prev) => [...prev, newLigne('')]);
   const removeLigne = (uid: string) => setLignes((prev) => prev.filter((l) => l.uid !== uid));
   const changeMolecule = (uid: string, molecule: string) =>
     setLignes((prev) => prev.map((l) => (l.uid === uid ? { ...l, molecule } : l)));
@@ -72,13 +84,16 @@ export default function TraitementsModule({ onNavigate, shell }: ModuleProps) {
   const selectLigne = (uid: string) => {
     setViewMode('line');
     setSelectedUid((current) => (current === uid ? null : uid));
+    if (selectedUid !== uid) setPanelPing((n) => n + 1);
   };
   const showAll = () => {
     setViewMode('all');
     setSelectedUid(null);
+    setPanelPing((n) => n + 1);
   };
 
-  const presentes = lignes.filter((l) => l.molecule.trim() !== '');
+  // L'effet dépend de la classe choisie, jamais du nom libre : le nom n'est qu'un libellé d'ordonnance.
+  const presentes = lignes.filter((l) => classById(l.classId));
   const selectedLigne = selectedUid ? (lignes.find((l) => l.uid === selectedUid) ?? null) : null;
 
   // RP4d : la classe (menu déroulant, toujours renseignée — cf. `newLigne`/`data.ts` : « la zone
@@ -89,9 +104,9 @@ export default function TraitementsModule({ onNavigate, shell }: ModuleProps) {
   // s'affiche réellement.
   const litZones: Record<ZoneTraitementId, boolean> = { sucre: false, coeur: false, reins: false };
   if (viewMode === 'all') {
-    presentes.forEach((l) => classById(l.classId).zones.forEach((z) => (litZones[z] = true)));
+    presentes.forEach((l) => classById(l.classId)?.zones.forEach((z) => (litZones[z] = true)));
   } else if (selectedLigne) {
-    classById(selectedLigne.classId).zones.forEach((z) => (litZones[z] = true));
+    classById(selectedLigne.classId)?.zones.forEach((z) => (litZones[z] = true));
   }
 
   const silhouetteZones: SilhouetteZoneState[] = [
@@ -107,19 +122,15 @@ export default function TraitementsModule({ onNavigate, shell }: ModuleProps) {
   let badgeMultiFronts = false;
   if (viewMode === 'all') {
     if (presentes.length === 0) {
-      sideText = 'Écrivez au moins une molécule pour voir la carte de protection.';
+      sideText = 'Choisissez au moins une classe pour voir la carte de protection.';
     } else {
       sideText = "Toutes les zones que défend l'ordonnance complète, allumées ensemble.";
-      badgeMultiFronts = presentes.some((l) => classById(l.classId).zones.length >= 2);
+      badgeMultiFronts = presentes.some((l) => (classById(l.classId)?.zones.length ?? 0) >= 2);
     }
   } else if (selectedLigne) {
-    const cls = classById(selectedLigne.classId);
-    const phrases = cls.zones.map((z) => ZONE_MSG[z]);
-    // Nom de molécule optionnel (RP4d) : à défaut de saisie, le libellé de la classe sert de
-    // sujet à la phrase, pour rester grammaticalement correct sans molécule renseignée.
-    const sujet = selectedLigne.molecule.trim() || cls.label;
-    sideText = `${sujet} ${phrases.join(' Elle ')}`;
-    badgeMultiFronts = cls.zones.length >= 2;
+    // Sans classe choisie : aucun effet. Avec : la phrase parle de la classe, jamais du texte libre.
+    sideText = phraseEffet(selectedLigne.classId);
+    badgeMultiFronts = (classById(selectedLigne.classId)?.zones.length ?? 0) >= 2;
   } else {
     sideText = null;
   }
@@ -189,20 +200,24 @@ export default function TraitementsModule({ onNavigate, shell }: ModuleProps) {
                         onChange={(e) => changeClasse(l.uid, e.target.value)}
                         aria-label={`Classe de la ligne ${i + 1}`}
                       >
+                        <option value="">Choisir une classe…</option>
                         {CLASSES.map((opt) => (
                           <option key={opt.id} value={opt.id}>
                             {opt.label}
                           </option>
                         ))}
                       </select>
-                      <span className={styles.freq}>
-                        <Clock size={14} aria-hidden="true" />
-                        {cls.freq}
-                      </span>
+                      {cls && (
+                        <span className={styles.freq}>
+                          <Clock size={14} aria-hidden="true" />
+                          {cls.freq}
+                        </span>
+                      )}
                     </div>
                   </div>
 
                   <div className={styles.ligneBadges}>
+                    {cls && (
                     <LigneBadge
                       icon={cls.peutHypo ? LifeBuoy : Info}
                       tooltip={cls.watch}
@@ -214,7 +229,8 @@ export default function TraitementsModule({ onNavigate, shell }: ModuleProps) {
                       variant={cls.peutHypo ? 'porte' : 'watch'}
                       onActivate={cls.peutHypo ? () => onNavigate('hypoglycemie') : undefined}
                     />
-                    {cls.estInsuline && (
+                    )}
+                    {cls?.estInsuline && (
                       <LigneBadge
                         icon={Syringe}
                         tooltip="Comment on adapte cette dose — module Insuline."
@@ -230,6 +246,8 @@ export default function TraitementsModule({ onNavigate, shell }: ModuleProps) {
                     className={styles.selectBtn}
                     onClick={() => selectLigne(l.uid)}
                     aria-pressed={isSelected}
+                    disabled={!cls}
+                    title={cls ? undefined : "Choisissez d'abord une classe"}
                   >
                     {isSelected ? 'Effet affiché' : "Voir l'effet"}
                   </button>
@@ -260,14 +278,20 @@ export default function TraitementsModule({ onNavigate, shell }: ModuleProps) {
           </div>
 
           {sideText && (
-            <div className={styles.panel}>
+            <div
+              className={styles.panel}
+              ref={panelRef}
+              tabIndex={-1}
+              role="region"
+              aria-label="Ce que ce traitement protège"
+            >
               <span className="eyebrow">Ce que ce traitement protège</span>
               <div className={`card ${styles.panelCard}`}>
                 {/* S7-v3 : picto clé/serrure — mode ligne uniquement (métaphore attachée à une
                     molécule précise, pas à la vue d'ensemble), seulement si la classe en a un. */}
-                {viewMode === 'line' && selectedLigne && classById(selectedLigne.classId).picto && (
+                {viewMode === 'line' && selectedLigne && classById(selectedLigne.classId)?.picto && (
                   <span className={styles.pictoMecanisme} aria-hidden="true">
-                    {classById(selectedLigne.classId).picto === 'serrure' ? (
+                    {classById(selectedLigne.classId)?.picto === 'serrure' ? (
                       <Lock size={22} />
                     ) : (
                       <KeyRound size={22} />

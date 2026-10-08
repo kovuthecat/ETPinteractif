@@ -102,8 +102,9 @@ export const CLASSES: ClasseTraitement[] = [
   },
 ];
 
-export function classById(id: string): ClasseTraitement {
-  return CLASSES.find((c) => c.id === id) ?? CLASSES[0];
+/** Classe correspondant à un identifiant ; `undefined` tant qu'aucune classe n'est choisie (ou si l'id est inconnu). */
+export function classById(id: string): ClasseTraitement | undefined {
+  return CLASSES.find((c) => c.id === id);
 }
 
 /** Phrase composée sur la zone, verbatim maquette. */
@@ -113,6 +114,17 @@ export const ZONE_MSG: Record<ZoneTraitementId, string> = {
   reins: 'protège aussi les reins.',
 };
 
+/**
+ * Phrase d'effet d'une ligne d'ordonnance : elle s'énonce **au nom de la classe choisie** et ne
+ * reçoit jamais le texte libre de la molécule (invariant 5 : aucune affirmation thérapeutique
+ * accolée à un nom non reconnu). Sans classe choisie : `null`, aucun effet.
+ */
+export function phraseEffet(classId: string): string | null {
+  const cls = classById(classId);
+  if (!cls) return null;
+  return `La classe « ${cls.label} » ${cls.zones.map((z) => ZONE_MSG[z]).join(' Elle ')}`;
+}
+
 export interface Ligne {
   uid: string;
   molecule: string;
@@ -120,7 +132,8 @@ export interface Ligne {
 }
 
 let ligneUid = 0;
-export function newLigne(molecule: string, classId: string): Ligne {
+/** `classId` vide = aucune classe choisie : rien n'est présélectionné. */
+export function newLigne(molecule: string, classId = ''): Ligne {
   ligneUid += 1;
   return { uid: `l${ligneUid}`, molecule, classId };
 }

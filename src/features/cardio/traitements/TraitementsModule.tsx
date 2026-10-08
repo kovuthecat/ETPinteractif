@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Info, Plus, X } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import ModuleShell from '../../../components/ModuleShell';
 import Silhouette, { type SilhouetteZoneState, type ZoneId } from '../components/Silhouette';
-import { CLASSES, classById, lignesInitiales, newLigne, type Ligne } from './data';
+import { CLASSES, classById, effetDeClasse, lignesInitiales, newLigne, type Ligne } from './data';
 import styles from './TraitementsModule.module.css';
 
 /**
@@ -69,7 +69,19 @@ export default function TraitementsModule({ shell }: ModuleProps) {
   const [selectedUid, setSelectedUid] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('line');
 
-  const addLigne = () => setLignes((prev) => [...prev, newLigne('', CLASSES[0].id)]);
+  // Panneau d'effet : après « Voir l'effet » (ou la vue d'ensemble), on le ramène dans la vue et on y pose le focus.
+  const panelRef = useRef<HTMLDivElement>(null);
+  const [panelPing, setPanelPing] = useState(0);
+  useEffect(() => {
+    if (panelPing === 0) return;
+    const el = panelRef.current;
+    if (!el) return;
+    if (typeof el.scrollIntoView === 'function') el.scrollIntoView({ block: 'nearest' });
+    el.focus({ preventScroll: true });
+  }, [panelPing]);
+
+  // Aucune classe présélectionnée : « Choisir une classe », rien n'est présumé.
+  const addLigne = () => setLignes((prev) => [...prev, newLigne('')]);
   const removeLigne = (uid: string) => setLignes((prev) => prev.filter((l) => l.uid !== uid));
   const changeMolecule = (uid: string, molecule: string) =>
     setLignes((prev) => prev.map((l) => (l.uid === uid ? { ...l, molecule } : l)));
@@ -78,13 +90,16 @@ export default function TraitementsModule({ shell }: ModuleProps) {
   const selectLigne = (uid: string) => {
     setViewMode('line');
     setSelectedUid((current) => (current === uid ? null : uid));
+    if (selectedUid !== uid) setPanelPing((n) => n + 1);
   };
   const showAll = () => {
     setViewMode('all');
     setSelectedUid(null);
+    setPanelPing((n) => n + 1);
   };
 
-  const presentes = lignes.filter((l) => l.molecule.trim() !== '');
+  // L'effet dépend de la classe choisie, jamais du nom libre : le nom n'est qu'un libellé d'ordonnance.
+  const presentes = lignes.filter((l) => classById(l.classId));
   const selectedLigne = selectedUid ? (lignes.find((l) => l.uid === selectedUid) ?? null) : null;
 
   // Zones allumées selon le mode de vue. Verrou anti-auto-prescription : jamais plus d'une ligne
@@ -92,12 +107,10 @@ export default function TraitementsModule({ shell }: ModuleProps) {
   const litZones: Record<ZoneId, boolean> = { coeur: false, cerveau: false, reins: false, jambes: false };
   if (viewMode === 'all') {
     presentes.forEach((l) => {
-      const cls = classById(l.classId);
-      cls.zones.forEach((z) => (litZones[z] = true));
+      classById(l.classId)?.zones.forEach((z) => (litZones[z] = true));
     });
   } else if (selectedLigne) {
-    const cls = classById(selectedLigne.classId);
-    cls.zones.forEach((z) => (litZones[z] = true));
+    classById(selectedLigne.classId)?.zones.forEach((z) => (litZones[z] = true));
   }
 
   const silhouetteZones: SilhouetteZoneState[] = ZONES_ORDRE.map((id) => ({
@@ -119,9 +132,10 @@ export default function TraitementsModule({ shell }: ModuleProps) {
       panelText = "Toutes les zones que défend l'ordonnance complète, allumées ensemble.";
     }
   } else if (selectedLigne) {
-    const cls = classById(selectedLigne.classId);
-    panelEyebrow = selectedLigne.molecule.trim() || cls.label;
-    panelText = cls.message;
+    // Le sujet est la classe choisie, jamais le texte libre de la ligne.
+    const effet = effetDeClasse(selectedLigne.classId);
+    panelEyebrow = effet?.sujet ?? null;
+    panelText = effet?.message ?? null;
   }
 
   if (!shell) return null;
@@ -172,17 +186,23 @@ export default function TraitementsModule({ shell }: ModuleProps) {
                           onChange={(e) => changeClasse(l.uid, e.target.value)}
                           aria-label={`Classe de la ligne ${i + 1}`}
                         >
+                          <option value="">Choisir une classe…</option>
                           {CLASSES.map((opt) => (
                             <option key={opt.id} value={opt.id}>
                               {opt.label}
                             </option>
                           ))}
                         </select>
+                        {cls && (
+                          <span className={styles.classeFull} aria-hidden="true">
+                            {cls.label}
+                          </span>
+                        )}
                       </div>
                     </div>
 
                     <div className={styles.ligneBadges}>
-                      <WatchBadge tooltip={cls.watch} />
+                      {cls && <WatchBadge tooltip={cls.watch} />}
                     </div>
 
                     <button
@@ -190,6 +210,8 @@ export default function TraitementsModule({ shell }: ModuleProps) {
                       className={styles.selectBtn}
                       onClick={() => selectLigne(l.uid)}
                       aria-pressed={isSelected}
+                      disabled={!cls}
+                      title={cls ? undefined : "Choisissez d'abord une classe"}
                     >
                       {isSelected ? 'Effet affiché' : "Voir l'effet"}
                     </button>
@@ -217,7 +239,14 @@ export default function TraitementsModule({ shell }: ModuleProps) {
             <Silhouette zones={silhouetteZones} />
 
             {panelText && (
-              <div key={panelEyebrow} className={`${styles.panel} ${styles.fade}`}>
+              <div
+                key={panelEyebrow}
+                className={`${styles.panel} ${styles.fade}`}
+                ref={panelRef}
+                tabIndex={-1}
+                role="region"
+                aria-label="Ce que ce traitement protège"
+              >
                 <span className="eyebrow">{panelEyebrow}</span>
                 <div className={`card ${styles.panelCard}`}>
                   <p className={styles.panelText}>{panelText}</p>

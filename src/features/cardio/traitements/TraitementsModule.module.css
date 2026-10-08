@@ -57,7 +57,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-xs);
-  padding: var(--space-lg);
+  padding: var(--space-md) var(--space-md) var(--space-lg);
 }
 
 .ordonnanceHeader {
@@ -115,6 +115,9 @@
 .ligne {
   position: relative;
   display: flex;
+  /* c-6-23 : le champ molécule et la classe tiennent sur leur propre largeur ; les boutons
+     passent à la ligne suivante quand la place manque, au lieu d'écraser les champs. */
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--space-sm);
   padding: var(--space-sm) 4px;
@@ -135,8 +138,9 @@
 }
 
 .ligneMain {
-  flex: 1;
-  min-width: 0;
+  /* 28px = numéro de ligne (20px) + écart (8px) : le champ garde la place du numéro sur sa ligne. */
+  flex: 1 1 min(300px, calc(100% - 28px));
+  min-width: min(300px, calc(100% - 28px));
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -174,8 +178,9 @@
 }
 
 .classeSelect {
+  width: 100%;
   max-width: 100%;
-  padding: 4px 10px;
+  padding: 4px 6px 4px 8px;
   border: 1.5px solid var(--color-line);
   border-radius: var(--radius-sm);
   background: var(--color-bg);
@@ -183,8 +188,18 @@
   font: 600 13px 'Work Sans', sans-serif;
 }
 
+/* Écran étroit : la liste déroulante ne peut pas afficher le libellé le plus long en entier ;
+   on le répète en clair, à la ligne, sous le champ (c-6-23). Invisible au-delà de 600px. */
+.classeFull {
+  display: none;
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--color-text-soft);
+}
+
 .ligneBadges {
   flex: none;
+  margin-left: auto;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -315,11 +330,11 @@
     min-width: 0;
   }
 
-  .ligne {
-    flex-wrap: wrap;
-  }
-
   .moleculeInput {
     font-size: 19px;
+  }
+
+  .classeFull {
+    display: block;
   }
 }
