@@ -13,8 +13,8 @@
   --color-surface: #ffffff;
   --color-surface-glass: rgba(255, 255, 255, 0.85);
   --color-text: oklch(24% 0.02 50);
-  --color-text-soft: rgba(40, 30, 20, 0.55);
-  --color-text-faint: rgba(40, 30, 20, 0.45);
+  --color-text-soft: rgba(40, 30, 20, 0.66); /* ≥ 4,5:1 sur le pire fond (bg + confort-soft : 4,72) */
+  --color-text-faint: rgba(40, 30, 20, 0.66); /* texte de légende : même plancher AA que soft ; usages non textuels (filet, fond) : décoratifs, assombris sans gêne */
   --color-line: rgba(60, 40, 20, 0.14);
 
   /* sémantique (couleur JAMAIS seule — toujours + libellé/icône/forme) */
