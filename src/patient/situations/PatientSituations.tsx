@@ -20,6 +20,13 @@ interface PatientSituationsProps {
    * sans dupliquer sa logique de persistance. Injectée par `PatientApp` (réutilise `go`).
    */
   onNavigate: (vue: 'carnet') => void;
+  /** Sous-état de navigation porté par PatientApp (historique du navigateur). */
+  situation: string | null;
+  outil: string | null;
+  onOpenSituation: (id: string) => void;
+  onOpenOutil: (id: string) => void;
+  onCloseOutil: () => void;
+  onOtherSituation: () => void;
 }
 
 const PILIER_ORDER: PilierId[] = ['physique', 'psychologique', 'comportementale'];
@@ -113,11 +120,16 @@ function commentFaire(outil: Outil): string {
  * spécial pour la respiration, elle devient une entrée générique du registre comme les
  * autres.
  */
-export default function PatientSituations({ onBack, onNavigate }: PatientSituationsProps) {
-  const [selectedSituation, setSelectedSituation] = useState<string | null>(null);
-  // Outil interactif actuellement lancé (S1/OI3) — distinct de `selectedSituation`, réinitialisé
-  // au changement de situation (cf. bouton « Autre situation » plus bas).
-  const [activeOutilId, setActiveOutilId] = useState<string | null>(null);
+export default function PatientSituations({
+  onBack,
+  onNavigate,
+  situation: selectedSituation,
+  outil: activeOutilId,
+  onOpenSituation,
+  onOpenOutil,
+  onCloseOutil,
+  onOtherSituation,
+}: PatientSituationsProps) {
   // Outil dont le détail complet est déplié (S8, plans/recette-outils-2026-08, gate G-densite) :
   // avant cette session, TOUS les outils adaptés à une situation s'affichaient dépliés d'un
   // coup — jusqu'à 8 cartes complètes, 5,7 écrans de défilement sur mobile pour « Envie
@@ -153,9 +165,8 @@ export default function PatientSituations({ onBack, onNavigate }: PatientSituati
           type="button"
           className="btn btn--ghost"
           onClick={() => {
-            setSelectedSituation(null);
-            setActiveOutilId(null);
             setSelectedOutilId(null);
+            onOtherSituation();
           }}
         >
           <ArrowLeft size={16} aria-hidden="true" />
@@ -180,7 +191,7 @@ export default function PatientSituations({ onBack, onNavigate }: PatientSituati
             outil={activeOutil}
             store={patientStore}
             contexte={{ situationsActives: situation ? [situation] : [] }}
-            onClose={() => setActiveOutilId(null)}
+            onClose={onCloseOutil}
             onOuvrirCarnet={() => onNavigate('carnet')}
           />
         </div>
@@ -195,7 +206,7 @@ export default function PatientSituations({ onBack, onNavigate }: PatientSituati
             outil={activeOutil}
             store={patientStore}
             contexte={{ situationsActives: situation ? [situation] : [] }}
-            onClose={() => setActiveOutilId(null)}
+            onClose={onCloseOutil}
           />
         </div>
       );
@@ -228,7 +239,7 @@ export default function PatientSituations({ onBack, onNavigate }: PatientSituati
               <button
                 type="button"
                 className="btn btn--primary"
-                onClick={() => setActiveOutilId(displayedOutil.id)}
+                onClick={() => onOpenOutil(displayedOutil.id)}
               >
                 <Play size={16} aria-hidden="true" />
                 Démarrer
@@ -286,7 +297,7 @@ export default function PatientSituations({ onBack, onNavigate }: PatientSituati
                   key={s.id}
                   type="button"
                   className={`${PILIER_CHIP_CLASS[pilier]} ${styles.situationChip}`}
-                  onClick={() => setSelectedSituation(s.id)}
+                  onClick={() => onOpenSituation(s.id)}
                 >
                   {s.label}
                 </button>

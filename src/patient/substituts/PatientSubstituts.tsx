@@ -6,6 +6,10 @@ import styles from './PatientSubstituts.module.css';
 interface PatientSubstitutsProps {
   /** Retour à l'accueil de l'app patient (géré par PatientApp). */
   onBack: () => void;
+  /** Fiche ouverte (état porté par PatientApp, pour l'historique du navigateur). */
+  forme: string | null;
+  onOpenForme: (forme: FormeId) => void;
+  onCloseForme: () => void;
 }
 
 const FORME_IDS = Object.keys(FORMES_DATA) as FormeId[];
@@ -57,8 +61,13 @@ function FormeIllustration({
  * auto-portant (lisible sans soignant à côté). Contenu clinique repris tel quel de
  * `src/content/tabac/substituts.ts` ; seul l'habillage (intro, libellés de section) est ajouté ici.
  */
-export default function PatientSubstituts({ onBack }: PatientSubstitutsProps) {
-  const [selectedForme, setSelectedForme] = useState<FormeId | null>(null);
+export default function PatientSubstituts({
+  onBack,
+  forme: formeOuverte,
+  onOpenForme,
+  onCloseForme,
+}: PatientSubstitutsProps) {
+  const selectedForme = FORME_IDS.find((f) => f === formeOuverte) ?? null;
 
   if (selectedForme) {
     const forme = FORMES_DATA[selectedForme];
@@ -67,7 +76,7 @@ export default function PatientSubstituts({ onBack }: PatientSubstitutsProps) {
         <button
           type="button"
           className={`btn btn--ghost ${styles.back}`}
-          onClick={() => setSelectedForme(null)}
+          onClick={onCloseForme}
         >
           <ArrowLeft size={16} aria-hidden="true" />
           Retour
@@ -113,7 +122,7 @@ export default function PatientSubstituts({ onBack }: PatientSubstitutsProps) {
             key={forme}
             type="button"
             className={styles.card}
-            onClick={() => setSelectedForme(forme)}
+            onClick={() => onOpenForme(forme)}
           >
             <span className={styles.cardIllustration}>
               <FormeIllustration forme={forme} label={FORMES_DATA[forme].label} variant="produit" />
