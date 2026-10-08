@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import styles from './InfoHover.module.css';
 
@@ -31,6 +31,22 @@ export default function InfoHover({ children, content, label, position = 'above'
   const [locked, setLocked] = useState(false);
   const panelId = useId();
   const wrapRef = useRef<HTMLSpanElement>(null);
+  const panelRef = useRef<HTMLSpanElement>(null);
+
+  // Recale le panneau pour qu'il ne sorte jamais du viewport (déclencheur près d'un bord,
+  // écran étroit) : décalage horizontal mesuré après l'ouverture, 0 si tout tient déjà.
+  useLayoutEffect(() => {
+    const panel = panelRef.current;
+    if (!open || !panel) return;
+    panel.style.setProperty('--decalage', '0px');
+    const marge = 8;
+    const rect = panel.getBoundingClientRect();
+    const largeur = document.documentElement.clientWidth;
+    let dx = 0;
+    if (rect.right > largeur - marge) dx = largeur - marge - rect.right;
+    if (rect.left + dx < marge) dx = marge - rect.left;
+    panel.style.setProperty('--decalage', `${dx}px`);
+  }, [open]);
 
   // Clic hors du composant pendant le verrouillage : ferme et déverrouille.
   // Listener ajouté seulement quand `locked` (jamais au repos) et nettoyé au
@@ -94,6 +110,7 @@ export default function InfoHover({ children, content, label, position = 'above'
       {open && (
         <span
           id={panelId}
+          ref={panelRef}
           role="tooltip"
           className={`${styles.panel} ${position === 'below' ? styles.panelBelow : styles.panelAbove}`}
         >

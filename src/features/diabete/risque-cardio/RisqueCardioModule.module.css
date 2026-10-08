@@ -360,3 +360,17 @@
   line-height: 1.5;
   color: var(--color-text-soft);
 }
+
+/* Très étroit : la silhouette (560 px) se réduit à la largeur disponible au lieu de déborder
+   à gauche, sans changer la mise en page plus large. */
+@media (max-width: 600px) {
+  .anatomieRow {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .silhouetteWrap {
+    width: 100%;
+    min-width: 0;
+  }
+}

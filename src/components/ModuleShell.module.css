@@ -104,3 +104,17 @@
     padding: 12px 20px 28px;
   }
 }
+
+/* Très étroit (320 px) : « Accueil » et « Sources » restent sur la première ligne, le titre
+   (et ses onglets) passe dessous sur toute la largeur au lieu d'être écrasé entre les deux. */
+@media (max-width: 480px) {
+  .header {
+    flex-wrap: wrap;
+  }
+
+  .titleRow {
+    order: 3;
+    flex: 1 1 100%;
+    margin: 0;
+  }
+}

@@ -65,7 +65,7 @@ export default function ArtereCoupe({
   return (
     <div
       className={`${styles.wrap} ${className ?? ''}`}
-      style={{ width: size, height: size }}
+      style={{ width: size, maxWidth: '100%', height: 'auto' }}
       role="img"
       aria-label={`Section d'artère : passage du sang à ${plaquePassagePct(e)} % de la lumière initiale`}
     >

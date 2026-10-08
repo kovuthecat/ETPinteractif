@@ -29,6 +29,8 @@
 
 .arterePanel {
   flex: none;
+  box-sizing: border-box;
+  max-width: 100%;
   padding: var(--space-lg);
   display: flex;
   align-items: center;

@@ -11,6 +11,8 @@
 }
 
 .artereCard {
+  box-sizing: border-box;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -226,4 +228,11 @@
   margin: 0;
   font-size: 13px;
   color: var(--color-text-soft);
+}
+
+/* Très étroit : la carte de l'artère garde un padding qui laisse sa place à l'illustration. */
+@media (max-width: 480px) {
+  .artereCard {
+    padding: var(--space-md);
+  }
 }
