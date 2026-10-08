@@ -214,6 +214,18 @@ const D4_UNTOUCHED_BY_BOUNDARY: Record<D4Boundary, D4Category> = {
   pf: 'legumes',
 };
 
+/** Catégorie qui se termine à la frontière (elle grandit quand la frontière avance dans le sens
+ *  horaire) et celle qui commence à la frontière (elle rétrécit d'autant). Sert au curseur clavier. */
+const D4_BEFORE_AFTER: Record<D4Boundary, { before: D4Category; after: D4Category }> = {
+  fl: { before: 'feculents', after: 'legumes' },
+  lp: { before: 'legumes', after: 'proteines' },
+  pf: { before: 'proteines', after: 'feculents' },
+};
+const D4_LABEL: Record<D4Category, string> = { legumes: 'Légumes', proteines: 'Protéines', feculents: 'Féculents' };
+/** Pas clavier d'une poignée, en points de pourcentage : flèches ±5, Page ±10. */
+const D4_KEY_STEP = 5;
+const D4_KEY_STEP_BIG = 10;
+
 /** Position sur le cercle de rayon `r` à l'angle absolu `a` (degrés, convention du camembert :
  *  0 = est, 90 = sud, -90 = nord, sweep clockwise — cf. génération d'arcs `d4PieSlices`). */
 function d4PointOnCircle(a: number, r: number): [number, number] {
@@ -615,22 +627,47 @@ export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
     };
   }
 
+  /** Unique mise à jour des parts : le pointeur et le clavier y passent tous les deux. `toAngle`
+   *  donne l'angle visé (non borné) à partir de l'angle de la frontière précédente ; on le borne
+   *  ensuite aux deux catégories voisines. */
+  function d4MoveBoundary(boundary: D4Boundary, toAngle: (prevAngle: number) => number) {
+    const { prev } = d4BoundaryNeighbors(boundary);
+    // cf. `D4_UNTOUCHED_BY_BOUNDARY` : évite l'ambiguïté d'angles quand la catégorie intacte
+    // est déjà à 0 % (cas par défaut : protéines à 0 %, lp/pf confondus).
+    const untouchedFrac = d4Pct[D4_UNTOUCHED_BY_BOUNDARY[boundary]];
+    setD4Angles((a) => {
+      const prevAngle = a[prev];
+      const nextAngleUnwrapped = prevAngle + (1 - untouchedFrac) * 360;
+      const clamped = Math.min(Math.max(toAngle(prevAngle), prevAngle), nextAngleUnwrapped);
+      return { ...a, [boundary]: clamped };
+    });
+  }
+
   function handleD4BoundaryPointerMove(boundary: D4Boundary) {
     return (e: ReactPointerEvent<SVGCircleElement>) => {
       if (d4Dragging !== boundary) return;
       const svg = d4SvgRef.current;
       if (!svg) return;
-      const { prev } = d4BoundaryNeighbors(boundary);
-      // cf. `D4_UNTOUCHED_BY_BOUNDARY` : évite l'ambiguïté d'angles quand la catégorie intacte
-      // est déjà à 0 % (cas par défaut : protéines à 0 %, lp/pf confondus).
-      const untouchedFrac = d4Pct[D4_UNTOUCHED_BY_BOUNDARY[boundary]];
-      setD4Angles((a) => {
-        const prevAngle = a[prev];
-        const nextAngleUnwrapped = prevAngle + (1 - untouchedFrac) * 360;
-        const pointerAngle = d4UnwrapAngle(d4AngleFromPointer(svg, e), prevAngle);
-        const clamped = Math.min(Math.max(pointerAngle, prevAngle), nextAngleUnwrapped);
-        return { ...a, [boundary]: clamped };
-      });
+      d4MoveBoundary(boundary, (prevAngle) => d4UnwrapAngle(d4AngleFromPointer(svg, e), prevAngle));
+    };
+  }
+
+  /** Clavier : ←/↓ −5 %, →/↑ +5 %, PageDown/PageUp ∓10 % sur la part qui se termine à la
+   *  frontière (l'autre part voisine se réajuste). */
+  function handleD4BoundaryKeyDown(boundary: D4Boundary) {
+    return (e: ReactKeyboardEvent<SVGCircleElement>) => {
+      let dir: 1 | -1 | 0 = 0;
+      let step = D4_KEY_STEP;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowUp') dir = 1;
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') dir = -1;
+      else if (e.key === 'PageUp') [dir, step] = [1, D4_KEY_STEP_BIG];
+      else if (e.key === 'PageDown') [dir, step] = [-1, D4_KEY_STEP_BIG];
+      if (dir === 0) return;
+      e.preventDefault();
+      setD4Touched(true);
+      const current = d4Pct[D4_BEFORE_AFTER[boundary].before] * 100;
+      const target = current + dir * step;
+      d4MoveBoundary(boundary, (prevAngle) => prevAngle + (target / 100) * 360);
     };
   }
 
@@ -714,7 +751,11 @@ export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
   ];
   const d4Handles = D4_HANDLES.map((h) => {
     const [x, y] = d4PointOnCircle(d4Angles[h.id], 92);
-    return { ...h, x, y };
+    const { before, after } = D4_BEFORE_AFTER[h.id];
+    const valueNow = Math.round(d4Pct[before] * 100);
+    const valueMax = Math.round((1 - d4Pct[D4_UNTOUCHED_BY_BOUNDARY[h.id]]) * 100);
+    const valueText = `${D4_LABEL[before]} ${valueNow} %, ${D4_LABEL[after].toLowerCase()} ${Math.round(d4Pct[after] * 100)} %`;
+    return { ...h, x, y, valueNow, valueMax, valueText };
   });
 
   // ── Synthèse ★ (= fiche) ───────────────────────────────────────────────
@@ -1143,8 +1184,8 @@ export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
                   ref={d4SvgRef}
                   className={styles.d4Pie}
                   viewBox="0 0 200 200"
-                  role="img"
-                  aria-label={`Répartition de l'assiette : ${D4_CATEGORIES.map((cat) => `${cat.label} ${Math.round(d4Pct[cat.id] * 100)}%`).join(', ')}. Glissez les frontières entre les parts pour régler les proportions.`}
+                  role="group"
+                  aria-label={`Répartition de l'assiette : ${D4_CATEGORIES.map((cat) => `${cat.label} ${Math.round(d4Pct[cat.id] * 100)}%`).join(', ')}. Glissez les frontières entre les parts, ou utilisez les flèches sur une poignée, pour régler les proportions.`}
                 >
                   <circle cx="100" cy="100" r="92" fill="none" stroke="var(--color-line)" strokeWidth={2} strokeDasharray="3 5" />
                   {d4PieSlices.map(
@@ -1174,7 +1215,15 @@ export default function AlimentationModule({ onNavigate, shell }: ModuleProps) {
                       cx={h.x}
                       cy={h.y}
                       r={9}
-                      aria-hidden="true"
+                      role="slider"
+                      tabIndex={0}
+                      aria-label={`Frontière ${h.label}`}
+                      aria-orientation="horizontal"
+                      aria-valuemin={0}
+                      aria-valuemax={h.valueMax}
+                      aria-valuenow={h.valueNow}
+                      aria-valuetext={h.valueText}
+                      onKeyDown={handleD4BoundaryKeyDown(h.id)}
                       onPointerDown={handleD4BoundaryPointerDown(h.id)}
                       onPointerMove={handleD4BoundaryPointerMove(h.id)}
                       onPointerUp={handleD4BoundaryPointerUp}

@@ -9,6 +9,20 @@ import { MOTIVATION_SEED, iconForRaison } from './data';
 import styles from './MotivationModule.module.css';
 
 const MOVE_THRESHOLD = 4;
+/** Déplacement clavier d'une carte du tableau, en % du tableau : flèche = 5, Maj + flèche = 15. */
+const KEY_MOVE = 5;
+const KEY_MOVE_BIG = 15;
+const X_MIN = 4;
+const X_MAX = 92;
+const Y_MIN = 6;
+const Y_MAX = 86;
+
+/** Emplacement parlé d'une carte (annonce) : tiers vertical + tiers horizontal du tableau. */
+function describePosition(x: number, y: number): string {
+  const rang = y < 33 ? 'en haut' : y < 66 ? 'au milieu' : 'en bas';
+  const colonne = x < 33 ? 'à gauche' : x < 66 ? 'au centre' : 'à droite';
+  return `${rang}, ${colonne}`;
+}
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
@@ -90,6 +104,7 @@ export default function MotivationModule(_props: ModuleProps) {
   const [raisonsReserve, setRaisonsReserve] = useState<CarteReserve[]>(initialSeed.reserve);
   const [raisonsBoard, setRaisonsBoard] = useState<CarteBoard[]>(initialSeed.board);
   const [editingCardId, setEditingCardId] = useState<number | null>(null);
+  const [annonce, setAnnonce] = useState({ text: '', n: 0 });
   const nextCardId = useRef(initialSeed.nextId);
 
   // Reflète les libellés des cartes du tableau dans l'état partagé. Ne se
@@ -185,8 +200,8 @@ export default function MotivationModule(_props: ModuleProps) {
     }
     const rect = boardRef.current?.getBoundingClientRect();
     if (!rect) return;
-    const x = clamp(((e.clientX - rect.left) / rect.width) * 100, 4, 92);
-    const y = clamp(((e.clientY - rect.top) / rect.height) * 100, 6, 86);
+    const x = clamp(((e.clientX - rect.left) / rect.width) * 100, X_MIN, X_MAX);
+    const y = clamp(((e.clientY - rect.top) / rect.height) * 100, Y_MIN, Y_MAX);
     setRaisonsBoard((prev) => prev.map((c) => (c.id === id ? { ...c, x, y } : c)));
   }
 
@@ -206,7 +221,23 @@ export default function MotivationModule(_props: ModuleProps) {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       toggleEditing(id);
+      return;
     }
+    const delta = e.shiftKey ? KEY_MOVE_BIG : KEY_MOVE;
+    let dx = 0;
+    let dy = 0;
+    if (e.key === 'ArrowLeft') dx = -delta;
+    else if (e.key === 'ArrowRight') dx = delta;
+    else if (e.key === 'ArrowUp') dy = -delta;
+    else if (e.key === 'ArrowDown') dy = delta;
+    else return;
+    e.preventDefault();
+    const carte = raisonsBoard.find((c) => c.id === id);
+    if (!carte) return;
+    const x = clamp(carte.x + dx, X_MIN, X_MAX);
+    const y = clamp(carte.y + dy, Y_MIN, Y_MAX);
+    setRaisonsBoard((prev) => prev.map((c) => (c.id === id ? { ...c, x, y } : c)));
+    setAnnonce((prev) => ({ text: `${carte.label} déplacée : ${describePosition(x, y)}`, n: prev.n + 1 }));
   }
 
   return (
@@ -395,7 +426,7 @@ export default function MotivationModule(_props: ModuleProps) {
                   onPointerUp={() => handleCardPointerUp(carte.id)}
                   onPointerCancel={handleCardPointerCancel}
                   onKeyDown={(e) => handleCardKeyDown(e, carte.id)}
-                  aria-label={`${carte.label}${carte.detail ? ` — ${carte.detail}` : ''} — glisser pour repositionner, Entrée pour modifier`}
+                  aria-label={`${carte.label}${carte.detail ? ` — ${carte.detail}` : ''} — glisser ou flèches pour repositionner, Entrée pour modifier`}
                 >
                   {(() => {
                     const Icon = iconForRaison(carte.label);
@@ -408,6 +439,16 @@ export default function MotivationModule(_props: ModuleProps) {
             </div>
           ))}
         </div>
+
+        {raisonsBoard.length > 0 && (
+          <p className={styles.boardKeyHint}>
+            Au clavier : sélectionnez une carte, puis ← ↑ → ↓ pour la déplacer (Maj : plus loin) et Entrée pour la
+            modifier.
+          </p>
+        )}
+        <p className={styles.srOnly} role="status" aria-live="polite">
+          <span key={annonce.n}>{annonce.text}</span>
+        </p>
 
         <p className={styles.reserveLabel}>Réserve · cliquez pour ajouter au tableau</p>
         <div className={styles.reserveRow}>

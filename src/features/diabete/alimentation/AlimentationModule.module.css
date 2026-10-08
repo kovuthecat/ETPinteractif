@@ -492,6 +492,12 @@
   stroke: var(--color-text);
 }
 
+.d4Handle:focus-visible {
+  outline: none;
+  stroke: var(--color-nav);
+  stroke-width: 4px;
+}
+
 .d4HandleDragging {
   cursor: grabbing;
   stroke: var(--color-text);

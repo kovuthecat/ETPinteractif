@@ -344,6 +344,13 @@
   stroke-width: 3;
 }
 
+.handle:focus-visible {
+  outline: none;
+  fill: var(--color-text);
+  stroke: var(--color-surface);
+  stroke-width: 4;
+}
+
 .plateauOverlay {
   position: absolute;
   inset: 0;

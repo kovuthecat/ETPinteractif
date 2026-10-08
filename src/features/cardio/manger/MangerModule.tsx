@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import type { DragEvent, PointerEvent as ReactPointerEvent } from 'react';
+import type { DragEvent, KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from 'react';
 import {
   Bean,
   Beef,
@@ -142,6 +142,22 @@ const UNTOUCHED_BY_BOUNDARY: Record<Boundary, CategorieCoeur> = {
   lf: 'proteines',
   fp: 'legumes',
 };
+
+/** Catégorie qui se termine à la frontière (elle grandit quand la frontière avance dans le sens
+ *  horaire) et celle qui commence à la frontière (elle rétrécit d'autant). Sert au curseur clavier. */
+const BEFORE_AFTER: Record<Boundary, { before: CategorieCoeur; after: CategorieCoeur }> = {
+  pl: { before: 'proteines', after: 'legumes' },
+  lf: { before: 'legumes', after: 'feculents' },
+  fp: { before: 'feculents', after: 'proteines' },
+};
+const CATEGORIE_LABEL: Record<CategorieCoeur, string> = {
+  legumes: 'Légumes',
+  feculents: 'Féculents',
+  proteines: 'Protéines',
+};
+/** Pas clavier d'une poignée, en points de pourcentage : flèches ±5, Page ±10. */
+const KEY_STEP = 5;
+const KEY_STEP_BIG = 10;
 
 function pointOnCircle(a: number, r: number): [number, number] {
   const rad = (a * Math.PI) / 180;
@@ -307,23 +323,47 @@ export default function MangerModule({ shell }: ModuleProps) {
     };
   }
 
+  /** Unique mise à jour des parts : le pointeur et le clavier y passent tous les deux. `toAngle`
+   *  donne l'angle visé (non borné) à partir de l'angle de la frontière précédente ; on le borne
+   *  ensuite aux deux catégories voisines. */
+  function moveBoundary(boundary: Boundary, toAngle: (prevAngle: number) => number) {
+    const { prev } = boundaryNeighbors(boundary);
+    // Fraction de la catégorie intacte (calculée dans son propre sens, non ambiguë même si
+    // elle vaut déjà 0) — donne le vrai empan disponible pour cette frontière, y compris
+    // quand `prev`/`next` coïncident (voir `UNTOUCHED_BY_BOUNDARY`).
+    const untouchedFrac = pct[UNTOUCHED_BY_BOUNDARY[boundary]];
+    setAngles((a) => {
+      const prevAngle = a[prev];
+      const nextAngleUnwrapped = prevAngle + (1 - untouchedFrac) * 360;
+      const clamped = Math.min(Math.max(toAngle(prevAngle), prevAngle), nextAngleUnwrapped);
+      return { ...a, [boundary]: clamped };
+    });
+  }
+
   function handleBoundaryPointerMove(boundary: Boundary) {
     return (e: ReactPointerEvent<SVGCircleElement>) => {
       if (dragging !== boundary) return;
       const svg = svgRef.current;
       if (!svg) return;
-      const { prev } = boundaryNeighbors(boundary);
-      // Fraction de la catégorie intacte (calculée dans son propre sens, non ambiguë même si
-      // elle vaut déjà 0) — donne le vrai empan disponible pour cette frontière, y compris
-      // quand `prev`/`next` coïncident (voir `UNTOUCHED_BY_BOUNDARY`).
-      const untouchedFrac = pct[UNTOUCHED_BY_BOUNDARY[boundary]];
-      setAngles((a) => {
-        const prevAngle = a[prev];
-        const nextAngleUnwrapped = prevAngle + (1 - untouchedFrac) * 360;
-        const pointerAngle = unwrapAngle(angleFromPointer(svg, e), prevAngle);
-        const clamped = Math.min(Math.max(pointerAngle, prevAngle), nextAngleUnwrapped);
-        return { ...a, [boundary]: clamped };
-      });
+      moveBoundary(boundary, (prevAngle) => unwrapAngle(angleFromPointer(svg, e), prevAngle));
+    };
+  }
+
+  /** Clavier : ←/↓ −5 %, →/↑ +5 %, PageDown/PageUp ∓10 % sur la part qui se termine à la
+   *  frontière (l'autre part voisine se réajuste). */
+  function handleBoundaryKeyDown(boundary: Boundary) {
+    return (e: ReactKeyboardEvent<SVGCircleElement>) => {
+      let dir: 1 | -1 | 0 = 0;
+      let step = KEY_STEP;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowUp') dir = 1;
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') dir = -1;
+      else if (e.key === 'PageUp') [dir, step] = [1, KEY_STEP_BIG];
+      else if (e.key === 'PageDown') [dir, step] = [-1, KEY_STEP_BIG];
+      if (dir === 0) return;
+      e.preventDefault();
+      const current = pct[BEFORE_AFTER[boundary].before] * 100;
+      const target = current + dir * step;
+      moveBoundary(boundary, (prevAngle) => prevAngle + (target / 100) * 360);
     };
   }
 
@@ -373,7 +413,11 @@ export default function MangerModule({ shell }: ModuleProps) {
   ];
   const handles = HANDLES.map((h) => {
     const [x, y] = pointOnCircle(angles[h.id], 92);
-    return { ...h, x, y };
+    const { before, after } = BEFORE_AFTER[h.id];
+    const valueNow = Math.round(pct[before] * 100);
+    const valueMax = Math.round((1 - pct[UNTOUCHED_BY_BOUNDARY[h.id]]) * 100);
+    const valueText = `${CATEGORIE_LABEL[before]} ${valueNow} %, ${CATEGORIE_LABEL[after].toLowerCase()} ${Math.round(pct[after] * 100)} %`;
+    return { ...h, x, y, valueNow, valueMax, valueText };
   });
 
   const pctLegumes = Math.round(pct.legumes * 100);
@@ -557,10 +601,10 @@ export default function MangerModule({ shell }: ModuleProps) {
                   ref={svgRef}
                   className={styles.plateauSvg}
                   viewBox="0 0 200 200"
-                  role="img"
+                  role="group"
                   aria-label={`Répartition de l'assiette : ${CORE_CATEGORIES.map(
                     (cat) => `${cat.label} ${Math.round(pct[cat.id] * 100)}%${repFood[cat.id] ? ` (${repFood[cat.id]!.name})` : ''}`,
-                  ).join(', ')}. Glissez les frontières entre les parts pour régler les proportions, ou glissez/touchez un aliment du garde-manger pour le placer.`}
+                  ).join(', ')}. Glissez les frontières entre les parts, ou utilisez les flèches sur une poignée, pour régler les proportions, ou glissez/touchez un aliment du garde-manger pour le placer.`}
                 >
                   <circle cx="100" cy="100" r="92" fill="none" stroke="var(--color-line)" strokeWidth={2} strokeDasharray="3 5" />
                   {slices.map((slice) => slice.d && (
@@ -588,8 +632,16 @@ export default function MangerModule({ shell }: ModuleProps) {
                       className={dragging === h.id ? `${styles.handle} ${styles.handleDragging}` : styles.handle}
                       cx={h.x}
                       cy={h.y}
-                      r={9}
-                      aria-hidden="true"
+                      r={11}
+                      role="slider"
+                      tabIndex={0}
+                      aria-label={`Frontière ${h.label}`}
+                      aria-orientation="horizontal"
+                      aria-valuemin={0}
+                      aria-valuemax={h.valueMax}
+                      aria-valuenow={h.valueNow}
+                      aria-valuetext={h.valueText}
+                      onKeyDown={handleBoundaryKeyDown(h.id)}
                       onPointerDown={handleBoundaryPointerDown(h.id)}
                       onPointerMove={handleBoundaryPointerMove(h.id)}
                       onPointerUp={handleBoundaryPointerUp}
