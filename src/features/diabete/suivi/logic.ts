@@ -6,8 +6,12 @@
  *   1. Le mois/l'année/le jour "courants" ne sont plus des constantes figées : ils sont
  *      calculés à l'affichage à partir d'une vraie `Date` (passée en paramètre par le
  *      composant), pour que l'aiguille pointe le jour réel.
- * Tout le reste (angles, occurrences, snap, statuts, cycles longs) est repris tel quel.
- * Testable à l'œil nu (fonctions pures) — pas de suite de tests exigée par S9.md.
+ * Le reste (angles, statuts, cycles longs) est repris de la maquette.
+ *
+ * Évolution plan P1/S6 (revue d'usage 2026-10-06, c-4-40 à c-4-43) : chaque examen a sa
+ * **propre fréquence en mois**, indépendante du rythme des consultations ; il tombe aux mois
+ * `startMonth + k × fréquence`, sans « snap » sur une consultation ; et « Fait » vaut **par
+ * rendez-vous** (clé `(examId, mois)`), pas par examen. Fonctions pures, testées dans `logic.test.ts`.
  *
  * Évolution S14 §B5 (revue visuelle 2026-07-09, inverse D9 décision clé n°2) : le cadran
  * démarre **vide** au montage (comme la maquette), l'utilisateur le construit élément par
@@ -106,21 +110,27 @@ export const CONSULT_INTERVAL_LABELS: Record<number, string> = {
 };
 
 /**
- * Fréquence par défaut de chaque examen — `everyN` compte en "nombre de consultations"
- * (1 = chaque consultation, annualN = 1×/an pour l'intervalle courant, etc.) et
- * `startMonth` est le mois de départ avant snap sur la consultation la plus proche.
+ * Fréquence par défaut de chaque examen — `frequenceMois` en **mois**, indépendante du rythme
+ * des consultations ; `startMonth` (0 = janvier) est le mois du premier rendez-vous de l'année :
+ * l'examen tombe aux mois `startMonth + k × frequenceMois`, y compris hors d'un mois de
+ * consultation.
+ * Conversion des anciennes valeurs « en nombre de consultations » (base de port : 3 mois) :
+ * 1 → 3 mois, 4 → 12 mois, 8 → 24 mois. Seule l'unité change, pas la recommandation.
  * // à revalider (Thibault — ADA/HAS-SFD) : ports fidèles de la maquette, jamais vérifiés
  * cliniquement au câblage.
  */
-const DEFAULT_EXAM_FREQUENCY: Record<ExamId, { everyN: number; startMonth: number }> = {
-  hba1c: { everyN: 1, startMonth: 0 }, // à revalider (Thibault) — chaque consultation (~3-4 mois)
-  bilan_lipidique: { everyN: 4, startMonth: 6 }, // à revalider (Thibault) — 1×/an
-  rein: { everyN: 4, startMonth: 3 }, // à revalider (Thibault) — 1×/an
-  fond_oeil: { everyN: 4, startMonth: 0 }, // à revalider (Thibault) — 1×/an
-  pied_complet: { everyN: 4, startMonth: 9 }, // à revalider (Thibault) — 1×/an
-  dentiste: { everyN: 4, startMonth: 9 }, // à revalider (Thibault) — 1×/an
-  vaccins: { everyN: 8, startMonth: 0 }, // à revalider (Thibault) — 1×/2 ans
+const DEFAULT_EXAM_FREQUENCY: Record<ExamId, { frequenceMois: number; startMonth: number }> = {
+  hba1c: { frequenceMois: 3, startMonth: 0 }, // à revalider (Thibault — ADA/HAS-SFD) — tous les 3 mois
+  bilan_lipidique: { frequenceMois: 12, startMonth: 6 }, // à revalider (Thibault — ADA/HAS-SFD) — 1×/an
+  rein: { frequenceMois: 12, startMonth: 3 }, // à revalider (Thibault — ADA/HAS-SFD) — 1×/an
+  fond_oeil: { frequenceMois: 12, startMonth: 0 }, // à revalider (Thibault — ADA/HAS-SFD) — 1×/an
+  pied_complet: { frequenceMois: 12, startMonth: 9 }, // à revalider (Thibault — ADA/HAS-SFD) — 1×/an
+  dentiste: { frequenceMois: 12, startMonth: 9 }, // à revalider (Thibault — ADA/HAS-SFD) — 1×/an
+  vaccins: { frequenceMois: 24, startMonth: 0 }, // à revalider (Thibault — ADA/HAS-SFD) — 1×/2 ans
 };
+
+/** Crans de fréquence proposés à chaque examen (mois). // à revalider (Thibault — ADA/HAS-SFD) */
+export const EXAM_FREQUENCY_OPTIONS = [3, 6, 12, 24, 60];
 
 export interface ConsultConfig {
   interval: number;
@@ -128,9 +138,20 @@ export interface ConsultConfig {
 }
 
 export interface ExamConfig {
-  everyN: number;
+  /** Fréquence propre de l'examen, en mois. */
+  frequenceMois: number;
+  /** Mois (0 = janvier) du premier rendez-vous de l'année. */
   startMonth: number;
-  status: Status;
+}
+
+/** Statuts posés par l'utilisateur, par rendez-vous : clé `examKey(examId, mois)`. Absent = statut par défaut. */
+export type ExamStatusOverrides = Record<string, Status>;
+
+/** Libellé d'une fréquence en mois : il dit toujours la fréquence réellement appliquée. */
+export function frequencyLabel(frequenceMois: number): string {
+  if (frequenceMois === 12) return '1×/an';
+  if (frequenceMois > 12 && frequenceMois % 12 === 0) return `tous les ${frequenceMois / 12} ans`;
+  return `tous les ${frequenceMois} mois`;
 }
 
 /** Angle (radians) du mois `m` (0=janvier) sur le cadran, 0h en haut (verbatim maquette). */
@@ -177,13 +198,12 @@ export function defaultConsultStatus(months: number[], currentMonth: number): Re
   return st;
 }
 
-/** Configuration initiale des 7 examens (fréquences par défaut + statut dérivé du jour réel). */
-export function initExamConfig(consultMonths: number[], currentMonth: number): Record<ExamId, ExamConfig> {
+/** Configuration initiale des 7 examens (fréquences par défaut, propres à chacun). */
+export function initExamConfig(): Record<ExamId, ExamConfig> {
   const out = {} as Record<ExamId, ExamConfig>;
   EXAM_DEFS.forEach((def) => {
     const freq = DEFAULT_EXAM_FREQUENCY[def.id];
-    const snapped = nearestConsultMonth(freq.startMonth, consultMonths);
-    out[def.id] = { everyN: freq.everyN, startMonth: freq.startMonth, status: statusForMonth(snapped, currentMonth) };
+    out[def.id] = { frequenceMois: freq.frequenceMois, startMonth: freq.startMonth };
   });
   return out;
 }
@@ -197,44 +217,76 @@ export function initRevealedVide(): Record<ExamId, boolean> {
   return r;
 }
 
-/** Mois de consultation le plus proche d'un mois donné (distance circulaire). */
-export function nearestConsultMonth(month: number, consultMonths: number[]): number {
-  let best = consultMonths[0];
-  let bestDist = Infinity;
-  consultMonths.forEach((m) => {
-    const d = Math.min(Math.abs(m - month), 12 - Math.abs(m - month));
-    if (d < bestDist) {
-      bestDist = d;
-      best = m;
-    }
-  });
-  return best;
-}
-
-/** Mois d'occurrence d'un examen sur l'année, snappé sur les mois de consultation. */
-export function examOccurrenceMonths(cfg: ExamConfig, consultMonths: number[]): number[] {
-  const snapped = nearestConsultMonth(cfg.startMonth, consultMonths);
-  const idx = consultMonths.indexOf(snapped);
+/**
+ * Mois (0-11, croissants) où un examen tombe sur l'année : `startMonth + k × frequenceMois`,
+ * ancrés sur son propre mois, hors de tout mois de consultation. Une fréquence d'un an ou plus
+ * donne un seul rendez-vous dans l'année affichée.
+ */
+export function examOccurrenceMonths(cfg: ExamConfig): number[] {
   const out: number[] = [];
-  for (let i = idx; i < consultMonths.length; i += cfg.everyN) out.push(consultMonths[i]);
-  return out.length ? out : [snapped];
+  for (let k = 0; k * cfg.frequenceMois < 12; k++) out.push((cfg.startMonth + k * cfg.frequenceMois) % 12);
+  return out.sort((a, b) => a - b);
 }
 
-/** Un examen est "cycle long" (bisannuel+) quand sa fréquence dépasse le nombre de consultations/an. */
-export function isLongCycle(cfg: ExamConfig, consultMonths: number[]): boolean {
-  return cfg.everyN > consultMonths.length;
+/** Un examen est « cycle long » (bisannuel+) quand il tombe moins d'1×/an. */
+export function isLongCycle(cfg: ExamConfig): boolean {
+  return cfg.frequenceMois > 12;
 }
 
-/** Nombre d'années du cycle long (arrondi), à partir de l'intervalle de consultation courant. */
-export function longCycleYears(cfg: ExamConfig, consultInterval: number): number {
-  return Math.round((cfg.everyN * consultInterval) / 12);
+/** Nombre d'années du cycle long (arrondi). */
+export function longCycleYears(cfg: ExamConfig): number {
+  return Math.round(cfg.frequenceMois / 12);
 }
 
 /**
- * Année de la "prochaine" occurrence d'un cycle long, affichée en badge
+ * Année de la « prochaine » occurrence d'un cycle long, affichée en badge
  * (« tous les 2 ans — prochain : 20XX »), jamais évaporée (règle gravée ②, cf. brief).
  * Port fidèle de la relation de la maquette (REF_YEAR = année courante − 1).
  */
-export function longCycleNextYear(cfg: ExamConfig, consultInterval: number, currentYear: number): number {
-  return currentYear - 1 + longCycleYears(cfg, consultInterval);
+export function longCycleNextYear(cfg: ExamConfig, currentYear: number): number {
+  return currentYear - 1 + longCycleYears(cfg);
+}
+
+// ── Statut par rendez-vous : clé (examId, mois) ──────────────────────────────────────────────
+
+/** Clé d'un rendez-vous d'examen : un examen à un mois donné. */
+export function examKey(id: ExamId, month: number): string {
+  return `${id}:${month}`;
+}
+
+/** Statut d'un rendez-vous : celui posé par l'utilisateur, sinon le statut par défaut du mois. */
+export function occurrenceStatus(
+  overrides: ExamStatusOverrides,
+  id: ExamId,
+  month: number,
+  currentMonth: number,
+): Status {
+  return overrides[examKey(id, month)] ?? statusForMonth(month, currentMonth);
+}
+
+/** Un seul état pour plusieurs statuts : tout fait → fait ; sinon un à programmer → à programmer ; sinon à venir. */
+export function aggregateStatus(statuses: Status[]): Status {
+  if (statuses.length > 0 && statuses.every((s) => s === 'fait')) return 'fait';
+  if (statuses.some((s) => s === 'a_programmer')) return 'a_programmer';
+  return 'a_venir';
+}
+
+/**
+ * Bascule d'un rendez-vous (une station, groupée ou non) : les examens `ids` au mois `month`
+ * passent **tous ensemble** de Fait à À programmer, ou à Fait sinon, d'après l'état unique affiché.
+ * Aucun autre mois ni autre examen ne bouge. Renvoie un nouvel objet.
+ */
+export function toggleOccurrenceGroup(
+  overrides: ExamStatusOverrides,
+  ids: ExamId[],
+  month: number,
+  currentMonth: number,
+): ExamStatusOverrides {
+  const shown = aggregateStatus(ids.map((id) => occurrenceStatus(overrides, id, month, currentMonth)));
+  const next: Status = shown === 'fait' ? 'a_programmer' : 'fait';
+  const out = { ...overrides };
+  ids.forEach((id) => {
+    out[examKey(id, month)] = next;
+  });
+  return out;
 }

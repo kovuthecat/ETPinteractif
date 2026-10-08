@@ -18,16 +18,20 @@ import {
   angleForMonth,
   pt,
   computeConsultMonths,
+  EXAM_FREQUENCY_OPTIONS,
   defaultConsultStatus,
   initExamConfig,
   initRevealedVide,
-  nearestConsultMonth,
   examOccurrenceMonths,
+  frequencyLabel,
+  occurrenceStatus,
+  aggregateStatus,
+  toggleOccurrenceGroup,
   isLongCycle,
   longCycleYears,
   longCycleNextYear,
 } from './logic';
-import type { ExamId, ProtectsId, Status, ConsultConfig, ExamConfig } from './logic';
+import type { ExamId, ProtectsId, Status, ConsultConfig, ExamConfig, ExamStatusOverrides } from './logic';
 import styles from './SuiviModule.module.css';
 import { useTabsKeyboard } from '../../../components/useTabsKeyboard';
 
@@ -106,6 +110,8 @@ interface SuiviState {
   consultStatus: Record<number, Status>;
   consultRevealed: boolean;
   examConfig: Record<ExamId, ExamConfig>;
+  /** Statuts posés par rendez-vous `(examId, mois)` ; absent = statut par défaut du mois. */
+  examStatus: ExamStatusOverrides;
   revealed: Record<ExamId, boolean>;
   doorOpen: ProtectsId | null;
 }
@@ -115,8 +121,8 @@ type Action =
   | { type: 'SET_CONSULT_INTERVAL'; interval: number; currentMonth: number }
   | { type: 'TOGGLE_CONSULT'; month: number }
   | { type: 'TOGGLE_CONSULT_REVEAL' }
-  | { type: 'SET_EXAM_EVERY_N'; id: ExamId; everyN: number }
-  | { type: 'TOGGLE_EXAM_STATUS'; id: ExamId }
+  | { type: 'SET_EXAM_FREQUENCE'; id: ExamId; frequenceMois: number }
+  | { type: 'TOGGLE_OCCURRENCE'; ids: ExamId[]; month: number; currentMonth: number }
   | { type: 'TOGGLE_EXAM_REVEAL'; id: ExamId }
   | { type: 'OPEN_DOOR'; protects: ProtectsId }
   | { type: 'CLOSE_DOOR' }
@@ -137,7 +143,8 @@ function initSuiviState(currentMonth: number): SuiviState {
     consultConfig,
     consultStatus: defaultConsultStatus(consultMonths, currentMonth),
     consultRevealed: false,
-    examConfig: initExamConfig(consultMonths, currentMonth),
+    examConfig: initExamConfig(),
+    examStatus: {},
     revealed: initRevealedVide(),
     doorOpen: null,
   };
@@ -159,19 +166,19 @@ function reducer(state: SuiviState, action: Action): SuiviState {
     }
     case 'TOGGLE_CONSULT_REVEAL':
       return { ...state, consultRevealed: !state.consultRevealed };
-    case 'SET_EXAM_EVERY_N':
+    case 'SET_EXAM_FREQUENCE':
       return {
         ...state,
         examConfig: {
           ...state.examConfig,
-          [action.id]: { ...state.examConfig[action.id], everyN: action.everyN },
+          [action.id]: { ...state.examConfig[action.id], frequenceMois: action.frequenceMois },
         },
       };
-    case 'TOGGLE_EXAM_STATUS': {
-      const cfg = state.examConfig[action.id];
-      const next: Status = cfg.status === 'fait' ? 'a_programmer' : 'fait';
-      return { ...state, examConfig: { ...state.examConfig, [action.id]: { ...cfg, status: next } } };
-    }
+    case 'TOGGLE_OCCURRENCE':
+      return {
+        ...state,
+        examStatus: toggleOccurrenceGroup(state.examStatus, action.ids, action.month, action.currentMonth),
+      };
     case 'TOGGLE_EXAM_REVEAL':
       return { ...state, revealed: { ...state.revealed, [action.id]: !state.revealed[action.id] } };
     case 'OPEN_DOOR':
@@ -229,13 +236,14 @@ export default function SuiviModule({ shell }: ModuleProps) {
   });
 
   const consultMonths = computeConsultMonths(state.consultConfig);
-  const annualN = Math.round(12 / state.consultConfig.interval);
   const monthPos = currentMonth + dayFrac;
   const needle = pt(CX, CY, R_NEEDLE, angleForMonth(monthPos));
 
-  // ── Cadran : points de mois "libres" (sans consultation) + labels des mois de consultation ──
-  const monthDots = Array.from({ length: 12 }, (_, m) => m).filter((m) => !consultMonths.includes(m));
-  const monthLabels = consultMonths.map((m) => ({ m, ...pt(CX, CY, R_LABELS, angleForMonth(m)) }));
+  // ── Statuts par rendez-vous : un examen à un mois donné (`examStatus`) ────────────────────
+  const statusAt = (id: ExamId, month: number): Status =>
+    occurrenceStatus(state.examStatus, id, month, currentMonth);
+  const toggleOccurrence = (ids: ExamId[], month: number) =>
+    dispatch({ type: 'TOGGLE_OCCURRENCE', ids, month, currentMonth });
 
   // ── Icônes de consultation (stéthoscope) ──────────────────────────────────────────────────
   const consultIcons = state.consultRevealed
@@ -252,7 +260,7 @@ export default function SuiviModule({ shell }: ModuleProps) {
   EXAM_DEFS.forEach((def) => {
     if (!state.revealed[def.id]) return;
     const cfg = state.examConfig[def.id];
-    const months = examOccurrenceMonths(cfg, consultMonths);
+    const months = examOccurrenceMonths(cfg);
     months.forEach((m) => {
       const target = def.bio ? bioByMonth : nonBioByMonth;
       const list = target.get(m) ?? [];
@@ -263,9 +271,7 @@ export default function SuiviModule({ shell }: ModuleProps) {
 
   const bioIcons = Array.from(bioByMonth.entries()).map(([m, group]) => {
     const p = pt(CX, CY, R_STATIONS_BIO, angleForMonth(m));
-    const allFait = group.every((g) => g.cfg.status === 'fait');
-    const anyProgrammer = group.some((g) => g.cfg.status === 'a_programmer');
-    const status: Status = allFait ? 'fait' : anyProgrammer ? 'a_programmer' : 'a_venir';
+    const status: Status = aggregateStatus(group.map((g) => statusAt(g.def.id, m)));
     return {
       month: m,
       x: p.x,
@@ -295,13 +301,21 @@ export default function SuiviModule({ shell }: ModuleProps) {
         month: m,
         x: p.x,
         y: p.y,
-        status: entry.cfg.status,
-        longCycle: isLongCycle(entry.cfg, consultMonths),
+        status: statusAt(entry.def.id, m),
+        longCycle: isLongCycle(entry.cfg),
         protects: entry.def.protects,
         name: entry.def.name,
       });
     });
   });
+
+  // ── Cadran : points de mois « libres » + labels des mois portant une consultation ou un examen ──
+  // Un examen vit à son propre mois (hors consultation) : son mois est étiqueté comme les autres.
+  const labelledMonths = Array.from(new Set([...consultMonths, ...bioByMonth.keys(), ...nonBioByMonth.keys()])).sort(
+    (a, b) => a - b,
+  );
+  const monthDots = Array.from({ length: 12 }, (_, m) => m).filter((m) => !labelledMonths.includes(m));
+  const monthLabels = labelledMonths.map((m) => ({ m, ...pt(CX, CY, R_LABELS, angleForMonth(m)) }));
 
   // ── Panneau de réglage — consultations ────────────────────────────────────────────────────
   function setConsultInterval(interval: number) {
@@ -312,16 +326,12 @@ export default function SuiviModule({ shell }: ModuleProps) {
   const examRows = EXAM_DEFS.map((def) => {
     const cfg = state.examConfig[def.id];
     const revealed = state.revealed[def.id];
-    const longCycle = isLongCycle(cfg, consultMonths);
-    const cycles = longCycleYears(cfg, state.consultConfig.interval);
+    const longCycle = isLongCycle(cfg);
+    const cycles = longCycleYears(cfg);
     const info = PROTECTS_INFO[def.protects];
-    const freqOptions = [
-      { n: 1, label: '1×/consult.' },
-      { n: annualN, label: '1×/an' },
-      { n: annualN * 2, label: '1×/2 ans' },
-      { n: annualN * 5, label: '1×/5 ans' },
-    ];
-    return { def, cfg, revealed, longCycle, cycles, info, freqOptions };
+    // Pastille de la ligne : un seul état pour tous les rendez-vous de l'examen.
+    const status = aggregateStatus(examOccurrenceMonths(cfg).map((m) => statusAt(def.id, m)));
+    return { def, cfg, revealed, longCycle, cycles, info, status };
   });
 
   // ── Fiche — check-list triée par mois ─────────────────────────────────────────────────────
@@ -339,18 +349,17 @@ export default function SuiviModule({ shell }: ModuleProps) {
   }));
   EXAM_DEFS.forEach((def) => {
     const cfg = state.examConfig[def.id];
-    if (isLongCycle(cfg, consultMonths)) {
-      const snapped = nearestConsultMonth(cfg.startMonth, consultMonths);
+    if (isLongCycle(cfg)) {
       ficheSrc.push({
-        month: snapped,
+        month: cfg.startMonth,
         name: def.name,
         status: 'grise',
-        nextYear: longCycleNextYear(cfg, state.consultConfig.interval, currentYear),
-        cycles: longCycleYears(cfg, state.consultConfig.interval),
+        nextYear: longCycleNextYear(cfg, currentYear),
+        cycles: longCycleYears(cfg),
       });
     } else {
-      examOccurrenceMonths(cfg, consultMonths).forEach((m) => {
-        ficheSrc.push({ month: m, name: def.name, status: cfg.status });
+      examOccurrenceMonths(cfg).forEach((m) => {
+        ficheSrc.push({ month: m, name: def.name, status: statusAt(def.id, m) });
       });
     }
   });
@@ -446,7 +455,7 @@ export default function SuiviModule({ shell }: ModuleProps) {
                 data-size="bio"
                 data-status={b.status}
                 style={{ left: pct(b.x, 700), top: pct(b.y, 700) }}
-                onClick={() => b.ids.forEach((id) => dispatch({ type: 'TOGGLE_EXAM_STATUS', id }))}
+                onClick={() => toggleOccurrence(b.ids, b.month)}
                 aria-label={`${b.label} — ${statusLabelFor(b.status)} — cliquer pour changer`}
               >
                 <span className={styles.stationIcon}>
@@ -468,7 +477,7 @@ export default function SuiviModule({ shell }: ModuleProps) {
                 data-size="exam"
                 data-status={e.longCycle ? 'longcycle' : e.status}
                 style={{ left: pct(e.x, 700), top: pct(e.y, 700) }}
-                onClick={() => dispatch({ type: 'TOGGLE_EXAM_STATUS', id: e.id })}
+                onClick={() => toggleOccurrence([e.id], e.month)}
                 aria-label={`${e.name} — ${MONTHS_FULL[e.month]} — ${
                   e.longCycle ? 'échéance pluriannuelle, jamais évaporée' : statusLabelFor(e.status)
                 } — cliquer pour changer`}
@@ -531,8 +540,8 @@ export default function SuiviModule({ shell }: ModuleProps) {
 
             <p className={styles.examListLabel}>Mes examens — un par un</p>
             <div className={styles.examList}>
-              {examRows.map(({ def, cfg, revealed, longCycle, cycles, info, freqOptions }) => {
-                const freqIdx = Math.max(0, freqOptions.findIndex((fo) => fo.n === cfg.everyN));
+              {examRows.map(({ def, cfg, revealed, longCycle, cycles, info, status }) => {
+                const freqIdx = Math.max(0, EXAM_FREQUENCY_OPTIONS.indexOf(cfg.frequenceMois));
                 return (
                   <div key={def.id} className={styles.examRow} data-revealed={revealed}>
                     <button
@@ -548,12 +557,12 @@ export default function SuiviModule({ shell }: ModuleProps) {
                         {def.name}
                         <span
                           className={styles.examStatusDot}
-                          data-status={longCycle ? 'longcycle' : cfg.status}
+                          data-status={longCycle ? 'longcycle' : status}
                           role="img"
                           aria-label={
                             longCycle
                               ? `Cycle long, tous les ${cycles} ans`
-                              : statusLabelFor(cfg.status)
+                              : statusLabelFor(status)
                           }
                         />
                       </span>
@@ -566,23 +575,26 @@ export default function SuiviModule({ shell }: ModuleProps) {
                         aria-label={`Fréquence de ${def.name} précédente`}
                         onClick={() =>
                           dispatch({
-                            type: 'SET_EXAM_EVERY_N',
+                            type: 'SET_EXAM_FREQUENCE',
                             id: def.id,
-                            everyN: freqOptions[(freqIdx - 1 + freqOptions.length) % freqOptions.length].n,
+                            frequenceMois:
+                              EXAM_FREQUENCY_OPTIONS[
+                                (freqIdx - 1 + EXAM_FREQUENCY_OPTIONS.length) % EXAM_FREQUENCY_OPTIONS.length
+                              ],
                           })
                         }
                       >
                         ‹
                       </button>
-                      <span>{freqOptions[freqIdx].label}</span>
+                      <span>{frequencyLabel(EXAM_FREQUENCY_OPTIONS[freqIdx])}</span>
                       <button
                         type="button"
                         aria-label={`Fréquence de ${def.name} suivante`}
                         onClick={() =>
                           dispatch({
-                            type: 'SET_EXAM_EVERY_N',
+                            type: 'SET_EXAM_FREQUENCE',
                             id: def.id,
-                            everyN: freqOptions[(freqIdx + 1) % freqOptions.length].n,
+                            frequenceMois: EXAM_FREQUENCY_OPTIONS[(freqIdx + 1) % EXAM_FREQUENCY_OPTIONS.length],
                           })
                         }
                       >

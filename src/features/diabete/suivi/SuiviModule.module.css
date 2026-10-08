@@ -509,6 +509,12 @@
   white-space: nowrap;
 }
 
+/* Libellés de fréquence en toutes lettres (« tous les 3 mois », « tous les 2 ans ») : largeur
+   fixe pour que les lignes d'examen restent alignées d'une fréquence à l'autre. */
+.examRow .stepper span {
+  min-width: 118px;
+}
+
 /* Statut d'examen en pastille compacte (à côté du nom) — même code couleur que les stations
    du cadran, remplace l'ancienne colonne texte qui allongeait trop la ligne. */
 .examStatusDot {
