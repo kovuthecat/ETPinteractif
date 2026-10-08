@@ -129,6 +129,17 @@ export default function AlerteModule({ shell }: ModuleProps) {
   return (
     <ModuleShell titre={shell.titre} sources={shell.sources} onBack={shell.onBack} wide nav={navBar}>
       <div className={styles.module}>
+        {/* ── Bandeau 15 — permanent, quel que soit l'onglet, au-dessus du détail (c-6-21) ──── */}
+        <div className={styles.bandeau15}>
+          <span className={styles.bandeau15Chiffre} aria-hidden="true">
+            15
+          </span>
+          <div className={styles.bandeau15Texte}>
+            <p className={styles.bandeau15Ligne}>Appelez le 15 (ou 112).</p>
+            <p className={styles.bandeau15Ligne}>Ne conduisez pas. N'attendez pas que ça passe.</p>
+          </div>
+        </div>
+
         {/* ── Onglet AVC — VITE ──────────────────────────────────────────── */}
         <section
           id="m10-panel-vite"
@@ -198,17 +209,6 @@ export default function AlerteModule({ shell }: ModuleProps) {
             </div>
           </div>
         </section>
-
-        {/* ── Bandeau 15 — permanent, quel que soit l'onglet ─────────────── */}
-        <div className={styles.bandeau15}>
-          <span className={styles.bandeau15Chiffre} aria-hidden="true">
-            15
-          </span>
-          <div className={styles.bandeau15Texte}>
-            <p className={styles.bandeau15Ligne}>Appelez le 15 (ou 112).</p>
-            <p className={styles.bandeau15Ligne}>Ne conduisez pas. N'attendez pas que ça passe.</p>
-          </div>
-        </div>
 
         <p className="filrouge">Chaque minute compte.</p>
 

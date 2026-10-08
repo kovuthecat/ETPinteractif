@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "session": "P1/S6",
+  "portee": "complete",
+  "resultat": "PASS",
+  "empreinte": "cc4dfb6ab9afa8e9704a588fcec617b9e394fa57eadf64e0d6703d0048da0564",
+  "nonSuivis": [
+    "src/features/diabete/components/Silhouette.module.css"
+  ],
+  "date": "2026-10-08T19:23:12.164Z",
+  "commandes": [
+    {
+      "nom": "build",
+      "cmd": "npm run build",
+      "code": 0,
+      "dureeMs": 5149
+    },
+    {
+      "nom": "test",
+      "cmd": "npx vitest run",
+      "code": 0,
+      "dureeMs": 1877
+    }
+  ]
+}

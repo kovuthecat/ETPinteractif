@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import ModuleShell from '../../../components/ModuleShell';
@@ -124,6 +124,14 @@ export default function ActiviteModule({ shell }: ModuleProps) {
   });
   const [delay, setDelay] = useState(DELAY_DEFAUT);
   const [microChecked, setMicroChecked] = useState<Record<number, boolean>>({});
+
+  // Retour du temps ① (bandeau de légende) : placé au-dessus du schéma, et ramené dans la vue au geste.
+  const captionRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (t1Active === null) return;
+    const el = captionRef.current;
+    if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ block: 'nearest' });
+  }, [t1Active]);
 
   function selectNode(id: RayonId) {
     if (id === 'sucre') {
@@ -271,6 +279,15 @@ export default function ActiviteModule({ shell }: ModuleProps) {
     caption = { eyebrow: '③ Le timing' };
   }
 
+  // Temps ① : le retour d'un clic sur un nœud se lit au-dessus du schéma (sous le pli sinon, c-4-17) ;
+  // temps ② et ③ : sous le contenu, comme avant.
+  const captionBand = (
+    <div className={`${styles.captionBand} ${temps === 1 ? styles.captionBandHaut : ''}`} ref={captionRef}>
+      <p className="eyebrow">{caption.eyebrow}</p>
+      {caption.text && <p className={styles.captionText}>{caption.text}</p>}
+    </div>
+  );
+
   if (!shell) return null;
 
   const navBar = (
@@ -292,6 +309,7 @@ export default function ActiviteModule({ shell }: ModuleProps) {
   return (
     <ModuleShell titre={shell.titre} sources={shell.sources} onBack={shell.onBack} wide nav={navBar}>
     <div className={styles.module}>
+      {temps === 1 && captionBand}
       {temps === 1 && (
         <div className={styles.rayonWrap}>
           <svg className={styles.raySvg} viewBox="0 0 100 100" aria-hidden="true">
@@ -571,10 +589,7 @@ export default function ActiviteModule({ shell }: ModuleProps) {
         </div>
       )}
 
-      <div className={styles.captionBand}>
-        <p className="eyebrow">{caption.eyebrow}</p>
-        {caption.text && <p className={styles.captionText}>{caption.text}</p>}
-      </div>
+      {temps !== 1 && captionBand}
 
     </div>
     </ModuleShell>

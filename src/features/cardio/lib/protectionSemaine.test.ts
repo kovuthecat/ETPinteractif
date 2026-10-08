@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { PROTECTION_DECAY, protectionColor, protectionValues } from './protectionSemaine';
+import { PROTECTION_DECAY, protectionColor, protectionNiveau, protectionValues } from './protectionSemaine';
 
 // ---------------------------------------------------------------------------
 // Table de vérité (plans/recette-outils-2026-08/S3.md, G-baremes) : le repère affiché à
@@ -50,5 +50,21 @@ describe('protectionColor × protectionValues — cohérence avec le repère « 
     const [, mardi, mercredi] = values;
     expect(protectionColor(mardi)).not.toBe('var(--color-toxique)');
     expect(protectionColor(mercredi)).not.toBe('var(--color-toxique)');
+  });
+});
+
+describe('protectionNiveau — le niveau en texte suit la couleur (c-6-2)', () => {
+  it('trois niveaux, mêmes seuils que la couleur', () => {
+    expect(protectionNiveau(100)).toBe('forte');
+    expect(protectionNiveau(55)).toBe('forte');
+    expect(protectionNiveau(54)).toBe('moyenne');
+    expect(protectionNiveau(20)).toBe('moyenne');
+    expect(protectionNiveau(19)).toBe('faible');
+    expect(protectionNiveau(0)).toBe('faible');
+  });
+
+  it('chaque niveau correspond à une couleur distincte', () => {
+    const couleurs = [100, 40, 0].map(protectionColor);
+    expect(new Set(couleurs).size).toBe(3);
   });
 });

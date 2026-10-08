@@ -679,6 +679,12 @@ export default function MangerModule({ shell }: ModuleProps) {
                 <span className={styles.legendeProteines}>
                   ● Protéines {pctProteines}%{repFood.proteines ? ` — ${repFood.proteines.name}` : ''}
                 </span>
+                {/* Retour de l'ajout d'un aliment sans part (fromage, huile, fruit…) : dit où il est passé (c-6-14). */}
+                {extrasFoods.length > 0 && (
+                  <span className={styles.legendeHorsAssiette} aria-live="polite">
+                    ● Ajouté hors assiette — {Array.from(new Set(extrasFoods.map((f) => f.name))).join(', ')}
+                  </span>
+                )}
               </div>
               {extras.length > 0 && (
                 <div className={styles.extras}>

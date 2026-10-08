@@ -1,0 +1,10 @@
+/* Enveloppe sans effet de mise en page : elle ne sert qu'à cibler les hotspots du corps partagé. */
+.host {
+  display: contents;
+}
+
+/* Les halos décoratifs des hotspots (inset -50 %) ne captent pas le clic : sinon le halo d'une
+   zone voisine recouvre le centre d'une autre (c-4-14). Le centre d'une zone active cette zone. */
+.host button::before {
+  pointer-events: none;
+}

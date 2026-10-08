@@ -4,7 +4,7 @@ import ModuleShell from '../../../components/ModuleShell';
 import InfoHover from '../../../components/InfoHover';
 import IllustrationSlot from '../components/IllustrationSlot';
 import { ACTIVITIES, ACT_MIN_STEP, ACT_MIN_FLOOR, ACT_MIN_CEIL } from '../../../content/activites';
-import { protectionColor, protectionValues } from '../lib/protectionSemaine';
+import { protectionColor, protectionNiveau, protectionValues } from '../lib/protectionSemaine';
 import styles from './BougerModule.module.css';
 
 /**
@@ -282,13 +282,25 @@ export default function BougerModule({ shell }: ModuleProps) {
               </div>
 
               <p className={styles.protectionLabel}>Protection sur la semaine</p>
-              <div className={styles.barsRow} role="img" aria-label="Niveau de protection estimé, jour par jour">
+              {/* Sept éléments, chacun avec son jour et son niveau en texte (c-6-2) : la couleur ne porte pas
+                  seule l'information. */}
+              <div className={styles.barsRow} role="group" aria-label="Niveau de protection estimé, jour par jour">
                 {protectionParJour.map((v, i) => (
-                  <div key={i} className={styles.barCol}>
-                    <div
-                      className={styles.bar}
-                      style={{ height: `${Math.max(4, v)}%`, background: protectionColor(v) }}
-                    />
+                  <div
+                    key={i}
+                    className={styles.barCol}
+                    role="img"
+                    aria-label={`${JOURS[i].complet} : protection ${protectionNiveau(v)}`}
+                  >
+                    <div className={styles.barTrack}>
+                      <div
+                        className={styles.bar}
+                        style={{ height: `${Math.max(4, v)}%`, background: protectionColor(v) }}
+                      />
+                    </div>
+                    <span className={styles.barDay} aria-hidden="true">
+                      {JOURS[i].court}
+                    </span>
                   </div>
                 ))}
               </div>

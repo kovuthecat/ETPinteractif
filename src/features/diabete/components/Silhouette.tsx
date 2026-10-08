@@ -4,6 +4,7 @@ import SilhouetteCorps, {
   type SilhouetteEtat,
   type SilhouetteZone,
 } from '../../../components/SilhouetteCorps';
+import styles from './Silhouette.module.css';
 
 /**
  * Wrapper fin diabète autour du composant générique `SilhouetteCorps` (S2, promotion moteur —
@@ -35,9 +36,11 @@ export { SILHOUETTE_VIEWBOX };
  *  hotspot) de chaque ancre nommée — valeurs calées au diagnostic, cf.
  *  plans/illustrations-diabete/index.md §7. Le nerf est positionné sur la main (validé). */
 export const SILHOUETTE_ANCHORS: Record<ZoneId, { x: number; y: number; r: number }> = {
-  cerveau: { x: 50, y: 7, r: 24 },
-  yeux: { x: 50, y: 10, r: 22 },
-  cou: { x: 50, y: 16, r: 22 },
+  // Tête : cerveau / yeux / cou espacés d'au moins 5,5 % de l'image (≈ 23 px à 420 px), pour qu'aucun
+  // centre ne tombe dans la zone voisine (hotspots de 44 px minimum — c-4-14).
+  cerveau: { x: 50, y: 5, r: 22 },
+  yeux: { x: 50, y: 10.5, r: 22 },
+  cou: { x: 50, y: 16.5, r: 22 },
   coeur: { x: 49, y: 26, r: 30 },
   reins: { x: 50, y: 39, r: 26 },
   nerfs: { x: 31, y: 54, r: 24 },
@@ -72,12 +75,14 @@ export default function Silhouette({ zones, onZoneClick, children }: SilhouetteP
   });
 
   return (
-    <SilhouetteCorps
-      zones={zonesGeneriques}
-      onZoneClick={onZoneClick ? (id) => onZoneClick(id as ZoneId) : undefined}
-      bodyImage={BODY_IMAGE}
-    >
-      {children}
-    </SilhouetteCorps>
+    <div className={styles.host}>
+      <SilhouetteCorps
+        zones={zonesGeneriques}
+        onZoneClick={onZoneClick ? (id) => onZoneClick(id as ZoneId) : undefined}
+        bodyImage={BODY_IMAGE}
+      >
+        {children}
+      </SilhouetteCorps>
+    </div>
   );
 }

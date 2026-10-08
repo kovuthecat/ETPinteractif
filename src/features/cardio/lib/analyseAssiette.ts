@@ -17,6 +17,11 @@ export const EQUILIBRE_TOLERANCE = 12;
 export const SEUIL_LEGUMES_BAS = 35;
 export const SEUIL_PROTEINES_HAUT = 40;
 export const SEUIL_FECULENTS_HAUT = 40;
+/** Part de légumes en dessous de laquelle on ne crédite plus la variété : une assiette à 1 % de légumes
+ *  ne reçoit pas « De beaux légumes », quel que soit le nombre de légumes déposés (c-6-13). */
+export const SEUIL_LEGUMES_CREDIT = 15;
+/** Part de légumes au-dessus de laquelle l'assiette est loin du modèle par excès — hors de la bande ½ ± tolérance. */
+export const SEUIL_LEGUMES_HAUT = 50 + EQUILIBRE_TOLERANCE;
 /** Nombre d'aliments distincts, dans une catégorie-cœur, à partir duquel on considère que le
  *  patient « varie » (par opposition à un seul aliment répété). */
 export const VARIETE_MIN = 2;
@@ -62,7 +67,7 @@ export function analyseEquilibreAssiette(a: AssietteEquilibre): string {
   if (a.pctLegumes < SEUIL_LEGUMES_BAS) {
     // Le patient a déjà ajouté plusieurs légumes différents : on crédite le geste plutôt que de
     // répéter un manque que l'écran contredirait (c'est exactement le défaut constaté en recette).
-    if (a.varieteLegumes >= VARIETE_MIN) {
+    if (a.varieteLegumes >= VARIETE_MIN && a.pctLegumes >= SEUIL_LEGUMES_CREDIT) {
       return 'De beaux légumes — laissez-leur plus de place.';
     }
     return 'Pas assez de légumes : pensez à leur laisser la moitié de l’assiette, pour les fibres et le potassium.';
@@ -74,6 +79,12 @@ export function analyseEquilibreAssiette(a: AssietteEquilibre): string {
 
   if (a.pctFeculents > SEUIL_FECULENTS_HAUT) {
     return 'Beaucoup de féculents : laissez plus de place aux légumes.';
+  }
+
+  // Légumes très au-dessus de la moitié : l'assiette n'est pas « correcte », mais il reste à la rééquilibrer
+  // vers le modèle — seule la seconde moitié du message générique est reprise (c-6-13).
+  if (a.pctLegumes > SEUIL_LEGUMES_HAUT) {
+    return 'Encore un peu de rééquilibrage possible vers le modèle ½ · ¼ · ¼.';
   }
 
   return 'Assiette correcte — encore un peu de rééquilibrage possible vers le modèle ½ · ¼ · ¼.';

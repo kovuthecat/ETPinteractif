@@ -44,3 +44,10 @@
 - [ ] Module Alimentation, défi « Repas complet » : la courbe glycémique change visiblement selon le
       plat chargé (plat féculent-dominant vs protéine-dominant) ; aucune régression sur les 5 plats
       déjà existants ; composition/proportions des 14 plats à juger.
+
+## P1/S6 — Suivi (2026-10-08)
+
+- [ ] Suivi : le cadran reste lisible avec les stations hors consultation (examens à leur propre mois,
+      parfois seuls sur un mois sans consultation) ; fréquences par examen (« tous les 3 mois »,
+      « 1×/an », « tous les 2 ans ») jugées claires. Valeurs de fréquence (HbA1c 3 mois, vaccins 2 ans)
+      toujours à revalider ADA/HAS-SFD.

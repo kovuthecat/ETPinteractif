@@ -82,6 +82,49 @@ describe('analyseEquilibreAssiette — branches inchangées (protéines/féculen
   });
 });
 
+describe('analyseEquilibreAssiette — le message suit les parts affichées (c-6-13)', () => {
+  it('1 % de légumes (98 % de protéines), plusieurs légumes déposés → jamais « De beaux légumes »', () => {
+    const texte = analyseEquilibreAssiette({
+      pctLegumes: 1,
+      pctFeculents: 1,
+      pctProteines: 98,
+      varieteLegumes: 3,
+      varieteFeculents: 1,
+      varieteProteines: 2,
+    });
+    expect(texte).not.toMatch(/beaux légumes/i);
+    expect(texte).toMatch(/Pas assez de légumes/);
+  });
+
+  it('98 % de légumes → jamais « Assiette correcte »', () => {
+    const texte = analyseEquilibreAssiette({
+      pctLegumes: 98,
+      pctFeculents: 1,
+      pctProteines: 1,
+      varieteLegumes: 4,
+      varieteFeculents: 1,
+      varieteProteines: 1,
+    });
+    expect(texte).not.toMatch(/Assiette correcte/);
+    expect(texte).toMatch(/rééquilibrage/);
+  });
+
+  it('la variété reste créditée dès que la part de légumes n’est plus dérisoire', () => {
+    const texte = analyseEquilibreAssiette({ ...BASE, pctLegumes: 20, varieteLegumes: 6 });
+    expect(texte).toMatch(/beaux légumes/i);
+  });
+
+  it('ces messages ne contiennent pas de chiffre non plus', () => {
+    expect(analyseEquilibreAssiette({ ...BASE, pctLegumes: 1, pctFeculents: 1, pctProteines: 98, varieteLegumes: 3 })).not.toMatch(/\d/);
+    expect(analyseEquilibreAssiette({ ...BASE, pctLegumes: 98, pctFeculents: 1, pctProteines: 1 })).not.toMatch(/\d/);
+  });
+
+  it('70 % de légumes (hors de la bande du modèle) → pas « Assiette correcte » non plus', () => {
+    const texte = analyseEquilibreAssiette({ ...BASE, pctLegumes: 70, pctFeculents: 15, pctProteines: 15 });
+    expect(texte).not.toMatch(/Assiette correcte/);
+  });
+});
+
 describe('analyseEquilibreAssiette — jamais de chiffre imprimé', () => {
   it('aucun message ne contient de chiffre (invariant module 8, jamais de seuil à l’écran)', () => {
     const cas: AssietteEquilibre[] = [

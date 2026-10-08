@@ -15,9 +15,19 @@
  */
 export const PROTECTION_DECAY = 30;
 
+export type ProtectionNiveau = 'forte' | 'moyenne' | 'faible';
+
+/** Niveau en toutes lettres d'une valeur de protection — la couleur n'est jamais seule à le porter. */
+export function protectionNiveau(v: number): ProtectionNiveau {
+  if (v >= 55) return 'forte';
+  if (v >= 20) return 'moyenne';
+  return 'faible';
+}
+
 export function protectionColor(v: number): string {
-  if (v >= 55) return 'var(--color-confort)';
-  if (v >= 20) return 'var(--color-vigilance)';
+  const niveau = protectionNiveau(v);
+  if (niveau === 'forte') return 'var(--color-confort)';
+  if (niveau === 'moyenne') return 'var(--color-vigilance)';
   return 'var(--color-toxique)';
 }
 

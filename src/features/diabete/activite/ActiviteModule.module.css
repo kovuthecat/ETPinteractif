@@ -646,6 +646,13 @@
   align-items: center;
 }
 
+/* Temps ① : le bandeau est au-dessus du schéma ; on réserve sa place pour que le schéma ne glisse pas
+   sous le doigt quand le texte du rayon apparaît. */
+.captionBandHaut {
+  justify-content: flex-start;
+  min-height: 6.5rem;
+}
+
 .captionText {
   margin: 0;
   font-size: 19px;

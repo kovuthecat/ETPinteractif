@@ -429,13 +429,26 @@
   grid-template-columns: repeat(7, 1fr);
   align-items: end;
   gap: var(--space-sm);
-  height: 90px;
 }
 
 .barCol {
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.barTrack {
+  height: 90px;
   display: flex;
   align-items: end;
+}
+
+/* Lettre du jour sous chaque barre (c-6-2) : le niveau n'est plus porté par la couleur seule. */
+.barDay {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-soft);
 }
 
 .bar {

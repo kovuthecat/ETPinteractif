@@ -56,3 +56,11 @@ Pilote (modules 1-3) validé par Thibault le 2026-07-22 (après recalage silhoue
 
 - [ ] Module Manger, onglet Assiette : charger chaque preset change visiblement le camembert (plus de
       parts égales systématiques) — composition à juger (réalisme culturel/portions).
+
+## P1/S6 — Alerte, Manger (2026-10-08)
+
+- [ ] Reconnaître l'alerte : le bandeau « Appelez le 15 » est désormais au-dessus des signes (les deux
+      onglets) — placement jugé adapté à la lecture sous stress.
+- [ ] Manger, analyse d'assiette : pour une assiette à plus de 62 % de légumes, le message affiché est la
+      seconde moitié du message générique (« Encore un peu de rééquilibrage possible vers le modèle ½ · ¼ · ¼. ») ;
+      seuils 15 % (crédit de variété) et 62 % à valider.
