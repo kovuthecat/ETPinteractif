@@ -26,6 +26,13 @@ interface PrintableLivretProps {
   coverTitle: string;
   /** Date d'arrêt déjà formatée (chaîne vide si non renseignée). */
   coverDate?: string;
+  /** Libellé devant la date (défaut « Jour J » : un arrêt net). Pour une autre stratégie, un
+   *  libellé qui ne qualifie pas de « Jour J » une date qui n'en est pas un. */
+  coverDateLabel?: string;
+  /** Libellé de la date quand elle n'est pas renseignée (défaut « Date d'arrêt »). */
+  coverDateVideLabel?: string;
+  /** Stratégie retenue, nommée sous le titre de la couverture (absente = non choisie). */
+  coverStrategie?: string;
   sections: PrintableSection[];
   /** Contenu additionnel du pied (fil rouge…), au-dessus de la mention « rien n'est enregistré ». */
   footer?: ReactNode;
@@ -42,6 +49,9 @@ export default function PrintableLivret({
   coverEyebrow,
   coverTitle,
   coverDate,
+  coverDateLabel = 'Jour J',
+  coverDateVideLabel = "Date d'arrêt",
+  coverStrategie,
   sections,
   footer,
   onClose,
@@ -67,13 +77,18 @@ export default function PrintableLivret({
         <section className={styles.cover}>
           <span className={`eyebrow ${styles.coverEyebrow}`}>{coverEyebrow}</span>
           <h1 className={styles.coverTitle}>{coverTitle}</h1>
+          {coverStrategie && (
+            <p className={styles.coverNote}>
+              Stratégie choisie : <strong>{coverStrategie}</strong>
+            </p>
+          )}
           {coverDate ? (
             <p className={styles.coverDate}>
-              Jour J : <strong>{coverDate}</strong>
+              {coverDateLabel} : <strong>{coverDate}</strong>
             </p>
           ) : (
             <p className={styles.coverDateVide}>
-              Date d'arrêt : à choisir ensemble, quand vous serez prêt·e.
+              {coverDateVideLabel} : à choisir ensemble, quand vous serez prêt·e.
             </p>
           )}
           <p className={styles.coverNote}>

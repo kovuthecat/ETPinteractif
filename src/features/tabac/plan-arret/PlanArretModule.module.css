@@ -142,3 +142,31 @@
     font-size: 22px;
   }
 }
+
+/* --- Récapitulatif du livret --- */
+
+.recapList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs, 6px);
+  margin: 0;
+}
+
+.recapRow {
+  display: flex;
+  gap: var(--space-md);
+  align-items: baseline;
+}
+
+.recapRow dt {
+  flex: 0 0 11em;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-soft);
+}
+
+.recapRow dd {
+  margin: 0;
+  font-size: 16px;
+  color: var(--color-text);
+}

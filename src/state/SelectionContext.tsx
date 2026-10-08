@@ -33,6 +33,9 @@ export interface SelectionState {
   substituts: string[];
   /** ids d'outils marqués « Dans ma fiche » (canoniques — cf. boîte-à-outils). */
   outilsFiche: string[];
+  /** ids d'outils retirés À LA MAIN de la fiche : l'ajout automatique (outil personnalisé) ne les
+   *  recoche pas. Mémoire de séance, jamais persistée (invariant 1). */
+  outilsFicheRetires: string[];
   /** parades (4D + libres) retenues dans « Mon plan d'arrêt ». */
   parades: string[];
   /** raisons d'arrêter (libellés — cf. `MotivationModule`). */
@@ -60,6 +63,7 @@ const EMPTY_STATE: SelectionState = Object.freeze({
   situationsLibres: [],
   substituts: [],
   outilsFiche: [],
+  outilsFicheRetires: [],
   parades: [],
   raisons: [],
   gestesEcart: [],

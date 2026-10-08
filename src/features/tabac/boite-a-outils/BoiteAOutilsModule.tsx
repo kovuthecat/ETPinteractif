@@ -34,7 +34,7 @@ const SITUATIONS_PAR_ID = new Map<string, SituationDef>(SITUATIONS.map((s) => [s
  * et sélection de fiche sont du state React éphémère.
  */
 export default function BoiteAOutilsModule({ onNavigate, context }: ModuleProps) {
-  const { state, toggle, add } = useSelection();
+  const { state, toggle, add, remove } = useSelection();
   const consultationStore = useConsultationStore();
   const ficheItems = state.outilsFiche;
   // Filtre local (éphémère) : pré-alimenté au montage depuis les situations
@@ -47,10 +47,10 @@ export default function BoiteAOutilsModule({ onNavigate, context }: ModuleProps)
   // fermer l'outil (`onClose`) revienne au détail plutôt qu'à la grille.
   const [activeOutilId, setActiveOutilId] = useState<string | null>(null);
   const [ficheOpen, setFicheOpen] = useState(false);
-  // Rattachement auto à la fiche (S2, G-fiche, plans/recette-outils-2026-08) : mémoire locale
-  // (éphémère, pas de persistance) des outils explicitement RETIRÉS par le soignant, pour que
-  // l'automatisme ci-dessous ne les recoche pas tant qu'ils ne sont pas re-remplis à la main.
-  const [retiresManuellement, setRetiresManuellement] = useState<Set<string>>(new Set());
+  // Rattachement auto à la fiche (S2, G-fiche, plans/recette-outils-2026-08) : mémoire de séance
+  // (`SelectionContext`, sans persistance) des outils explicitement RETIRÉS par le soignant, pour
+  // que l'automatisme ci-dessous ne les recoche pas — y compris après une sortie du module.
+  const retiresManuellement = state.outilsFicheRetires;
 
   function toggleSituation(id: string) {
     setActiveSituations((prev) => {
@@ -63,13 +63,8 @@ export default function BoiteAOutilsModule({ onNavigate, context }: ModuleProps)
 
   function toggleFiche(id: string) {
     const present = ficheItems.includes(id);
-    setRetiresManuellement((prev) => {
-      if (present === prev.has(id)) return prev;
-      const next = new Set(prev);
-      if (present) next.add(id);
-      else next.delete(id);
-      return next;
-    });
+    if (present) add('outilsFicheRetires', id);
+    else remove('outilsFicheRetires', id);
     toggle('outilsFiche', id);
   }
 
@@ -82,7 +77,7 @@ export default function BoiteAOutilsModule({ onNavigate, context }: ModuleProps)
   useEffect(() => {
     for (const outil of OUTILS) {
       const perso = state.outilsData[outil.id];
-      if (perso && perso.length > 0 && !ficheItems.includes(outil.id) && !retiresManuellement.has(outil.id)) {
+      if (perso && perso.length > 0 && !ficheItems.includes(outil.id) && !retiresManuellement.includes(outil.id)) {
         add('outilsFiche', outil.id);
       }
     }
@@ -275,6 +270,7 @@ export default function BoiteAOutilsModule({ onNavigate, context }: ModuleProps)
                   type="checkbox"
                   checked={dansLaFiche}
                   onChange={() => toggleFiche(outil.id)}
+                  aria-label={`Dans ma fiche : ${outil.titre}`}
                 />
                 Dans ma fiche
               </label>

@@ -4,6 +4,7 @@ import type { ModuleProps } from '../../types';
 import PrintableLivret from '../../../components/PrintableLivret';
 import { useSelection, type StrategieArret } from '../../../state/SelectionContext';
 import { buildLivretSections } from './livretSections';
+import { FORMES_DATA, type FormeId } from '../../../content/tabac/substituts';
 import styles from './PlanArretModule.module.css';
 
 // « Mon plan d'arrêt » lit et écrit l'état de sélection partagé (SelectionContext,
@@ -144,6 +145,19 @@ export default function PlanArretModule(_: ModuleProps) {
     state.raisons.length > 0 ||
     state.gestesEcart.length > 0;
 
+  const strategieLabel = STRATEGIE_OPTIONS.find((o) => o.id === strategie)?.label ?? null;
+  const progressive = strategie === 'progressive';
+
+  // Récapitulatif à l'écran de ce qui partira dans le livret : mêmes sources, aucune donnée en plus.
+  const dose = state.titrationPatch;
+  const substitutsRecap = state.substituts
+    .filter((id): id is FormeId => id in FORMES_DATA)
+    .map((id) => {
+      if (id !== 'patch') return FORMES_DATA[id].label;
+      const nuit = Math.min(dose.quartsNuit, dose.quartsJour);
+      return `${FORMES_DATA[id].label} — dose du jour ${dose.quartsJour}/4${dose.jourNuit ? `, nuit ${nuit}/4` : ''}`;
+    });
+
   let dateFormatee = '';
   if (date) {
     const [y, m, d] = date.split('-').map(Number);
@@ -208,6 +222,30 @@ export default function PlanArretModule(_: ModuleProps) {
         />
       </section>
 
+      <section className={`card ${styles.section}`} aria-labelledby="recap-livret-titre">
+        <p id="recap-livret-titre" className={styles.sectionLabel}>
+          3. Ce qui sera dans mon livret
+        </p>
+        <dl className={styles.recapList}>
+          <div className={styles.recapRow}>
+            <dt>Stratégie</dt>
+            <dd>{strategieLabel ?? 'à choisir'}</dd>
+          </div>
+          <div className={styles.recapRow}>
+            <dt>{progressive ? 'Début de réduction' : "Date d'arrêt"}</dt>
+            <dd>{date ? dateFormatee : 'à choisir'}</dd>
+          </div>
+          <div className={styles.recapRow}>
+            <dt>Substituts</dt>
+            <dd>{substitutsRecap.length > 0 ? substitutsRecap.join(' · ') : 'à choisir'}</dd>
+          </div>
+          <div className={styles.recapRow}>
+            <dt>Mes raisons</dt>
+            <dd>{state.raisons.length > 0 ? state.raisons.join(' · ') : 'à compléter'}</dd>
+          </div>
+        </dl>
+      </section>
+
       <div className={styles.ficheButtonRow}>
         <button
           type="button"
@@ -215,7 +253,7 @@ export default function PlanArretModule(_: ModuleProps) {
           onClick={() => setLivretOpen(true)}
           disabled={!auMoinsUneSection}
         >
-          Imprimer mon livret complet
+          Voir l'aperçu du livret
         </button>
         <button
           type="button"
@@ -232,6 +270,9 @@ export default function PlanArretModule(_: ModuleProps) {
           coverEyebrow="PROGRAMME ETP · SEVRAGE TABAGIQUE"
           coverTitle="Mon livret d'accompagnement"
           coverDate={dateFormatee}
+          coverDateLabel={progressive ? 'Début de la réduction' : 'Jour J'}
+          coverDateVideLabel={progressive ? 'Date de début de réduction' : "Date d'arrêt"}
+          coverStrategie={strategieLabel ?? undefined}
           sections={buildLivretSections(state)}
           footer={
             <p className="fiche-filrouge">
