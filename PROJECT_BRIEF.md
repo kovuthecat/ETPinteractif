@@ -17,7 +17,7 @@ Application web interactive servant de **support d'éducation thérapeutique du 
 2. **Modules interactifs visuels** (bacs à sable temps réel, courbes, silhouettes et artères illustrées, cartes cliquables) — le soignant commente, l'écran illustre.
 3. **Saisies éphémères en consultation** : boîte à outils tabac (14 outils, dont tirelire, SI… ALORS…, checklists, 4D, respiration), motivation, plan d'arrêt — mémorisées en session (`SelectionContext`), jamais persistées.
 4. **Fiches à emporter** imprimables A4 et **livret d'accompagnement** tabac, composés à partir des choix de la séance, sans stockage.
-5. **App patient autonome** (`patient.html`, bundle séparé) : mes substituts (titration du patch), agir face à une situation (outils interactifs), carnet de suivi avec synthèse — données conservées sur l'appareil du patient uniquement.
+5. **App patient autonome** (`patient.html`, bundle séparé) : mes substituts (fiches), agir face à une situation (outils interactifs), carnet de suivi avec synthèse — données conservées sur l'appareil du patient uniquement.
 
 ## Hors périmètre v1
 
@@ -91,6 +91,7 @@ Un **support d'ETP interactif et non-linéaire** pour la consultation, sobre et 
 - [ ] Prévention cardiovasculaire secondaire
 - [ ] Mode plein écran / présentation
 - [ ] Accessibilité renforcée (taille de police réglable)
+- [ ] Titration du patch dans l'app patient (dose conservée sur l'appareil) — reportée le 2026-10-08 (le livret porte la dose) ; signal : un patient ou un soignant demande à retrouver la dose dans l'app
 
 ### Critères avant ajout de feature
 
