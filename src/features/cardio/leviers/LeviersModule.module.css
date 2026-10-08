@@ -159,7 +159,7 @@
 
 .evaTrack {
   position: relative;
-  height: 16px;
+  height: 24px;
   border-radius: var(--radius-pill);
   background: linear-gradient(to right, var(--color-confort), var(--color-vigilance), var(--color-toxique));
 }
@@ -178,12 +178,12 @@
 
 .evaInput::-webkit-slider-runnable-track {
   background: transparent;
-  height: 16px;
+  height: 24px;
 }
 
 .evaInput::-moz-range-track {
   background: transparent;
-  height: 16px;
+  height: 24px;
 }
 
 .evaInput::-webkit-slider-thumb {
@@ -191,7 +191,7 @@
   appearance: none;
   width: 28px;
   height: 28px;
-  margin-top: -6px;
+  margin-top: -2px;
   border-radius: 50%;
   background: var(--color-surface);
   border: 3px solid var(--color-text);

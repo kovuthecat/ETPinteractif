@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { ArrowRight, Check } from 'lucide-react';
 import type { ModuleProps } from '../../types';
@@ -41,7 +41,7 @@ const PILLARS_DATA: Record<Pilier, PilierData> = {
     labelDx: -34,
     labelDy: -17,
     arcStart: 120,
-    arcEnd: 240,
+    arcEnd: 210,
   },
   psychologique: {
     label: 'Psychologique',
@@ -51,7 +51,7 @@ const PILLARS_DATA: Record<Pilier, PilierData> = {
     cy: 160,
     labelDx: 34,
     labelDy: -17,
-    arcStart: -60,
+    arcStart: -30,
     arcEnd: 60,
   },
   comportementale: {
@@ -94,6 +94,39 @@ function itemPosition(p: PilierData, index: number, count: number): CSSPropertie
     left: `${clampPercent(x, VIEW_W, ITEM_MARGIN_X_PCT)}%`,
     top: `${clampPercent(y, VIEW_H, ITEM_MARGIN_Y_PCT)}%`,
   };
+}
+
+/** Écarte verticalement les bulles de situation qui se recouvrent (WCAG 2.5.8 : cibles voisines
+ *  sans chevauchement). Les positions de base viennent de l'arc ; on ne corrige que l'excédent. */
+function separerBulles(wrap: HTMLElement) {
+  const bulles = Array.from(wrap.querySelectorAll<HTMLElement>('[data-situation-chip]'));
+  bulles.forEach((b) => {
+    b.style.marginTop = '0px';
+  });
+  const ecart = 4;
+  const tri = [...bulles].sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+  tri.forEach((b, i) => {
+    let dy = 0;
+    for (let pass = 0; pass < 6; pass++) {
+      let moved = false;
+      const r = b.getBoundingClientRect();
+      for (let j = 0; j < i; j++) {
+        const o = tri[j].getBoundingClientRect();
+        const haut = r.top + dy;
+        const bas = r.bottom + dy;
+        const oHaut = o.top;
+        const oBas = o.bottom;
+        const chevaucheX = Math.min(r.right, o.right) - Math.max(r.left, o.left) > 0;
+        const chevaucheY = Math.min(bas, oBas + ecart) - Math.max(haut, oHaut) > 0;
+        if (chevaucheX && chevaucheY) {
+          dy += oBas + ecart - haut;
+          moved = true;
+        }
+      }
+      if (!moved) break;
+    }
+    b.style.marginTop = `${dy}px`;
+  });
 }
 
 export default function AddictionModule({ onNavigate }: ModuleProps) {
@@ -139,6 +172,18 @@ export default function AddictionModule({ onNavigate }: ModuleProps) {
   const renderOrder = selected ? [...ORDER.filter((p) => p !== selected), selected] : ORDER;
   const data = selected ? PILLARS_DATA[selected] : null;
   const items = selected ? SITUATIONS.filter((s) => s.pilier === selected) : [];
+  const vennWrapRef = useRef<HTMLDivElement>(null);
+
+  // Mesure après rendu (et au redimensionnement) : les bulles sont positionnées en % sur un arc,
+  // leur encombrement réel dépend de la largeur disponible.
+  useLayoutEffect(() => {
+    const wrap = vennWrapRef.current;
+    if (!wrap) return;
+    const appliquer = () => separerBulles(wrap);
+    appliquer();
+    window.addEventListener('resize', appliquer);
+    return () => window.removeEventListener('resize', appliquer);
+  }, [selected, selection]);
 
   return (
     <div className={styles.module}>
@@ -147,7 +192,7 @@ export default function AddictionModule({ onNavigate }: ModuleProps) {
       </p>
 
       <div className={`${styles.vennCard} card`}>
-        <div className={styles.vennWrap}>
+        <div className={styles.vennWrap} ref={vennWrapRef}>
           <svg
             className={styles.venn}
             viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
@@ -200,6 +245,7 @@ export default function AddictionModule({ onNavigate }: ModuleProps) {
                 <button
                   key={s.id}
                   type="button"
+                  data-situation-chip=""
                   className={`${styles.situationChip} ${isChecked ? styles.situationChipActive : ''}`}
                   style={{ ...itemPosition(data, i, items.length), ...pillarVars(data) }}
                   aria-pressed={isChecked}

@@ -1,4 +1,4 @@
-import { useReducer, useRef, useState } from 'react';
+import { useLayoutEffect, useReducer, useRef, useState } from 'react';
 import type { ComponentType } from 'react';
 import { Stethoscope, TestTube, Droplet, Heart, Eye, Footprints, Smile, Syringe, MapPin, MapPinOff } from 'lucide-react';
 import type { ModuleProps } from '../../types';
@@ -194,9 +194,9 @@ function reducer(state: SuiviState, action: Action): SuiviState {
 
 const CX = 350;
 const CY = 350;
-const R_STATIONS_CONSULT = 150;
-const R_STATIONS_BIO = 235;
-const R_STATIONS_EXAM = 300;
+const R_STATIONS_CONSULT = 135;
+const R_STATIONS_BIO = 222;
+const R_STATIONS_EXAM = 308;
 const R_DOTS = 300;
 const R_LABELS = 335;
 const R_NEEDLE = 285;
@@ -367,6 +367,20 @@ export default function SuiviModule({ shell }: ModuleProps) {
 
   const doorInfo = state.doorOpen ? PROTECTS_INFO[state.doorOpen] : null;
   const doorRef = useRef<HTMLDivElement>(null);
+  // Les icônes du cadran suivent sa largeur (plafond 420 px = taille de conception) : sans cela, à
+  // 320–400 px les stations de 44–50 px se recouvrent. Plancher 0,55 → cibles ≥ 24 px (WCAG 2.5.8).
+  const dialRef = useRef<HTMLDivElement>(null);
+  const [dialK, setDialK] = useState(1);
+  useLayoutEffect(() => {
+    const el = dialRef.current;
+    if (!el) return;
+    const maj = () => setDialK(Math.min(1, Math.max(0.55, el.clientWidth / 420)));
+    maj();
+    if (typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(maj);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [state.temps]);
   useModalFocus(doorRef, { open: doorInfo !== null, onClose: () => dispatch({ type: 'CLOSE_DOOR' }) });
   const doorZone = state.doorOpen ? PROTECTS_TO_ZONE[state.doorOpen] : undefined;
 
@@ -401,7 +415,7 @@ export default function SuiviModule({ shell }: ModuleProps) {
     <div className={styles.module}>
       {state.temps === 'parcours' && (
         <div className={styles.parcours}>
-          <div className={styles.dialWrap}>
+          <div className={styles.dialWrap} ref={dialRef}>
             <svg viewBox="0 0 700 700" className={styles.dialSvg} aria-hidden="true" focusable="false">
               <circle cx={CX} cy={CY} r={300} className={styles.dialRing} />
 
@@ -438,7 +452,7 @@ export default function SuiviModule({ shell }: ModuleProps) {
               >
                 <span className={styles.stationIcon}>
                   {/* S6-v3 : 44→50px, cadran 480→560px (~×1,17) — // à caler */}
-                  <StationIcon kind="stethoscope" label="Stéthoscope" size={50} />
+                  <StationIcon kind="stethoscope" label="Stéthoscope" size={Math.round(50 * dialK)} />
                 </span>
                 <span className={styles.stationBadge} aria-hidden="true">
                   {c.status === 'fait' ? '✓' : c.status === 'a_programmer' ? '⏳' : ''}
@@ -460,7 +474,7 @@ export default function SuiviModule({ shell }: ModuleProps) {
               >
                 <span className={styles.stationIcon}>
                   {/* S6-v3 : 38→44px, même ratio que les autres stations du cadran. */}
-                  <StationIcon kind="bio" label="Prise de sang" size={44} />
+                  <StationIcon kind="bio" label="Prise de sang" size={Math.round(44 * dialK)} />
                 </span>
                 <span className={styles.stationBadge} aria-hidden="true">
                   {b.status === 'fait' ? '✓' : b.status === 'a_programmer' ? '⏳' : ''}
@@ -483,7 +497,7 @@ export default function SuiviModule({ shell }: ModuleProps) {
                 } — cliquer pour changer`}
               >
                 <span className={styles.stationIcon}>
-                  <StationIcon kind={e.protects} label={PROTECTS_INFO[e.protects].name} size={50} />
+                  <StationIcon kind={e.protects} label={PROTECTS_INFO[e.protects].name} size={Math.round(50 * dialK)} />
                 </span>
                 <span className={styles.stationBadge} aria-hidden="true">
                   {!e.longCycle && (e.status === 'fait' ? '✓' : e.status === 'a_programmer' ? '⏳' : '')}

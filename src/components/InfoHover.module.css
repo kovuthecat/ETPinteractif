@@ -6,8 +6,13 @@
 }
 
 .trigger {
+  /* cible tactile ≥ 24 px (WCAG 2.5.8) : le glyphe peut rester petit, l'élément cliquable non */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  min-height: 24px;
   cursor: help;
-  outline: none;
   border-bottom: 1px dashed var(--color-text-faint);
 }
 
