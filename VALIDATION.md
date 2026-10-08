@@ -45,3 +45,7 @@ des dossiers `plans/` correspondants). Détail entier : `git log -- VALIDATION.m
       `prefers-reduced-motion` respecté.
 - [ ] Zéro persistance côté consultation : recharger la page ramène à l'accueil.
 - [ ] Aucun débordement horizontal sur écran large, tablette, mobile.
+
+## P1/S9 — Focus, cibles, contraste (2026-10-08)
+
+- [ ] Texte secondaire (descriptions de cartes, légendes) plus foncé : la hiérarchie avec le texte principal reste-t-elle lisible ? Anneau de focus à ~1 m visible ?
