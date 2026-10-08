@@ -6,7 +6,7 @@ Plafond : 80 lignes (appliqué par hook). Historique détaillé : `git log` + `d
 > **Frontières** — STATUS : état actuel · `TASKS.md` : backlog + tâches · `plans/` : plan d'une
 > tâche active · `VALIDATION.md` : jugement humain (N2) en attente.
 >
-> **Dernière mise à jour :** 2026-08-06
+> **Dernière mise à jour :** 2026-10-08
 
 ## Phase actuelle
 
@@ -32,17 +32,16 @@ pédagogique (garde-manger, repas-types) et correctifs issus des audits/revues d
 - **Socle partagé** : moteur multi-thèmes agnostique (aucun id de thème en dur), `SelectionContext`
   (mémoire de session, zéro persistance côté consultation), fiches à emporter génériques, mécanisme
   « repas-types » partagé cardio/diabète (5 presets), garde-manger enrichi (2 thèmes).
-- **Plan `recette-outils-2026-08` clos (8/8 sessions)** : fiche « Ma boîte à outils » tabac
-  rattache désormais automatiquement le contenu personnalisé (SI…ALORS, tirelire, checklists,
-  phrase de refus) ; barème de protection cardio (module Bouger) adouci pour rester cohérent avec
-  son propre repère ; analyse d'équilibre cardio Manger croise proportions et variété d'aliments
-  (ne contredit plus le patient) ; carnet patient affiche une synthèse (tranches horaires,
-  contextes fréquents, total 7 jours) dès 5 saisies ; app patient en tuile + détail au lieu du
-  tout-déplié (5,7 → 1,3 écran sur le cas le plus chargé). 3 minuteurs pausables.
+- **Plan `recette-outils-2026-08` clos (8/8)** : fiche tabac auto-rattachée au contenu perso, analyse
+  Manger croisée, synthèse du carnet patient, app patient en tuile + détail, 3 minuteurs pausables.
 - Gate systématique : `npx tsc -b --noEmit` ✓ · `npm run build` ✓ · `npm test` ✓ **153/153**
   (+14 tests sur ce plan), aucune dépendance runtime ajoutée depuis le scaffold initial.
 
 ## Ce qui casse / n'est pas testé
+
+- **Plan P1 clos (2026-10-08, 9/9)** : corrections de la revue d'usage 2026-10-06 (clavier, dialogs à
+  focus confiné, titres, onglets, 320 px, contraste). Reste : 1 bloquant et le backlog dans `TASKS.md`,
+  courbes en plan B (T-C1), annonces non écoutées avec un vrai lecteur d'écran.
 
 - Débordement zéro-scroll persistant, Suivi et Traitements (diabète) à 1024×768 — breakpoints de
   layout à revoir.

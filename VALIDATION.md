@@ -49,3 +49,9 @@ des dossiers `plans/` correspondants). Détail entier : `git log -- VALIDATION.m
 ## P1/S9 — Focus, cibles, contraste (2026-10-08)
 
 - [ ] Texte secondaire (descriptions de cartes, légendes) plus foncé : la hiérarchie avec le texte principal reste-t-elle lisible ? Anneau de focus à ~1 m visible ?
+
+## P1/S5 et S7 — Tabac et app patient (2026-10-08)
+
+- [ ] L'icône de repli de « L'horizon retrouvé » tient-elle à côté des illustrations des autres étapes ?
+- [ ] Récapitulatif du Plan d'arrêt : lisible à ~1 m, densité acceptable ?
+- [ ] App patient : place et formulation du bouton d'effacement des données, à l'accueil.

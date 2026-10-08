@@ -25,17 +25,12 @@ Modèles/efforts : `WORKFLOW.md` §2-3. `env: Desktop` si la tâche exige le nav
   câblage tabac dès que Thibault valide tout ou partie des 3 entrées de `docs/BRIEF_TABAC.md` §3.5 +
   leurs sources exactes · modèle: Sonnet, effort: medium
 
-## Plan P1 — corrections de la revue d'usage 2026-10-06 (avancement : `plans/P1/index.md`)
+## Revue du plan P1 (clos 2026-10-08) — bloquant et backlog versés
 
-- T-U1 — Dialogs : focus confiné, Échap, feuille défilable au clavier (8 bloquants) · → plans/P1/S2.md
-- T-U2 — Contrôles à la souris seule : frises, poignées, steppers, raisons (7 bloquants, 1 majeur) · → plans/P1/S3.md
-- T-U3 — États non exposés et onglets (8 bloquants, 5 majeurs) · → plans/P1/S4.md
-- T-U4 — Titres de page et hiérarchie de titres (3 bloquants) · → plans/P1/S1.md
-- T-U5 — Débordements : mots longs et reflow 320 px (13 majeurs) · → plans/P1/S8.md
-- T-U6 — Focus visible, cibles 24 px, contraste (13 majeurs) · → plans/P1/S9.md
-- T-U7 — Fonctionnel tabac (14 majeurs ; c-1-1/c-1-5 en S1, tirelire en S7) · → plans/P1/S5.md
-- T-U8 — Fonctionnel diabète/cardio (14 majeurs ; c-4-58/59 → T-C1) · → plans/P1/S6.md
-- T-U9 — App patient et tirelire (7 majeurs ; c-7-2 en S1) · → plans/P1/S7.md
+- [ ] **BLOQUANT** — Nicotine : la bulle de légende n'a pas de bouton de fermeture (Échap seul ; tactile sans issue), `NicotineModule.tsx:378` · modèle: Sonnet, effort: medium
+- [ ] Focus visible : `outline: none` sans remplacement subsiste (cardio Traitements, Soulagement, Cholesterol, Manger…) et écrase le `:focus-visible` global · modèle: Sonnet, effort: low
+- [ ] Doublons à factoriser : curseurs clavier nicotine/soulagement et assiettes diabète/cardio, panneau d'effet des deux Traitements, `NIVEAU_LABELS` · modèle: Sonnet, effort: medium
+- [ ] Notes mineures : titre vide Motivation hors bouton OK ; récapitulatif Plan d'arrêt dupliqué du livret ; `--color-text-soft` = `--color-text-faint` ; focus après effacement patient ; regex « cf. titration » ; `.texte-saisi` inutilisée ; « Fait » du Suivi conservé après changement de fréquence · modèle: Sonnet, effort: low
 ## Backlog — courbes (plan B, après P1)
 - [ ] T-C1 — Recalibrer les courbes nicotine/tension et glycémie selon le propos arrêté (yo-yo en Manque, pas de Surdosage du fumeur, titration nette, ajouts nets, basale hors cible, bande 180 mg/dL, activité) + écarts texte/courbe insulines #c-4-58 #c-4-59 #c-4-63 à 65 → cadré : `docs/decisions/2026-10-08-suites-revues-usage-et-courbes.md` · `/nouveau-plan` après le plan T-U · modèle: Opus, effort: high
 
