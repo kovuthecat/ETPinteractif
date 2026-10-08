@@ -41,7 +41,8 @@ Un plan sert deux lectures, et rate sa cible s'il n'en sert qu'une :
 `/maj-workflow`. Sans `DÉRIVE` : mise à jour sans question, rapportée ; avec `DÉRIVE` : question
 avant de continuer. Écrire un plan sur un workflow en retard fige dans les squelettes ce que la
 source a déjà corrigé. Dépôt source du workflow (pas de `.claude/workflow/manifest.json`, `plugin/`
-présent) → `claude plugin update workflow@templates --scope local` à la place de `/maj-workflow`.
+présent) → `"$CLAUDE_CODE_EXECPATH" plugin update workflow@templates --scope local` (le shim `claude`
+peut manquer sous Desktop), puis `node plugin/bin/installer-mods.mjs` à la place de `/maj-workflow`.
 
 Un plan en cours peut produire un résultat qui invalide une hypothèse dont dépendent ses sessions
 restantes : vérité de référence fausse, contrat à changer, mesure qui contredit l'attendu d'une
@@ -213,6 +214,11 @@ Le squelette de l'index est en annexe : **ouvrir `references/squelette-index.md`
 skill) au moment de l'écrire. Les règles de rédaction — ligne « en clair », ordonnancement,
 colonnes — sont ci-dessous.
 
+**Preuve N0.** Écrire `Preuve N0 : requise`, sauf si `.claude/n0.json` porte `sansCommande` (projet
+sans build ni test, motif obligatoire) : alors, et alors seulement, `Preuve N0 : non requise`, et
+`N0 auto : — (non requise : <motif>)` dans les tâches. `verifier-plan.mjs` contrôle les deux sens
+(index et `n0.json` doivent s'accorder) ; `n0.mjs` ne rend jamais de vert sur une liste vide.
+
 **La ligne « en clair » est un contrat de lisibilité, pas une redite du titre.** Elle dit ce que la
 session change et **à quoi l'utilisateur le constatera** : un écran, un comportement, un fichier
 produit, une mesure obtenue. `/orchestrer-plan` la relaie **mot pour mot** au lancement de la vague
@@ -355,6 +361,11 @@ réécrire la section dans un commit séparé `docs(brief): applique <décision>
 `Brief-applique: <chemin>`, puis relancer le script ; ligne absente → l'ajouter (`inchangé` ou
 section) dans ce même commit ; ligne ambiguë (section ou changement indéduisibles) → `/cadrer`, pas
 de plan.
+
+Même traitement pour une ligne `Règles : <règle> : …` non appliquée : réécrire la règle dans
+`CLAUDE.md` § Règles spécifiques, commit séparé `docs(regles): applique <décision>` portant
+`Regles-appliquees: <chemin>`, puis relancer le script ; ligne absente → pas d'écart (décision d'avant
+la règle).
 
 ## Étape 5 — Reporter dans `TASKS.md`
 

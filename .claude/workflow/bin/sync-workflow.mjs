@@ -55,6 +55,13 @@ const PLAN = [
   // source pour y ramasser leurs `docs/workflow/incidents/` — un geste de mainteneur, sans objet
   // dans un projet équipé.
   { de: 'bin',              vers: '.claude/workflow/bin',      recursif: true, sauf: ['publier.mjs', 'collecter-incidents.mjs'] },
+  // Les mods (mini-plugins) se vendorent TELS QUELS : `brut` = aucune substitution du marqueur de
+  // plugin — leurs fichiers (`hooks/hooks.json` compris, c'est le module du mod) ne vivent pas sous
+  // un plugin `workflow`, et un `.ts` ou `.json` réécrit changerait ce que le mod exécute. Pas de
+  // `sauf: ['hooks.json']` non plus. `installer-mods.mjs` y génère, par poste,
+  // `.claude-plugin/marketplace.json` : absent de la source donc du manifeste, jamais retiré comme
+  // obsolète ; `mods/.gitignore` (vendoré avec) l'ignore par git.
+  { de: 'mods',             vers: '.claude/workflow/mods',     recursif: true, brut: true },
 ];
 
 // `hooks.json` est exclu : en mode vendoré le câblage vit dans .claude/settings.json du projet.
@@ -125,7 +132,7 @@ function construirePlan(source) {
     } else {
       for (const f of fichiersDe(source, regle.de, regle.sauf ?? [])) {
         const suffixe = relative(regle.de, f).split(sep).join('/');
-        paires.push({ src: f, dst: `${regle.vers}/${suffixe}` });
+        paires.push({ src: f, dst: `${regle.vers}/${suffixe}`, brut: !!regle.brut });
       }
     }
   }
@@ -135,7 +142,9 @@ function construirePlan(source) {
 // ── Contrôle de dérive du bloc hooks de settings.json ───────────────────────
 // settings.json n'est PAS géré par le manifeste ci-dessus (permissions et effortLevel
 // appartiennent au projet, jamais réécrits) — mais son bloc `hooks` doit rester aligné sur
-// templates/project-settings.json du payload. Une évolution des hooks a déjà demandé une
+// templates/project-settings.json du payload, et son `permissions.allow` doit contenir le socle
+// du gabarit (entrées hors `Bash(npm ` / `Bash(npx `, exemple de stack JavaScript) : seules les
+// entrées manquantes sont signalées, les ajouts propres au projet ne sont jamais comparés. Une évolution des hooks a déjà demandé une
 // édition manuelle dans 6 projets ; un oubli laisse des hooks silencieusement absents. Ce
 // contrôle est purement informatif : jamais bloquant, jamais d'écriture.
 function normaliserHooks(objet) {
@@ -179,6 +188,16 @@ function controlerDeriveSettings(source, projet) {
   const styleSource = settingsSource.outputStyle;
   if (styleSource && !settingsProjet.outputStyle) {
     lignes.push(`  SETTINGS  outputStyle absent — le template propose "${styleSource}" (fichier vendoré dans .claude/output-styles/) ; ajouter la clé, ou s'en passer sciemment`);
+  }
+
+  // `permissions.allow` en retard : socle = allow du gabarit lu, hors exemple JavaScript. Une
+  // entrée ajoutée plus tard au gabarit est donc contrôlée sans toucher à ce script.
+  const socle = (settingsSource.permissions?.allow ?? [])
+    .filter((e) => !e.startsWith('Bash(npm ') && !e.startsWith('Bash(npx '));
+  const allowProjet = Array.isArray(settingsProjet.permissions?.allow) ? settingsProjet.permissions.allow : [];
+  const manquants = socle.filter((e) => !allowProjet.includes(e));
+  if (manquants.length > 0) {
+    lignes.push(`  SETTINGS  allow en retard sur le gabarit — manque : ${manquants.join(', ')}`);
   }
 
   return lignes.length > 0 ? lignes.join('\n') : null;
@@ -270,10 +289,11 @@ const aEcrire = [];
 const derives = [];
 let inchanges = 0;
 
-for (const { src, dst } of paires) {
+for (const { src, dst, brut: sansSubstitution } of paires) {
   const brut = readFileSync(join(source, src));
   const estBinaire = BINAIRES.test(src);
-  const contenu = estBinaire ? brut : Buffer.from(substituer(normaliser(brut.toString('utf8'))), 'utf8');
+  const contenu = estBinaire ? brut
+    : Buffer.from(sansSubstitution ? normaliser(brut.toString('utf8')) : substituer(normaliser(brut.toString('utf8'))), 'utf8');
   const h = hash(contenu);
   nouveauxHashes[dst] = h;
 

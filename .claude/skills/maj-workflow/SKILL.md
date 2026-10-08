@@ -9,8 +9,9 @@ model: haiku
 Le workflow vit **dans le repo** (`.claude/skills`, `.claude/agents`, `.claude/workflow`), pas dans
 un plugin installé à l'exécution. Cette skill le resynchronise depuis la source.
 
-**Elle est elle-même vendorée** : elle fonctionne pour quelqu'un qui a seulement cloné le repo, sans
-plugin, sans marketplace, sans rien installer. C'est tout l'intérêt du modèle.
+**Elle est elle-même vendorée** : elle fonctionne pour quelqu'un qui a seulement cloné le repo. Le
+workflow vendoré reste sans plugin ni marketplace ; seuls les **mods** s'installent, localement au
+poste (voir plus bas) — jamais le workflow lui-même.
 
 ## Quand — les frontières de C4, pas « périodiquement »
 
@@ -83,6 +84,19 @@ options chiffrées :
 Le moteur **préserve** les dérives par défaut : sans `--force`, un fichier modifié localement n'est
 pas touché. Le défaut protège le travail, il ne l'efface pas.
 
+## Étape 3b — Ligne `SETTINGS  allow en retard`
+
+Une ligne `SETTINGS  allow en retard sur le gabarit — manque : …` signale des entrées du socle du
+gabarit absentes de `permissions.allow` du projet (sans elles, une session headless peut se bloquer
+sur `git push`, `n0.mjs`…). Informatif, jamais bloquant : la rapporter à l'utilisateur et poser une
+**question à options** (`WORKFLOW.md` §9c) :
+
+1. **Ajouter** les entrées manquantes maintenant dans `.claude/settings.json`, en un commit
+   `chore(settings): allow aligné sur le gabarit`.
+2. **Laisser** en l'état.
+
+Jamais d'ajout silencieux : `settings.json` appartient au projet.
+
 ## Étape 4 — Synchroniser
 
 ```bash
@@ -94,6 +108,21 @@ Ajouter `--force` **uniquement** pour écraser une dérive arbitrée « Écraser
 Le moteur écrit les fichiers modifiés, supprime ceux qui ont quitté le payload, et réécrit le
 manifeste. Un fichier propre et déjà à jour n'est pas réécrit : le diff git reste lisible.
 
+## Étape 4b — Installer les mods du poste
+
+Lancée **toujours**, hors de toute condition sur `--check` : un poste neuf qui clone un projet déjà
+à jour n'a rien à synchroniser, mais aucun mod d'installé.
+
+```bash
+node .claude/workflow/bin/installer-mods.mjs
+```
+
+- Sortie `0` : une ligne au rapport (mods installés et vérifiés).
+- Sortie `3` : **signalé, non bloquant** — la synchronisation se commite quand même ; le rapport cite
+  la commande à relancer (celle que le script imprime).
+- Sortie `4` (pas de CLI Claude Code) : une ligne « mods non installés : pas de CLI Claude Code sur
+  ce poste », rien d'autre.
+
 ## Étape 5 — Vérifier
 
 1. Relancer avec `--check` → doit sortir `ÉTAT: à jour` (exit 0).
@@ -104,7 +133,11 @@ manifeste. Un fichier propre et déjà à jour n'est pas réécrit : le diff git
 3. `.claude/settings.json` : les hooks pointent bien vers
    `$CLAUDE_PROJECT_DIR/.claude/workflow/hooks/` et il ne reste **ni** `enabledPlugins`, **ni**
    `extraKnownMarketplaces` (les deux ensemble avec les fichiers vendorés = workflow chargé deux
-   fois — cf. le tableau du double chargement dans `/migrer-projet`).
+   fois — cf. le tableau du double chargement dans `/migrer-projet`). **Exception** : dans
+   `.claude/settings.local.json` (jamais `settings.json`), des entrées pour une marketplace
+   `workflow-mods-*` sont attendues — celle des mods, propre au poste (nom haché sur le chemin),
+   jamais commitable. Les mêmes entrées dans `settings.json`, ou pour `workflow@…`, restent un
+   résidu de double chargement.
 4. **Nouvelle session** (la config n'est lue qu'au démarrage) — contrôle que l'**humain** fait dans
    cette nouvelle session, jamais la session courante : un `git add -A` doit être refusé, et les
    skills doivent être proposées. C'est la preuve que le câblage est actif.
