@@ -1,9 +1,10 @@
-import { useReducer, useState } from 'react';
+import { useReducer, useRef, useState } from 'react';
 import type { ComponentType } from 'react';
 import { Stethoscope, TestTube, Droplet, Heart, Eye, Footprints, Smile, Syringe, MapPin, MapPinOff } from 'lucide-react';
 import type { ModuleProps } from '../../types';
 import ModuleShell from '../../../components/ModuleShell';
 import FicheOverlay from '../../../components/FicheOverlay';
+import { useModalFocus } from '../../../components/useModalFocus';
 import InfoHover from '../../../components/InfoHover';
 import Silhouette from '../components/Silhouette';
 import type { ZoneId } from '../components/Silhouette';
@@ -350,6 +351,8 @@ export default function SuiviModule({ shell }: ModuleProps) {
   ficheSrc.sort((a, b) => a.month - b.month);
 
   const doorInfo = state.doorOpen ? PROTECTS_INFO[state.doorOpen] : null;
+  const doorRef = useRef<HTMLDivElement>(null);
+  useModalFocus(doorRef, { open: doorInfo !== null, onClose: () => dispatch({ type: 'CLOSE_DOOR' }) });
   const doorZone = state.doorOpen ? PROTECTS_TO_ZONE[state.doorOpen] : undefined;
 
   if (!shell) return null;
@@ -615,6 +618,7 @@ export default function SuiviModule({ shell }: ModuleProps) {
       {doorInfo && (
         <div
           className={styles.doorOverlay}
+          ref={doorRef}
           role="dialog"
           aria-modal="true"
           aria-label={`Ce que ça garde — ${doorInfo.name}`}

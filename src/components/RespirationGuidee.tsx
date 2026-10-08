@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { createPortal } from 'react-dom';
 import { Play, Square, X } from 'lucide-react';
+import { useModalFocus } from './useModalFocus';
 import styles from './RespirationGuidee.module.css';
 
 /**
@@ -82,21 +83,12 @@ export default function RespirationGuidee({ onClose, dureeSeconde = DUREE_DEFAUT
   const [phaseIndex, setPhaseIndex] = useState(0);
   const [totalTimeLeft, setTotalTimeLeft] = useState(dureeSeconde);
   const fermerRef = useRef<HTMLButtonElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
 
   const phases = RYTHMES[rythmeId].phases;
   const phase = phases[phaseIndex] ?? phases[0];
 
-  useEffect(() => {
-    fermerRef.current?.focus();
-  }, []);
-
-  useEffect(() => {
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') onClose();
-    }
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
+  useModalFocus(overlayRef, { open: true, onClose, initialFocus: fermerRef });
 
   // Boucle des phases (inspir/retenue/expir) : reprogrammée à chaque phase pour rester
   // calée sur la durée exacte de chacune (évite la dérive d'un décompte accumulé au tick).
@@ -168,6 +160,7 @@ export default function RespirationGuidee({ onClose, dureeSeconde = DUREE_DEFAUT
   return createPortal(
     <div
       className={styles.overlay}
+      ref={overlayRef}
       role="dialog"
       aria-modal="true"
       aria-label="Exercice de respiration guidée"

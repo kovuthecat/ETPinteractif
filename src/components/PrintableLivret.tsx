@@ -1,6 +1,7 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import type { ReactNode } from 'react';
 import { createPortal } from 'react-dom';
+import { useModalFocus } from './useModalFocus';
 import styles from './PrintableLivret.module.css';
 
 /**
@@ -45,25 +46,16 @@ export default function PrintableLivret({
   footer,
   onClose,
 }: PrintableLivretProps) {
-  const fermerRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    fermerRef.current?.focus();
-  }, []);
-
-  useEffect(() => {
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') onClose();
-    }
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const docRef = useRef<HTMLDivElement>(null);
+  useModalFocus(overlayRef, { open: true, onClose, initialFocus: docRef });
 
   const dateDuJour = new Date().toLocaleDateString('fr-FR', { dateStyle: 'long' });
 
   return createPortal(
     <div
       className={`livret-overlay ${styles.overlay}`}
+      ref={overlayRef}
       role="dialog"
       aria-modal="true"
       aria-label={coverTitle}
@@ -71,7 +63,7 @@ export default function PrintableLivret({
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      <div className={`livret-doc ${styles.doc}`}>
+      <div className={`livret-doc ${styles.doc}`} ref={docRef} tabIndex={0} aria-label={coverTitle}>
         <section className={styles.cover}>
           <span className={`eyebrow ${styles.coverEyebrow}`}>{coverEyebrow}</span>
           <h1 className={styles.coverTitle}>{coverTitle}</h1>
@@ -114,7 +106,7 @@ export default function PrintableLivret({
         <button type="button" className="btn btn--primary" onClick={() => window.print()}>
           Imprimer
         </button>
-        <button type="button" className="btn btn--ghost" ref={fermerRef} onClick={onClose}>
+        <button type="button" className="btn btn--ghost" onClick={onClose}>
           Fermer
         </button>
       </div>
