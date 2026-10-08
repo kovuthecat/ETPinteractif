@@ -105,6 +105,8 @@ export default function MotivationModule(_props: ModuleProps) {
   const [raisonsReserve, setRaisonsReserve] = useState<CarteReserve[]>(initialSeed.reserve);
   const [raisonsBoard, setRaisonsBoard] = useState<CarteBoard[]>(initialSeed.board);
   const [editingCardId, setEditingCardId] = useState<number | null>(null);
+  const [labelErrorId, setLabelErrorId] = useState<number | null>(null);
+  const labelInputRef = useRef<HTMLInputElement>(null);
   const [annonce, setAnnonce] = useState({ text: '', n: 0 });
   const nextCardId = useRef(initialSeed.nextId);
 
@@ -391,11 +393,23 @@ export default function MotivationModule(_props: ModuleProps) {
               {editingCardId === carte.id ? (
                 <div className={styles.boardCardEditing} style={{ borderColor: carte.color }}>
                   <input
+                    ref={labelInputRef}
+                    autoFocus
                     className={styles.cardLabelInput}
                     value={carte.label}
-                    onChange={(e) => updateCardField(carte.id, 'label', e.target.value)}
+                    onChange={(e) => {
+                      updateCardField(carte.id, 'label', e.target.value);
+                      if (labelErrorId === carte.id) setLabelErrorId(null);
+                    }}
                     aria-label="Texte de la raison"
+                    aria-invalid={labelErrorId === carte.id}
+                    aria-describedby={labelErrorId === carte.id ? 'raison-titre-erreur' : undefined}
                   />
+                  {labelErrorId === carte.id && (
+                    <p id="raison-titre-erreur" role="alert" className={styles.cardError}>
+                      Donnez un titre à cette raison
+                    </p>
+                  )}
                   <textarea
                     className={styles.cardDetailInput}
                     value={carte.detail}
@@ -408,7 +422,16 @@ export default function MotivationModule(_props: ModuleProps) {
                     <button type="button" className={styles.cardDeleteBtn} onClick={() => deleteCard(carte.id)}>
                       Supprimer
                     </button>
-                    <button type="button" className={styles.cardOkBtn} onClick={() => setEditingCardId(null)}>
+                    <button type="button" className={styles.cardOkBtn} onClick={() => {
+                        if (carte.label.trim() === '') {
+                          setLabelErrorId(carte.id);
+                          labelInputRef.current?.focus();
+                          return;
+                        }
+                        setLabelErrorId(null);
+                        setEditingCardId(null);
+                      }}
+                    >
                       OK
                     </button>
                   </div>

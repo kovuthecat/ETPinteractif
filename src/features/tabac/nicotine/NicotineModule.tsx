@@ -382,6 +382,7 @@ export default function NicotineModule(_props: ModuleProps) {
             onKeyDown={(e) => {
               if (e.key === 'Escape') setHoverZone(null);
             }}
+            onClick={(e) => e.stopPropagation()}
             onMouseEnter={() => setHoverZone('surdosage')}
             onMouseLeave={() => setHoverZone(null)}
             onFocus={() => setHoverZone('surdosage')}
@@ -431,6 +432,7 @@ export default function NicotineModule(_props: ModuleProps) {
             onKeyDown={(e) => {
               if (e.key === 'Escape') setHoverZone(null);
             }}
+            onClick={(e) => e.stopPropagation()}
             onMouseEnter={() => setHoverZone('manque')}
             onMouseLeave={() => setHoverZone(null)}
             onFocus={() => setHoverZone('manque')}
