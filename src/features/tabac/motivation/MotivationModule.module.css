@@ -273,6 +273,8 @@
 }
 
 .boardCard {
+  overflow-wrap: anywhere;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -306,6 +308,7 @@
 }
 
 .boardCardDetail {
+  overflow-wrap: anywhere;
   display: block;
   flex-basis: 100%;
   margin-top: 5px;
@@ -447,6 +450,7 @@
 }
 
 .ficheRaisonItem {
+  min-width: 0;
   display: flex;
   align-items: flex-start;
   gap: var(--space-sm);
@@ -461,6 +465,7 @@
 }
 
 .ficheRaisonLabel {
+  overflow-wrap: anywhere;
   margin: 0;
   font-size: 17px;
   font-weight: 800;
@@ -468,6 +473,7 @@
 }
 
 .ficheRaisonDetail {
+  overflow-wrap: anywhere;
   margin: 3px 0 0;
   font-size: 14px;
   line-height: 1.4;

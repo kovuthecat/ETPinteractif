@@ -104,6 +104,7 @@ function ChipGroup({
       {onAddLibre && (
         <input
           type="text"
+          maxLength={80}
           className={styles.chipInput}
           value={inputValue}
           onChange={(event) => setInputValue(event.target.value)}

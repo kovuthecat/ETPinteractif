@@ -144,9 +144,17 @@ select {
   padding: 4px 12px;
   border-radius: var(--radius-pill);
   font: 700 13px 'Work Sans', sans-serif;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: left;
   background: var(--chip-bg, var(--color-nav-soft));
   color: var(--chip-fg, var(--color-nav));
+}
+
+/* Texte saisi par le patient : un mot long passe à la ligne au lieu d'élargir la page. */
+.texte-saisi {
+  overflow-wrap: anywhere;
+  min-width: 0;
 }
 
 .chip--confort {

@@ -76,6 +76,7 @@ export default function PhraseRefus({ outil, store, onClose }: OutilInteractifPr
           id="phrase-refus-libre"
           type="text"
           className={styles.libreInput}
+          maxLength={200}
           value={phrase}
           onChange={(event) => retenir(event.target.value)}
           placeholder="Ma phrase"

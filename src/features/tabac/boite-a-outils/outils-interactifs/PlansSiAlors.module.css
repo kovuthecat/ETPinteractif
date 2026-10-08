@@ -143,6 +143,8 @@
 }
 
 .ligne span {
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-size: 0.95em;
   line-height: 1.4;
 }

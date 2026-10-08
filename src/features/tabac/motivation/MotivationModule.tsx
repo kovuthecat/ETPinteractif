@@ -394,6 +394,7 @@ export default function MotivationModule(_props: ModuleProps) {
                 <div className={styles.boardCardEditing} style={{ borderColor: carte.color }}>
                   <input
                     ref={labelInputRef}
+                    maxLength={80}
                     autoFocus
                     className={styles.cardLabelInput}
                     value={carte.label}
@@ -412,6 +413,7 @@ export default function MotivationModule(_props: ModuleProps) {
                   )}
                   <textarea
                     className={styles.cardDetailInput}
+                    maxLength={200}
                     value={carte.detail}
                     onChange={(e) => updateCardField(carte.id, 'detail', e.target.value)}
                     placeholder="Précisez si besoin…"

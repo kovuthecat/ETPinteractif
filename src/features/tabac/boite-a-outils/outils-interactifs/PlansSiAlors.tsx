@@ -104,6 +104,7 @@ export default function PlansSiAlors({ outil, store, contexte, onClose }: OutilI
             <input
               type="text"
               className={styles.libreInput}
+              maxLength={200}
               value={si}
               onChange={(event) => setSi(event.target.value)}
               placeholder="Ou décrivez votre situation…"
@@ -133,6 +134,7 @@ export default function PlansSiAlors({ outil, store, contexte, onClose }: OutilI
             <input
               type="text"
               className={styles.libreInput}
+              maxLength={200}
               value={alors}
               onChange={(event) => setAlors(event.target.value)}
               placeholder="Ou décrivez votre parade…"

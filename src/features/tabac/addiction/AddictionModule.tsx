@@ -231,6 +231,7 @@ export default function AddictionModule({ onNavigate }: ModuleProps) {
           ))}
           <input
             type="text"
+            maxLength={80}
             className={styles.libreInput}
             value={libreInput}
             onChange={(event) => setLibreInput(event.target.value)}

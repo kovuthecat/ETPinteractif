@@ -154,6 +154,8 @@
 
 .tag {
   display: inline-flex;
+  max-width: 100%;
+  overflow-wrap: anywhere;
   align-items: center;
   padding: 6px 14px;
   border-radius: var(--radius-pill);
@@ -165,6 +167,7 @@
 /* Listes simples */
 
 .list {
+  overflow-wrap: anywhere;
   margin: 0;
   padding-left: 1.2em;
   display: flex;
@@ -314,6 +317,8 @@
 
 .raisonItem {
   break-inside: avoid;
+  min-width: 0;
+  overflow-wrap: anywhere;
   display: flex;
   align-items: center;
   gap: var(--space-sm);
@@ -322,6 +327,10 @@
   background: var(--color-nav-soft);
   font-size: 16px;
   color: var(--color-text);
+}
+
+.raisonItem span {
+  min-width: 0;
 }
 
 .raisonIcon {
