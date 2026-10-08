@@ -36,3 +36,41 @@
     padding: 24px 16px 32px;
   }
 }
+
+.effacement {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.effacerBtn {
+  align-self: flex-start;
+  color: var(--color-toxique);
+}
+
+.confirmRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.confirmText {
+  flex-basis: 100%;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-toxique);
+}
+
+.btnDanger {
+  background: var(--color-toxique);
+  color: #fff;
+}
+
+.effaceMsg {
+  margin: 0;
+  min-height: 1.4em;
+  font-size: 15px;
+  color: var(--color-text-soft);
+}

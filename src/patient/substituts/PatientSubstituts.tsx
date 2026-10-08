@@ -3,6 +3,14 @@ import { ArrowLeft } from 'lucide-react';
 import { FORMES_DATA, type FormeId } from '../../content/tabac/substituts';
 import styles from './PatientSubstituts.module.css';
 
+/**
+ * La titration n'existe pas côté patient (reportée en V2) : on retire seulement le renvoi
+ * « , cf. titration » du texte partagé avec la consultation, sans rien ajouter (c-7-3).
+ */
+function sansRenvoiTitration(texte: string): string {
+  return texte.replace(/,\s*cf\. titration\)/, ')');
+}
+
 interface PatientSubstitutsProps {
   /** Retour à l'accueil de l'app patient (géré par PatientApp). */
   onBack: () => void;
@@ -97,7 +105,7 @@ export default function PatientSubstituts({
           <h2 className={styles.panelTitle}>À éviter</h2>
           <ul className={styles.panelList}>
             {forme.erreurs.map((item, idx) => (
-              <li key={idx}>{item}</li>
+              <li key={idx}>{sansRenvoiTitration(item)}</li>
             ))}
           </ul>
         </section>

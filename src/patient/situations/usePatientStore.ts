@@ -1,5 +1,5 @@
-import { useCallback, useMemo, useState } from 'react';
-import { readJSON, writeJSON } from '../lib/storage';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { readJSON, surEffacementDonnees, writeJSON } from '../lib/storage';
 import type { OutilStore } from '../../features/tabac/boite-a-outils/outils-interactifs/types';
 
 const PREFIX = 'etp.tabac.';
@@ -15,6 +15,10 @@ const PREFIX = 'etp.tabac.';
  */
 export function usePatientStore(): OutilStore {
   const [mirror, setMirror] = useState<Record<string, string[]>>({});
+
+  // Effacement complet des données patient : le miroir repart de zéro, sinon le prochain
+  // `setList` réécrirait les anciennes valeurs.
+  useEffect(() => surEffacementDonnees(() => setMirror({})), []);
 
   const get = useCallback(
     (key: string): string[] => (key in mirror ? mirror[key] : readJSON<string[]>(PREFIX + key, [])),

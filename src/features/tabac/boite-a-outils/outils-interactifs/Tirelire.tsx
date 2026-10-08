@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ChevronDown, ChevronLeft, Minus, Plus } from 'lucide-react';
 import type { OutilInteractifProps } from './types';
+import { calculerEconomies, normaliserCigsParPaquet, parseEntree } from './tirelireCalcul';
 import styles from './Tirelire.module.css';
 
 /**
@@ -10,16 +11,12 @@ import styles from './Tirelire.module.css';
  * fiche via `store` (bundle-agnostique, comme `VagueCraving`/`RespirationGuidee`).
  *
  * Gate G3 tranché (2026-07-21) : prix du paquet par défaut 12 €, 20 cigarettes/paquet.
- * Arrondis calendaires fixés (« Si bloqué ») : mois = 30 jours, année = 365 jours.
+ * Arrondis calendaires : voir `tirelireCalcul.ts` (mois = 30 jours, année = 365 jours).
  */
 
 const DEFAULT_CIGS_PAR_JOUR = 10;
 const DEFAULT_PRIX_PAQUET = 12; // Gate G3 — à confirmer, donnée susceptible de dater
 const DEFAULT_CIGS_PAR_PAQUET = 20; // Gate G3
-
-const JOURS_PAR_SEMAINE = 7;
-const JOURS_PAR_MOIS = 30; // arrondi fixé (S3 « Si bloqué »)
-const JOURS_PAR_AN = 365; // arrondi fixé (S3 « Si bloqué »)
 
 // Sentence extraite verbatim du `principe` de `outil-recompense` (NE PAS reformuler) :
 // « ... Ce n'est pas du luxe, c'est une stratégie. »
@@ -34,23 +31,41 @@ function formatEuro(value: number, decimales: number): string {
   }).format(value);
 }
 
-function parseEntree(raw: string, repli: number): number {
-  const n = Number(raw.replace(',', '.'));
-  return Number.isFinite(n) && n >= 0 ? n : repli;
-}
-
 interface ChampNumeriqueProps {
   label: string;
   valeur: number;
   suffixe?: string;
   step: number;
   min?: number;
+  /** décimales conservées à la saisie (arrondi). */
   decimales?: number;
+  /** affiche toujours `decimales` décimales (montants en euros) ; sinon, valeur brute. */
+  fixe?: boolean;
+  /** message lié au champ (aria-describedby), annoncé aux lecteurs d'écran. */
+  annonce?: string;
   onChange: (v: number) => void;
 }
 
+function afficher(valeur: number, decimales: number, fixe: boolean): string {
+  return (fixe && decimales > 0 ? valeur.toFixed(decimales) : String(valeur)).replace('.', ',');
+}
+
 /** Contrôle « gros » (S3 étape 1) : boutons ± (cible ≥ 44px) + saisie directe possible. */
-function ChampNumerique({ label, valeur, suffixe, step, min = 0, decimales = 0, onChange }: ChampNumeriqueProps) {
+function ChampNumerique({
+  label,
+  valeur,
+  suffixe,
+  step,
+  min = 0,
+  decimales = 0,
+  fixe = false,
+  annonce,
+  onChange,
+}: ChampNumeriqueProps) {
+  // Brouillon de saisie : garde « 6, » ou « » tel que tapé tant que le champ est actif, pour
+  // que la virgule décimale puisse être saisie ; il disparaît à la sortie du champ.
+  const [brouillon, setBrouillon] = useState<string | null>(null);
+  const descId = annonce ? `${label.replace(/\s+/g, '-')}-annonce` : undefined;
   return (
     <div className={styles.champ}>
       <span className={styles.champLabel}>{label}</span>
@@ -58,7 +73,10 @@ function ChampNumerique({ label, valeur, suffixe, step, min = 0, decimales = 0, 
         <button
           type="button"
           className={styles.champBtn}
-          onClick={() => onChange(Math.max(min, Number((valeur - step).toFixed(2))))}
+          onClick={() => {
+            setBrouillon(null);
+            onChange(Math.max(min, Number((valeur - step).toFixed(2))));
+          }}
           aria-label={`Diminuer ${label}`}
         >
           <Minus aria-hidden="true" />
@@ -67,72 +85,98 @@ function ChampNumerique({ label, valeur, suffixe, step, min = 0, decimales = 0, 
           type="text"
           inputMode="decimal"
           className={styles.champInput}
-          value={decimales > 0 ? valeur.toFixed(decimales) : String(valeur)}
+          value={brouillon ?? afficher(valeur, decimales, fixe)}
           onChange={(e) => {
+            setBrouillon(e.target.value);
+            if (e.target.value.trim() === '') return;
             const parsed = parseEntree(e.target.value, valeur);
             const facteur = 10 ** decimales;
             onChange(Math.max(min, Math.round(parsed * facteur) / facteur));
           }}
+          onBlur={() => setBrouillon(null)}
           aria-label={label}
+          aria-describedby={descId}
         />
         {suffixe && <span className={styles.champSuffixe}>{suffixe}</span>}
         <button
           type="button"
           className={styles.champBtn}
-          onClick={() => onChange(Number((valeur + step).toFixed(2)))}
+          onClick={() => {
+            setBrouillon(null);
+            onChange(Number((valeur + step).toFixed(2)));
+          }}
           aria-label={`Augmenter ${label}`}
         >
           <Plus aria-hidden="true" />
         </button>
       </div>
+      {annonce && (
+        <p id={descId} role="status">
+          {annonce}
+        </p>
+      )}
     </div>
   );
+}
+
+interface Etat {
+  cigsParJour: number;
+  prixPaquet: number;
+  cigsParPaquet: number;
+  recompense: string;
+}
+
+const ETAT_DEFAUT: Etat = {
+  cigsParJour: DEFAULT_CIGS_PAR_JOUR,
+  prixPaquet: DEFAULT_PRIX_PAQUET,
+  cigsParPaquet: DEFAULT_CIGS_PAR_PAQUET,
+  recompense: '',
+};
+
+function ligneSynthese(e: Etat): string {
+  const eco = calculerEconomies(e.cigsParJour, e.prixPaquet, e.cigsParPaquet);
+  const base = `~${formatEuro(eco.parMois, 0)}/mois économisés (~${formatEuro(eco.parAn, 0)}/an)`;
+  return e.recompense.trim() ? `${base} → récompense prévue : ${e.recompense.trim()}` : base;
 }
 
 export default function Tirelire({ outil, store, onClose }: OutilInteractifProps) {
   const paramsKey = `${outil.id}.params`;
 
-  const [cigsParJour, setCigsParJour] = useState(DEFAULT_CIGS_PAR_JOUR);
-  const [prixPaquet, setPrixPaquet] = useState(DEFAULT_PRIX_PAQUET);
-  const [cigsParPaquet, setCigsParPaquet] = useState(DEFAULT_CIGS_PAR_PAQUET);
-  const [recompense, setRecompense] = useState('');
-  const [avanceOuvert, setAvanceOuvert] = useState(false);
-
-  // Recharge au montage (S3 étape 4) : restaure les entrées précédentes si stockées.
-  // Côté patient (localStorage), ça ré-affiche les paramètres d'une visite à l'autre ;
-  // côté consultation (mémoire de session), sans effet notable tant que le module reste
-  // monté — inoffensif dans les deux cas.
-  useEffect(() => {
+  // Lecture dans l'initialiseur (P1/S7) : l'état de départ vient du store injecté, sans effet
+  // de montage — donc aucune écriture des valeurs par défaut (StrictMode rejoue les effets).
+  const [etat, setEtat] = useState<Etat>(() => {
     const saved = store.get(paramsKey);
-    if (saved.length === 4) {
-      setCigsParJour(parseEntree(saved[0], DEFAULT_CIGS_PAR_JOUR));
-      setPrixPaquet(parseEntree(saved[1], DEFAULT_PRIX_PAQUET));
-      const cpp = parseEntree(saved[2], DEFAULT_CIGS_PAR_PAQUET);
-      setCigsParPaquet(cpp > 0 ? cpp : DEFAULT_CIGS_PAR_PAQUET);
-      setRecompense(saved[3] ?? '');
-    }
-    // Chargement unique au montage — volontairement pas de dépendance sur `store`/`paramsKey`.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (saved.length !== 4) return ETAT_DEFAUT;
+    return {
+      cigsParJour: parseEntree(saved[0], DEFAULT_CIGS_PAR_JOUR),
+      prixPaquet: parseEntree(saved[1], DEFAULT_PRIX_PAQUET),
+      cigsParPaquet: normaliserCigsParPaquet(parseEntree(saved[2], DEFAULT_CIGS_PAR_PAQUET)).valeur,
+      recompense: saved[3] ?? '',
+    };
+  });
+  const [avanceOuvert, setAvanceOuvert] = useState(false);
+  const [paquetCorrige, setPaquetCorrige] = useState(false);
 
-  const coutParJour = cigsParPaquet > 0 ? (cigsParJour / cigsParPaquet) * prixPaquet : 0;
-  const coutParSemaine = coutParJour * JOURS_PAR_SEMAINE;
-  const coutParMois = coutParJour * JOURS_PAR_MOIS;
-  const coutParAn = coutParJour * JOURS_PAR_AN;
+  // Persistance (S3 étape 4) : une ligne de synthèse pour la fiche (clé = `outil.id`, même
+  // mécanisme que `BoiteAOutilsModule` → `consultationStore.get(outil.id)`) + les paramètres
+  // bruts (clé dérivée). Écrite uniquement sur une modification venue de l'utilisateur.
+  const modifier = (patch: Partial<Etat>) => {
+    const suivant = { ...etat, ...patch };
+    setEtat(suivant);
+    store.setList(outil.id, [ligneSynthese(suivant)]);
+    store.setList(paramsKey, [
+      String(suivant.cigsParJour),
+      String(suivant.prixPaquet),
+      String(suivant.cigsParPaquet),
+      suivant.recompense,
+    ]);
+  };
 
-  const ligneSynthese = useMemo(() => {
-    const base = `~${formatEuro(coutParMois, 0)}/mois économisés (~${formatEuro(coutParAn, 0)}/an)`;
-    return recompense.trim() ? `${base} → récompense prévue : ${recompense.trim()}` : base;
-  }, [coutParMois, coutParAn, recompense]);
-
-  // Persistance (S3 étape 4) : une ligne de synthèse pour la fiche (clé = `outil.id`,
-  // même mécanisme que `BoiteAOutilsModule` → `consultationStore.get(outil.id)`) + les
-  // paramètres bruts (clé dérivée) pour pouvoir rouvrir l'outil avec les mêmes entrées.
-  useEffect(() => {
-    store.setList(outil.id, [ligneSynthese]);
-    store.setList(paramsKey, [String(cigsParJour), String(prixPaquet), String(cigsParPaquet), recompense]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [outil.id, paramsKey, ligneSynthese, cigsParJour, prixPaquet, cigsParPaquet, recompense]);
+  const { cigsParJour, prixPaquet, cigsParPaquet, recompense } = etat;
+  const eco = useMemo(
+    () => calculerEconomies(cigsParJour, prixPaquet, cigsParPaquet),
+    [cigsParJour, prixPaquet, cigsParPaquet],
+  );
 
   return (
     <div className={styles.module}>
@@ -146,8 +190,9 @@ export default function Tirelire({ outil, store, onClose }: OutilInteractifProps
         <ChampNumerique
           label="Cigarettes par jour"
           valeur={cigsParJour}
-          step={1}
-          onChange={setCigsParJour}
+          step={0.5}
+          decimales={1}
+          onChange={(v) => modifier({ cigsParJour: v })}
         />
         <ChampNumerique
           label="Prix du paquet"
@@ -155,7 +200,8 @@ export default function Tirelire({ outil, store, onClose }: OutilInteractifProps
           suffixe="€"
           step={0.5}
           decimales={2}
-          onChange={setPrixPaquet}
+          fixe
+          onChange={(v) => modifier({ prixPaquet: v })}
         />
 
         <button
@@ -172,8 +218,12 @@ export default function Tirelire({ outil, store, onClose }: OutilInteractifProps
             label="Cigarettes par paquet"
             valeur={cigsParPaquet}
             step={1}
-            min={1}
-            onChange={setCigsParPaquet}
+            annonce={paquetCorrige ? 'Un paquet compte au moins 1 cigarette : la valeur a été ramenée à 1.' : undefined}
+            onChange={(v) => {
+              const n = normaliserCigsParPaquet(v);
+              setPaquetCorrige(n.corrige);
+              modifier({ cigsParPaquet: n.valeur });
+            }}
           />
         )}
       </div>
@@ -181,19 +231,19 @@ export default function Tirelire({ outil, store, onClose }: OutilInteractifProps
       <div className={styles.paliers}>
         <div className={`${styles.palier} card`}>
           <span className={styles.palierLabel}>Par jour</span>
-          <span className={styles.palierValeur}>{formatEuro(coutParJour, 2)}</span>
+          <span className={styles.palierValeur}>{formatEuro(eco.parJour, 2)}</span>
         </div>
         <div className={`${styles.palier} card`}>
           <span className={styles.palierLabel}>Par semaine</span>
-          <span className={styles.palierValeur}>{formatEuro(coutParSemaine, 2)}</span>
+          <span className={styles.palierValeur}>{formatEuro(eco.parSemaine, 2)}</span>
         </div>
         <div className={`${styles.palier} card`}>
           <span className={styles.palierLabel}>Par mois</span>
-          <span className={styles.palierValeur}>{formatEuro(coutParMois, 0)}</span>
+          <span className={styles.palierValeur}>{formatEuro(eco.parMois, 0)}</span>
         </div>
         <div className={`${styles.palier} ${styles.palierAn} card`}>
           <span className={styles.palierLabel}>Par an</span>
-          <span className={styles.palierValeur}>{formatEuro(coutParAn, 0)}</span>
+          <span className={styles.palierValeur}>{formatEuro(eco.parAn, 0)}</span>
         </div>
       </div>
 
@@ -203,7 +253,7 @@ export default function Tirelire({ outil, store, onClose }: OutilInteractifProps
           type="text"
           className={styles.recompenseInput}
           value={recompense}
-          onChange={(e) => setRecompense(e.target.value)}
+          onChange={(e) => modifier({ recompense: e.target.value })}
           placeholder="Ce que je m'offre avec cette somme…"
         />
       </label>

@@ -37,3 +37,37 @@ export function writeJSON<T>(key: string, value: T): void {
     // Stockage indisponible (mode privé, quota) : on continue en mémoire, jamais de crash.
   }
 }
+
+/** Préfixe commun de toutes les clés de l'app patient (`etp.patient.*`, `etp.tabac.*`). */
+export const PREFIXE_DONNEES_PATIENT = 'etp.';
+
+const ecouteursEffacement = new Set<() => void>();
+
+/** Abonne un miroir en mémoire à l'effacement complet ; renvoie le désabonnement. */
+export function surEffacementDonnees(rappel: () => void): () => void {
+  ecouteursEffacement.add(rappel);
+  return () => {
+    ecouteursEffacement.delete(rappel);
+  };
+}
+
+/**
+ * Efface TOUTES les données locales de l'app patient (clés `etp.*`), les autres clés du
+ * domaine restent. Tolère un stockage indisponible (repli silencieux), puis prévient les
+ * miroirs en mémoire (sinon leur prochain `setList` réécrirait les anciennes valeurs).
+ */
+export function effacerDonneesPatient(): void {
+  if (hasStorage()) {
+    try {
+      const cles: string[] = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const cle = localStorage.key(i);
+        if (cle !== null && cle.startsWith(PREFIXE_DONNEES_PATIENT)) cles.push(cle);
+      }
+      cles.forEach((cle) => localStorage.removeItem(cle));
+    } catch {
+      // Stockage indisponible : rien à effacer côté disque, on continue.
+    }
+  }
+  ecouteursEffacement.forEach((rappel) => rappel());
+}

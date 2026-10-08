@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import { ArrowLeft, Pencil, Plus, ShieldCheck, Trash2, X } from 'lucide-react';
 import { readJSON, writeJSON } from '../lib/storage';
@@ -62,6 +62,8 @@ export default function PatientCarnet({ onBack }: PatientCarnetProps) {
   const [form, setForm] = useState<FormState>(() => emptyForm());
   const [editingId, setEditingId] = useState<string | null>(null);
   const [confirmClear, setConfirmClear] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+  const premierChampRef = useRef<HTMLInputElement>(null);
 
   function persist(next: CarnetEntry[]) {
     setEntries(next);
@@ -96,6 +98,9 @@ export default function PatientCarnet({ onBack }: PatientCarnetProps) {
     setConfirmClear(false);
     setEditingId(entry.id);
     setForm({ dateHeure: entry.dateHeure, contexte: entry.contexte, ressenti: entry.ressenti });
+    // Le formulaire est en haut de l'écran : on le ramène dans la vue et on y place le focus.
+    formRef.current?.scrollIntoView({ block: 'center' });
+    premierChampRef.current?.focus({ preventScroll: true });
   }
 
   function removeEntry(id: string) {
@@ -136,11 +141,12 @@ export default function PatientCarnet({ onBack }: PatientCarnetProps) {
         </p>
       </div>
 
-      <form className={`${styles.form} card`} onSubmit={handleSubmit}>
+      <form ref={formRef} className={`${styles.form} card`} onSubmit={handleSubmit}>
         <p className={styles.formTitle}>{editingId ? "Modifier l'entrée" : 'Ajouter une consommation'}</p>
         <label className={styles.field}>
           <span className={styles.fieldLabel}>Date et heure</span>
           <input
+            ref={premierChampRef}
             type="datetime-local"
             className={styles.input}
             value={form.dateHeure}
@@ -246,7 +252,7 @@ export default function PatientCarnet({ onBack }: PatientCarnetProps) {
                     type="button"
                     className={styles.iconBtn}
                     onClick={() => startEdit(entry)}
-                    aria-label="Modifier cette entrée"
+                    aria-label={`Modifier l'entrée du ${formatDateHeure(entry.dateHeure)}`}
                   >
                     <Pencil size={16} aria-hidden="true" />
                   </button>
@@ -254,7 +260,7 @@ export default function PatientCarnet({ onBack }: PatientCarnetProps) {
                     type="button"
                     className={styles.iconBtn}
                     onClick={() => removeEntry(entry.id)}
-                    aria-label="Supprimer cette entrée"
+                    aria-label={`Supprimer l'entrée du ${formatDateHeure(entry.dateHeure)}`}
                   >
                     <Trash2 size={16} aria-hidden="true" />
                   </button>

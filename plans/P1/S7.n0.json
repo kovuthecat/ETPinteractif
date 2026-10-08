@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "session": "P1/S7",
+  "portee": "complete",
+  "resultat": "PASS",
+  "empreinte": "3babb9d185f7a5fc11748396ac0e3fabd7777a5746e8f2bf741ba04e41476ccc",
+  "nonSuivis": [
+    "src/features/tabac/boite-a-outils/outils-interactifs/tirelireCalcul.test.ts",
+    "src/features/tabac/boite-a-outils/outils-interactifs/tirelireCalcul.ts"
+  ],
+  "date": "2026-10-08T19:31:25.138Z",
+  "commandes": [
+    {
+      "nom": "build",
+      "cmd": "npm run build",
+      "code": 0,
+      "dureeMs": 5796
+    },
+    {
+      "nom": "test",
+      "cmd": "npx vitest run",
+      "code": 0,
+      "dureeMs": 1980
+    }
+  ]
+}
