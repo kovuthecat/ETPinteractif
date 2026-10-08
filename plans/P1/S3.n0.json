@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "session": "P1/S3",
+  "portee": "complete",
+  "resultat": "PASS",
+  "empreinte": "2f23dd9476cec89ec786b74a343664a3b4e22ab8d3ee8d5bd277510f5e887f4f",
+  "nonSuivis": [],
+  "date": "2026-10-08T18:50:52.648Z",
+  "commandes": [
+    {
+      "nom": "build",
+      "cmd": "npm run build",
+      "code": 0,
+      "dureeMs": 5032
+    },
+    {
+      "nom": "test",
+      "cmd": "npx vitest run",
+      "code": 0,
+      "dureeMs": 1789
+    }
+  ]
+}

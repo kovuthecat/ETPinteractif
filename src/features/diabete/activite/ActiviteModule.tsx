@@ -404,6 +404,9 @@ export default function ActiviteModule({ shell }: ModuleProps) {
                   aria-label={`${a.nom} — ${a.curMinutes} min — ${a.isChecked ? 'cochée, cliquer pour retirer' : 'cliquer pour ajouter au total'}`}
                   onClick={() => toggleActivity(a.id)}
                   onKeyDown={(e) => {
+                    // Seules les touches adressées à la carte elle-même comptent : celles d'un
+                    // stepper (− / +) remontent ici et ne doivent ni cocher ni décocher la carte.
+                    if (e.target !== e.currentTarget) return;
                     if (e.key !== 'Enter' && e.key !== ' ') return;
                     e.preventDefault();
                     toggleActivity(a.id);
