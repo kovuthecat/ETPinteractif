@@ -378,6 +378,10 @@ export default function NicotineModule(_props: ModuleProps) {
             tabIndex={0}
             role="button"
             aria-label="Signes de surdosage"
+            aria-expanded={hoverZone === 'surdosage'}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') setHoverZone(null);
+            }}
             onMouseEnter={() => setHoverZone('surdosage')}
             onMouseLeave={() => setHoverZone(null)}
             onFocus={() => setHoverZone('surdosage')}
@@ -423,6 +427,10 @@ export default function NicotineModule(_props: ModuleProps) {
             tabIndex={0}
             role="button"
             aria-label="Signes de manque"
+            aria-expanded={hoverZone === 'manque'}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') setHoverZone(null);
+            }}
             onMouseEnter={() => setHoverZone('manque')}
             onMouseLeave={() => setHoverZone(null)}
             onFocus={() => setHoverZone('manque')}

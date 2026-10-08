@@ -34,6 +34,7 @@ export default function BeneficesArretModule(_props: ModuleProps) {
     x: z.x,
     y: z.y,
     r: z.r,
+    expanded: z.id === selectedZone,
     etat: selectedZone ? (z.id === selectedZone ? 'allume' : 'actif') : zonesDuJalon.has(z.id) ? 'allume' : 'actif',
   }));
 

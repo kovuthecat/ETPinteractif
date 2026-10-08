@@ -188,6 +188,14 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.switchItem {
+  display: contents;
+  list-style: none;
 }
 
 .switchBtn {

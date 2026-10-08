@@ -41,6 +41,8 @@ export interface CockpitFeuxProps {
   className?: string;
 }
 
+const NIVEAU_LABELS: Record<Feu, string> = { vert: "dans l'objectif", orange: 'à surveiller', rouge: 'élevé' };
+
 function feuStyleVars(etat: Feu): CSSProperties {
   const t = FEU_TOKEN_STYLE[etat];
   return { '--feu-fg': t.fg, '--feu-soft': t.soft, '--feu-border-width': t.borderWidth } as CSSProperties;
@@ -56,6 +58,9 @@ export default function CockpitFeux({ facteurs, feux, onCycle, showBarre = true,
 
   return (
     <div className={`${styles.cockpit} ${className ?? ''}`}>
+      <span id="feu-consigne-cockpit" hidden>
+        Touchez pour changer le niveau
+      </span>
       <div className={styles.chipsRow}>
         {facteurs.map((f) => {
           const etat = feux[f.id] ?? 'vert';
@@ -66,7 +71,8 @@ export default function CockpitFeux({ facteurs, feux, onCycle, showBarre = true,
               className={styles.chipFeu}
               style={feuStyleVars(etat)}
               onClick={() => onCycle(f.id)}
-              aria-pressed={etat !== 'vert'}
+              aria-label={`${f.label} : ${NIVEAU_LABELS[etat]}`}
+              aria-describedby="feu-consigne-cockpit"
             >
               <f.Icon size={22} aria-hidden />
               {f.label}

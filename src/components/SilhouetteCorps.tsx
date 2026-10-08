@@ -19,6 +19,9 @@ export interface SilhouetteZone {
   y: number;
   r: number; // ancre dans le repère SILHOUETTE_VIEWBOX
   etat: SilhouetteEtat;
+  /** Détail de la zone ouvert ? Exposé en `aria-expanded`. Par défaut : `etat === 'ouvert'`
+   *  (un thème dont « allume » ne signifie pas « ouvert » le précise). */
+  expanded?: boolean;
 }
 
 /** Repère fixe du dessin (partagé par tous les thèmes consommateurs). */
@@ -109,6 +112,7 @@ export default function SilhouetteCorps({
           const isLocked = z.etat === 'verrouille';
           // Mode hotspot (bodyImage) : une zone « déjà vue » reste cliquable (elle ouvre son
           // panneau récapitulatif) — seul le mode pastille (corps codé tabac) désactive le clic.
+          const expanded = isLocked ? undefined : (z.expanded ?? z.etat === 'ouvert');
           const ariaLabel = isLocked ? `${z.label} — déjà vu` : z.label;
 
           if (bodyImage) {
@@ -119,6 +123,7 @@ export default function SilhouetteCorps({
                 className={`${styles.hotspot} ${styles[`hotspot--${z.etat}`]}`}
                 style={{ left: `${leftPct}%`, top: `${topPct}%`, width: size, height: size }}
                 aria-label={ariaLabel}
+                aria-expanded={expanded}
                 onClick={onZoneClick ? () => onZoneClick(z.id) : undefined}
               />
             );
@@ -136,6 +141,7 @@ export default function SilhouetteCorps({
                 style={{ width: size, height: size }}
                 disabled={isLocked}
                 aria-label={ariaLabel}
+                aria-expanded={expanded}
                 onClick={onZoneClick ? () => onZoneClick(z.id) : undefined}
               >
                 {z.etat === 'verrouille' && <Lock size={16} aria-hidden="true" />}

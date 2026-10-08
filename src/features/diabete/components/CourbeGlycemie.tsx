@@ -107,6 +107,8 @@ export interface CourbeGlycemieProps {
   hoverLegend?: boolean;
   segments?: SegmentDef[];
   onSegmentClick?: (id: string) => void;
+  /** Segment actuellement sélectionné — exposé en `aria-pressed` sur le segment-bouton. */
+  segmentSelectionne?: string | null;
   /**
    * Anime le tracé de chaque courbe au montage (~900 ms, ease-out) via `pathLength`/
    * `stroke-dashoffset`. Les marqueurs de pic et étiquettes apparaissent en fondu après
@@ -185,6 +187,7 @@ export default function CourbeGlycemie({
   hoverLegend,
   segments,
   onSegmentClick,
+  segmentSelectionne,
   animerTrace,
 }: CourbeGlycemieProps) {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
@@ -251,6 +254,7 @@ export default function CourbeGlycemie({
             tabIndex={onSegmentClick ? 0 : undefined}
             role={onSegmentClick ? 'button' : undefined}
             aria-label={seg.label}
+            aria-pressed={onSegmentClick ? segmentSelectionne === seg.id : undefined}
             onClick={() => onSegmentClick?.(seg.id)}
             onKeyDown={(e) => handleSegmentKeyDown(e, seg.id)}
           />

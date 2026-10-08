@@ -251,14 +251,13 @@ export default function PatientSituations({
         {outilsAdaptes.length > 1 && (
           <div className={styles.switchGroup}>
             <span className="eyebrow">Autres idées pour cette situation</span>
-            <div className={styles.switchRow} role="list">
+            <ul className={styles.switchRow}>
               {outilsAdaptes.map((outil) => {
                 const selected = outil.id === displayedOutil?.id;
                 return (
+                  <li key={outil.id} className={styles.switchItem}>
                   <button
-                    key={outil.id}
                     type="button"
-                    role="listitem"
                     className={`${styles.switchBtn}${selected ? ` ${styles.switchBtnActive}` : ''}`}
                     aria-pressed={selected}
                     onClick={() => setSelectedOutilId(outil.id)}
@@ -268,9 +267,10 @@ export default function PatientSituations({
                     </span>
                     <span className={styles.switchTitre}>{outil.titre}</span>
                   </button>
+                  </li>
                 );
               })}
-            </div>
+            </ul>
           </div>
         )}
       </div>

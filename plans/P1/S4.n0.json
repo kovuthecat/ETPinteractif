@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "session": "P1/S4",
+  "portee": "complete",
+  "resultat": "PASS",
+  "empreinte": "88262d8e6b5d41b2947a8d5475ff16c6d0a4b077ead590da9f890bd5df3e62a1",
+  "nonSuivis": [
+    "src/components/useTabsKeyboard.test.ts",
+    "src/components/useTabsKeyboard.ts"
+  ],
+  "date": "2026-10-08T18:59:04.750Z",
+  "commandes": [
+    {
+      "nom": "build",
+      "cmd": "npm run build",
+      "code": 0,
+      "dureeMs": 5195
+    },
+    {
+      "nom": "test",
+      "cmd": "npx vitest run",
+      "code": 0,
+      "dureeMs": 1911
+    }
+  ]
+}

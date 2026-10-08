@@ -155,6 +155,7 @@ export default function InsulineModule({ onNavigate, shell }: ModuleProps) {
           bandes={bandesY}
           segments={SEGMENTS}
           onSegmentClick={handleSegmentClick}
+          segmentSelectionne={segmentId}
           axeLabels={AXE_LABELS}
           marqueurs={MARQUEURS}
         />

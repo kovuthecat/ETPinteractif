@@ -66,6 +66,7 @@ const SEUILS: Record<FeuId, string> = {
 
 const STATE_ORDER: FeuEtat[] = ['vert', 'orange', 'rouge'];
 const STATE_WEIGHT: Record<FeuEtat, number> = { vert: 0, orange: 0.5, rouge: 1 };
+const NIVEAU_LABELS: Record<FeuEtat, string> = { vert: "dans l'objectif", orange: 'à surveiller', rouge: 'élevé' };
 const STATE_LABELS: Record<FeuEtat, string> = { vert: 'Vert', orange: 'Orange', rouge: 'Rouge' };
 
 // Convention sémantique du projet (tokens.css) : vert = confort, ambre = vigilance, rouge = toxique.
@@ -196,6 +197,9 @@ export default function RisqueCardioModule({ shell }: ModuleProps) {
       {vue === 1 && (
         <div className={styles.vueBody}>
           <p className={styles.vueEyebrow}>Cliquez un facteur pour le régler</p>
+          <span id="feu-consigne-diabete" hidden>
+            Touchez pour changer le niveau
+          </span>
           <div className={styles.chipsRow}>
             {FEUX.map((f) => {
               const etat = factors[f.id];
@@ -210,8 +214,10 @@ export default function RisqueCardioModule({ shell }: ModuleProps) {
                     onMouseLeave={() => setHoverFeu(null)}
                     onFocus={() => setHoverFeu(f.id)}
                     onBlur={() => setHoverFeu(null)}
-                    aria-pressed={etat !== 'vert'}
-                    aria-describedby={hoverFeu === f.id ? `feu-seuil-${f.id}` : undefined}
+                    aria-label={`${f.nom} : ${NIVEAU_LABELS[etat]}`}
+                    aria-describedby={
+                      hoverFeu === f.id ? `feu-consigne-diabete feu-seuil-${f.id}` : 'feu-consigne-diabete'
+                    }
                   >
                     <f.Icon size={22} aria-hidden />
                     {f.nom}
